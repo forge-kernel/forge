@@ -22,7 +22,7 @@ use Forge\Core\Module\Attributes\Structure;
 #[Service]
 #[Module(
     name: 'ForgeAuth',
-    version: '2.0.0',
+    version: '2.0.1',
     description: 'An Auth module by forge.',
     order: 99,
     author: 'Forge Team',
