@@ -15,7 +15,7 @@ use Forge\CLI\Traits\OutputHelper;
 
 #[Module(
     name: 'ForgeTailwind',
-    version: '0.2.0',
+    version: '0.2.1',
     description: 'A tailwind module by forge',
     order: 99,
     isCli: true,
@@ -25,7 +25,7 @@ use Forge\CLI\Traits\OutputHelper;
     tags: ['tailwind', 'css', 'framework']
 )]
 #[Service]
-#[Provides(interface: ForgeTailwindInterface::class, version: '0.2.0')]
+#[Provides(interface: ForgeTailwindInterface::class, version: '0.2.1')]
 #[Compatibility(framework: '>=0.1.0', php: '>=8.3')]
 #[Repository(type: 'git', url: 'https://github.com/forge-kernel/kernel-module-registry')]
 final class ForgeTailwindModule
