@@ -17,17 +17,21 @@ use Forge\Core\Module\Attributes\LifecycleHook;
 use Forge\Core\Module\Attributes\Module;
 use Forge\Core\Module\Attributes\PostInstall;
 use Forge\Core\Module\Attributes\PostUninstall;
+use Forge\Core\Module\Attributes\Compatibility;
+use Forge\Core\Module\Attributes\Repository;
 use Forge\Core\Module\LifecycleHookName;
 use Throwable;
 
-#[Module(
-    name: "ForgeRouter",
+#[Module(name: "ForgeRouter",
     description: "Forge Router and Http",
     author: "Forge Team",
+    version: '1.0.0',
     type: "core",
     license: "MIT",
     tags: ["router", "http"],
     order: PHP_INT_MAX)]
+#[Compatibility(framework: '>=0.1.0', php: '>=8.3')]
+#[Repository(type: 'git', url: 'https://github.com/forge-kernel/kernel-module-registry')]
 #[ConfigDefaults(defaults: [
     'forge_router' => [
         'cors' => [
