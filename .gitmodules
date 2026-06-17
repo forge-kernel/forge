@@ -1,0 +1,24 @@
+[submodule "kernel"]
+	path = kernel
+	url = git@github.com:forge-kernel/kernel.git
+[submodule "kernel-registry"]
+	path = kernel-registry
+	url = git@github.com:forge-kernel/kernel-registry.git
+[submodule "installer"]
+	path = installer
+	url = git@github.com:forge-kernel/installer.git
+[submodule "forge-documentation"]
+	path = forge-documentation
+	url = git@github.com:forge-kernel/forge-kernel.github.io.git
+[submodule "kernel-module-registry"]
+	path = kernel-module-registry
+	url = git@github.com:forge-kernel/kernel-module-registry.git
+[submodule "starter-templates"]
+	path = starter-templates
+	url = git@github.com:forge-kernel/starter-templates.git
+[submodule "starter-template-registry"]
+	path = starter-template-registry
+	url = git@github.com:forge-kernel/starter-template-registry.git
+[submodule "modules/ForgeWire"]
+	path = modules/ForgeWire
+	url = git@github.com:forge-kernel/forge-wire.git
