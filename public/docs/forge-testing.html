@@ -1,0 +1,884 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ForgeTesting - Forge Engine Documentation</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-core.min.js"></script>
+    <script
+        src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/autoloader/prism-autoloader.min.js"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        .code-block {
+            background: #2d3748;
+            border-radius: 0.5rem;
+            padding: 1rem;
+            margin: 1rem 0;
+            overflow-x: auto;
+        }
+
+        .nav-link.active {
+            background-color: #e0e7ff;
+            color: #4338ca;
+            border-left: 4px solid #4338ca;
+        }
+
+        .section-anchor {
+            scroll-margin-top: 2rem;
+        }
+
+        @media (max-width: 1024px) {
+            .sidebar {
+                position: fixed;
+                top: 0;
+                left: -100%;
+                width: 80%;
+                max-width: 320px;
+                height: 100vh;
+                background: white;
+                z-index: 50;
+                transition: left 0.3s ease;
+                overflow-y: auto;
+                box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+            }
+
+            .sidebar.open {
+                left: 0;
+            }
+
+            .sidebar-overlay {
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                background: rgba(0, 0, 0, 0.5);
+                z-index: 40;
+                display: none;
+            }
+
+            .sidebar-overlay.active {
+                display: block;
+            }
+        }
+    </style>
+</head>
+
+<body class="bg-gray-50 text-gray-900">
+    <!-- Navigation -->
+    <nav class="bg-white shadow-sm border-b">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-16">
+                <div class="flex items-center">
+                    <div class="flex-shrink-0">
+                        <h1 class="text-xl font-bold text-gray-900">
+                            Forge Engine
+                        </h1>
+                    </div>
+                    <div class="hidden sm:ml-6 sm:flex sm:space-x-8">
+                        <a href="index.html"
+                            class="text-gray-900 inline-flex items-center px-1 pt-1 text-sm font-medium hover:text-blue-600">
+                            Home
+                        </a>
+                        <a href="getting-started.html"
+                            class="text-gray-900 inline-flex items-center px-1 pt-1 text-sm font-medium hover:text-blue-600">
+                            Getting Started
+                        </a>
+                        <a href="core-concepts.html"
+                            class="text-gray-900 inline-flex items-center px-1 pt-1 text-sm font-medium hover:text-blue-600">
+                            Core Concepts
+                        </a>
+                        <a href="modules.html"
+                            class="text-blue-600 inline-flex items-center px-1 pt-1 text-sm font-medium border-b-2 border-blue-600">
+                            Modules
+                        </a>
+                        <a href="api-reference.html"
+                            class="text-gray-900 inline-flex items-center px-1 pt-1 text-sm font-medium hover:text-blue-600">
+                            API Reference
+                        </a>
+                    </div>
+                </div>
+                <div class="flex items-center sm:hidden">
+                    <button id="mobile-menu-button" class="text-gray-700 hover:text-blue-600 px-3 py-2">
+                        <i class="fas fa-bars text-xl"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+        <!-- Mobile menu -->
+        <div id="mobile-menu" class="hidden sm:hidden bg-white border-t">
+            <div class="px-2 pt-2 pb-3 space-y-1">
+                <a href="index.html" class="block px-3 py-2 text-gray-700 hover:text-blue-600">
+                    Home
+                </a>
+                <a href="getting-started.html" class="block px-3 py-2 text-gray-700 hover:text-blue-600">
+                    Getting Started
+                </a>
+                <a href="core-concepts.html" class="block px-3 py-2 text-gray-700 hover:text-blue-600">
+                    Core Concepts
+                </a>
+                <a href="modules.html" class="block px-3 py-2 text-blue-600">
+                    Modules
+                </a>
+                <a href="api-reference.html" class="block px-3 py-2 text-gray-700 hover:text-blue-600">
+                    API Reference
+                </a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <div class="flex flex-col lg:flex-row gap-8">
+            <!-- Sidebar Navigation -->
+            <div class="lg:w-1/4">
+                <div class="bg-white rounded-lg shadow-sm p-6 sticky top-8">
+                    <h3 class="text-lg font-semibold text-gray-900 mb-4">
+                        ForgeTesting
+                    </h3>
+                    <nav class="space-y-2">
+                        <a href="#overview"
+                            class="nav-link block px-3 py-2 text-sm text-gray-700 rounded-md hover:text-blue-600">
+                            Overview
+                        </a>
+                        <a href="#features"
+                            class="nav-link block px-3 py-2 text-sm text-gray-700 rounded-md hover:text-blue-600">
+                            Features
+                        </a>
+                        <a href="#installation"
+                            class="nav-link block px-3 py-2 text-sm text-gray-700 rounded-md hover:text-blue-600">
+                            Installation
+                        </a>
+                        <a href="#configuration"
+                            class="nav-link block px-3 py-2 text-sm text-gray-700 rounded-md hover:text-blue-600">
+                            Configuration
+                        </a>
+                        <a href="#creating-tests"
+                            class="nav-link block px-3 py-2 text-sm text-gray-700 rounded-md hover:text-blue-600">
+                            Creating Tests
+                        </a>
+                        <a href="#test-attributes"
+                            class="nav-link block px-3 py-2 text-sm text-gray-700 rounded-md hover:text-blue-600">
+                            Test Attributes
+                        </a>
+                        <a href="#assertions"
+                            class="nav-link block px-3 py-2 text-sm text-gray-700 rounded-md hover:text-blue-600">
+                            Assertions
+                        </a>
+                        <a href="#http-testing"
+                            class="nav-link block px-3 py-2 text-sm text-gray-700 rounded-md hover:text-blue-600">
+                            HTTP Testing
+                        </a>
+                        <a href="#database-testing"
+                            class="nav-link block px-3 py-2 text-sm text-gray-700 rounded-md hover:text-blue-600">
+                            Database Testing
+                        </a>
+                        <a href="#performance-testing"
+                            class="nav-link block px-3 py-2 text-sm text-gray-700 rounded-md hover:text-blue-600">
+                            Performance Testing
+                        </a>
+                        <a href="#running-tests"
+                            class="nav-link block px-3 py-2 text-sm text-gray-700 rounded-md hover:text-blue-600">
+                            Running Tests
+                        </a>
+                        <a href="#test-examples"
+                            class="nav-link block px-3 py-2 text-sm text-gray-700 rounded-md hover:text-blue-600">
+                            Test Examples
+                        </a>
+                        <a href="#best-practices"
+                            class="nav-link block px-3 py-2 text-sm text-gray-700 rounded-md hover:text-blue-600">
+                            Best Practices
+                        </a>
+                    </nav>
+                </div>
+            </div>
+
+            <!-- Main Content -->
+            <div class="lg:w-3/4">
+                <div class="bg-white rounded-lg shadow-sm p-8">
+                    <h1 class="text-4xl font-bold text-gray-900 mb-6">
+                        ForgeTesting
+                    </h1>
+
+                    <div id="overview" class="section-anchor mb-12">
+                        <h2 class="text-2xl font-semibold text-gray-800 mb-4">
+                            <i class="fas fa-flask mr-2 text-blue-600"></i>
+                            Overview
+                        </h2>
+                        <p class="text-gray-700 mb-4">
+                            ForgeTesting is a comprehensive testing framework for Forge Engine applications. It provides
+                            a robust set of tools for unit testing, integration testing, HTTP testing, database testing,
+                            and performance benchmarking.
+                        </p>
+                        <div class="bg-blue-50 border-l-4 border-blue-600 p-4 rounded">
+                            <p class="text-blue-800">
+                                <i class="fas fa-info-circle mr-2"></i>
+                                <strong>Module Type:</strong> Test Suite | <strong>Version:</strong> 0.1.1 | <strong>CLI
+                                    Command:</strong> test
+                            </p>
+                        </div>
+                    </div>
+
+                    <div id="features" class="section-anchor mb-12">
+                        <h2 class="text-2xl font-semibold text-gray-800 mb-4">
+                            <i class="fas fa-star mr-2 text-blue-600"></i>
+                            Features
+                        </h2>
+                        <div class="grid md:grid-cols-2 gap-6">
+                            <div class="bg-gray-50 p-6 rounded-lg">
+                                <h3 class="font-semibold text-gray-800 mb-2">
+                                    <i class="fas fa-check-circle text-green-600 mr-2"></i>
+                                    Comprehensive Assertions
+                                </h3>
+                                <p class="text-gray-600">Rich set of assertion methods for validating test outcomes</p>
+                            </div>
+                            <div class="bg-gray-50 p-6 rounded-lg">
+                                <h3 class="font-semibold text-gray-800 mb-2">
+                                    <i class="fas fa-globe text-green-600 mr-2"></i>
+                                    HTTP Testing
+                                </h3>
+                                <p class="text-gray-600">Simulate HTTP requests and test responses with CSRF support</p>
+                            </div>
+                            <div class="bg-gray-50 p-6 rounded-lg">
+                                <h3 class="font-semibold text-gray-800 mb-2">
+                                    <i class="fas fa-database text-green-600 mr-2"></i>
+                                    Database Testing
+                                </h3>
+                                <p class="text-gray-600">Test database operations and verify data integrity</p>
+                            </div>
+                            <div class="bg-gray-50 p-6 rounded-lg">
+                                <h3 class="font-semibold text-gray-800 mb-2">
+                                    <i class="fas fa-tachometer-alt text-green-600 mr-2"></i>
+                                    Performance Testing
+                                </h3>
+                                <p class="text-gray-600">Benchmark test execution and measure performance</p>
+                            </div>
+                            <div class="bg-gray-50 p-6 rounded-lg">
+                                <h3 class="font-semibold text-gray-800 mb-2">
+                                    <i class="fas fa-tags text-green-600 mr-2"></i>
+                                    Test Organization
+                                </h3>
+                                <p class="text-gray-600">Group tests, skip incomplete tests, and use data providers</p>
+                            </div>
+                            <div class="bg-gray-50 p-6 rounded-lg">
+                                <h3 class="font-semibold text-gray-800 mb-2">
+                                    <i class="fas fa-terminal text-green-600 mr-2"></i>
+                                    CLI Integration
+                                </h3>
+                                <p class="text-gray-600">Run tests from command line with filtering and grouping options
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div id="installation" class="section-anchor mb-12">
+                        <h2 class="text-2xl font-semibold text-gray-800 mb-4">
+                            <i class="fas fa-download mr-2 text-blue-600"></i>
+                            Installation
+                        </h2>
+                        <p class="text-gray-700 mb-4">
+                            ForgeTesting comes pre-installed with Forge Engine. If you need to install it separately:
+                        </p>
+                        <div class="code-block">
+                            <pre class="language-php" tabindex="0"><code class="language-php"># Using Forge Package Manager
+forge install forge-testing
+
+# Manual installation
+composer require forge/forge-testing</code></pre>
+                        </div>
+                    </div>
+
+                    <div id="configuration" class="section-anchor mb-12">
+                        <h2 class="text-2xl font-semibold text-gray-800 mb-4">
+                            <i class="fas fa-cog mr-2 text-blue-600"></i>
+                            Configuration
+                        </h2>
+                        <p class="text-gray-700 mb-4">
+                            ForgeTesting is automatically configured when installed. The module registers itself and
+                            provides the test command through the CLI.
+                        </p>
+                    </div>
+
+                    <div id="creating-tests" class="section-anchor mb-12">
+                        <h2 class="text-2xl font-semibold text-gray-800 mb-4">
+                            <i class="fas fa-plus-circle mr-2 text-blue-600"></i>
+                            Creating Tests
+                        </h2>
+                        <p class="text-gray-700 mb-4">
+                            Create test classes by extending the <code
+                                class="bg-gray-100 px-2 py-1 rounded">TestCase</code> base class and using test
+                            attributes to define test methods.
+                        </p>
+                        <div class="code-block">
+                            <pre class="language-php" tabindex="0"><code class="language-php">&lt;?php
+
+declare(strict_types=1);
+
+namespace App\Tests;
+
+use App\Modules\ForgeTesting\Attributes\Test;
+use App\Modules\ForgeTesting\TestCase;
+
+class ExampleTest extends TestCase
+{
+    #[Test('This is a test description')]
+    public function test_something(): void
+    {
+        $this->assertTrue(true);
+    }
+}</code></pre>
+                        </div>
+                    </div>
+
+                    <div id="test-attributes" class="section-anchor mb-12">
+                        <h2 class="text-2xl font-semibold text-gray-800 mb-4">
+                            <i class="fas fa-tag mr-2 text-blue-600"></i>
+                            Test Attributes
+                        </h2>
+                        <p class="text-gray-700 mb-4">
+                            ForgeTesting provides several attributes to organize and control test execution:
+                        </p>
+
+                        <div class="space-y-6">
+                            <div class="bg-gray-50 p-6 rounded-lg">
+                                <h3 class="font-semibold text-gray-800 mb-2">
+                                    <code class="bg-gray-200 px-2 py-1 rounded">#[Test]</code>
+                                </h3>
+                                <p class="text-gray-600 mb-2">Marks a method as a test method</p>
+                                <div class="code-block">
+                                    <pre class="language-php" tabindex="0"><code class="language-php">#[Test('Optional description')]
+public function my_test(): void
+{
+    // Test implementation
+}</code></pre>
+                                </div>
+                            </div>
+
+                            <div class="bg-gray-50 p-6 rounded-lg">
+                                <h3 class="font-semibold text-gray-800 mb-2">
+                                    <code class="bg-gray-200 px-2 py-1 rounded">#[Group]</code>
+                                </h3>
+                                <p class="text-gray-600 mb-2">Organizes tests into groups for selective execution</p>
+                                <div class="code-block">
+                                    <pre class="language-php" tabindex="0"><code class="language-php">>#[Group('database')]
+#[Test]
+public function database_test(): void
+{
+    // Database-related test
+}</code></pre>
+                                </div>
+                            </div>
+
+                            <div class="bg-gray-50 p-6 rounded-lg">
+                                <h3 class="font-semibold text-gray-800 mb-2">
+                                    <code class="bg-gray-200 px-2 py-1 rounded">#[Skip]</code>
+                                </h3>
+                                <p class="text-gray-600 mb-2">Skips a test with an optional reason</p>
+                                <div class="code-block">
+                                    <pre class="language-php" tabindex="0"><code class="language-php">#[Skip('Waiting for implementation')]
+#[Test]
+public function skipped_test(): void
+{
+    // This test will be skipped
+}</code></pre>
+                                </div>
+                            </div>
+
+                            <div class="bg-gray-50 p-6 rounded-lg">
+                                <h3 class="font-semibold text-gray-800 mb-2">
+                                    <code class="bg-gray-200 px-2 py-1 rounded">#[Incomplete]</code>
+                                </h3>
+                                <p class="text-gray-600 mb-2">Marks a test as incomplete with an optional reason</p>
+                                <div class="code-block">
+                                    <pre class="language-php" tabindex="0"><code class="language-php">#[Incomplete('Needs performance optimization')]
+#[Test]
+public function incomplete_test(): void
+{
+    // This test is incomplete
+}</code></pre>
+                                </div>
+                            </div>
+
+                            <div class="bg-gray-50 p-6 rounded-lg">
+                                <h3 class="font-semibold text-gray-800 mb-2">
+                                    <code class="bg-gray-200 px-2 py-1 rounded">#[DataProvider]</code>
+                                </h3>
+                                <p class="text-gray-600 mb-2">Provides data to test methods for parameterized testing
+                                </p>
+                                <div class="code-block">
+                                    <pre class="language-php" tabindex="0"><code class="language-php">#[DataProvider('userProvider')]
+#[Test]
+public function test_with_data(array $userData): void
+{
+    $this->assertArrayHasKey('email', $userData);
+}
+
+public function userProvider(): array
+{
+    return [
+        [['email' => 'user1@example.com']],
+        [['email' => 'user2@example.com']]
+    ];
+}</code></pre>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div id="assertions" class="section-anchor mb-12">
+                        <h2 class="text-2xl font-semibold text-gray-800 mb-4">
+                            <i class="fas fa-check-double mr-2 text-blue-600"></i>
+                            Assertions
+                        </h2>
+                        <p class="text-gray-700 mb-4">
+                            ForgeTesting provides a comprehensive set of assertion methods for validating test outcomes:
+                        </p>
+
+                        <div class="grid md:grid-cols-2 gap-4 mb-6">
+                            <div class="bg-gray-50 p-4 rounded">
+                                <h4 class="font-semibold text-gray-800 mb-2">Basic Assertions</h4>
+                                <ul class="text-sm text-gray-600 space-y-1">
+                                    <li><code>assertTrue($condition)</code></li>
+                                    <li><code>assertFalse($condition)</code></li>
+                                    <li><code>assertEquals($expected, $actual)</code></li>
+                                    <li><code>assertNotEquals($expected, $actual)</code></li>
+                                </ul>
+                            </div>
+                            <div class="bg-gray-50 p-4 rounded">
+                                <h4 class="font-semibold text-gray-800 mb-2">Type Assertions</h4>
+                                <ul class="text-sm text-gray-600 space-y-1">
+                                    <li><code>assertInstanceOf($class, $object)</code></li>
+                                    <li><code>assertNotInstanceOf($class, $object)</code></li>
+                                    <li><code>assertSame($expected, $actual)</code></li>
+                                    <li><code>assertNotSame($expected, $actual)</code></li>
+                                </ul>
+                            </div>
+                            <div class="bg-gray-50 p-4 rounded">
+                                <h4 class="font-semibold text-gray-800 mb-2">Array Assertions</h4>
+                                <ul class="text-sm text-gray-600 space-y-1">
+                                    <li><code>assertArrayHasKey($key, $array)</code></li>
+                                    <li><code>assertArrayNotHasKey($key, $array)</code></li>
+                                    <li><code>assertCount($expected, $actual)</code></li>
+                                </ul>
+                            </div>
+                            <div class="bg-gray-50 p-4 rounded">
+                                <h4 class="font-semibold text-gray-800 mb-2">Database Assertions</h4>
+                                <ul class="text-sm text-gray-600 space-y-1">
+                                    <li><code>assertDatabaseHas($table, $data)</code></li>
+                                    <li><code>assertDatabaseMissing($table, $data)</code></li>
+                                </ul>
+                            </div>
+                        </div>
+
+                        <div class="code-block">
+                            <pre class="language-php" tabindex="0"><code class="language-php">// Example usage
+#[Test]
+public function assertion_examples(): void
+{
+    // Basic assertions
+    $this->assertTrue(true);
+    $this->assertEquals('expected', 'actual');
+    
+    // Type assertions
+    $this->assertInstanceOf(User::class, $user);
+    $this->assertSame(123, 123); // Strict comparison
+    
+    // Array assertions
+    $this->assertArrayHasKey('email', $userData);
+    $this->assertCount(5, $items);
+    
+    // Database assertions
+    $this->assertDatabaseHas('users', ['email' => 'test@example.com']);
+}</code></pre>
+                        </div>
+                    </div>
+
+                    <div id="http-testing" class="section-anchor mb-12">
+                        <h2 class="text-2xl font-semibold text-gray-800 mb-4">
+                            <i class="fas fa-globe mr-2 text-blue-600"></i>
+                            HTTP Testing
+                        </h2>
+                        <p class="text-gray-700 mb-4">
+                            Test HTTP endpoints and responses with built-in CSRF protection support:
+                        </p>
+
+                        <div class="code-block">
+                            <pre class="language-php" tabindex="0"><code class="language-php">use App\Modules\ForgeTesting\Attributes\Test;
+use App\Modules\ForgeTesting\TestCase;
+
+class HttpTest extends TestCase
+{
+    #[Test]
+    public function test_homepage(): void
+    {
+        $response = $this->get('/');
+        $this->assertHttpStatus(200, $response);
+    }
+
+    #[Test]
+    public function test_form_submission(): void
+    {
+        $response = $this->post('/login', [
+            'email' => 'user@example.com',
+            'password' => 'password'
+        ]);
+        
+        $this->assertHttpStatus(302, $response);
+    }
+
+    #[Test]
+    public function test_with_csrf(): void
+    {
+        // Load CSRF token
+        $this->loadCsrfToken();
+        
+        $response = $this->withCsrf()->post('/api/data', [
+            'data' => 'test'
+        ]);
+        
+        $this->assertHttpStatus(200, $response);
+    }
+}</code></pre>
+                        </div>
+
+                        <div class="bg-yellow-50 border-l-4 border-yellow-400 p-4 rounded mt-4">
+                            <p class="text-yellow-800">
+                                <i class="fas fa-lightbulb mr-2"></i>
+                                <strong>Tip:</strong> Use <code>withCsrf()</code> to automatically include CSRF tokens
+                                in your HTTP requests.
+                            </p>
+                        </div>
+                    </div>
+
+                    <div id="database-testing" class="section-anchor mb-12">
+                        <h2 class="text-2xl font-semibold text-gray-800 mb-4">
+                            <i class="fas fa-database mr-2 text-blue-600"></i>
+                            Database Testing
+                        </h2>
+                        <p class="text-gray-700 mb-4">
+                            Test database operations and verify data integrity with database-specific assertions:
+                        </p>
+
+                        <div class="code-block">
+                            <pre class="language-php" tabindex="0"><code class="language-php">use App\Modules\ForgeTesting\Attributes\Test;
+use App\Modules\ForgeTesting\TestCase;
+use Forge\Core\Database\QueryBuilder;
+
+class DatabaseTest extends TestCase
+{
+    private QueryBuilder $queryBuilder;
+
+    public function __construct()
+    {
+        $this->queryBuilder = new QueryBuilder();
+    }
+
+    #[Test('Create and verify user record')]
+    public function create_user(): void
+    {
+        $user = new User();
+        $user->email = 'test@example.com';
+        $user->name = 'Test User';
+        $user->save();
+
+        $this->assertNotNull($user->id);
+        $this->assertDatabaseHas('users', ['email' => 'test@example.com']);
+    }
+
+    #[Test('Delete user record')]
+    public function delete_user(): void
+    {
+        $deleted = $this->queryBuilder
+            ->reset()
+            ->where('email', '=', 'test@example.com')
+            ->setTable('users')
+            ->delete();
+
+        $this->assertTrue($deleted);
+        $this->assertDatabaseMissing('users', ['email' => 'test@example.com']);
+    }
+}</code></pre>
+                        </div>
+                    </div>
+
+                    <div id="performance-testing" class="section-anchor mb-12">
+                        <h2 class="text-2xl font-semibold text-gray-800 mb-4">
+                            <i class="fas fa-tachometer-alt mr-2 text-blue-600"></i>
+                            Performance Testing
+                        </h2>
+                        <p class="text-gray-700 mb-4">
+                            Benchmark your code execution and measure performance metrics:
+                        </p>
+
+                        <div class="code-block">
+                            <pre class="language-php" tabindex="0"><code class="language-php">use App\Modules\ForgeTesting\Attributes\Test;
+use App\Modules\ForgeTesting\TestCase;
+
+class PerformanceTest extends TestCase
+{
+    #[Test('Benchmark database query')]
+    public function benchmark_user_lookup(): array
+    {
+        $results = $this->benchmark(function () {
+            $this->assertDatabaseHas('users', ['email' => 'test@example.com']);
+        }, 10); // Run 10 iterations
+
+        return $results;
+    }
+
+    #[Test('Measure string processing performance')]
+    public function benchmark_string_operations(): void
+    {
+        $results = $this->benchmark(function () {
+            $string = 'this is a test string';
+            $camelCase = Strings::toCamelCase($string);
+            $this->assertEquals('thisIsATestString', $camelCase);
+        });
+
+        // Results contain execution time, memory usage, etc.
+        $this->assertLessThan(0.1, $results['average_time']);
+    }
+}</code></pre>
+                        </div>
+                    </div>
+
+                    <div id="running-tests" class="section-anchor mb-12">
+                        <h2 class="text-2xl font-semibold text-gray-800 mb-4">
+                            <i class="fas fa-play-circle mr-2 text-blue-600"></i>
+                            Running Tests
+                        </h2>
+                        <p class="text-gray-700 mb-4">
+                            Execute tests using the Forge CLI with various filtering options:
+                        </p>
+
+                        <div class="space-y-4">
+                            <div class="code-block">
+                                <pre class="language-php" tabindex="0"><code class="language-php"># Run all tests
+forge test
+
+# Run tests for a specific module
+forge test --module=ForgeAuth
+
+# Run tests by group
+forge test --group=database
+
+# Run tests by type (app, engine, module)
+forge test --type=app
+forge test --type=engine
+forge test --type=module
+
+# Run tests with verbose output
+forge test --verbose</code></pre>
+                            </div>
+
+                            <div class="bg-green-50 border-l-4 border-green-400 p-4 rounded">
+                                <p class="text-green-800">
+                                    <i class="fas fa-info-circle mr-2"></i>
+                                    <strong>Pro Tip:</strong> Use groups to organize related tests and run them
+                                    selectively during development.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div id="test-examples" class="section-anchor mb-12">
+                        <h2 class="text-2xl font-semibold text-gray-800 mb-4">
+                            <i class="fas fa-code mr-2 text-blue-600"></i>
+                            Test Examples
+                        </h2>
+                        <p class="text-gray-700 mb-4">
+                            Here are comprehensive examples from different areas of testing:
+                        </p>
+
+                        <div class="space-y-6">
+                            <div class="bg-gray-50 p-6 rounded-lg">
+                                <h3 class="font-semibold text-gray-800 mb-3">String Helper Tests</h3>
+                                <div class="code-block">
+                                    <pre class="language-php" tabindex="0"><code class="language-php">#[Group('helpers')]
+final class StringHelperTest extends TestCase
+{
+    #[Test('String converted to camelCase')]
+    public function string_to_camel_case(): void
+    {
+        $expected = 'thisIsATest';
+        $actual = Strings::toCamelCase('this is a test');
+        $this->assertEquals($expected, $actual);
+    }
+
+    #[Test('String converted to PascalCase')]
+    public function string_to_pascal_case(): void
+    {
+        $expected = 'ThisIsATest';
+        $actual = Strings::toPascalCase('this is a test');
+        $this->assertEquals($expected, $actual);
+    }
+
+    #[Test('String converted to-friendly-url')]
+    public function string_to_friendly_url(): void
+    {
+        $expected = 'this-is-a-test';
+        $actual = Strings::slugify('this is a test');
+        $this->assertEquals($expected, $actual);
+    }
+}</code></pre>
+                                </div>
+                            </div>
+
+                            <div class="bg-gray-50 p-6 rounded-lg">
+                                <h3 class="font-semibold text-gray-800 mb-3">Authentication Tests</h3>
+                                <div class="code-block p-4 text-white rounded">
+                                    <pre class="language-php" tabindex="0"><code class="language-php">#[Group('auth')]
+final class AuthenticationTest extends TestCase
+{
+    #[Test('User login functionality')]
+    #[Skip('Waiting on implementation')]
+    public function login_works(): void
+    {
+        $this->assertTrue(true);
+    }
+
+    #[Test('Check a record exists in the database by identifier')]
+    #[Group('database')]
+    public function user_exists(): void
+    {
+        $this->assertDatabaseHas('users', ['identifier' => 'example']);
+    }
+
+    #[DataProvider('userProvider')]
+    #[Test]
+    #[Group('database')]
+    public function multiple_users(array $users): void
+    {
+        $this->assertArrayHasKey('email', $users);
+    }
+
+    #[Test('Benchmark user lookup')]
+    #[Group('database')]
+    public function benchmark_user_lookup(): array
+    {
+        $results = $this->benchmark(function () {
+            $this->assertDatabaseHas('users', ['email' => 'test@example.com']);
+        }, 1);
+
+        return $results;
+    }
+}</code></pre>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div id="best-practices" class="section-anchor mb-12">
+                        <h2 class="text-2xl font-semibold text-gray-800 mb-4">
+                            <i class="fas fa-lightbulb mr-2 text-blue-600"></i>
+                            Best Practices
+                        </h2>
+
+                        <div class="space-y-6">
+                            <div class="bg-blue-50 p-6 rounded-lg">
+                                <h3 class="font-semibold text-blue-800 mb-3">
+                                    <i class="fas fa-check-circle mr-2"></i>
+                                    Test Organization
+                                </h3>
+                                <ul class="text-blue-700 space-y-2">
+                                    <li>Use meaningful test method names that describe what is being tested</li>
+                                    <li>Group related tests using the <code>#[Group]</code> attribute</li>
+                                    <li>Keep tests focused and test one thing at a time</li>
+                                    <li>Use descriptive test descriptions in the <code>#[Test]</code> attribute</li>
+                                </ul>
+                            </div>
+
+                            <div class="bg-green-50 p-6 rounded-lg">
+                                <h3 class="font-semibold text-green-800 mb-3">
+                                    <i class="fas fa-shield-alt mr-2"></i>
+                                    Test Independence
+                                </h3>
+                                <ul class="text-green-700 space-y-2">
+                                    <li>Ensure tests don't depend on each other's execution order</li>
+                                    <li>Clean up test data in <code>tearDown()</code> methods</li>
+                                    <li>Use fresh test data for each test run</li>
+                                    <li>Avoid shared state between tests</li>
+                                </ul>
+                            </div>
+
+                            <div class="bg-purple-50 p-6 rounded-lg">
+                                <h3 class="font-semibold text-purple-800 mb-3">
+                                    <i class="fas fa-rocket mr-2"></i>
+                                    Performance Considerations
+                                </h3>
+                                <ul class="text-purple-700 space-y-2">
+                                    <li>Use <code>#[Skip]</code> for tests that are not ready</li>
+                                    <li>Mark incomplete tests with <code>#[Incomplete]</code> and provide reasons</li>
+                                    <li>Benchmark critical code paths to detect performance regressions</li>
+                                    <li>Use data providers to test multiple scenarios efficiently</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="bg-gray-800 text-white py-8 mt-16">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center">
+                <p>&copy; 2024 Forge Engine. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Mobile menu toggle
+        const mobileMenuButton = document.getElementById('mobile-menu-button');
+        const mobileMenu = document.getElementById('mobile-menu');
+
+        mobileMenuButton.addEventListener('click', () => {
+            mobileMenu.classList.toggle('hidden');
+        });
+
+        // Smooth scrolling for navigation links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+
+        // Active navigation highlighting
+        const observerOptions = {
+            rootMargin: '-20% 0px -80% 0px'
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    const id = entry.target.getAttribute('id');
+                    document.querySelectorAll('.nav-link').forEach(link => {
+                        link.classList.remove('active');
+                    });
+                    const activeLink = document.querySelector(`a[href="#${id}"]`);
+                    if (activeLink) {
+                        activeLink.classList.add('active');
+                    }
+                }
+            });
+        }, observerOptions);
+
+        document.querySelectorAll('.section-anchor').forEach(section => {
+            observer.observe(section);
+        });
+    </script>
+</body>
+
+</html>

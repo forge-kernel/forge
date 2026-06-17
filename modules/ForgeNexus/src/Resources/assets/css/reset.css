@@ -1,0 +1,91 @@
+/* ==========================================================================
+   Forge Reset – reset.css
+   --------------------------------------------------------------------------
+   • Minimal: keep UA behaviours that help (e.g. button focus outlines)
+   • Accessible first: respects user motion & font‑size settings
+   • Plays nicely with our variables.css tokens
+   ========================================================================== */
+
+/* 0. Box‑model sanity ----------------------------------------------------- */
+*, *::before, *::after {
+    box-sizing: border-box;
+}
+
+/* 1. Remove default margin on common block elements ----------------------- */
+body, h1, h2, h3, h4, h5, h6,
+p, figure, blockquote, dl, dd {
+    margin: 0;
+}
+
+/* 2. Set core body defaults ---------------------------------------------- */
+body {
+    min-height: 100vh; /* full‑height pages */
+    text-rendering: optimizeLegibility;
+    font-family: var(--font-base, system-ui), serif;
+    font-size: var(--fs-body, 1rem); /* user‑zoom honor */
+    line-height: 1.5;
+    background-color: var(--color-bg, #fff);
+    color: var(--color-text, #000);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+/* 3. Media ---------------------------------------------------------------- */
+img, picture, svg, canvas, video {
+    display: block;
+    max-width: 100%;
+    height: auto;
+}
+
+/* 4. Forms ---------------------------------------------------------------- */
+input, button, textarea, select {
+    font: inherit; /* consistent typography */
+    color: inherit;
+}
+
+/* Remove the inner spin for number in Chrome */
+input[type=number]::-webkit-inner-spin-button,
+input[type=number]::-webkit-outer-spin-button {
+    margin: 0;
+}
+
+/* 5. Lists ---------------------------------------------------------------- */
+ul[role='list'],
+ol[role='list'] {
+    list-style: none;
+}
+ul, ol {
+    padding-left: var(--space-1, 1rem);
+}
+
+/* 6. Tables --------------------------------------------------------------- */
+table {
+    border-collapse: collapse;
+    width: 100%;
+}
+
+/* 7. Anchor defaults ------------------------------------------------------ */
+a {
+    text-decoration: none;
+    color: inherit;
+}
+a:focus-visible {
+    outline: 2px solid var(--color-brand, #555);
+    outline-offset: 2px;
+}
+
+/* 8. Motion‑safe defaults ------------------------------------------------- */
+@media (prefers-reduced-motion: reduce) {
+    * {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+        scroll-behavior: auto !important;
+    }
+}
+
+/* 9. Selection colour ----------------------------------------------------- */
+::selection {
+    background: var(--color-brand, #555);
+    color: var(--color-surface, #fff);
+}

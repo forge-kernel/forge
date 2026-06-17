@@ -1,0 +1,1054 @@
+<!doctype html>
+<html lang="en" class="scroll-smooth">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Core Engine API - Forge Engine Documentation</title>
+        <script src="https://cdn.tailwindcss.com"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-core.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/autoloader/prism-autoloader.min.js"></script>
+        <link
+            href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css"
+            rel="stylesheet"
+        />
+        <link
+            href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+            rel="stylesheet"
+        />
+        <style>
+            .code-block {
+                background: #2d3748;
+                border-radius: 0.5rem;
+            }
+
+            .nav-link.active {
+                background-color: #eef2ff;
+                color: #4f46e5;
+                font-weight: 500;
+            }
+
+            .nav-link.active:hover {
+                background-color: #e0e7ff;
+            }
+
+            .section-anchor {
+                scroll-margin-top: 120px;
+            }
+
+            /* Mobile menu styles */
+            @media (max-width: 640px) {
+                .lg\:w-1\/4 {
+                    position: fixed;
+                    top: 0;
+                    left: -100%;
+                    width: 80%;
+                    max-width: 320px;
+                    height: 100vh;
+                    z-index: 50;
+                    transition: transform 0.3s ease;
+                    background: white;
+                    overflow-y: auto;
+                }
+
+                .lg\:w-1\/4.mobile-menu-open {
+                    transform: translateX(0);
+                }
+
+                .mobile-menu-overlay {
+                    position: fixed;
+                    top: 0;
+                    left: 0;
+                    width: 100%;
+                    height: 100%;
+                    background: rgba(0, 0, 0, 0.5);
+                    z-index: 40;
+                    display: none;
+                }
+
+                .mobile-menu-overlay.active {
+                    display: block;
+                }
+            }
+        </style>
+    </head>
+
+    <body class="bg-gray-50">
+        <!-- Navigation -->
+        <nav class="bg-white shadow-sm border-b">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="flex justify-between h-16">
+                    <div class="flex items-center">
+                        <div class="flex-shrink-0">
+                            <h1 class="text-xl font-bold text-gray-900">
+                                Forge Engine
+                            </h1>
+                        </div>
+                        <div class="hidden sm:ml-6 sm:flex sm:space-x-8">
+                            <a
+                                href="index.html"
+                                class="text-gray-900 inline-flex items-center px-1 pt-1 text-sm font-medium hover:text-blue-600"
+                            >
+                                Home
+                            </a>
+                            <a
+                                href="getting-started.html"
+                                class="text-gray-900 inline-flex items-center px-1 pt-1 text-sm font-medium hover:text-blue-600"
+                            >
+                                Getting Started
+                            </a>
+                            <a
+                                href="core-concepts.html"
+                                class="text-gray-900 inline-flex items-center px-1 pt-1 text-sm font-medium hover:text-blue-600"
+                            >
+                                Core Concepts
+                            </a>
+                            <a
+                                href="modules.html"
+                                class="text-gray-900 inline-flex items-center px-1 pt-1 text-sm font-medium hover:text-blue-600"
+                            >
+                                Modules
+                            </a>
+                            <a
+                                href="api-reference.html"
+                                class="text-blue-600 inline-flex items-center px-1 pt-1 text-sm font-medium border-b-2 border-blue-600"
+                            >
+                                API Reference
+                            </a>
+                        </div>
+                    </div>
+                    <div class="flex items-center sm:hidden">
+                        <button
+                            id="mobile-menu-btn"
+                            class="text-gray-700 hover:text-blue-600"
+                            data-mobile-menu-toggle
+                        >
+                            <i class="fas fa-bars text-xl"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+            <!-- Mobile menu -->
+            <div id="mobile-menu" class="hidden sm:hidden bg-white border-t">
+                <div class="px-2 pt-2 pb-3 space-y-1">
+                    <a
+                        href="index.html"
+                        class="block px-3 py-2 text-gray-700 hover:text-blue-600"
+                    >
+                        Home
+                    </a>
+                    <a
+                        href="getting-started.html"
+                        class="block px-3 py-2 text-gray-700 hover:text-blue-600"
+                    >
+                        Getting Started
+                    </a>
+                    <a
+                        href="core-concepts.html"
+                        class="block px-3 py-2 text-gray-700 hover:text-blue-600"
+                    >
+                        Core Concepts
+                    </a>
+                    <a
+                        href="modules.html"
+                        class="block px-3 py-2 text-gray-700 hover:text-blue-600"
+                    >
+                        Modules
+                    </a>
+                    <a
+                        href="api-reference.html"
+                        class="block px-3 py-2 text-blue-600"
+                    >
+                        API Reference
+                    </a>
+                </div>
+            </div>
+        </nav>
+
+        <!-- Mobile Menu Overlay -->
+        <div id="mobile-menu-overlay" class="mobile-menu-overlay"></div>
+
+        <!-- Main Content -->
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+            <div class="flex flex-col lg:flex-row gap-8">
+                <!-- Sidebar Navigation -->
+                <div class="lg:w-1/4">
+                    <div class="bg-white rounded-lg shadow-sm p-6 sticky top-8">
+                        <h3 class="text-lg font-semibold text-gray-900 mb-4">
+                            API Reference
+                        </h3>
+                        <nav class="space-y-2">
+                            <a
+                                href="api-core.html"
+                                class="nav-link block px-3 py-2 text-sm text-gray-700 rounded-md hover:text-blue-600 active"
+                            >
+                                <i class="fas fa-cogs mr-2"></i>Core Engine
+                            </a>
+                            <a
+                                href="api-http.html"
+                                class="nav-link block px-3 py-2 text-sm text-gray-700 rounded-md hover:text-blue-600"
+                            >
+                                <i class="fas fa-globe mr-2"></i>HTTP Layer
+                            </a>
+                            <a
+                                href="api-database.html"
+                                class="nav-link block px-3 py-2 text-sm text-gray-700 rounded-md hover:text-blue-600"
+                            >
+                                <i class="fas fa-database mr-2"></i>Database &
+                                ORM
+                            </a>
+                            <a
+                                href="api-di.html"
+                                class="nav-link block px-3 py-2 text-sm text-gray-700 rounded-md hover:text-blue-600"
+                            >
+                                <i class="fas fa-puzzle-piece mr-2"></i>DI
+                                Container
+                            </a>
+                            <a
+                                href="api-routing.html"
+                                class="nav-link block px-3 py-2 text-sm text-gray-700 rounded-md hover:text-blue-600"
+                            >
+                                <i class="fas fa-route mr-2"></i>Routing
+                            </a>
+                            <a
+                                href="api-modules.html"
+                                class="nav-link block px-3 py-2 text-sm text-gray-700 rounded-md hover:text-blue-600"
+                            >
+                                <i class="fas fa-plug mr-2"></i>Module System
+                            </a>
+                            <a
+                                href="api-cli.html"
+                                class="nav-link block px-3 py-2 text-sm text-gray-700 rounded-md hover:text-blue-600"
+                            >
+                                <i class="fas fa-terminal mr-2"></i>CLI &
+                                Console
+                            </a>
+                            <a
+                                href="api-cache.html"
+                                class="nav-link block px-3 py-2 text-sm text-gray-700 rounded-md hover:text-blue-600"
+                            >
+                                <i class="fas fa-memory mr-2"></i>Caching
+                            </a>
+                            <a
+                                href="api-validation.html"
+                                class="nav-link block px-3 py-2 text-sm text-gray-700 rounded-md hover:text-blue-600"
+                            >
+                                <i class="fas fa-check-circle mr-2"></i
+                                >Validation
+                            </a>
+                            <a
+                                href="api-helpers.html"
+                                class="nav-link block px-3 py-2 text-sm text-gray-700 rounded-md hover:text-blue-600"
+                            >
+                                <i class="fas fa-tools mr-2"></i>Helpers &
+                                Traits
+                            </a>
+                            <a
+                                href="api-events.html"
+                                class="nav-link block px-3 py-2 text-sm text-gray-700 rounded-md hover:text-blue-600"
+                            >
+                                <i class="fas fa-broadcast-tower mr-2"></i
+                                >Events
+                            </a>
+                            <a
+                                href="api-security.html"
+                                class="nav-link block px-3 py-2 text-sm text-gray-700 rounded-md hover:text-blue-600"
+                            >
+                                <i class="fas fa-shield-alt mr-2"></i>Security
+                            </a>
+                        </nav>
+                    </div>
+                </div>
+
+                <!-- Main Content -->
+                <div class="lg:w-3/4">
+                    <div class="bg-white rounded-lg shadow-sm p-8">
+                        <h1 class="text-4xl font-bold text-gray-900 mb-6">
+                            Core Engine API
+                        </h1>
+                        <p class="text-xl text-gray-600 mb-8">
+                            Essential classes that power the Forge Engine
+                            framework. These core components handle application
+                            initialization, service discovery, class loading,
+                            and the overall application lifecycle.
+                        </p>
+
+                        <!-- Engine Class -->
+                        <section id="engine" class="section-anchor mb-12">
+                            <div
+                                class="bg-blue-50 border-l-4 border-blue-500 p-6 mb-8"
+                            >
+                                <h2
+                                    class="text-2xl font-bold text-gray-900 mb-4"
+                                >
+                                    <i
+                                        class="fas fa-rocket text-blue-600 mr-3"
+                                    ></i
+                                    >Engine
+                                </h2>
+                                <p class="text-gray-700">
+                                    The main application kernel that bootstraps
+                                    and runs the framework. The Kernel class is
+                                    responsible for initializing the
+                                    application, loading modules, and handling
+                                    the request-response cycle.
+                                </p>
+                            </div>
+
+                            <div class="mb-8">
+                                <h3
+                                    class="text-xl font-semibold text-gray-900 mb-4"
+                                >
+                                    Constructor & Properties
+                                </h3>
+
+                                <div
+                                    class="api-method bg-gray-50 p-4 rounded-lg mb-4"
+                                >
+                                    <h4 class="font-semibold text-lg mb-2">
+                                        __construct(Container $container)
+                                    </h4>
+                                    <p class="text-gray-600 text-sm mb-3">
+                                        Initialize the kernel with a dependency
+                                        injection container.
+                                    </p>
+                                    <div
+                                        class="code-block p-4 text-white rounded"
+                                    >
+                                        <pre><code class="language-php">$container = new Container();
+$engine = new Engine($container);</code></pre>
+                                    </div>
+                                </div>
+
+                                <div
+                                    class="api-method bg-gray-50 p-4 rounded-lg mb-4"
+                                >
+                                    <h4 class="font-semibold text-lg mb-2">
+                                        $container: Container
+                                    </h4>
+                                    <p class="text-gray-600 text-sm mb-3">
+                                        The dependency injection container
+                                        instance.
+                                    </p>
+                                </div>
+                            </div>
+
+                            <div class="mb-8">
+                                <h3
+                                    class="text-xl font-semibold text-gray-900 mb-4"
+                                >
+                                    Core Methods
+                                </h3>
+
+                                <div
+                                    class="api-method bg-gray-50 p-4 rounded-lg mb-4"
+                                >
+                                    <h4 class="font-semibold text-lg mb-2">
+                                        run(): void
+                                    </h4>
+                                    <p class="text-gray-600 text-sm mb-3">
+                                        Starts the application and handles the
+                                        incoming request.
+                                    </p>
+                                    <div
+                                        class="code-block p-4 text-white rounded"
+                                    >
+                                        <pre><code class="language-php">$engine = new Engine($container);
+$engine->run();</code></pre>
+                                    </div>
+                                </div>
+
+                                <div
+                                    class="api-method bg-gray-50 p-4 rounded-lg mb-4"
+                                >
+                                    <h4 class="font-semibold text-lg mb-2">
+                                        getContainer(): Container
+                                    </h4>
+                                    <p class="text-gray-600 text-sm mb-3">
+                                        Returns the dependency injection
+                                        container instance.
+                                    </p>
+                                    <div
+                                        class="code-block p-4 text-white rounded"
+                                    >
+                                        <pre><code class="language-php">$container = $engine->getContainer();
+$service = $container->get(MyService::class);</code></pre>
+                                    </div>
+                                </div>
+
+                                <div
+                                    class="api-method bg-gray-50 p-4 rounded-lg mb-4"
+                                >
+                                    <h4 class="font-semibold text-lg mb-2">
+                                        loadModules(): void
+                                    </h4>
+                                    <p class="text-gray-600 text-sm mb-3">
+                                        Load and initialize all registered
+                                        modules.
+                                    </p>
+                                    <div
+                                        class="code-block p-4 text-white rounded"
+                                    >
+                                        <pre><code class="language-php">$engine->loadModules();</code></pre>
+                                    </div>
+                                </div>
+                            </div>
+                        </section>
+
+                        <!-- Bootstrap Class -->
+                        <section id="bootstrap" class="section-anchor mb-12">
+                            <div
+                                class="bg-green-50 border-l-4 border-green-500 p-6 mb-8"
+                            >
+                                <h2
+                                    class="text-2xl font-bold text-gray-900 mb-4"
+                                >
+                                    <i
+                                        class="fas fa-play-circle text-green-600 mr-3"
+                                    ></i
+                                    >Bootstrap
+                                </h2>
+                                <p class="text-gray-700">
+                                    Handles application initialization and
+                                    service registration. The Bootstrap class is
+                                    responsible for setting up essential
+                                    services, loading configuration, and
+                                    preparing the application for execution.
+                                </p>
+                            </div>
+
+                            <div class="mb-8">
+                                <h3
+                                    class="text-xl font-semibold text-gray-900 mb-4"
+                                >
+                                    Static Methods
+                                </h3>
+
+                                <div
+                                    class="api-method bg-gray-50 p-4 rounded-lg mb-4"
+                                >
+                                    <h4 class="font-semibold text-lg mb-2">
+                                        boot(Container $container): void
+                                    </h4>
+                                    <p class="text-gray-600 text-sm mb-3">
+                                        Bootstraps the application with
+                                        essential services.
+                                    </p>
+                                    <div
+                                        class="code-block p-4 text-white rounded"
+                                    >
+                                        <pre><code class="language-php">$container = new Container();
+Bootstrap::boot($container);</code></pre>
+                                    </div>
+                                </div>
+
+                                <div
+                                    class="api-method bg-gray-50 p-4 rounded-lg mb-4"
+                                >
+                                    <h4 class="font-semibold text-lg mb-2">
+                                        loadServices(Container $container): void
+                                    </h4>
+                                    <p class="text-gray-600 text-sm mb-3">
+                                        Load and register core services in the
+                                        container.
+                                    </p>
+                                    <div
+                                        class="code-block p-4 text-white rounded"
+                                    >
+                                        <pre><code class="language-php">Bootstrap::loadServices($container);</code></pre>
+                                    </div>
+                                </div>
+
+                                <div
+                                    class="api-method bg-gray-50 p-4 rounded-lg mb-4"
+                                >
+                                    <h4 class="font-semibold text-lg mb-2">
+                                        loadConfiguration(): void
+                                    </h4>
+                                    <p class="text-gray-600 text-sm mb-3">
+                                        Load application configuration from
+                                        config files.
+                                    </p>
+                                    <div
+                                        class="code-block p-4 text-white rounded"
+                                    >
+                                        <pre><code class="language-php">Bootstrap::loadConfiguration();</code></pre>
+                                    </div>
+                                </div>
+                            </div>
+                        </section>
+
+                        <!-- Autoloader Class -->
+                        <section id="autoloader" class="section-anchor mb-12">
+                            <div
+                                class="bg-purple-50 border-l-4 border-purple-500 p-6 mb-8"
+                            >
+                                <h2
+                                    class="text-2xl font-bold text-gray-900 mb-4"
+                                >
+                                    <i
+                                        class="fas fa-code text-purple-600 mr-3"
+                                    ></i
+                                    >Autoloader
+                                </h2>
+                                <p class="text-gray-700">
+                                    Manages class loading and namespace
+                                    registration. The Autoloader handles
+                                    automatic loading of classes using PSR-4
+                                    autoloading standards and provides namespace
+                                    mapping capabilities.
+                                </p>
+                            </div>
+
+                            <div class="mb-8">
+                                <h3
+                                    class="text-xl font-semibold text-gray-900 mb-4"
+                                >
+                                    Static Methods
+                                </h3>
+
+                                <div
+                                    class="api-method bg-gray-50 p-4 rounded-lg mb-4"
+                                >
+                                    <h4 class="font-semibold text-lg mb-2">
+                                        register(): void
+                                    </h4>
+                                    <p class="text-gray-600 text-sm mb-3">
+                                        Register the autoloader with PHP's
+                                        spl_autoload system.
+                                    </p>
+                                    <div
+                                        class="code-block p-4 text-white rounded"
+                                    >
+                                        <pre><code class="language-php">Autoloader::register();</code></pre>
+                                    </div>
+                                </div>
+
+                                <div
+                                    class="api-method bg-gray-50 p-4 rounded-lg mb-4"
+                                >
+                                    <h4 class="font-semibold text-lg mb-2">
+                                        addNamespace(string $namespace, string
+                                        $path): void
+                                    </h4>
+                                    <p class="text-gray-600 text-sm mb-3">
+                                        Add a namespace to directory mapping.
+                                    </p>
+                                    <div
+                                        class="code-block p-4 text-white rounded"
+                                    >
+                                        <pre><code class="language-php">Autoloader::addNamespace('App\\Controllers', 'app/controllers');
+Autoloader::addNamespace('App\\Models', 'app/models');</code></pre>
+                                    </div>
+                                </div>
+
+                                <div
+                                    class="api-method bg-gray-50 p-4 rounded-lg mb-4"
+                                >
+                                    <h4 class="font-semibold text-lg mb-2">
+                                        loadClass(string $class): bool
+                                    </h4>
+                                    <p class="text-gray-600 text-sm mb-3">
+                                        Attempt to load a specific class.
+                                    </p>
+                                    <div
+                                        class="code-block p-4 text-white rounded"
+                                    >
+                                        <pre><code class="language-php">$loaded = Autoloader::loadClass('App\\Controllers\\UserController');</code></pre>
+                                    </div>
+                                </div>
+                            </div>
+                        </section>
+
+                        <!-- Loader Class -->
+                        <section id="loader" class="section-anchor mb-12">
+                            <div
+                                class="bg-orange-50 border-l-4 border-orange-500 p-6 mb-8"
+                            >
+                                <h2
+                                    class="text-2xl font-bold text-gray-900 mb-4"
+                                >
+                                    <i
+                                        class="fas fa-download text-orange-600 mr-3"
+                                    ></i
+                                    >Loader
+                                </h2>
+                                <p class="text-gray-700">
+                                    Loads modules and their dependencies. The
+                                    Loader class is responsible for discovering,
+                                    loading, and initializing modules within the
+                                    application.
+                                </p>
+                            </div>
+
+                            <div class="mb-8">
+                                <h3
+                                    class="text-xl font-semibold text-gray-900 mb-4"
+                                >
+                                    Core Methods
+                                </h3>
+
+                                <div
+                                    class="api-method bg-gray-50 p-4 rounded-lg mb-4"
+                                >
+                                    <h4 class="font-semibold text-lg mb-2">
+                                        loadModule(string $modulePath): void
+                                    </h4>
+                                    <p class="text-gray-600 text-sm mb-3">
+                                        Load a specific module from its path.
+                                    </p>
+                                    <div
+                                        class="code-block p-4 text-white rounded"
+                                    >
+                                        <pre><code class="language-php">$loader = new Loader();
+$loader->loadModule('modules/ForgeAuth');</code></pre>
+                                    </div>
+                                </div>
+
+                                <div
+                                    class="api-method bg-gray-50 p-4 rounded-lg mb-4"
+                                >
+                                    <h4 class="font-semibold text-lg mb-2">
+                                        getLoadedModules(): array
+                                    </h4>
+                                    <p class="text-gray-600 text-sm mb-3">
+                                        Get all currently loaded modules.
+                                    </p>
+                                    <div
+                                        class="code-block p-4 text-white rounded"
+                                    >
+                                        <pre><code class="language-php">$modules = $loader->getLoadedModules();
+foreach ($modules as $module) {
+    echo $module->getName() . "\n";
+}</code></pre>
+                                    </div>
+                                </div>
+                            </div>
+                        </section>
+
+                        <!-- ServiceDiscoverSetup Class -->
+                        <section
+                            id="service-discover"
+                            class="section-anchor mb-12"
+                        >
+                            <div
+                                class="bg-teal-50 border-l-4 border-teal-500 p-6 mb-8"
+                            >
+                                <h2
+                                    class="text-2xl font-bold text-gray-900 mb-4"
+                                >
+                                    <i
+                                        class="fas fa-search text-teal-600 mr-3"
+                                    ></i
+                                    >ServiceDiscoverSetup
+                                </h2>
+                                <p class="text-gray-700">
+                                    Discovers and registers services and event
+                                    listeners. This class handles automatic
+                                    service discovery, dependency injection
+                                    setup, and event listener registration
+                                    throughout the application.
+                                </p>
+                            </div>
+
+                            <div class="mb-8">
+                                <h3
+                                    class="text-xl font-semibold text-gray-900 mb-4"
+                                >
+                                    Core Methods
+                                </h3>
+
+                                <div
+                                    class="api-method bg-gray-50 p-4 rounded-lg mb-4"
+                                >
+                                    <h4 class="font-semibold text-lg mb-2">
+                                        discoverServices(): void
+                                    </h4>
+                                    <p class="text-gray-600 text-sm mb-3">
+                                        Discover and register all available
+                                        services.
+                                    </p>
+                                    <div
+                                        class="code-block p-4 text-white rounded"
+                                    >
+                                        <pre><code class="language-php">$discover = new ServiceDiscoverSetup();
+$discover->discoverServices();</code></pre>
+                                    </div>
+                                </div>
+
+                                <div
+                                    class="api-method bg-gray-50 p-4 rounded-lg mb-4"
+                                >
+                                    <h4 class="font-semibold text-lg mb-2">
+                                        registerEventListeners(): void
+                                    </h4>
+                                    <p class="text-gray-600 text-sm mb-3">
+                                        Register all event listeners found in
+                                        the application.
+                                    </p>
+                                    <div
+                                        class="code-block p-4 text-white rounded"
+                                    >
+                                        <pre><code class="language-php">$discover->registerEventListeners();</code></pre>
+                                    </div>
+                                </div>
+                            </div>
+                        </section>
+
+                        <!-- Container Class -->
+                        <section id="container" class="section-anchor mb-12">
+                            <div
+                                class="bg-red-50 border-l-4 border-red-500 p-6 mb-8"
+                            >
+                                <h2
+                                    class="text-2xl font-bold text-gray-900 mb-4"
+                                >
+                                    <i class="fas fa-box text-red-600 mr-3"></i
+                                    >Container
+                                </h2>
+                                <p class="text-gray-700">
+                                    The dependency injection container for
+                                    managing services and dependencies. Provides
+                                    service registration, resolution, and
+                                    lifecycle management for the entire
+                                    application.
+                                </p>
+                            </div>
+
+                            <div class="mb-8">
+                                <h3
+                                    class="text-xl font-semibold text-gray-900 mb-4"
+                                >
+                                    Service Registration
+                                </h3>
+
+                                <div
+                                    class="api-method bg-gray-50 p-4 rounded-lg mb-4"
+                                >
+                                    <h4 class="font-semibold text-lg mb-2">
+                                        bind(string $abstract, string|callable
+                                        $concrete = null): void
+                                    </h4>
+                                    <p class="text-gray-600 text-sm mb-3">
+                                        Bind a service to the container.
+                                    </p>
+                                    <div
+                                        class="code-block p-4 text-white rounded"
+                                    >
+                                        <pre><code class="language-php">$container->bind(UserService::class);
+$container->bind(PaymentInterface::class, StripePayment::class);
+$container->bind('config', fn() => new Config());</code></pre>
+                                    </div>
+                                </div>
+
+                                <div
+                                    class="api-method bg-gray-50 p-4 rounded-lg mb-4"
+                                >
+                                    <h4 class="font-semibold text-lg mb-2">
+                                        singleton(string $abstract,
+                                        string|callable $concrete = null): void
+                                    </h4>
+                                    <p class="text-gray-600 text-sm mb-3">
+                                        Bind a singleton service to the
+                                        container.
+                                    </p>
+                                    <div
+                                        class="code-block p-4 text-white rounded"
+                                    >
+                                        <pre><code class="language-php">$container->singleton(CacheManager::class);
+$container->singleton('logger', LoggerService::class);</code></pre>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="mb-8">
+                                <h3
+                                    class="text-xl font-semibold text-gray-900 mb-4"
+                                >
+                                    Service Resolution
+                                </h3>
+
+                                <div
+                                    class="api-method bg-gray-50 p-4 rounded-lg mb-4"
+                                >
+                                    <h4 class="font-semibold text-lg mb-2">
+                                        get(string $abstract): mixed
+                                    </h4>
+                                    <p class="text-gray-600 text-sm mb-3">
+                                        Resolve a service from the container.
+                                    </p>
+                                    <div
+                                        class="code-block p-4 text-white rounded"
+                                    >
+                                        <pre><code class="language-php">$userService = $container->get(UserService::class);
+$logger = $container->get('logger');</code></pre>
+                                    </div>
+                                </div>
+
+                                <div
+                                    class="api-method bg-gray-50 p-4 rounded-lg mb-4"
+                                >
+                                    <h4 class="font-semibold text-lg mb-2">
+                                        has(string $abstract): bool
+                                    </h4>
+                                    <p class="text-gray-600 text-sm mb-3">
+                                        Check if a service is bound in the
+                                        container.
+                                    </p>
+                                    <div
+                                        class="code-block p-4 text-white rounded"
+                                    >
+                                        <pre><code class="language-php">if ($container->has(UserService::class)) {
+    $service = $container->get(UserService::class);
+}</code></pre>
+                                    </div>
+                                </div>
+                            </div>
+                        </section>
+
+                        <!-- Usage Examples -->
+                        <section id="examples" class="section-anchor mb-12">
+                            <div
+                                class="bg-gray-50 border-l-4 border-gray-500 p-6 mb-8"
+                            >
+                                <h2
+                                    class="text-2xl font-bold text-gray-900 mb-4"
+                                >
+                                    <i
+                                        class="fas fa-code text-gray-600 mr-3"
+                                    ></i
+                                    >Usage Examples
+                                </h2>
+                                <p class="text-gray-700">
+                                    Common patterns and examples for working
+                                    with the Core Engine classes.
+                                </p>
+                            </div>
+
+                            <div class="mb-8">
+                                <h3
+                                    class="text-xl font-semibold text-gray-900 mb-4"
+                                >
+                                    Basic Application Setup
+                                </h3>
+                                <div class="code-block p-4 text-white rounded">
+                                    <pre><code class="language-php">// Initialize autoloader
+Autoloader::register();
+Autoloader::addNamespace('App\\Controllers', 'app/controllers');
+Autoloader::addNamespace('App\\Models', 'app/models');
+
+// Create container and bootstrap
+$container = new Container();
+Bootstrap::boot($container);
+
+// Create and run engine
+$engine = new Engine($container);
+$engine->run();</code></pre>
+                                </div>
+                            </div>
+
+                            <div class="mb-8">
+                                <h3
+                                    class="text-xl font-semibold text-gray-900 mb-4"
+                                >
+                                    Service Registration Pattern
+                                </h3>
+                                <div class="code-block p-4 text-white rounded">
+                                    <pre><code class="language-php">// Register services in container
+$container->singleton(DatabaseConnection::class, function() {
+    return new DatabaseConnection([
+        'host' => 'localhost',
+        'database' => 'myapp',
+        'username' => 'root',
+        'password' => 'password'
+    ]);
+});
+
+$container->bind(UserService::class, function($container) {
+    return new UserService(
+        $container->get(DatabaseConnection::class)
+    );
+});
+
+// Use registered services
+$userService = $container->get(UserService::class);</code></pre>
+                                </div>
+                            </div>
+
+                            <div class="mb-8">
+                                <h3
+                                    class="text-xl font-semibold text-gray-900 mb-4"
+                                >
+                                    Module Loading Pattern
+                                </h3>
+                                <div class="code-block p-4 text-white rounded">
+                                    <pre><code class="language-php">$loader = new Loader();
+
+// Load specific modules
+$loader->loadModule('modules/ForgeAuth');
+$loader->loadModule('modules/ForgeCache');
+
+// Get loaded modules
+$modules = $loader->getLoadedModules();
+foreach ($modules as $module) {
+    echo "Loaded: " . $module->getName() . "\n";
+    echo "Version: " . $module->getVersion() . "\n";
+}</code></pre>
+                                </div>
+                            </div>
+                        </section>
+
+                        <!-- Best Practices -->
+                        <section
+                            id="best-practices"
+                            class="section-anchor mb-12"
+                        >
+                            <div
+                                class="bg-yellow-50 border-l-4 border-yellow-500 p-6 mb-8"
+                            >
+                                <h2
+                                    class="text-2xl font-bold text-gray-900 mb-4"
+                                >
+                                    <i
+                                        class="fas fa-lightbulb text-yellow-600 mr-3"
+                                    ></i
+                                    >Best Practices
+                                </h2>
+                                <p class="text-gray-700">
+                                    Recommended patterns and guidelines for
+                                    working with the Core Engine.
+                                </p>
+                            </div>
+
+                            <div class="grid md:grid-cols-2 gap-6">
+                                <div
+                                    class="bg-white border border-gray-200 p-6 rounded-lg"
+                                >
+                                    <h4
+                                        class="font-semibold text-gray-900 mb-3"
+                                    >
+                                        <i
+                                            class="fas fa-check-circle text-green-600 mr-2"
+                                        ></i
+                                        >Do's
+                                    </h4>
+                                    <ul class="text-sm text-gray-600 space-y-2">
+                                        <li>
+                                            • Always register the autoloader
+                                            first
+                                        </li>
+                                        <li>
+                                            • Use dependency injection for
+                                            service management
+                                        </li>
+                                        <li>
+                                            • Follow PSR-4 autoloading standards
+                                        </li>
+                                        <li>
+                                            • Register services as singletons
+                                            when appropriate
+                                        </li>
+                                        <li>
+                                            • Use interfaces for service
+                                            contracts
+                                        </li>
+                                        <li>
+                                            • Bootstrap the application before
+                                            running the engine
+                                        </li>
+                                    </ul>
+                                </div>
+
+                                <div
+                                    class="bg-white border border-gray-200 p-6 rounded-lg"
+                                >
+                                    <h4
+                                        class="font-semibold text-gray-900 mb-3"
+                                    >
+                                        <i
+                                            class="fas fa-times-circle text-red-600 mr-2"
+                                        ></i
+                                        >Don'ts
+                                    </h4>
+                                    <ul class="text-sm text-gray-600 space-y-2">
+                                        <li>
+                                            • Don't create circular dependencies
+                                        </li>
+                                        <li>
+                                            • Don't manually require class files
+                                        </li>
+                                        <li>
+                                            • Don't bypass the container for
+                                            service creation
+                                        </li>
+                                        <li>
+                                            • Don't register services in the
+                                            wrong order
+                                        </li>
+                                        <li>
+                                            • Don't ignore namespace conventions
+                                        </li>
+                                        <li>
+                                            • Don't skip error handling in
+                                            service registration
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </section>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <footer class="bg-white border-t mt-16">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+                <div class="text-center text-gray-600">
+                    <p class="text-sm">
+                        Forge Engine Documentation - Core Engine API
+                    </p>
+                </div>
+            </div>
+        </footer>
+
+        <script>
+            // Mobile menu toggle
+            const mobileMenuBtn = document.getElementById("mobile-menu-btn");
+            const mobileMenu = document.getElementById("mobile-menu");
+            const mobileMenuOverlay = document.getElementById(
+                "mobile-menu-overlay",
+            );
+
+            function toggleMobileMenu() {
+                mobileMenu.classList.toggle("hidden");
+                mobileMenuOverlay.classList.toggle("active");
+            }
+
+            if (mobileMenuBtn) {
+                mobileMenuBtn.addEventListener("click", toggleMobileMenu);
+            }
+
+            if (mobileMenuOverlay) {
+                mobileMenuOverlay.addEventListener("click", toggleMobileMenu);
+            }
+
+            // Close mobile menu when clicking on links
+            const mobileMenuLinks = mobileMenu.querySelectorAll("a");
+            mobileMenuLinks.forEach((link) => {
+                link.addEventListener("click", () => {
+                    mobileMenu.classList.add("hidden");
+                    mobileMenuOverlay.classList.remove("active");
+                });
+            });
+
+            // Active navigation highlighting
+            const currentPath = window.location.pathname.split("/").pop();
+            const navLinks = document.querySelectorAll(".nav-link");
+            navLinks.forEach((link) => {
+                if (link.getAttribute("href") === currentPath) {
+                    link.classList.add("active");
+                }
+            });
+        </script>
+    </body>
+</html>

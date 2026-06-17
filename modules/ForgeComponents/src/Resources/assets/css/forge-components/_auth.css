@@ -1,0 +1,247 @@
+/* Auth split — two-panel info + form */
+.fc-auth-split {
+  font-family: var(--fc-font-sans);
+  container-type: inline-size;
+}
+
+.fc-auth-split__inner {
+  display: flex;
+  min-height: 100vh;
+}
+
+.fc-auth-split__inner--reverse {
+  flex-direction: row-reverse;
+}
+
+/* Side panel (info) */
+.fc-auth-split__side {
+  display: none;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: flex-start;
+  padding: var(--fc-spacing-12);
+  background: linear-gradient(135deg, var(--fc-gray-900), var(--fc-gray-800));
+  color: var(--fc-white);
+}
+
+@container (min-width: 1024px) {
+  .fc-auth-split__side {
+    display: flex;
+    width: 50%;
+  }
+
+  .fc-auth-split__main {
+    flex: 1;
+  }
+}
+
+.fc-auth-split__brand {
+  display: flex;
+  align-items: center;
+  gap: var(--fc-spacing-3);
+  margin-bottom: var(--fc-spacing-8);
+}
+
+.fc-auth-split__logo {
+  width: 2.5rem;
+  height: 2.5rem;
+  background: var(--fc-white);
+  border-radius: var(--fc-radius-lg);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--fc-gray-900);
+  font-size: var(--fc-font-size-lg);
+}
+
+.fc-auth-split__title {
+  font-size: var(--fc-font-size-2xl);
+  font-weight: 700;
+}
+
+.fc-auth-split__content-area {
+  display: flex;
+  flex-direction: column;
+  gap: var(--fc-spacing-6);
+}
+
+.fc-auth-split__heading {
+  font-size: var(--fc-font-size-3xl);
+  font-weight: 600;
+  margin: 0 0 var(--fc-spacing-3);
+  color: var(--fc-white);
+}
+
+.fc-auth-split__subtext {
+  color: var(--fc-gray-300);
+  font-size: var(--fc-font-size-base);
+  line-height: var(--fc-leading-normal);
+  margin: 0;
+}
+
+.fc-auth-split__description {
+  display: flex;
+  flex-direction: column;
+  gap: var(--fc-spacing-4);
+  padding-top: var(--fc-spacing-4);
+}
+
+.fc-auth-split__body-text {
+  color: var(--fc-gray-300);
+  font-size: var(--fc-font-size-base);
+  line-height: var(--fc-leading-relaxed);
+  margin: 0;
+}
+
+.fc-auth-split__quote {
+  color: var(--fc-gray-400);
+  font-style: italic;
+  font-size: var(--fc-font-size-base);
+  padding-top: var(--fc-spacing-2);
+  border-top: 1px solid var(--fc-gray-700);
+  margin: 0;
+}
+
+/* Meta section */
+.fc-auth-split__meta {
+  display: flex;
+  flex-direction: column;
+  gap: var(--fc-spacing-3);
+  padding-top: var(--fc-spacing-8);
+  border-top: 1px solid var(--fc-gray-700);
+  width: 100%;
+}
+
+.fc-auth-split__meta-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: var(--fc-font-size-sm);
+}
+
+.fc-auth-split__meta-label {
+  color: var(--fc-gray-400);
+}
+
+.fc-auth-split__meta-value {
+  color: var(--fc-white);
+  font-family: var(--fc-font-mono);
+  font-size: var(--fc-font-size-xs);
+}
+
+/* Main panel (form) */
+.fc-auth-split__main {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--fc-spacing-6);
+}
+
+@container (min-width: 1024px) {
+  .fc-auth-split__main {
+    padding: var(--fc-spacing-12);
+  }
+}
+
+.fc-auth-split__content {
+  width: 100%;
+  max-width: 28rem;
+  display: flex;
+  flex-direction: column;
+  gap: var(--fc-spacing-8);
+}
+
+/* ============================================
+   Auth card pattern — centered heading + form card + footer text
+   ============================================ */
+.fc-auth-card {
+  display: flex;
+  flex-direction: column;
+  gap: var(--fc-spacing-8);
+}
+
+.fc-auth-card__header {
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  gap: var(--fc-spacing-1);
+}
+
+.fc-auth-card__heading {
+  font-size: var(--fc-font-size-3xl);
+  font-weight: 700;
+  margin: 0;
+}
+
+.fc-auth-card__subtitle {
+  font-size: var(--fc-font-size-sm);
+  color: var(--fc-color-text-muted);
+  margin: 0;
+}
+
+.fc-auth-card__body {
+  background: var(--fc-color-surface);
+  border: 1px solid var(--fc-color-border);
+  border-radius: var(--fc-radius-lg);
+  box-shadow: var(--fc-shadow-sm);
+  padding: var(--fc-spacing-8);
+  display: flex;
+  flex-direction: column;
+  gap: var(--fc-spacing-6);
+}
+
+.fc-auth-card__footer {
+  text-align: center;
+  font-size: var(--fc-font-size-sm);
+  color: var(--fc-color-text-muted);
+}
+
+.fc-auth-card__footer a {
+  color: var(--fc-gray-900);
+  font-weight: 500;
+}
+
+.fc-auth-card__footer a:visited {
+  color: var(--fc-gray-900);
+}
+
+.fc-auth-card__footer a:hover {
+  color: var(--fc-gray-700);
+}
+
+.fc-auth-card__terms {
+  text-align: center;
+  font-size: var(--fc-font-size-xs);
+  color: var(--fc-color-text-muted);
+  margin: 0;
+  padding-top: var(--fc-spacing-2);
+}
+
+/* Auth center */
+.fc-auth-center {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--fc-color-body);
+  font-family: var(--fc-font-sans);
+  padding: var(--fc-spacing-6);
+}
+.fc-auth-center__content { width: 100%; max-width: 28rem; }
+
+/* Auth cover */
+.fc-auth-cover {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, var(--fc-gray-900), var(--fc-gray-800));
+  font-family: var(--fc-font-sans);
+  padding: var(--fc-spacing-6);
+}
+.fc-auth-cover__card {
+  width: 100%; max-width: 28rem; background: var(--fc-white);
+  border-radius: var(--fc-radius-xl); padding: var(--fc-spacing-8);
+  box-shadow: var(--fc-shadow-lg);
+}

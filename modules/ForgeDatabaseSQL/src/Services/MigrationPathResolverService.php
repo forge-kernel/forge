@@ -1,0 +1,337 @@
+<?php
+
+declare(strict_types=1);
+
+namespace App\Modules\ForgeDatabaseSQL\Services;
+
+use Forge\Core\DI\Attributes\Service;
+use Forge\Core\Helpers\ModuleHelper;
+use Forge\Core\Structure\StructureResolver;
+use Forge\Traits\StringHelper;
+
+#[Service]
+final class MigrationPathResolverService
+{
+    use StringHelper;
+
+    private const string CORE_MIGRATIONS_PATH = BASE_PATH . "/kernel/Database/Migrations";
+    private const string MODULES_PATH = BASE_PATH . "/modules";
+
+    public function __construct(
+        private readonly ?StructureResolver $structureResolver = null
+    ) {
+    }
+
+    /**
+     * Get migration paths based on scope and module
+     */
+    public function getMigrationPaths(?string $scope = "all", ?string $module = null): array
+    {
+        switch ($scope) {
+            case "core":
+                return $this->getCorePaths();
+            case "app":
+                return $this->getAppPaths();
+            case "module":
+                return $this->getModulePaths($module);
+            case "all":
+            default:
+                return $this->getAllPaths();
+        }
+    }
+
+    /**
+     * Get core migration paths
+     */
+    public function getCorePaths(): array
+    {
+        return [self::CORE_MIGRATIONS_PATH];
+    }
+
+    /**
+     * Get app migration paths
+     */
+    public function getAppPaths(): array
+    {
+        $appPath = $this->resolveAppMigrationsPath();
+        return [$appPath];
+    }
+
+    /**
+     * Get module migration paths
+     */
+    public function getModulePaths(?string $module = null): array
+    {
+        if (!is_dir(self::MODULES_PATH)) {
+            return [];
+        }
+
+        $modules = $module
+            ? [$this->toPascalCase($module)]
+            : $this->getAvailableModules();
+
+        $paths = [];
+        foreach ($modules as $moduleName) {
+            if (ModuleHelper::isModuleDisabled($moduleName)) {
+                continue;
+            }
+
+            $modulePaths = $this->getModuleMigrationDirectories($moduleName);
+            $paths = array_merge($paths, $modulePaths);
+        }
+
+        return $paths;
+    }
+
+    /**
+     * Get all migration paths (core + app + modules)
+     */
+    public function getAllPaths(): array
+    {
+        $paths = array_merge(
+            $this->getCorePaths(),
+            $this->getAppPaths(),
+            $this->getModulePaths()
+        );
+
+        return array_unique($paths);
+    }
+
+    /**
+     * Check if a path matches the given scope and module
+     */
+    public function matchesScopeAndModule(string $filepath, ?string $scope, ?string $module): bool
+    {
+        $relativePath = str_replace(BASE_PATH . "/", "", $filepath);
+
+        if ($scope === "core") {
+            return str_starts_with($relativePath, "kernel/");
+        }
+
+        if ($scope === "app") {
+            return $this->matchesAppPath($relativePath);
+        }
+
+        if ($scope === "module" && $module) {
+            return $this->matchesModulePath($relativePath, $module);
+        }
+
+        return true;
+    }
+
+    /**
+     * Extract migration type from path
+     */
+    public function extractTypeFromPath(string $path): string
+    {
+        $relativePath = str_replace(BASE_PATH . "/", "", $path);
+
+        if (str_starts_with($relativePath, "kernel/Database/Migrations")) {
+            return "core";
+        }
+
+        if (str_starts_with($relativePath, "modules/")) {
+            return "module";
+        }
+
+        return "app";
+    }
+
+    /**
+     * Extract module name from path
+     */
+    public function extractModuleFromPath(string $path): ?string
+    {
+        $relativePath = str_replace(BASE_PATH . "/", "", $path);
+
+        if (preg_match("/^modules\/([^\/]+)\//", $relativePath, $matches)) {
+            return $matches[1];
+        }
+
+        return null;
+    }
+
+    /**
+     * Resolve app migrations path using StructureResolver or fallback
+     */
+    private function resolveAppMigrationsPath(): string
+    {
+        if ($this->structureResolver) {
+            try {
+                $appMigrationsPath = $this->structureResolver->getAppPath("migrations");
+                return BASE_PATH . "/" . $appMigrationsPath;
+            } catch (\InvalidArgumentException $e) {
+                return BASE_PATH . "/app/Database/Migrations";
+            }
+        }
+
+        return BASE_PATH . "/app/Database/Migrations";
+    }
+
+    /**
+     * Get available modules (non-disabled)
+     */
+    private function getAvailableModules(): array
+    {
+        return array_filter(scandir(self::MODULES_PATH), function ($item) {
+            return is_dir(self::MODULES_PATH . "/" . $item) &&
+                !in_array($item, [".", ".."]);
+        });
+    }
+
+    /**
+     * Get migration directories for a specific module
+     */
+    private function getModuleMigrationDirectories(string $moduleName): array
+    {
+        if ($this->structureResolver) {
+            try {
+                return $this->getStructuredModulePaths($moduleName);
+            } catch (\InvalidArgumentException $e) {
+                return $this->getDefaultModulePaths($moduleName);
+            }
+        }
+
+        return $this->getDefaultModulePaths($moduleName);
+    }
+
+    /**
+     * Get module paths using StructureResolver
+     */
+    private function getStructuredModulePaths(string $moduleName): array
+    {
+        $paths = [];
+        $moduleMigrationsPath = $this->structureResolver->getModulePath($moduleName, "migrations");
+
+        $central = self::MODULES_PATH . "/" . $moduleName . "/" . $moduleMigrationsPath;
+        if (is_dir($central)) {
+            $paths[] = $central;
+        }
+
+        $tenant = $central . "/Tenants";
+        if (is_dir($tenant)) {
+            $paths[] = $tenant;
+        }
+
+        return $paths;
+    }
+
+    /**
+     * Get default module paths
+     */
+    private function getDefaultModulePaths(string $moduleName): array
+    {
+        $paths = [];
+        $central = self::MODULES_PATH . "/" . $moduleName . "/src/Database/Migrations";
+
+        if (is_dir($central)) {
+            $paths[] = $central;
+        }
+
+        $tenant = $central . "/Tenants";
+        if (is_dir($tenant)) {
+            $paths[] = $tenant;
+        }
+
+        return $paths;
+    }
+
+    /**
+     * Check if relative path matches app migration path
+     */
+    private function matchesAppPath(string $relativePath): bool
+    {
+        if ($this->structureResolver) {
+            try {
+                $appMigrationsPath = $this->structureResolver->getAppPath("migrations");
+                return str_starts_with($relativePath, $appMigrationsPath);
+            } catch (\InvalidArgumentException $e) {
+                return str_starts_with($relativePath, "app/Database/Migrations");
+            }
+        }
+
+        return str_starts_with($relativePath, "app/");
+    }
+
+    /**
+     * Check if relative path matches module path
+     */
+    private function matchesModulePath(string $relativePath, string $module): bool
+    {
+        $modulePath = "modules/" . $this->toPascalCase($module) . "/";
+        if (!str_starts_with($relativePath, $modulePath)) {
+            return false;
+        }
+
+        if ($this->structureResolver) {
+            try {
+                $moduleMigrationsPath = $this->structureResolver->getModulePath($module, "migrations");
+                $expectedPath = "$modulePath$moduleMigrationsPath";
+                return str_starts_with($relativePath, $expectedPath);
+            } catch (\InvalidArgumentException $e) {
+                return str_starts_with($relativePath, "$modulePath" . "src/Database/Migrations");
+            }
+        }
+
+        return true;
+    }
+
+    /**
+     * Get base paths for migration discovery
+     */
+    public function getBasePathsForDiscovery(?string $scope, ?string $module): array
+    {
+        $basePaths = [];
+
+        switch ($scope) {
+            case "core":
+                $basePaths[] = "kernel";
+                break;
+            case "app":
+                $basePaths[] = "app";
+                break;
+            case "module":
+                if ($module) {
+                    $basePaths[] = "modules/$module/src";
+                }
+                break;
+            case "all":
+                $basePaths[] = "app";
+                $basePaths[] = "kernel";
+
+                if (is_dir(self::MODULES_PATH)) {
+                    $modules = array_filter(
+                        scandir(self::MODULES_PATH),
+                        fn($item) => is_dir(self::MODULES_PATH . "/" . $item) &&
+                        !in_array($item, [".", ".."]),
+                    );
+
+                    foreach ($modules as $moduleName) {
+                        if (!ModuleHelper::isModuleDisabled($moduleName)) {
+                            $basePaths[] = "modules/$moduleName/src";
+                        }
+                    }
+                }
+                break;
+        }
+
+        return $basePaths;
+    }
+
+    /**
+     * Get migration file name from path
+     */
+    public function getMigrationFileName(string $path): string
+    {
+        return basename($path);
+    }
+
+    /**
+     * Get migration class name from path
+     */
+    public function getMigrationClassName(string $path): string
+    {
+        $filename = basename($path, ".php");
+        return preg_replace("/^\d{4}_\d{2}_\d{2}_\d{6}_/", "", $filename);
+    }
+}

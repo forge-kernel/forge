@@ -1,0 +1,842 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Core Concepts - Forge Engine Documentation</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-core.min.js"></script>
+    <script
+        src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/autoloader/prism-autoloader.min.js"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        .code-block {
+            background: #2d3748;
+            border-radius: 0.5rem;
+        }
+
+        .nav-link.active {
+            background-color: #eef2ff;
+            color: #4f46e5;
+            font-weight: 500;
+        }
+
+        .nav-link.active:hover {
+            background-color: #e0e7ff;
+        }
+
+        .section-anchor {
+            scroll-margin-top: 120px;
+        }
+
+        /* Mobile menu styles */
+        @media (max-width: 640px) {
+            .lg\:w-1\/4 {
+                position: fixed;
+                top: 0;
+                left: -100%;
+                width: 80%;
+                max-width: 320px;
+                height: 100vh;
+                z-index: 50;
+                transition: transform 0.3s ease;
+                background: white;
+                overflow-y: auto;
+            }
+
+            .lg\:w-1\/4.mobile-menu-open {
+                transform: translateX(0);
+            }
+
+            .mobile-menu-overlay {
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                background: rgba(0, 0, 0, 0.5);
+                z-index: 40;
+                display: none;
+            }
+
+            .mobile-menu-overlay.active {
+                display: block;
+            }
+        }
+    </style>
+</head>
+
+<body class="bg-gray-50 font-sans text-gray-900">
+    <!-- Navigation -->
+    <nav class="bg-white shadow-sm border-b">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-16">
+                <div class="flex items-center">
+                    <div class="flex-shrink-0">
+                        <h1 class="text-xl font-bold text-gray-900">
+                            Forge Engine
+                        </h1>
+                    </div>
+                    <div class="hidden sm:ml-6 sm:flex sm:space-x-8">
+                        <a href="index.html"
+                            class="text-gray-900 inline-flex items-center px-1 pt-1 text-sm font-medium hover:text-blue-600">
+                            Home
+                        </a>
+                        <a href="getting-started.html"
+                            class="text-gray-900 inline-flex items-center px-1 pt-1 text-sm font-medium hover:text-blue-600">
+                            Getting Started
+                        </a>
+                        <a href="core-concepts.html"
+                            class="text-blue-600 inline-flex items-center px-1 pt-1 text-sm font-medium border-b-2 border-blue-600">
+                            Core Concepts
+                        </a>
+                        <a href="modules.html"
+                            class="text-gray-900 inline-flex items-center px-1 pt-1 text-sm font-medium hover:text-blue-600">
+                            Modules
+                        </a>
+                        <a href="api-reference.html"
+                            class="text-gray-900 inline-flex items-center px-1 pt-1 text-sm font-medium hover:text-blue-600">
+                            API Reference
+                        </a>
+                    </div>
+                </div>
+                <div class="flex items-center sm:hidden">
+                    <button id="mobile-menu-button" class="text-gray-700 hover:text-blue-600 px-3 py-2">
+                        <i class="fas fa-bars text-xl"></i>
+                    </button>
+
+                </div>
+            </div>
+        </div>
+        <!-- Mobile menu -->
+        <div id="mobile-menu" class="sm:hidden hidden bg-white border-t border-gray-200">
+            <div class="px-2 pt-2 pb-3 space-y-1">
+                <a href="index.html"
+                    class="block px-3 py-2 text-base font-medium text-gray-700 hover:text-blue-600 hover:bg-gray-50 rounded-md">
+                    Home
+                </a>
+                <a href="getting-started.html"
+                    class="block px-3 py-2 text-base font-medium text-gray-700 hover:text-blue-600 hover:bg-gray-50 rounded-md">
+                    Getting Started
+                </a>
+                <a href="core-concepts.html"
+                    class="block px-3 py-2 text-base font-medium text-blue-600 hover:bg-gray-50 rounded-md">
+                    Core Concepts
+                </a>
+                <a href="modules.html"
+                    class="block px-3 py-2 text-base font-medium text-gray-700 hover:text-blue-600 hover:bg-gray-50 rounded-md">
+                    Modules
+                </a>
+                <a href="api-reference.html"
+                    class="block px-3 py-2 text-base font-medium text-gray-700 hover:text-blue-600 hover:bg-gray-50 rounded-md">
+                    API Reference
+                </a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Mobile menu overlay -->
+    <div id="mobile-menu-overlay" class="mobile-menu-overlay"></div>
+
+    <!-- Main Content -->
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <div class="flex flex-col lg:flex-row gap-8">
+            <!-- Sidebar Navigation -->
+            <div class="lg:w-1/4">
+                <div class="bg-white rounded-lg shadow-sm p-6 sticky top-8">
+                    <h3 class="text-lg font-semibold text-gray-900 mb-4">
+                        Core Concepts
+                    </h3>
+                    <nav class="space-y-2">
+                        <a href="#architecture"
+                            class="nav-link block px-3 py-2 text-sm text-gray-700 rounded-md hover:text-blue-600">
+                            Architecture
+                        </a>
+                        <a href="#dependency-injection"
+                            class="nav-link block px-3 py-2 text-sm text-gray-700 rounded-md hover:text-blue-600">
+                            Dependency Injection
+                        </a>
+                        <a href="#routing-system"
+                            class="nav-link block px-3 py-2 text-sm text-gray-700 rounded-md hover:text-blue-600">
+                            Routing System
+                        </a>
+                        <a href="#middleware"
+                            class="nav-link block px-3 py-2 text-sm text-gray-700 rounded-md hover:text-blue-600">
+                            Middleware
+                        </a>
+                        <a href="#view-engine"
+                            class="nav-link block px-3 py-2 text-sm text-gray-700 rounded-md hover:text-blue-600">
+                            View Engine
+                        </a>
+                        <a href="#database-orm"
+                            class="nav-link block px-3 py-2 text-sm text-gray-700 rounded-md hover:text-blue-600">
+                            Database & ORM
+                        </a>
+                        <a href="#module-system"
+                            class="nav-link block px-3 py-2 text-sm text-gray-700 rounded-md hover:text-blue-600">
+                            Module System
+                        </a>
+                        <a href="#configuration"
+                            class="nav-link block px-3 py-2 text-sm text-gray-700 rounded-md hover:text-blue-600">
+                            Configuration
+                        </a>
+                        <a href="#cli-kernel"
+                            class="nav-link block px-3 py-2 text-sm text-gray-700 rounded-md hover:text-blue-600">
+                            CLI Kernel
+                        </a>
+                    </nav>
+                </div>
+            </div>
+
+            <!-- Main Content -->
+            <div class="lg:w-3/4">
+                <div class="bg-white rounded-lg shadow-sm p-8">
+                    <h1 class="text-4xl font-bold text-gray-900 mb-6">
+                        Core Concepts
+                    </h1>
+                    <p class="text-xl text-gray-600 mb-8">
+                        How Forge works under the hood.
+                    </p>
+
+                    <!-- Architecture -->
+                    <section id="architecture" class="mb-12">
+                        <h2 class="text-2xl font-bold text-gray-900 mb-4">
+                            Architecture
+                        </h2>
+                        <p class="text-gray-600 mb-6">
+                            Forge uses a modular architecture with dependency injection. It's built to be simple and
+                            flexible.
+                        </p>
+
+                        <div class="bg-blue-50 border border-blue-200 rounded-lg p-6 mb-6">
+                            <h3 class="font-semibold text-lg mb-4">Core Components</h3>
+                            <div class="grid md:grid-cols-2 gap-4">
+                                <div class="space-y-2">
+                                    <div class="flex items-center">
+                                        <span class="font-medium">Engine Core</span>
+                                    </div>
+                                    <div class="flex items-center">
+                                        <span class="font-medium">Database Layer</span>
+                                    </div>
+                                    <div class="flex items-center">
+                                        <span class="font-medium">Router</span>
+                                    </div>
+                                    <div class="flex items-center">
+                                        <span class="font-medium">View Engine</span>
+                                    </div>
+                                </div>
+                                <div class="space-y-2">
+                                    <div class="flex items-center">
+                                        <span class="font-medium">Module Loader</span>
+                                    </div>
+                                    <div class="flex items-center">
+                                        <span class="font-medium">DI Container</span>
+                                    </div>
+                                    <div class="flex items-center">
+                                        <span class="font-medium">CLI Kernel</span>
+                                    </div>
+                                    <div class="flex items-center">
+                                        <span class="font-medium">Bootstrap</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- Dependency Injection -->
+                    <section id="dependency-injection" class="mb-12">
+                        <h2 class="text-2xl font-bold text-gray-900 mb-4">
+                            Dependency Injection
+                        </h2>
+                        <p class="text-gray-600 mb-4">
+                            Forge's DI container resolves dependencies using PHP attributes. Keeps code testable and
+                            clean.
+                        </p>
+
+                        <h3 class="text-lg font-semibold mb-3">Service Registration</h3>
+                        <div class="code-block p-6 text-white rounded-lg mb-6">
+                            <pre><code class="language-php">&lt;?php
+
+use Forge\Core\DI\Attributes\Service;
+
+#[Service]
+class UserService
+{
+    public function __construct(
+        private UserRepository $repository,
+        private EmailService $emailService
+    ) {}
+
+    public function createUser(array $data): User
+    {
+        $user = $this->repository->create($data);
+        $this->emailService->sendWelcomeEmail($user);
+        return $user;
+    }
+}
+
+#[Service(singleton: true)] // Only one instance throughout the application
+class CacheService
+{
+    private array $cache = [];
+
+    public function get(string $key): mixed
+    {
+        return $this->cache[$key] ?? null;
+    }
+}</code></pre>
+                        </div>
+
+                        <h3 class="text-lg font-semibold mb-3">Interface Binding</h3>
+                        <div class="code-block p-6 text-white rounded-lg mb-6">
+                            <pre><code class="language-php">&lt;?php
+
+use Forge\Core\DI\Attributes\Bind;
+
+interface PaymentGatewayInterface
+{
+    public function charge(float $amount): bool;
+}
+
+#[Service]
+#[Bind(PaymentGatewayInterface::class)]
+class StripePaymentGateway implements PaymentGatewayInterface
+{
+    public function charge(float $amount): bool
+    {
+        // Stripe implementation
+        return true;
+    }
+}</code></pre>
+                        </div>
+                    </section>
+
+                    <!-- Routing System -->
+                    <section id="routing-system" class="mb-12">
+                        <h2 class="text-2xl font-bold text-gray-900 mb-4">
+                            Routing System
+                        </h2>
+                        <p class="text-gray-600 mb-4">
+                            Attribute-based routing that auto-discovers routes from controllers. No separate route files
+                            needed.
+                        </p>
+
+                        <div class="code-block p-6 text-white rounded-lg mb-6">
+                            <pre><code class="language-php">&lt;?php
+
+use Forge\Core\Routing\Route;
+use Forge\Core\Http\Request;
+use Forge\Core\Http\Response;
+
+class ApiController
+{
+    #[Route("/api/users")]
+    public function listUsers(): Response
+    {
+        return $this->json(User::all());
+    }
+
+    #[Route("/api/users/{id}", method: "GET")]
+    public function getUser(Request $request, int $id): Response
+    {
+        $user = User::find($id);
+        return $this->json($user);
+    }
+
+    #[Route("/api/users", method: "POST")]
+    public function createUser(Request $request): Response
+    {
+        $data = $request->json();
+        $user = User::create($data);
+        return $this->json($user, 201);
+    }
+
+    #[Route("/api/users/{id}", method: "PUT")]
+    public function updateUser(Request $request, int $id): Response
+    {
+        $user = User::find($id);
+        $user->update($request->json());
+        return $this->json($user);
+    }
+}</code></pre>
+                        </div>
+
+                        <div class="bg-yellow-50 border-l-4 border-yellow-400 p-4">
+                            <p class="text-sm text-yellow-700">
+                                Use curly braces for route parameters. Names must match method params.
+                            </p>
+                        </div>
+                    </section>
+
+                    <!-- Middleware -->
+                    <section id="middleware" class="mb-12">
+                        <h2 class="text-2xl font-bold text-gray-900 mb-4">
+                            Middleware
+                        </h2>
+                        <p class="text-gray-600 mb-4">
+                            Filter HTTP requests before they hit your application.
+                        </p>
+
+                        <h3 class="text-lg font-semibold mb-3">Creating Middleware</h3>
+                        <div class="code-block p-6 text-white rounded-lg mb-6">
+                            <pre><code class="language-php">&lt;?php
+
+use Forge\Core\Http\Middleware;
+use Forge\Core\Http\Request;
+use Forge\Core\Http\Response;
+
+class AuthMiddleware extends Middleware
+{
+    public function handle(Request $request, callable $next): Response
+    {
+        if (!$request->hasHeader('Authorization')) {
+            return new Response('Unauthorized', 401);
+        }
+
+        // Continue to next middleware or controller
+        return $next($request);
+    }
+}</code></pre>
+                        </div>
+
+                        <h3 class="text-lg font-semibold mb-3">Applying Middleware</h3>
+                        <div class="code-block p-6 text-white rounded-lg mb-6">
+                            <pre><code class="language-php">&lt;?php
+
+use Forge\Core\Http\Attributes\Middleware;
+
+// Apply middleware to entire controller
+#[Middleware("auth")]
+class DashboardController
+{
+    #[Route("/dashboard")]
+    public function index(): Response
+    {
+        return $this->view('dashboard/index');
+    }
+
+    #[Route("/dashboard/settings")]
+    public function settings(): Response
+    {
+        return $this->view('dashboard/settings');
+    }
+}
+
+// Apply middleware to specific methods
+class UserController
+{
+    #[Middleware("App\Modules\ForgeAuth\Middlewares\AuthMiddleware")]
+    #[Route("/profile")]
+    public function profile(): Response
+    {
+        return $this->view('user/profile');
+    }
+
+    // Multiple middleware using repeatable attribute
+    #[Middleware("web")]
+    #[Middleware("auth")]
+    #[Route("/admin")]
+    public function admin(): Response
+    {
+        return $this->view('admin/dashboard');
+    }
+}</code></pre>
+                        </div>
+
+                        <div class="bg-blue-50 border-l-4 border-blue-400 p-4 mb-6">
+                            <p class="text-sm text-blue-700">
+                                Use <code>#[Middleware]</code> for controllers/methods, or <code>middlewares</code> in
+                                <code>#[Route]</code> for routes.
+                            </p>
+                        </div>
+                    </section>
+
+                    <!-- View Engine -->
+                    <section id="view-engine" class="mb-12">
+                        <h2 class="text-2xl font-bold text-gray-900 mb-4">
+                            View Engine
+                        </h2>
+                        <p class="text-gray-600 mb-4">
+                            PHP-first templating. No new syntax to learn.
+                        </p>
+
+                        <h3 class="text-lg font-semibold mb-3">Template Inheritance</h3>
+                        <div class="code-block p-6 text-white rounded-lg mb-6">
+                            <pre><code class="language-php">&lt;!-- layouts/app.php --&gt;
+&lt;!DOCTYPE html&gt;
+&lt;html lang="en"&gt;
+&lt;head&gt;
+    &lt;meta charset="UTF-8"&gt;
+    &lt;title&gt;&lt;?= $title ?? 'My App' ?&gt;&lt;/title&gt;
+    &lt;?php use Forge\Core\View\View; echo View::section('head'); ?&gt;
+&lt;/head&gt;
+&lt;body&gt;
+    &lt;header&gt;
+        &lt;?php use Forge\Core\View\View; echo View::section('header'); ?&gt;
+    &lt;/header&gt;
+
+    &lt;main&gt;
+        &lt;?php use Forge\Core\View\View; echo View::section('content'); ?&gt;
+    &lt;/main&gt;
+
+    &lt;footer&gt;
+        &lt;?php use Forge\Core\View\View; echo View::section('footer'); ?&gt;
+    &lt;/footer&gt;
+&lt;/body&gt;
+&lt;/html&gt;</code></pre>
+                        </div>
+
+                        <h3 class="text-lg font-semibold mb-3">Child Templates</h3>
+                        <div class="code-block p-6 text-white rounded-lg mb-6">
+                            <pre><code class="language-php">&lt;!-- pages/home.php --&gt;
+&lt;?php use Forge\Core\View\View; View::layout(name: "layouts/app", loadFromModule: false); ?&gt;
+
+&lt;?php View::startSection('head'); ?&gt;
+    &lt;link rel="stylesheet" href="/css/home.css"&gt;
+&lt;?php View::endSection(); ?&gt;
+
+&lt;?php View::startSection('content'); ?&gt;
+    &lt;div class="hero"&gt;
+        &lt;h1&gt;Welcome to &lt;?= $appName ?&gt;&lt;/h1&gt;
+        &lt;p&gt;&lt;?= $description ?&gt;&lt;/p&gt;
+    &lt;/div&gt;
+&lt;?php View::endSection(); ?&gt;</code></pre>
+                        </div>
+
+                        <h3 class="text-lg font-semibold mb-3">Components & Partials</h3>
+                        <div class="code-block p-6 text-white rounded-lg mb-6">
+                            <pre><code class="language-php">&lt;!-- Using components --&gt;
+&lt;?= component(name: "components/alert", props: [
+    'type' =&gt; 'success',
+    'message' =&gt; 'User created successfully!'
+]) ?&gt;
+
+&lt;!-- Including partials --&gt;
+&lt;?php use Forge\Core\View\View; echo View::include(name: "partials/navigation"); ?&gt;</code></pre>
+                        </div>
+                    </section>
+
+                    <!-- Database & ORM -->
+                    <section id="database-orm" class="mb-12">
+                        <h2 class="text-2xl font-bold text-gray-900 mb-4">
+                            Database & ORM
+                        </h2>
+                        <p class="text-gray-600 mb-4">
+                            Lightweight ORM with multiple database support.
+                        </p>
+
+                        <h3 class="text-lg font-semibold mb-3">Model Definition</h3>
+                        <div class="code-block p-6 text-white rounded-lg mb-6">
+                            <pre><code class="language-php">&lt;?php
+
+use Forge\Core\Database\Model;
+use Forge\Core\Database\Attributes\Table;
+use Forge\Core\Database\Attributes\Column;
+
+#[Table('users')]
+class User extends Model
+{
+    #[Column(type: 'string', length: 255)]
+    public string $name;
+
+    #[Column(type: 'string', length: 255, unique: true)]
+    public string $email;
+
+    #[Column(type: 'string', length: 255)]
+    protected string $password;
+
+    protected array $fillable = ['name', 'email', 'password'];
+    protected array $hidden = ['password'];
+
+    // Relationships
+    public function posts()
+    {
+        return $this->hasMany(Post::class);
+    }
+}</code></pre>
+                        </div>
+
+                        <h3 class="text-lg font-semibold mb-3">Query Builder</h3>
+                        <div class="code-block p-6 text-white rounded-lg mb-6">
+                            <pre><code class="language-php">&lt;?php
+
+// Basic queries
+$users = User::all();
+$user = User::find(1);
+$activeUsers = User::where('status', 'active')->get();
+
+// Advanced queries
+$users = User::where('created_at', '>', '2024-01-01')
+    ->orderBy('name')
+    ->limit(10)
+    ->get();
+
+// Relationships
+$user = User::with('posts')->find(1);
+$posts = $user->posts;
+
+// Aggregates
+$count = User::count();
+$avgAge = User::avg('age');
+
+// Raw queries when needed
+$users = User::raw('SELECT * FROM users WHERE custom_condition = ?', [true]);</code></pre>
+                        </div>
+                    </section>
+
+                    <!-- Module System -->
+                    <section id="module-system" class="mb-12">
+                        <h2 class="text-2xl font-bold text-gray-900 mb-4">
+                            Module System
+                        </h2>
+                        <p class="text-gray-600 mb-4">
+                            Extend Forge with self-contained modules for services, routes, views, etc.
+                        </p>
+
+                        <h3 class="text-lg font-semibold mb-3">Module Structure</h3>
+                        <div class="code-block p-6 text-white rounded-lg mb-6">
+                            <pre><code class="language-json">{
+  "$schema": "./../../kernel/Core/Schema/module-schema.json",
+  "name": "forge-my-module",
+  "version": "1.0.0",
+  "description": "A custom module for my application",
+  "type": "generic",
+  "order": 100,
+  "author": "Your Name",
+  "license": "MIT"
+}</code></pre>
+                        </div>
+
+                        <h3 class="text-lg font-semibold mb-3">Module Class</h3>
+                        <div class="code-block p-6 text-white rounded-lg mb-6">
+                            <pre><code class="language-php">&lt;?php
+
+namespace App\Modules\MyModule;
+
+use Forge\Core\DI\Container;
+use Forge\Core\Module\Attributes\Compatibility;
+use Forge\Core\Module\Attributes\Module;
+use Forge\Core\Module\Attributes\Repository;
+use Forge\Core\DI\Attributes\Service;
+use Forge\Core\Module\Attributes\LifecycleHook;
+use Forge\Core\Module\LifecycleHookName;
+use App\Modules\MyModule\Contracts\MyModuleInterface;
+use App\Modules\MyModule\Services\MyModuleService;
+
+#[Module(
+    name: 'MyModule',
+    description: 'A custom module for my application',
+    order: 100
+)]
+#[Service]
+#[Compatibility(framework: '>=0.1.0', php: '>=8.3')]
+#[Repository(type: 'git', url: 'https://github.com/your-repo/modules')]
+final class MyModule
+{
+    public function register(Container $container): void
+    {
+        // Register services
+        $container->bind(MyModuleInterface::class, MyModuleService::class);
+    }
+
+    #[LifecycleHook(hook: LifecycleHookName::AFTER_MODULE_REGISTER)]
+    public function onAfterModuleRegister(): void
+    {
+        // Boot logic after module registration
+    }
+}</code></pre>
+                        </div>
+                    </section>
+
+                    <!-- Configuration -->
+                    <section id="configuration" class="mb-12">
+                        <h2 class="text-2xl font-bold text-gray-900 mb-4">
+                            Configuration Management
+                        </h2>
+                        <p class="text-gray-600 mb-4">
+                            Environment-based configuration that's secure and flexible.
+                        </p>
+
+                        <div class="code-block p-6 text-white rounded-lg mb-6">
+                            <pre><code class="language-php">&lt;?php
+
+use Forge\Core\Config\Config;
+use Forge\Core\Config\Environment;
+
+// Using helper functions (recommended)
+$dbHost = env('DB_HOST', 'localhost');
+$debug = env('APP_DEBUG', false);
+$appName = config('app.name', 'Forge App');
+
+// Using Config class directly
+$config = Config::get('database.connections.mysql');
+Config::set('cache.driver', 'redis');
+
+// Using Environment class directly
+$env = Environment::getInstance();
+$port = $env->get('APP_PORT', 8000);
+$isDev = $env->isDevelopment();
+$debugEnabled = $env->isDebugEnabled();
+
+// Checking if configuration exists
+if (config('services.stripe.key')) {
+    // Stripe is configured
+}</code></pre>
+                        </div>
+                    </section>
+
+                    <!-- CLI Kernel -->
+                    <section id="cli-kernel" class="mb-12">
+                        <h2 class="text-2xl font-bold text-gray-900 mb-4">
+                            CLI Kernel
+                        </h2>
+                        <p class="text-gray-600 mb-4">
+                            Create custom commands and automate tasks.
+                        </p>
+
+                        <h3 class="text-lg font-semibold mb-3">Creating Custom Commands</h3>
+                        <div class="code-block p-6 text-white rounded-lg mb-6">
+                            <pre><code class="language-php">&lt;?php
+
+declare(strict_types=1);
+
+namespace App\Modules\MyModule\Commands;
+
+use Forge\CLI\Command;
+use Forge\Core\Module\Attributes\CLICommand;
+
+#[CLICommand(name: 'app:send-emails', description: 'Send pending emails to users')]
+class SendEmailsCommand extends Command
+{
+    public function execute(array $args): int
+    {
+        $user = $this->argument('name', $args) ?? 'all users';
+        $useQueue = $this->option('queue', $args) !== null;
+
+        $this->info('Starting email sending process...');
+
+        if ($user !== 'all users') {
+            $this->line("Sending emails to user: {$user}");
+        } else {
+            $this->line('Sending emails to all users');
+        }
+
+        if ($useQueue) {
+            $this->line('Using queue for processing');
+        }
+
+        // Your email sending logic here
+
+        $this->info('Emails sent successfully!');
+
+        return 0;
+    }
+}</code></pre>
+                        </div>
+
+                        <div class="bg-green-50 border-l-4 border-green-400 p-4">
+                            <p class="text-sm text-green-700">
+                                Commands auto-discover. Just create and use.
+                            </p>
+                        </div>
+                    </section>
+                </div>
+            </div>
+        </div>
+    </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="bg-gray-900 text-white py-8 mt-16">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+            <div class="flex items-center justify-center mb-4">
+                <span class="text-lg font-bold">Forge Engine</span>
+            </div>
+            <p class="text-gray-400">
+                A toolbox for builders who like to do things their way.
+            </p>
+        </div>
+    </footer>
+
+    <!-- Scripts -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.24.1/components/prism-core.min.js"></script>
+    <script
+        src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.24.1/plugins/autoloader/prism-autoloader.min.js"></script>
+    <script>
+        // Smooth scrolling for navigation links
+        document.querySelectorAll('.nav-link').forEach(link => {
+            link.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+
+                    // Update active state
+                    document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
+                    this.classList.add('active');
+                }
+            });
+        });
+
+        // Update active navigation on scroll
+        window.addEventListener('scroll', function () {
+            const sections = document.querySelectorAll('.section-anchor');
+            const navLinks = document.querySelectorAll('.nav-link');
+
+            let current = '';
+            sections.forEach(section => {
+                const sectionTop = section.offsetTop - 100;
+                if (window.pageYOffset >= sectionTop) {
+                    current = section.getAttribute('id');
+                }
+            });
+
+            navLinks.forEach(link => {
+                link.classList.remove('active');
+                if (link.getAttribute('href') === '#' + current) {
+                    link.classList.add('active');
+                }
+            });
+        });
+
+        // Mobile menu toggle
+        const mobileMenuButton = document.getElementById('mobile-menu-button');
+        const mobileMenu = document.getElementById('mobile-menu');
+
+        function toggleMobileMenu() {
+            if (mobileMenu) {
+                mobileMenu.classList.toggle('hidden');
+            }
+        }
+
+        if (mobileMenuButton) {
+            mobileMenuButton.addEventListener('click', toggleMobileMenu);
+        }
+
+        // Close mobile menu when clicking outside
+        document.addEventListener('click', function (event) {
+            if (mobileMenu && mobileMenuButton) {
+                const isClickInsideMenu = mobileMenu.contains(event.target);
+                const isClickOnMenuButton = mobileMenuButton.contains(event.target);
+
+                if (!mobileMenu.classList.contains('hidden') && !isClickInsideMenu && !isClickOnMenuButton) {
+                    mobileMenu.classList.add('hidden');
+                }
+            }
+        });
+
+        // Close mobile menu on window resize if above mobile breakpoint
+        window.addEventListener('resize', function () {
+            if (mobileMenu && window.innerWidth >= 640) {
+                mobileMenu.classList.add('hidden');
+            }
+        });
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,1021 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Forge Engine</title>
+        <link
+            href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css"
+            rel="stylesheet"
+        />
+        <link
+            rel="stylesheet"
+            href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
+        />
+        <link
+            rel="stylesheet"
+            href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.24.1/themes/prism-tomorrow.min.css"
+        />
+        <style>
+            .code-block {
+                background: #2d3748;
+                overflow-x: auto;
+            }
+
+            .code-block pre {
+                margin: 0;
+                padding: 1.5rem;
+            }
+
+            .nav-link {
+                transition: all 0.3s ease;
+            }
+
+            .nav-link:hover {
+                background-color: #f3f4f6;
+                padding-left: 1.5rem;
+            }
+
+            .nav-link.active {
+                background-color: #e0e7ff;
+                color: #4338ca;
+                border-left: 4px solid #6366f1;
+            }
+
+            .section-anchor {
+                scroll-margin-top: 2rem;
+            }
+
+            /* Mobile menu styles */
+            #mobile-menu {
+                display: none;
+            }
+
+            #mobile-menu:not(.hidden) {
+                display: block;
+            }
+
+            @media (max-width: 767px) {
+                .lg\:w-1\/4 {
+                    position: fixed;
+                    top: 0;
+                    left: 0;
+                    height: 100vh;
+                    width: 80%;
+                    max-width: 320px;
+                    z-index: 50;
+                    transform: translateX(-100%);
+                    transition: transform 0.3s ease;
+                    background: white;
+                    overflow-y: auto;
+                }
+
+                .lg\:w-1\/4.mobile-menu-open {
+                    transform: translateX(0);
+                }
+
+                .mobile-menu-overlay {
+                    position: fixed;
+                    top: 0;
+                    left: 0;
+                    width: 100%;
+                    height: 100%;
+                    background: rgba(0, 0, 0, 0.5);
+                    z-index: 40;
+                    display: none;
+                }
+
+                .mobile-menu-overlay.active {
+                    display: block;
+                }
+            }
+        </style>
+    </head>
+
+    <body class="bg-gray-50 font-sans">
+        <!-- Navigation -->
+        <nav class="bg-white shadow-sm border-b">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="flex justify-between h-16">
+                    <div class="flex items-center">
+                        <div class="flex-shrink-0">
+                            <h1 class="text-xl font-bold text-gray-900">
+                                Forge Engine
+                            </h1>
+                        </div>
+                        <div class="hidden sm:ml-6 sm:flex sm:space-x-8">
+                            <a
+                                href="index.html"
+                                class="text-gray-900 inline-flex items-center px-1 pt-1 text-sm font-medium hover:text-blue-600"
+                            >
+                                Home
+                            </a>
+                            <a
+                                href="getting-started.html"
+                                class="text-gray-900 inline-flex items-center px-1 pt-1 text-sm font-medium hover:text-blue-600"
+                            >
+                                Getting Started
+                            </a>
+                            <a
+                                href="core-concepts.html"
+                                class="text-gray-900 inline-flex items-center px-1 pt-1 text-sm font-medium hover:text-blue-600"
+                            >
+                                Core Concepts
+                            </a>
+                            <a
+                                href="modules.html"
+                                class="text-blue-600 inline-flex items-center px-1 pt-1 text-sm font-medium border-b-2 border-blue-600"
+                            >
+                                Modules
+                            </a>
+                            <a
+                                href="api-reference.html"
+                                class="text-gray-900 inline-flex items-center px-1 pt-1 text-sm font-medium hover:text-blue-600"
+                            >
+                                API Reference
+                            </a>
+                        </div>
+                    </div>
+                    <!-- Mobile menu button -->
+                    <div class="flex items-center sm:hidden">
+                        <button
+                            id="mobile-menu-button"
+                            class="text-gray-700 hover:text-blue-600 p-2"
+                        >
+                            <i class="fas fa-bars text-xl"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Mobile menu -->
+            <div
+                id="mobile-menu"
+                class="sm:hidden hidden bg-white border-t border-gray-200"
+            >
+                <div class="px-2 pt-2 pb-3 space-y-1">
+                    <a
+                        href="index.html"
+                        class="block px-3 py-2 text-gray-900 hover:text-blue-600"
+                    >
+                        Home
+                    </a>
+                    <a
+                        href="getting-started.html"
+                        class="block px-3 py-2 text-gray-900 hover:text-blue-600"
+                    >
+                        Getting Started
+                    </a>
+                    <a
+                        href="core-concepts.html"
+                        class="block px-3 py-2 text-gray-900 hover:text-blue-600"
+                    >
+                        Core Concepts
+                    </a>
+                    <a
+                        href="modules.html"
+                        class="block px-3 py-2 text-blue-600 font-medium"
+                    >
+                        Modules
+                    </a>
+                    <a
+                        href="api-reference.html"
+                        class="block px-3 py-2 text-gray-900 hover:text-blue-600"
+                    >
+                        API Reference
+                    </a>
+                </div>
+            </div>
+        </nav>
+
+        <!-- Main Content -->
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+            <div class="flex flex-col lg:flex-row gap-8">
+                <!-- Sidebar Navigation -->
+                <div class="lg:w-1/4">
+                    <div class="bg-white rounded-lg shadow-sm p-6 sticky top-8">
+                        <h3 class="text-lg font-semibold text-gray-900 mb-4">
+                            ForgeAuth
+                        </h3>
+                        <nav class="space-y-2">
+                            <a
+                                href="#overview"
+                                class="nav-link block px-3 py-2 text-sm text-gray-700 rounded-md hover:text-blue-600"
+                            >
+                                Overview
+                            </a>
+                            <a
+                                href="#features"
+                                class="nav-link block px-3 py-2 text-sm text-gray-700 rounded-md hover:text-blue-600"
+                            >
+                                Features
+                            </a>
+                            <a
+                                href="#installation"
+                                class="nav-link block px-3 py-2 text-sm text-gray-700 rounded-md hover:text-blue-600"
+                            >
+                                Installation
+                            </a>
+                            <a
+                                href="#configuration"
+                                class="nav-link block px-3 py-2 text-sm text-gray-700 rounded-md hover:text-blue-600"
+                            >
+                                Configuration
+                            </a>
+                            <a
+                                href="#usage"
+                                class="nav-link block px-3 py-2 text-sm text-gray-700 rounded-md hover:text-blue-600"
+                            >
+                                Usage
+                            </a>
+                            <a
+                                href="#controllers"
+                                class="nav-link block px-3 py-2 text-sm text-gray-700 rounded-md hover:text-blue-600"
+                            >
+                                Controllers
+                            </a>
+                            <a
+                                href="#models"
+                                class="nav-link block px-3 py-2 text-sm text-gray-700 rounded-md hover:text-blue-600"
+                            >
+                                Models
+                            </a>
+                            <a
+                                href="#middleware"
+                                class="nav-link block px-3 py-2 text-sm text-gray-700 rounded-md hover:text-blue-600"
+                            >
+                                Middleware
+                            </a>
+                            <a
+                                href="#best-practices"
+                                class="nav-link block px-3 py-2 text-sm text-gray-700 rounded-md hover:text-blue-600"
+                            >
+                                Best Practices
+                            </a>
+                        </nav>
+                    </div>
+                </div>
+
+                <!-- Main Content -->
+                <div class="lg:w-3/4">
+                    <div class="bg-white rounded-lg shadow-sm p-8">
+                        <h1 class="text-4xl font-bold text-gray-900 mb-6">
+                            ForgeAuth
+                        </h1>
+                        <p class="text-xl text-gray-600 mb-8">
+                            Complete authentication system with login,
+                            registration, password reset, and session management
+                            for Forge applications.
+                        </p>
+
+                        <!-- Overview -->
+                        <section id="overview" class="section-anchor mb-12">
+                            <h2 class="text-2xl font-bold text-gray-900 mb-4">
+                                Overview
+                            </h2>
+                            <p class="text-gray-600 mb-6">
+                                ForgeAuth provides authentication for Forge
+                                applications with user registration, login
+                                functionality, session management, and security
+                                features.
+                            </p>
+
+                            <div
+                                class="bg-blue-50 border border-blue-200 rounded-lg p-6 mb-6"
+                            >
+                                <h3 class="font-semibold text-lg mb-4">
+                                    Key Capabilities
+                                </h3>
+                                <div class="grid md:grid-cols-2 gap-4">
+                                    <div class="space-y-2">
+                                        <div class="flex items-center">
+                                            <span>User registration</span>
+                                        </div>
+                                        <div class="flex items-center">
+                                            <span
+                                                >Login/logout
+                                                functionality</span
+                                            >
+                                        </div>
+                                        <div class="flex items-center">
+                                            <span>Session management</span>
+                                        </div>
+                                    </div>
+                                    <div class="space-y-2">
+                                        <div class="flex items-center">
+                                            <span
+                                                >Password hashing (bcrypt)</span
+                                            >
+                                        </div>
+                                        <div class="flex items-center">
+                                            <span
+                                                >Rate limiting protection</span
+                                            >
+                                        </div>
+                                        <div class="flex items-center">
+                                            <span>Session security</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </section>
+
+                        <!-- Features -->
+                        <section id="features" class="section-anchor mb-12">
+                            <h2 class="text-2xl font-bold text-gray-900 mb-6">
+                                Features
+                            </h2>
+
+                            <div class="grid md:grid-cols-2 gap-6">
+                                <div
+                                    class="bg-gray-50 border border-gray-200 rounded-lg p-6"
+                                >
+                                    <h3 class="font-semibold text-lg mb-3">
+                                        Authentication
+                                    </h3>
+                                    <ul class="text-gray-600 space-y-2 text-sm">
+                                        <li>
+                                            • User registration with validation
+                                        </li>
+                                        <li>
+                                            • Secure login with bcrypt password
+                                            hashing
+                                        </li>
+                                        <li>• Session-based authentication</li>
+                                        <li>• Remember me functionality</li>
+                                    </ul>
+                                </div>
+
+                                <div
+                                    class="bg-gray-50 border border-gray-200 rounded-lg p-6"
+                                >
+                                    <h3 class="font-semibold text-lg mb-3">
+                                        Security
+                                    </h3>
+                                    <ul class="text-gray-600 space-y-2 text-sm">
+                                        <li>
+                                            • Rate limiting for login attempts
+                                        </li>
+                                        <li>• Session regeneration on login</li>
+                                        <li>• CSRF protection integration</li>
+                                        <li>• Secure password storage</li>
+                                    </ul>
+                                </div>
+
+                                <div
+                                    class="bg-gray-50 border border-gray-200 rounded-lg p-6"
+                                >
+                                    <h3 class="font-semibold text-lg mb-3">
+                                        User Management
+                                    </h3>
+                                    <ul class="text-gray-600 space-y-2 text-sm">
+                                        <li>• User profile management</li>
+                                        <li>• Metadata storage</li>
+                                        <li>• User status tracking</li>
+                                        <li>• Profile relationships</li>
+                                    </ul>
+                                </div>
+
+                                <div
+                                    class="bg-gray-50 border border-gray-200 rounded-lg p-6"
+                                >
+                                    <h3 class="font-semibold text-lg mb-3">
+                                        Integration
+                                    </h3>
+                                    <ul class="text-gray-600 space-y-2 text-sm">
+                                        <li>• Service container integration</li>
+                                        <li>• Middleware support</li>
+                                        <li>• Route registration</li>
+                                        <li>• Event system integration</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </section>
+
+                        <!-- Installation -->
+                        <section id="installation" class="section-anchor mb-12">
+                            <h2 class="text-2xl font-bold text-gray-900 mb-4">
+                                Installation
+                            </h2>
+                            <p class="text-gray-600 mb-6">
+                                Use Forge Package Manager or manually download
+                                and install the module.
+                            </p>
+
+                            <h3 class="text-lg font-semibold mb-3">
+                                Using Forge Package Manager
+                            </h3>
+                            <div
+                                class="code-block p-6 text-white rounded-lg mb-6"
+                            >
+                                <pre><code class="language-bash"># Install the latest version
+php forge install:module ForgeAuth
+
+# Install a specific version
+php forge install:module ForgeAuth@0.1.2</code></pre>
+                            </div>
+
+                            <h3 class="text-lg font-semibold mb-3">
+                                Manual Installation
+                            </h3>
+                            <div
+                                class="code-block p-6 text-white rounded-lg mb-6"
+                            >
+                                <pre><code class="language-bash"># Clone the repository
+git clone https://github.com/forge-kenerl/kernel-module-registry.git
+
+# Copy the ForgeAuth module to your modules directory
+cp -r modules/ForgeAuth /path/to/your/forge/modules/</code></pre>
+                            </div>
+
+                            <div
+                                class="bg-yellow-50 border-l-4 border-yellow-400 p-4"
+                            >
+                                <div class="ml-3">
+                                    <p class="text-sm text-yellow-700">
+                                        <strong>Dependencies:</strong> ForgeAuth
+                                        requires the Session module to be
+                                        installed and configured for proper
+                                        session management.
+                                    </p>
+                                </div>
+                            </div>
+                        </section>
+
+                        <!-- Configuration -->
+                        <section
+                            id="configuration"
+                            class="section-anchor mb-12"
+                        >
+                            <h2 class="text-2xl font-bold text-gray-900 mb-4">
+                                Configuration
+                            </h2>
+                            <p class="text-gray-600 mb-6">
+                                Modify configuration file or use environment
+                                variables.
+                            </p>
+
+                            <h3 class="text-lg font-semibold mb-3">
+                                Basic Configuration
+                            </h3>
+                            <div
+                                class="code-block p-6 text-white rounded-lg mb-6"
+                            >
+                                <pre><code class="language-php">// config/forge_auth.php
+return [
+    "forge_auth" => [
+        "example" => "hi"
+    ]
+];</code></pre>
+                            </div>
+
+                            <h3 class="text-lg font-semibold mb-3">
+                                Security Configuration
+                            </h3>
+                            <p class="text-gray-600 mb-3">
+                                Configure security settings in your main
+                                application configuration:
+                            </p>
+                            <div
+                                class="code-block p-6 text-white rounded-lg mb-6"
+                            >
+                                <pre><code class="language-php">// config/security.php
+return [
+    "security" => [
+        "password" => [
+            "max_login_attempts" => 5,    // Maximum failed login attempts
+            "lockout_time" => 300,        // Lockout time in seconds (5 minutes)
+        ]
+    ]
+];</code></pre>
+                            </div>
+
+                            <h3 class="text-lg font-semibold mb-3">
+                                Environment Variables
+                            </h3>
+                            <div
+                                class="code-block p-6 text-white rounded-lg mb-6"
+                            >
+                                <pre><code class="language-bash"># Session configuration
+SESSION_LIFETIME=120
+SESSION_SECURE=true
+SESSION_HTTP_ONLY=true
+
+# Security settings
+SECURITY_PASSWORD_MAX_ATTEMPTS=5
+SECURITY_PASSWORD_LOCKOUT_TIME=300</code></pre>
+                            </div>
+                        </section>
+
+                        <!-- Usage -->
+                        <section id="usage" class="section-anchor mb-12">
+                            <h2 class="text-2xl font-bold text-gray-900 mb-4">
+                                Usage
+                            </h2>
+                            <p class="text-gray-600 mb-6">
+                                Use ForgeAuth for user authentication and
+                                management.
+                            </p>
+
+                            <h3 class="text-lg font-semibold mb-3">
+                                Basic Authentication
+                            </h3>
+                            <div
+                                class="code-block p-6 text-white rounded-lg mb-6"
+                            >
+                                <pre><code class="language-php">use App\Modules\ForgeAuth\Contracts\ForgeAuthInterface;
+
+// Inject the authentication service
+class UserController
+{
+    public function __construct(
+        private ForgeAuthInterface $auth
+    ) {}
+
+    public function register(Request $request)
+    {
+        try {
+            $credentials = [
+                'identifier' => $request->post('username'),
+                'email' => $request->post('email'),
+                'password' => $request->post('password'),
+                'metadata' => [
+                    'first_name' => $request->post('first_name'),
+                    'last_name' => $request->post('last_name')
+                ]
+            ];
+
+            $success = $this->auth->register($credentials);
+
+            if ($success) {
+                return redirect('/login')->with('success', 'Registration successful!');
+            }
+        } catch (UserRegistrationException $e) {
+            return redirect('/register')->with('error', 'Registration failed');
+        }
+    }
+
+    public function login(Request $request)
+    {
+        try {
+            $credentials = [
+                'identifier' => $request->post('username'),
+                'password' => $request->post('password')
+            ];
+
+            $user = $this->auth->login($credentials);
+
+            return redirect('/dashboard')->with('success', 'Welcome back!');
+        } catch (LoginException $e) {
+            return redirect('/login')->with('error', 'Invalid credentials');
+        }
+    }
+}</code></pre>
+                            </div>
+
+                            <h3 class="text-lg font-semibold mb-3">
+                                User Session Management
+                            </h3>
+                            <div
+                                class="code-block p-6 text-white rounded-lg mb-6"
+                            >
+                                <pre><code class="language-php">// Get current user
+$user = $this->auth->user();
+
+if ($user) {
+    echo "Welcome, " . $user->identifier;
+    echo "Email: " . $user->email;
+    echo "Status: " . $user->status;
+}
+
+// Logout user
+$this->auth->logout();
+
+// Check if user is authenticated
+$isAuthenticated = $this->auth->user() !== null;</code></pre>
+                            </div>
+
+                            <h3 class="text-lg font-semibold mb-3">
+                                Dependency Injection
+                            </h3>
+                            <div
+                                class="code-block p-6 text-white rounded-lg mb-6"
+                            >
+                                <pre><code class="language-php">// ForgeAuth automatically binds the interface to implementation
+// in your module's register method:
+
+public function register(Container $container): void
+{
+    $container->bind(ForgeAuthInterface::class, ForgeAuthService::class);
+}
+
+// Now you can inject the interface anywhere:
+class MyService
+{
+    public function __construct(
+        private ForgeAuthInterface $auth
+    ) {}
+}</code></pre>
+                            </div>
+                        </section>
+
+                        <!-- Controllers -->
+                        <section id="controllers" class="section-anchor mb-12">
+                            <h2 class="text-2xl font-bold text-gray-900 mb-4">
+                                Controllers
+                            </h2>
+                            <p class="text-gray-600 mb-6">
+                                ForgeAuth provides pre-built controllers for
+                                common authentication workflows.
+                            </p>
+
+                            <h3 class="text-lg font-semibold mb-3">
+                                Web Login Controller
+                            </h3>
+                            <div
+                                class="code-block p-6 text-white rounded-lg mb-6"
+                            >
+                                <pre><code class="language-php">// Routes automatically registered:
+// GET /auth/login - Show login form
+// POST /auth/login - Process login
+// POST /auth/logout - Process logout
+
+// Usage in your application:
+&lt;a href="/auth/login"&gt;Login&lt;/a&gt;
+&lt;form method="POST" action="/auth/login"&gt;
+    &lt;input type="text" name="username" placeholder="Username" required&gt;
+    &lt;input type="password" name="password" placeholder="Password" required&gt;
+    &lt;button type="submit"&gt;Login&lt;/button&gt;
+&lt;/form&gt;</code></pre>
+                            </div>
+
+                            <h3 class="text-lg font-semibold mb-3">
+                                Creating Custom Controllers
+                            </h3>
+                            <div
+                                class="code-block p-6 text-white rounded-lg mb-6"
+                            >
+                                <pre><code class="language-php">use App\Modules\ForgeAuth\Contracts\ForgeAuthInterface;
+use Forge\Core\Http\Request;
+use Forge\Core\Http\Response;
+use Forge\Core\Routing\Route;
+
+#[Route("/custom-auth")]
+class CustomAuthController
+{
+    public function __construct(
+        private ForgeAuthInterface $auth
+    ) {}
+
+    #[Route("/custom-auth/profile", "GET")]
+    public function profile(): Response
+    {
+        $user = $this->auth->user();
+
+        if (!$user) {
+            return redirect('/auth/login');
+        }
+
+        return $this->view('profile', ['user' => $user]);
+    }
+}</code></pre>
+                            </div>
+                        </section>
+
+                        <!-- Models -->
+                        <section id="models" class="section-anchor mb-12">
+                            <h2 class="text-2xl font-bold text-gray-900 mb-4">
+                                Models
+                            </h2>
+                            <p class="text-gray-600 mb-6">
+                                ForgeAuth includes User and Profile models for
+                                managing user data.
+                            </p>
+
+                            <h3 class="text-lg font-semibold mb-3">
+                                User Model
+                            </h3>
+                            <div
+                                class="code-block p-6 text-white rounded-lg mb-6"
+                            >
+                                <pre><code class="language-php">// User model properties:
+// - id: Primary key
+// - identifier: Unique username/identifier
+// - email: User email address
+// - password: Hashed password
+// - status: User status (active, inactive, banned)
+// - metadata: JSON metadata storage
+// - created_at: Creation timestamp
+// - updated_at: Last update timestamp
+
+// Usage examples:
+$user = User::findById(1);
+$user = User::findBy("identifier", "john_doe");
+$user = User::findBy("email", "john@example.com");
+
+// Create new user
+$user = new User();
+$user->identifier = "new_user";
+$user->email = "user@example.com";
+$user->password = password_hash("password", PASSWORD_BCRYPT);
+$user->status = 'active';
+$user->save();</code></pre>
+                            </div>
+
+                            <h3 class="text-lg font-semibold mb-3">
+                                Profile Model
+                            </h3>
+                            <div
+                                class="code-block p-6 text-white rounded-lg mb-6"
+                            >
+                                <pre><code class="language-php">// Profile model for extended user information
+$profile = Profile::findBy("user_id", $userId);
+
+// Create profile for user
+$profile = new Profile();
+$profile->user_id = $user->id;
+$profile->first_name = "John";
+$profile->last_name = "Doe";
+$profile->bio = "Software developer";
+$profile->save();</code></pre>
+                            </div>
+                        </section>
+
+                        <!-- Middleware -->
+                        <section id="middleware" class="section-anchor mb-12">
+                            <h2 class="text-2xl font-bold text-gray-900 mb-4">
+                                Middleware
+                            </h2>
+                            <p class="text-gray-600 mb-6">
+                                Use ForgeAuth middleware to protect your routes
+                                and ensure only authenticated users can access
+                                certain areas.
+                            </p>
+
+                            <h3 class="text-lg font-semibold mb-3">
+                                Auth Middleware
+                            </h3>
+                            <div
+                                class="code-block p-6 text-white rounded-lg mb-6"
+                            >
+                                <pre><code class="language-php">use Forge\Core\Http\Attributes\Middleware;
+
+#[Middleware('auth')]
+class ProtectedController
+{
+    #[Route("/dashboard", "GET")]
+    public function dashboard(): Response
+    {
+        // This route is protected by authentication
+        $user = auth()->user();
+        return $this->view('dashboard', ['user' => $user]);
+    }
+}
+
+// Or apply to specific routes:
+#[Route("/admin", "GET")]
+#[Middleware('auth')]
+public function adminPanel(): Response
+{
+    // Only authenticated users can access this
+}</code></pre>
+                            </div>
+
+                            <h3 class="text-lg font-semibold mb-3">
+                                Custom Middleware
+                            </h3>
+                            <div
+                                class="code-block p-6 text-white rounded-lg mb-6"
+                            >
+                                <pre><code class="language-php">// Create custom middleware for role-based access
+namespace App\Middleware;
+
+use Forge\Core\Http\Request;
+use Forge\Core\Http\Response;
+use App\Modules\ForgeAuth\Contracts\ForgeAuthInterface;
+
+class RoleMiddleware
+{
+    public function __construct(
+        private ForgeAuthInterface $auth,
+        private string $requiredRole
+    ) {}
+
+    public function handle(Request $request, callable $next): Response
+    {
+        $user = $this->auth->user();
+
+        if (!$user || !$user->hasRole($this->requiredRole)) {
+            return redirect('/')->with('error', 'Insufficient permissions');
+        }
+
+        return $next($request);
+    }
+}</code></pre>
+                            </div>
+                        </section>
+
+                        <!-- Best Practices -->
+                        <section
+                            id="best-practices"
+                            class="section-anchor mb-12"
+                        >
+                            <h2 class="text-2xl font-bold text-gray-900 mb-4">
+                                Best Practices
+                            </h2>
+
+                            <div class="space-y-6">
+                                <div
+                                    class="bg-green-50 border border-green-200 rounded-lg p-6"
+                                >
+                                    <h3
+                                        class="font-semibold text-lg mb-3 text-green-800"
+                                    >
+                                        Security Best Practices
+                                    </h3>
+                                    <ul
+                                        class="text-green-700 space-y-2 text-sm"
+                                    >
+                                        <li>
+                                            • Always use HTTPS in production
+                                        </li>
+                                        <li>
+                                            • Implement proper session timeout
+                                        </li>
+                                        <li>
+                                            • Use strong password requirements
+                                        </li>
+                                        <li>• Enable rate limiting</li>
+                                        <li>• Validate all user input</li>
+                                    </ul>
+                                </div>
+
+                                <div
+                                    class="bg-blue-50 border border-blue-200 rounded-lg p-6"
+                                >
+                                    <h3
+                                        class="font-semibold text-lg mb-3 text-blue-800"
+                                    >
+                                        Configuration Tips
+                                    </h3>
+                                    <ul class="text-blue-700 space-y-2 text-sm">
+                                        <li>
+                                            • Configure appropriate session
+                                            lifetime
+                                        </li>
+                                        <li>• Set up proper error handling</li>
+                                        <li>
+                                            • Use environment variables for
+                                            sensitive data
+                                        </li>
+                                        <li>• Test rate limiting settings</li>
+                                        <li>• Monitor failed login attempts</li>
+                                    </ul>
+                                </div>
+
+                                <div
+                                    class="bg-purple-50 border border-purple-200 rounded-lg p-6"
+                                >
+                                    <h3
+                                        class="font-semibold text-lg mb-3 text-purple-800"
+                                    >
+                                        Development Guidelines
+                                    </h3>
+                                    <ul
+                                        class="text-purple-700 space-y-2 text-sm"
+                                    >
+                                        <li>
+                                            • Always validate user credentials
+                                        </li>
+                                        <li>
+                                            • Handle authentication exceptions
+                                            properly
+                                        </li>
+                                        <li>
+                                            • Use dependency injection for
+                                            services
+                                        </li>
+                                        <li>
+                                            • Implement proper error messages
+                                        </li>
+                                        <li>
+                                            • Test authentication flows
+                                            thoroughly
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+
+                            <div
+                                class="bg-yellow-50 border-l-4 border-yellow-400 p-4 mt-6"
+                            >
+                                <div class="ml-3">
+                                    <p class="text-sm text-yellow-700">
+                                        <strong>Important:</strong> Always keep
+                                        your authentication system updated and
+                                        monitor for security vulnerabilities.
+                                        Regular security audits are recommended.
+                                    </p>
+                                </div>
+                            </div>
+                        </section>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Scripts -->
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.24.1/components/prism-core.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.24.1/plugins/autoloader/prism-autoloader.min.js"></script>
+        <script>
+            // Smooth scrolling for navigation links
+            document.querySelectorAll(".nav-link").forEach((link) => {
+                link.addEventListener("click", function (e) {
+                    e.preventDefault();
+                    const target = document.querySelector(
+                        this.getAttribute("href"),
+                    );
+                    if (target) {
+                        target.scrollIntoView({
+                            behavior: "smooth",
+                            block: "start",
+                        });
+
+                        // Update active state
+                        document
+                            .querySelectorAll(".nav-link")
+                            .forEach((l) => l.classList.remove("active"));
+                        this.classList.add("active");
+                    }
+                });
+            });
+
+            // Update active navigation on scroll
+            window.addEventListener("scroll", function () {
+                const sections = document.querySelectorAll(".section-anchor");
+                const navLinks = document.querySelectorAll(".nav-link");
+
+                let current = "";
+                sections.forEach((section) => {
+                    const sectionTop = section.offsetTop - 100;
+                    if (window.pageYOffset >= sectionTop) {
+                        current = section.getAttribute("id");
+                    }
+                });
+
+                navLinks.forEach((link) => {
+                    link.classList.remove("active");
+                    if (link.getAttribute("href") === "#" + current) {
+                        link.classList.add("active");
+                    }
+                });
+            });
+
+            // Mobile menu toggle
+            const mobileMenuButton =
+                document.getElementById("mobile-menu-button");
+            const mobileMenu = document.getElementById("mobile-menu");
+
+            function toggleMobileMenu() {
+                mobileMenu.classList.toggle("hidden");
+            }
+
+            if (mobileMenuButton) {
+                mobileMenuButton.addEventListener("click", toggleMobileMenu);
+            }
+
+            // Close mobile menu when clicking outside
+            document.addEventListener("click", function (event) {
+                const isClickInsideMenu = mobileMenu.contains(event.target);
+                const isClickOnMenuButton =
+                    mobileMenuButton && mobileMenuButton.contains(event.target);
+
+                if (
+                    !mobileMenu.classList.contains("hidden") &&
+                    !isClickInsideMenu &&
+                    !isClickOnMenuButton
+                ) {
+                    mobileMenu.classList.add("hidden");
+                }
+            });
+
+            // Close mobile menu on window resize if above mobile breakpoint
+            window.addEventListener("resize", function () {
+                if (window.innerWidth >= 640) {
+                    mobileMenu.classList.add("hidden");
+                }
+            });
+        </script>
+        <!-- Footer -->
+        <footer class="bg-gray-900 text-white py-8 mt-16">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+                <div class="flex items-center justify-center mb-4">
+                    <span class="text-lg font-bold">Forge Engine</span>
+                </div>
+                <p class="text-gray-400">
+                    A toolbox for builders who like to do things their way.
+                </p>
+            </div>
+        </footer>
+    </body>
+</html>

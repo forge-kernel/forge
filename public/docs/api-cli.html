@@ -1,0 +1,1507 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CLI & Console API - Forge Engine Documentation</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-core.min.js"></script>
+    <script
+        src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/autoloader/prism-autoloader.min.js"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        .code-block {
+            background: #2d3748;
+            border-radius: 0.5rem;
+        }
+
+        .nav-link.active {
+            background-color: #eef2ff;
+            color: #4f46e5;
+            font-weight: 500;
+        }
+
+        .nav-link.active:hover {
+            background-color: #e0e7ff;
+        }
+
+        .section-anchor {
+            scroll-margin-top: 120px;
+        }
+
+        /* Mobile menu styles */
+        @media (max-width: 640px) {
+            .lg\:w-1\/4 {
+                position: fixed;
+                top: 0;
+                left: -100%;
+                width: 80%;
+                max-width: 320px;
+                height: 100vh;
+                z-index: 50;
+                transition: transform 0.3s ease;
+                background: white;
+                overflow-y: auto;
+            }
+
+            .lg\:w-1\/4.mobile-menu-open {
+                transform: translateX(0);
+            }
+
+            .mobile-menu-overlay {
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                background: rgba(0, 0, 0, 0.5);
+                z-index: 40;
+                display: none;
+            }
+
+            .mobile-menu-overlay.active {
+                display: block;
+            }
+        }
+    </style>
+</head>
+
+<body class="bg-gray-50">
+    <!-- Navigation -->
+    <nav class="bg-white shadow-sm border-b">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-16">
+                <div class="flex items-center">
+                    <div class="flex-shrink-0">
+                        <h1 class="text-xl font-bold text-gray-900">
+                            Forge Engine
+                        </h1>
+                    </div>
+                    <div class="hidden sm:ml-6 sm:flex sm:space-x-8">
+                        <a href="index.html"
+                            class="text-gray-900 inline-flex items-center px-1 pt-1 text-sm font-medium hover:text-blue-600">
+                            Home
+                        </a>
+                        <a href="getting-started.html"
+                            class="text-gray-900 inline-flex items-center px-1 pt-1 text-sm font-medium hover:text-blue-600">
+                            Getting Started
+                        </a>
+                        <a href="core-concepts.html"
+                            class="text-gray-900 inline-flex items-center px-1 pt-1 text-sm font-medium hover:text-blue-600">
+                            Core Concepts
+                        </a>
+                        <a href="modules.html"
+                            class="text-gray-900 inline-flex items-center px-1 pt-1 text-sm font-medium hover:text-blue-600">
+                            Modules
+                        </a>
+                        <a href="api-reference.html"
+                            class="text-blue-600 inline-flex items-center px-1 pt-1 text-sm font-medium border-b-2 border-blue-600">
+                            API Reference
+                        </a>
+                    </div>
+                </div>
+                <div class="flex items-center sm:hidden">
+                    <button id="mobile-menu-btn" class="text-gray-700 hover:text-blue-600" data-mobile-menu-toggle>
+                        <i class="fas fa-bars text-xl"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+        <!-- Mobile menu -->
+        <div id="mobile-menu" class="hidden sm:hidden bg-white border-t">
+            <div class="px-2 pt-2 pb-3 space-y-1">
+                <a href="index.html" class="block px-3 py-2 text-gray-700 hover:text-blue-600">
+                    Home
+                </a>
+                <a href="getting-started.html" class="block px-3 py-2 text-gray-700 hover:text-blue-600">
+                    Getting Started
+                </a>
+                <a href="core-concepts.html" class="block px-3 py-2 text-gray-700 hover:text-blue-600">
+                    Core Concepts
+                </a>
+                <a href="modules.html" class="block px-3 py-2 text-gray-700 hover:text-blue-600">
+                    Modules
+                </a>
+                <a href="api-reference.html" class="block px-3 py-2 text-blue-600">
+                    API Reference
+                </a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Mobile Menu Overlay -->
+    <div id="mobile-menu-overlay" class="mobile-menu-overlay"></div>
+
+    <!-- Main Content -->
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <div class="flex flex-col lg:flex-row gap-8">
+            <!-- Sidebar Navigation -->
+            <div class="lg:w-1/4">
+                <div class="bg-white rounded-lg shadow-sm p-6 sticky top-8">
+                    <h3 class="text-lg font-semibold text-gray-900 mb-4">
+                        API Reference
+                    </h3>
+                    <nav class="space-y-2">
+                        <a href="api-core.html" class="nav-link block px-3 py-2 text-sm text-gray-700 rounded-md hover:text-blue-600">
+                            <i class="fas fa-cogs mr-2"></i>Core Engine
+                        </a>
+                        <a href="api-http.html" class="nav-link block px-3 py-2 text-sm text-gray-700 rounded-md hover:text-blue-600">
+                            <i class="fas fa-globe mr-2"></i>HTTP Layer
+                        </a>
+                        <a href="api-database.html" class="nav-link block px-3 py-2 text-sm text-gray-700 rounded-md hover:text-blue-600">
+                            <i class="fas fa-database mr-2"></i>Database & ORM
+                        </a>
+                        <a href="api-di.html" class="nav-link block px-3 py-2 text-sm text-gray-700 rounded-md hover:text-blue-600">
+                            <i class="fas fa-puzzle-piece mr-2"></i>DI Container
+                        </a>
+                        <a href="api-routing.html" class="nav-link block px-3 py-2 text-sm text-gray-700 rounded-md hover:text-blue-600">
+                            <i class="fas fa-route mr-2"></i>Routing
+                        </a>
+                        <a href="api-modules.html" class="nav-link block px-3 py-2 text-sm text-gray-700 rounded-md hover:text-blue-600">
+                            <i class="fas fa-plug mr-2"></i>Module System
+                        </a>
+                        <a href="api-cli.html" class="nav-link block px-3 py-2 text-sm text-gray-700 rounded-md hover:text-blue-600 active">
+                            <i class="fas fa-terminal mr-2"></i>CLI & Console
+                        </a>
+                        <a href="api-cache.html" class="nav-link block px-3 py-2 text-sm text-gray-700 rounded-md hover:text-blue-600">
+                            <i class="fas fa-memory mr-2"></i>Caching
+                        </a>
+                        <a href="api-validation.html" class="nav-link block px-3 py-2 text-sm text-gray-700 rounded-md hover:text-blue-600">
+                            <i class="fas fa-check-circle mr-2"></i>Validation
+                        </a>
+                        <a href="api-helpers.html" class="nav-link block px-3 py-2 text-sm text-gray-700 rounded-md hover:text-blue-600">
+                            <i class="fas fa-tools mr-2"></i>Helpers & Traits
+                        </a>
+                        <a href="api-events.html" class="nav-link block px-3 py-2 text-sm text-gray-700 rounded-md hover:text-blue-600">
+                            <i class="fas fa-broadcast-tower mr-2"></i>Events
+                        </a>
+                        <a href="api-security.html" class="nav-link block px-3 py-2 text-sm text-gray-700 rounded-md hover:text-blue-600">
+                            <i class="fas fa-shield-alt mr-2"></i>Security
+                        </a>
+                    </nav>
+                </div>
+            </div>
+
+            <!-- Main Content -->
+            <div class="lg:w-3/4">
+                <div class="bg-white rounded-lg shadow-sm p-8">
+                    <h1 class="text-4xl font-bold text-gray-900 mb-6">
+                        CLI & Console API
+                    </h1>
+                    <p class="text-xl text-gray-600 mb-8">
+                        Command-line interface, console commands, argument parsing, and interactive prompts. 
+                        The CLI system provides a powerful foundation for building command-line tools, 
+                        background tasks, and interactive console applications.
+                    </p>
+
+                    <!-- Console Class -->
+                    <section id="console" class="section-anchor mb-12">
+                        <div class="bg-blue-50 border-l-4 border-blue-500 p-6 mb-8">
+                            <h2 class="text-2xl font-bold text-gray-900 mb-4">
+                                <i class="fas fa-terminal text-blue-600 mr-3"></i>Console
+                            </h2>
+                            <p class="text-gray-700">
+                                Main console application class that manages commands, handles input/output, 
+                                and provides a fluent interface for building CLI applications. 
+                                The Console class serves as the entry point for all command-line operations.
+                            </p>
+                        </div>
+
+                        <div class="mb-8">
+                            <h3 class="text-xl font-semibold text-gray-900 mb-4">Console Application Setup</h3>
+                            
+                            <div class="api-method bg-gray-50 p-4 rounded-lg mb-4">
+                                <h4 class="font-semibold text-lg mb-2">Basic Console Application</h4>
+                                <p class="text-gray-600 text-sm mb-3">Create and configure a console application.</p>
+                                <div class="code-block p-4 text-white rounded">
+                                    <pre><code class="language-php">use Forge\Console\Console;
+use Forge\Console\Input\Input;
+use Forge\Console\Output\Output;
+
+// Create console application
+$console = new Console('Forge Engine CLI', '1.0.0');
+
+// Set application description
+$console->setDescription('Command-line interface for Forge Engine applications');
+
+// Configure global options
+$console->setGlobalOptions([
+    ['help', 'h', InputOption::VALUE_NONE, 'Display help for the given command'],
+    ['quiet', 'q', InputOption::VALUE_NONE, 'Do not output any message'],
+    ['verbose', 'v', InputOption::VALUE_NONE, 'Increase the verbosity of messages'],
+    ['version', 'V', InputOption::VALUE_NONE, 'Display this application version'],
+    ['ansi', '', InputOption::VALUE_NONE, 'Force ANSI output'],
+    ['no-ansi', '', InputOption::VALUE_NONE, 'Disable ANSI output'],
+    ['no-interaction', 'n', InputOption::VALUE_NONE, 'Do not ask any interactive question']
+]);
+
+// Set default command
+$console->setDefaultCommand('list');
+
+// Run the application
+$console->run();</code></pre>
+                                </div>
+                            </div>
+
+                            <div class="api-method bg-gray-50 p-4 rounded-lg mb-4">
+                                <h4 class="font-semibold text-lg mb-2">Adding Commands</h4>
+                                <p class="text-gray-600 text-sm mb-3">Register commands with the console application.</p>
+                                <div class="code-block p-4 text-white rounded">
+                                    <pre><code class="language-php">// Add a single command
+$console->add(new GreetCommand());
+
+// Add multiple commands
+$console->addCommands([
+    new GreetCommand(),
+    new DatabaseMigrateCommand(),
+    new CacheClearCommand(),
+    new ServeCommand()
+]);
+
+// Add command using class name
+$console->addCommand('app:serve', ServeCommand::class);
+
+// Add command with configuration
+$console->addCommand('cache:clear', [
+    'class' => CacheClearCommand::class,
+    'description' => 'Clear the application cache',
+    'help' => 'This command clears all cached data from the application'
+]);
+
+// Add anonymous command
+$console->addCommand('test:connection', function(Input $input, Output $output) {
+    $output->writeln('<info>Testing database connection...</info>');
+    
+    try {
+        $db = Container::getInstance()->make('db');
+        $db->ping();
+        $output->writeln('<info>Database connection successful!</info>');
+        return 0;
+    } catch (\Exception $e) {
+        $output->writeln('<error>Database connection failed: ' . $e->getMessage() . '</error>');
+        return 1;
+    }
+});</code></pre>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="mb-8">
+                            <h3 class="text-xl font-semibold text-gray-900 mb-4">Console Configuration</h3>
+
+                            <div class="api-method bg-gray-50 p-4 rounded-lg mb-4">
+                                <h4 class="font-semibold text-lg mb-2">setAutoExit(bool $autoExit): void</h4>
+                                <p class="text-gray-600 text-sm mb-3">Set whether to automatically exit after running a command.</p>
+                                <div class="code-block p-4 text-white rounded">
+                                    <pre><code class="language-php">// Don't auto-exit (useful for testing)
+$console->setAutoExit(false);
+
+// Run command and capture output
+$exitCode = $console->run($input, $output);
+
+// Process results
+if ($exitCode === 0) {
+    echo "Command executed successfully\n";
+} else {
+    echo "Command failed with exit code: {$exitCode}\n";
+}
+
+// Auto-exit (default behavior)
+$console->setAutoExit(true);
+$console->run(); // Will exit after completion</code></pre>
+                                </div>
+                            </div>
+
+                            <div class="api-method bg-gray-50 p-4 rounded-lg mb-4">
+                                <h4 class="font-semibold text-lg mb-2">setCatchExceptions(bool $catch): void</h4>
+                                <p class="text-gray-600 text-sm mb-3">Set whether to catch exceptions during command execution.</p>
+                                <div class="code-block p-4 text-white rounded">
+                                    <pre><code class="language-php">// Catch and display exceptions nicely
+$console->setCatchExceptions(true);
+
+// Don't catch exceptions (for debugging)
+$console->setCatchExceptions(false);
+
+// Custom exception handling
+$console->setExceptionHandler(function(\Exception $e, Output $output) {
+    $output->writeln('<error>An error occurred:</error>');
+    $output->writeln('<error>' . $e->getMessage() . '</error>');
+    $output->writeln('');
+    $output->writeln('<comment>Stack trace:</comment>');
+    $output->writeln($e->getTraceAsString());
+    
+    return 1;
+});</code></pre>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- Command Class -->
+                    <section id="command" class="section-anchor mb-12">
+                        <div class="bg-green-50 border-l-4 border-green-500 p-6 mb-8">
+                            <h2 class="text-2xl font-bold text-gray-900 mb-4">
+                                <i class="fas fa-cog text-green-600 mr-3"></i>Command
+                            </h2>
+                            <p class="text-gray-700">
+                                Base class for all console commands providing argument parsing, input validation, 
+                                and execution logic. Commands are the building blocks of CLI applications, 
+                                each handling a specific task or operation.
+                            </p>
+                        </div>
+
+                        <div class="mb-8">
+                            <h3 class="text-xl font-semibold text-gray-900 mb-4">Creating Commands</h3>
+                            
+                            <div class="api-method bg-gray-50 p-4 rounded-lg mb-4">
+                                <h4 class="font-semibold text-lg mb-2">Basic Command Structure</h4>
+                                <p class="text-gray-600 text-sm mb-3">Create a custom command by extending the base Command class.</p>
+                                <div class="code-block p-4 text-white rounded">
+                                    <pre><code class="language-php">namespace App\Console\Commands;
+
+use Forge\Console\Command;
+use Forge\Console\Input\InputArgument;
+use Forge\Console\Input\InputOption;
+use Forge\Console\Input\InputInterface;
+use Forge\Console\Output\OutputInterface;
+
+class GreetCommand extends Command
+{
+    protected static $defaultName = 'app:greet';
+    protected static $defaultDescription = 'Greet a user';
+    
+    protected function configure(): void
+    {
+        $this
+            ->setName('app:greet')
+            ->setDescription('Greet a user')
+            ->setHelp('This command greets a user with a customizable message')
+            ->addArgument(
+                'name',
+                InputArgument::REQUIRED,
+                'The name of the user to greet'
+            )
+            ->addOption(
+                'greeting',
+                'g',
+                InputOption::VALUE_OPTIONAL,
+                'Custom greeting message',
+                'Hello'
+            )
+            ->addOption(
+                'uppercase',
+                'u',
+                InputOption::VALUE_NONE,
+                'Convert greeting to uppercase'
+            );
+    }
+    
+    protected function execute(InputInterface $input, OutputInterface $output): int
+    {
+        $name = $input->getArgument('name');
+        $greeting = $input->getOption('greeting');
+        $uppercase = $input->getOption('uppercase');
+        
+        $message = "{$greeting}, {$name}!";
+        
+        if ($uppercase) {
+            $message = strtoupper($message);
+        }
+        
+        $output->writeln('<info>' . $message . '</info>');
+        
+        return Command::SUCCESS;
+    }
+}</code></pre>
+                                </div>
+                            </div>
+
+                            <div class="api-method bg-gray-50 p-4 rounded-lg mb-4">
+                                <h4 class="font-semibold text-lg mb-2">Command Arguments</h4>
+                                <p class="text-gray-600 text-sm mb-3">Define and use command arguments.</p>
+                                <div class="code-block p-4 text-white rounded">
+                                    <pre><code class="language-php">class DatabaseBackupCommand extends Command
+{
+    protected function configure(): void
+    {
+        $this
+            ->setName('db:backup')
+            ->setDescription('Backup the database')
+            ->addArgument(
+                'database',
+                InputArgument::OPTIONAL,
+                'Database name to backup',
+                'default'
+            )
+            ->addArgument(
+                'filename',
+                InputArgument::OPTIONAL,
+                'Backup filename',
+                null
+            )
+            ->addArgument(
+                'tables',
+                InputArgument::IS_ARRAY | InputArgument::OPTIONAL,
+                'Specific tables to backup'
+            );
+    }
+    
+    protected function execute(InputInterface $input, OutputInterface $output): int
+    {
+        $database = $input->getArgument('database');
+        $filename = $input->getArgument('filename');
+        $tables = $input->getArgument('tables');
+        
+        // Generate filename if not provided
+        if (!$filename) {
+            $filename = sprintf(
+                '%s_%s.sql',
+                $database,
+                date('Y-m-d_H-i-s')
+            );
+        }
+        
+        $output->writeln("<info>Backing up database: {$database}</info>");
+        
+        if (!empty($tables)) {
+            $output->writeln("<info>Tables: " . implode(', ', $tables) . "</info>");
+        }
+        
+        $output->writeln("<info>Backup file: {$filename}</info>");
+        
+        // Perform backup logic here
+        
+        return Command::SUCCESS;
+    }
+}</code></pre>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="mb-8">
+                            <h3 class="text-xl font-semibold text-gray-900 mb-4">Command Options</h3>
+
+                            <div class="api-method bg-gray-50 p-4 rounded-lg mb-4">
+                                <h4 class="font-semibold text-lg mb-2">Input Options</h4>
+                                <p class="text-gray-600 text-sm mb-3">Define and use command options.</p>
+                                <div class="code-block p-4 text-white rounded">
+                                    <pre><code class="language-php">class UserCreateCommand extends Command
+{
+    protected function configure(): void
+    {
+        $this
+            ->setName('user:create')
+            ->setDescription('Create a new user')
+            ->addArgument('email', InputArgument::REQUIRED, 'User email address')
+            ->addArgument('password', InputArgument::OPTIONAL, 'User password')
+            ->addOption('name', null, InputOption::VALUE_REQUIRED, 'User full name')
+            ->addOption('role', null, InputOption::VALUE_REQUIRED, 'User role', 'user')
+            ->addOption('verified', null, InputOption::VALUE_NONE, 'Mark email as verified')
+            ->addOption('send-email', null, InputOption::VALUE_NONE, 'Send welcome email')
+            ->addOption('force', 'f', InputOption::VALUE_NONE, 'Force creation if user exists');
+    }
+    
+    protected function execute(InputInterface $input, OutputInterface $output): int
+    {
+        $email = $input->getArgument('email');
+        $password = $input->getArgument('password');
+        
+        // Generate password if not provided
+        if (!$password) {
+            $password = $this->generatePassword();
+            $output->writeln("<comment>Generated password: {$password}</comment>");
+        }
+        
+        $name = $input->getOption('name');
+        $role = $input->getOption('role');
+        $verified = $input->getOption('verified');
+        $sendEmail = $input->getOption('send-email');
+        $force = $input->getOption('force');
+        
+        // Check if user exists
+        if ($this->userExists($email) && !$force) {
+            $output->writeln("<error>User with email {$email} already exists!</error>");
+            $output->writeln("<comment>Use --force to override</comment>");
+            return Command::FAILURE;
+        }
+        
+        // Create user
+        $user = $this->createUser([
+            'email' => $email,
+            'password' => $password,
+            'name' => $name,
+            'role' => $role,
+            'verified' => $verified
+        ]);
+        
+        $output->writeln("<info>User created successfully!</info>");
+        $output->writeln("Email: {$user->email}");
+        $output->writeln("Role: {$user->role}");
+        
+        if ($sendEmail) {
+            $this->sendWelcomeEmail($user);
+            $output->writeln("<info>Welcome email sent!</info>");
+        }
+        
+        return Command::SUCCESS;
+    }
+    
+    private function generatePassword(): string
+    {
+        return bin2hex(random_bytes(8));
+    }
+}</code></pre>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="mb-8">
+                            <h3 class="text-xl font-semibold text-gray-900 mb-4">Interactive Commands</h3>
+
+                            <div class="api-method bg-gray-50 p-4 rounded-lg mb-4">
+                                <h4 class="font-semibold text-lg mb-2">User Interaction</h4>
+                                <p class="text-gray-600 text-sm mb-3">Create interactive commands with user prompts.</p>
+                                <div class="code-block p-4 text-white rounded">
+                                    <pre><code class="language-php">use Forge\Console\Style\SymfonyStyle;
+use Forge\Console\Question\ConfirmationQuestion;
+use Forge\Console\Question\Question;
+use Forge\Console\Question\ChoiceQuestion;
+
+class SetupCommand extends Command
+{
+    protected function configure(): void
+    {
+        $this
+            ->setName('app:setup')
+            ->setDescription('Interactive application setup');
+    }
+    
+    protected function execute(InputInterface $input, OutputInterface $output): int
+    {
+        $io = new SymfonyStyle($input, $output);
+        
+        $io->title('Application Setup');
+        $io->text('This wizard will help you configure your application.');
+        $io->newLine();
+        
+        // Ask for application name
+        $appName = $io->ask('Application name', 'My Application');
+        
+        // Ask for environment
+        $environment = $io->choice(
+            'Select environment',
+            ['development', 'staging', 'production'],
+            'development'
+        );
+        
+        // Ask for database configuration
+        $io->section('Database Configuration');
+        
+        $dbHost = $io->ask('Database host', 'localhost');
+        $dbPort = $io->ask('Database port', '3306');
+        $dbName = $io->ask('Database name', 'forge_app');
+        $dbUser = $io->ask('Database username', 'root');
+        $dbPass = $io->askHidden('Database password');
+        
+        // Confirm configuration
+        $io->section('Configuration Summary');
+        $io->table(
+            ['Setting', 'Value'],
+            [
+                ['Application Name', $appName],
+                ['Environment', $environment],
+                ['Database Host', $dbHost],
+                ['Database Port', $dbPort],
+                ['Database Name', $dbName],
+                ['Database User', $dbUser],
+                ['Database Password', str_repeat('*', strlen($dbPass))]
+            ]
+        );
+        
+        if (!$io->confirm('Do you want to proceed with this configuration?', true)) {
+            $io->warning('Setup cancelled.');
+            return Command::FAILURE;
+        }
+        
+        // Perform setup
+        $io->section('Setting up application...');
+        
+        $progressBar = $io->createProgressBar(100);
+        $progressBar->start();
+        
+        // Step 1: Create configuration files
+        $this->createConfigFiles([
+            'app_name' => $appName,
+            'environment' => $environment,
+            'database' => [
+                'host' => $dbHost,
+                'port' => $dbPort,
+                'name' => $dbName,
+                'user' => $dbUser,
+                'password' => $dbPass
+            ]
+        ]);
+        
+        $progressBar->advance(25);
+        
+        // Step 2: Run migrations
+        $this->runMigrations();
+        $progressBar->advance(25);
+        
+        // Step 3: Seed database
+        $this->seedDatabase();
+        $progressBar->advance(25);
+        
+        // Step 4: Clear caches
+        $this->clearCaches();
+        $progressBar->advance(25);
+        
+        $progressBar->finish();
+        $io->newLine(2);
+        
+        $io->success('Application setup completed successfully!');
+        
+        return Command::SUCCESS;
+    }
+}</code></pre>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- Input & Output Classes -->
+                    <section id="input-output" class="section-anchor mb-12">
+                        <div class="bg-purple-50 border-l-4 border-purple-500 p-6 mb-8">
+                            <h2 class="text-2xl font-bold text-gray-900 mb-4">
+                                <i class="fas fa-exchange-alt text-purple-600 mr-3"></i>Input & Output
+                            </h2>
+                            <p class="text-gray-700">
+                                Handle user input and console output with formatting, colors, and interactive elements. 
+                                The Input and Output classes provide a rich interface for reading user input 
+                                and displaying formatted output.
+                            </p>
+                        </div>
+
+                        <div class="mb-8">
+                            <h3 class="text-xl font-semibold text-gray-900 mb-4">Input Handling</h3>
+                            
+                            <div class="api-method bg-gray-50 p-4 rounded-lg mb-4">
+                                <h4 class="font-semibold text-lg mb-2">Input Arguments and Options</h4>
+                                <p class="text-gray-600 text-sm mb-3">Access command arguments and options.</p>
+                                <div class="code-block p-4 text-white rounded">
+                                    <pre><code class="language-php">class TestCommand extends Command
+{
+    protected function configure(): void
+    {
+        $this
+            ->setName('test:input')
+            ->setDescription('Test input handling')
+            ->addArgument('name', InputArgument::REQUIRED, 'Your name')
+            ->addArgument('emails', InputArgument::IS_ARRAY, 'Email addresses')
+            ->addOption('verbose', 'v', InputOption::VALUE_NONE, 'Verbose output')
+            ->addOption('format', 'f', InputOption::VALUE_REQUIRED, 'Output format', 'text')
+            ->addOption('count', 'c', InputOption::VALUE_OPTIONAL, 'Number of iterations', 1);
+    }
+    
+    protected function execute(InputInterface $input, OutputInterface $output): int
+    {
+        // Get arguments
+        $name = $input->getArgument('name');
+        $emails = $input->getArgument('emails');
+        
+        // Get options
+        $verbose = $input->getOption('verbose');
+        $format = $input->getOption('format');
+        $count = $input->getOption('count');
+        
+        // Check if option is set
+        if ($input->hasOption('verbose')) {
+            $output->writeln("Verbose mode enabled");
+        }
+        
+        // Get all arguments
+        $arguments = $input->getArguments();
+        foreach ($arguments as $name => $value) {
+            if (is_array($value)) {
+                $output->writeln("{$name}: " . implode(', ', $value));
+            } else {
+                $output->writeln("{$name}: {$value}");
+            }
+        }
+        
+        // Get all options
+        $options = $input->getOptions();
+        foreach ($options as $name => $value) {
+            if ($value !== false && $value !== null) {
+                $output->writeln("Option {$name}: {$value}");
+            }
+        }
+        
+        // Interactive input
+        if ($input->isInteractive()) {
+            $helper = $this->getHelper('question');
+            
+            $question = new Question('Please enter your age: ');
+            $age = $helper->ask($input, $output, $question);
+            
+            $output->writeln("Your age is: {$age}");
+        }
+        
+        return Command::SUCCESS;
+    }
+}</code></pre>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="mb-8">
+                            <h3 class="text-xl font-semibold text-gray-900 mb-4">Output Formatting</h3>
+
+                            <div class="api-method bg-gray-50 p-4 rounded-lg mb-4">
+                                <h4 class="font-semibold text-lg mb-2">Styled Output</h4>
+                                <p class="text-gray-600 text-sm mb-3">Format console output with colors and styles.</p>
+                                <div class="code-block p-4 text-white rounded">
+                                    <pre><code class="language-php">class StyledOutputCommand extends Command
+{
+    protected function configure(): void
+    {
+        $this->setName('demo:styles')->setDescription('Demonstrate output styles');
+    }
+    
+    protected function execute(InputInterface $input, OutputInterface $output): int
+    {
+        // Basic styles
+        $output->writeln('<info>This is info text (green)</info>');
+        $output->writeln('<comment>This is comment text (yellow)</comment>');
+        $output->writeln('<question>This is question text (cyan)</question>');
+        $output->writeln('<error>This is error text (red)</error>');
+        
+        // Custom colors
+        $output->writeln('<fg=red>This is red text</>');
+        $output->writeln('<fg=green>This is green text</>');
+        $output->writeln('<fg=blue>This is blue text</>');
+        $output->writeln('<fg=magenta>This is magenta text</>');
+        
+        // Background colors
+        $output->writeln('<bg=red;fg=white>White text on red background</>');
+        $output->writeln('<bg=green;fg=black>Black text on green background</>');
+        $output->writeln('<bg=blue;fg=white>White text on blue background</>');
+        
+        // Text formatting
+        $output->writeln('<options=bold>Bold text</options>');
+        $output->writeln('<options=underscore>Underlined text</options>');
+        $output->writeln('<options=blink>Blinking text</options>');
+        $output->writeln('<options=reverse>Reversed text</options>');
+        
+        // Combined styles
+        $output->writeln('<fg=red;options=bold>Bold red text</>');
+        $output->writeln('<fg=white;bg=blue;options=underscore>Underlined white on blue</>');
+        
+        // Multiple lines
+        $output->writeln([
+            '<info>Line 1</info>',
+            '<comment>Line 2</comment>',
+            '<error>Line 3</error>'
+        ]);
+        
+        // Without newlines
+        $output->write('Processing... ');
+        sleep(1);
+        $output->writeln('<info>Done!</info>');
+        
+        // Verbose output
+        if ($output->isVerbose()) {
+            $output->writeln('<comment>Verbose information</comment>');
+        }
+        
+        if ($output->isVeryVerbose()) {
+            $output->writeln('<comment>Very verbose information</comment>');
+        }
+        
+        if ($output->isDebug()) {
+            $output->writeln('<comment>Debug information</comment>');
+        }
+        
+        return Command::SUCCESS;
+    }
+}</code></pre>
+                                </div>
+                            </div>
+
+                            <div class="api-method bg-gray-50 p-4 rounded-lg mb-4">
+                                <h4 class="font-semibold text-lg mb-2">Progress Bars</h4>
+                                <p class="text-gray-600 text-sm mb-3">Display progress bars for long-running operations.</p>
+                                <div class="code-block p-4 text-white rounded">
+                                    <pre><code class="language-php">class ProgressCommand extends Command
+{
+    protected function configure(): void
+    {
+        $this->setName('demo:progress')->setDescription('Demonstrate progress bars');
+    }
+    
+    protected function execute(InputInterface $input, OutputInterface $output): int
+    {
+        // Create progress bar
+        $progressBar = new ProgressBar($output, 100);
+        
+        // Customize progress bar
+        $progressBar->setFormat('debug');
+        $progressBar->setBarCharacter('<info>█</info>');
+        $progressBar->setEmptyBarCharacter('░');
+        $progressBar->setProgressCharacter('➤');
+        $progressBar->setBarWidth(50);
+        
+        // Start progress bar
+        $progressBar->start();
+        
+        // Simulate work
+        for ($i = 0; $i < 100; $i++) {
+            usleep(20000); // 20ms
+            $progressBar->advance();
+        }
+        
+        // Finish progress bar
+        $progressBar->finish();
+        $output->writeln('');
+        
+        // Custom progress bar format
+        $progressBar = new ProgressBar($output, 50);
+        $progressBar->setFormat('Processing: %current%/%max% [%bar%] %percent:3s%% %elapsed:6s%/%estimated:-6s% %memory:6s%');
+        
+        $progressBar->start();
+        for ($i = 0; $i < 50; $i++) {
+            usleep(40000);
+            $progressBar->advance();
+        }
+        $progressBar->finish();
+        $output->writeln('');
+        
+        // Progress bar with messages
+        $progressBar = new ProgressBar($output, 10);
+        $progressBar->setFormat("%message%\n%current%/%max% [%bar%] %percent:3s%%");
+        
+        $progressBar->start();
+        for ($i = 0; $i < 10; $i++) {
+            $progressBar->setMessage("Processing item {$i}");
+            $progressBar->advance();
+            usleep(100000);
+        }
+        $progressBar->finish();
+        
+        return Command::SUCCESS;
+    }
+}</code></pre>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- Tables and Lists -->
+                    <section id="tables-lists" class="section-anchor mb-12">
+                        <div class="bg-orange-50 border-l-4 border-orange-500 p-6 mb-8">
+                            <h2 class="text-2xl font-bold text-gray-900 mb-4">
+                                <i class="fas fa-table text-orange-600 mr-3"></i>Tables and Lists
+                            </h2>
+                            <p class="text-gray-700">
+                                Display data in formatted tables and lists. The Console component provides 
+                                helpers for creating nicely formatted tables and lists from your data.
+                            </p>
+                        </div>
+
+                        <div class="mb-8">
+                            <h3 class="text-xl font-semibold text-gray-900 mb-4">Table Display</h3>
+                            
+                            <div class="api-method bg-gray-50 p-4 rounded-lg mb-4">
+                                <h4 class="font-semibold text-lg mb-2">Creating Tables</h4>
+                                <p class="text-gray-600 text-sm mb-3">Display data in formatted tables.</p>
+                                <div class="code-block p-4 text-white rounded">
+                                    <pre><code class="language-php">use Forge\Console\Helper\Table;
+
+class TableCommand extends Command
+{
+    protected function configure(): void
+    {
+        $this->setName('demo:table')->setDescription('Demonstrate table display');
+    }
+    
+    protected function execute(InputInterface $input, OutputInterface $output): int
+    {
+        // Simple table
+        $table = new Table($output);
+        $table->setHeaders(['ID', 'Name', 'Email', 'Status']);
+        $table->setRows([
+            [1, 'John Doe', 'john@example.com', '<info>Active</info>'],
+            [2, 'Jane Smith', 'jane@example.com', '<info>Active</info>'],
+            [3, 'Bob Johnson', 'bob@example.com', '<comment>Pending</comment>'],
+            [4, 'Alice Brown', 'alice@example.com', '<error>Inactive</error>']
+        ]);
+        $table->render();
+        
+        // Table with style
+        $table = new Table($output);
+        $table->setStyle('borderless');
+        $table->setHeaders(['Feature', 'Status', 'Description']);
+        $table->setRows([
+            ['Database', '<info>✓</info>', 'MySQL 8.0 configured'],
+            ['Cache', '<info>✓</info>', 'Redis cache enabled'],
+            ['Queue', '<comment>⚠</info>', 'Queue not configured'],
+            ['Mail', '<error>✗</error>', 'Mail driver not set']
+        ]);
+        $table->render();
+        
+        // Complex table with alignment
+        $table = new Table($output);
+        $table->setHeaders(['Module', 'Version', 'Status', 'Dependencies']);
+        $table->setRows([
+            ['Auth', '1.2.0', '<info>Enabled</info>', 'Database, Cache'],
+            ['Blog', '2.1.0', '<info>Enabled</info>', 'Auth, Media'],
+            ['Media', '1.0.0', '<comment>Disabled</comment>', 'Storage'],
+            ['Analytics', '1.5.0', '<info>Enabled</info>', 'Database']
+        ]);
+        
+        // Set column styles
+        $table->setColumnStyle(0, ['align' => 'left']);
+        $table->setColumnStyle(1, ['align' => 'center']);
+        $table->setColumnStyle(2, ['align' => 'center']);
+        $table->setColumnStyle(3, ['align' => 'left']);
+        
+        $table->render();
+        
+        // Table from data source
+        $users = $this->getUsers(); // Assume this returns user data
+        
+        $table = new Table($output);
+        $table->setHeaders(['ID', 'Name', 'Email', 'Created', 'Last Login']);
+        
+        foreach ($users as $user) {
+            $table->addRow([
+                $user->id,
+                $user->name,
+                $user->email,
+                $user->created_at->format('Y-m-d'),
+                $user->last_login ? $user->last_login->diffForHumans() : 'Never'
+            ]);
+        }
+        
+        $table->render();
+        
+        return Command::SUCCESS;
+    }
+}</code></pre>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="mb-8">
+                            <h3 class="text-xl font-semibold text-gray-900 mb-4">List Display</h3>
+
+                            <div class="api-method bg-gray-50 p-4 rounded-lg mb-4">
+                                <h4 class="font-semibold text-lg mb-2">Creating Lists</h4>
+                                <p class="text-gray-600 text-sm mb-3">Display data in formatted lists.</p>
+                                <div class="code-block p-4 text-white rounded">
+                                    <pre><code class="language-php">use Forge\Console\Helper\DescriptorHelper;
+
+class ListCommand extends Command
+{
+    protected function configure(): void
+    {
+        $this->setName('demo:list')->setDescription('Demonstrate list display');
+    }
+    
+    protected function execute(InputInterface $input, OutputInterface $output): int
+    {
+        $io = new SymfonyStyle($input, $output);
+        
+        // Simple list
+        $io->listing([
+            'Install dependencies',
+            'Configure environment',
+            'Run migrations',
+            'Seed database',
+            'Start application'
+        ]);
+        
+        // Definition list
+        $io->definitionList(
+            ['Application' => 'Forge Engine'],
+            ['Version' => '1.0.0'],
+            ['Environment' => 'production'],
+            ['Debug Mode' => 'disabled'],
+            ['Cache Driver' => 'redis'],
+            ['Database' => 'MySQL 8.0']
+        );
+        
+        // Section with items
+        $io->section('Available Commands');
+        $io->listing([
+            'cache:clear - Clear application cache',
+            'db:migrate - Run database migrations',
+            'user:create - Create a new user',
+            'serve - Start development server'
+        ]);
+        
+        // Nested sections
+        $io->section('System Status');
+        $io->text('Checking system requirements...');
+        
+        $io->section('PHP Extensions');
+        $io->listing([
+            '<info>✓</info> PDO',
+            '<info>✓</info> Mbstring',
+            '<info>✓</info> OpenSSL',
+            '<comment>⚠</comment> Redis (optional)'
+        ]);
+        
+        $io->section('Directory Permissions');
+        $io->listing([
+            '<info>✓</info> storage/ - Writable',
+            '<info>✓</info> bootstrap/cache/ - Writable',
+            '<info>✓</info> public/uploads/ - Writable'
+        ]);
+        
+        // Custom list with icons
+        $io->section('Module Status');
+        $modules = [
+            'Auth' => '<info>✓ Enabled</info>',
+            'Blog' => '<info>✓ Enabled</info>',
+            'Media' => '<comment>⚠ Disabled</comment>',
+            'Analytics' => '<info>✓ Enabled</info>'
+        ];
+        
+        foreach ($modules as $name => $status) {
+            $io->writeln("  {$name}: {$status}");
+        }
+        
+        return Command::SUCCESS;
+    }
+}</code></pre>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- Usage Examples -->
+                    <section id="examples" class="section-anchor mb-12">
+                        <div class="bg-gray-50 border-l-4 border-gray-500 p-6 mb-8">
+                            <h2 class="text-2xl font-bold text-gray-900 mb-4">
+                                <i class="fas fa-code text-gray-600 mr-3"></i>Usage Examples
+                            </h2>
+                            <p class="text-gray-700">
+                                Common patterns and examples for working with the CLI & Console system.
+                            </p>
+                        </div>
+
+                        <div class="mb-8">
+                            <h3 class="text-xl font-semibold text-gray-900 mb-4">Database Management Commands</h3>
+                            <div class="code-block p-4 text-white rounded">
+                                <pre><code class="language-php">// Database migration command
+class MigrateCommand extends Command
+{
+    protected function configure(): void
+    {
+        $this
+            ->setName('db:migrate')
+            ->setDescription('Run database migrations')
+            ->addOption('force', 'f', InputOption::VALUE_NONE, 'Force migration in production')
+            ->addOption('path', null, InputOption::VALUE_REQUIRED, 'Path to migration files')
+            ->addOption('seed', null, InputOption::VALUE_NONE, 'Seed database after migration')
+            ->addOption('fresh', null, InputOption::VALUE_NONE, 'Drop all tables and re-migrate');
+    }
+    
+    protected function execute(InputInterface $input, OutputInterface $output): int
+    {
+        $io = new SymfonyStyle($input, $output);
+        
+        $force = $input->getOption('force');
+        $path = $input->getOption('path') ?? 'database/migrations';
+        $seed = $input->getOption('seed');
+        $fresh = $input->getOption('fresh');
+        
+        // Check environment
+        if (Container::getInstance()->make('app')->environment('production') && !$force) {
+            $io->error('Migration in production requires --force option');
+            return Command::FAILURE;
+        }
+        
+        $io->title('Database Migration');
+        
+        if ($fresh) {
+            $io->warning('This will drop all tables and re-create them');
+            if (!$io->confirm('Are you sure you want to continue?', false)) {
+                return Command::FAILURE;
+            }
+            
+            $io->text('Dropping all tables...');
+            $this->dropAllTables();
+        }
+        
+        // Get migration files
+        $migrations = $this->getMigrationFiles($path);
+        
+        if (empty($migrations)) {
+            $io->info('No migrations found');
+            return Command::SUCCESS;
+        }
+        
+        $io->text(sprintf('Found %d migration(s)', count($migrations)));
+        
+        $progressBar = $io->createProgressBar(count($migrations));
+        $progressBar->start();
+        
+        $executed = 0;
+        foreach ($migrations as $migration) {
+            try {
+                $this->runMigration($migration);
+                $executed++;
+                $progressBar->advance();
+            } catch (\Exception $e) {
+                $progressBar->clear();
+                $io->error("Migration failed: " . $e->getMessage());
+                return Command::FAILURE;
+            }
+        }
+        
+        $progressBar->finish();
+        $io->newLine();
+        
+        $io->success(sprintf('Executed %d migration(s)', $executed));
+        
+        if ($seed) {
+            $io->section('Seeding Database');
+            $this->seedDatabase();
+            $io->success('Database seeded successfully');
+        }
+        
+        return Command::SUCCESS;
+    }
+}
+
+// Database backup command
+class BackupCommand extends Command
+{
+    protected function configure(): void
+    {
+        $this
+            ->setName('db:backup')
+            ->setDescription('Backup the database')
+            ->addArgument('filename', InputArgument::OPTIONAL, 'Backup filename')
+            ->addOption('compress', 'c', InputOption::VALUE_NONE, 'Compress backup file')
+            ->addOption('tables', 't', InputOption::VALUE_REQUIRED, 'Specific tables to backup')
+            ->addOption('exclude', 'e', InputOption::VALUE_REQUIRED, 'Tables to exclude from backup');
+    }
+    
+    protected function execute(InputInterface $input, OutputInterface $output): int
+    {
+        $io = new SymfonyStyle($input, $output);
+        
+        $filename = $input->getArgument('filename');
+        $compress = $input->getOption('compress');
+        $tables = $input->getOption('tables');
+        $exclude = $input->getOption('exclude');
+        
+        // Generate filename if not provided
+        if (!$filename) {
+            $filename = sprintf('backup_%s.sql', date('Y-m-d_H-i-s'));
+        }
+        
+        $io->title('Database Backup');
+        
+        // Parse table lists
+        $includeTables = $tables ? explode(',', $tables) : [];
+        $excludeTables = $exclude ? explode(',', $exclude) : [];
+        
+        // Get database configuration
+        $config = config('database');
+        $io->text(sprintf('Backing up database: %s', $config['database']));
+        
+        if (!empty($includeTables)) {
+            $io->text(sprintf('Including tables: %s', implode(', ', $includeTables)));
+        }
+        
+        if (!empty($excludeTables)) {
+            $io->text(sprintf('Excluding tables: %s', implode(', ', $excludeTables)));
+        }
+        
+        // Perform backup
+        try {
+            $backupPath = $this->performBackup($filename, $includeTables, $excludeTables);
+            
+            if ($compress) {
+                $io->text('Compressing backup...');
+                $backupPath = $this->compressFile($backupPath);
+            }
+            
+            $fileSize = $this->formatBytes(filesize($backupPath));
+            $io->success(sprintf('Backup completed: %s (%s)', basename($backupPath), $fileSize));
+            
+        } catch (\Exception $e) {
+            $io->error('Backup failed: ' . $e->getMessage());
+            return Command::FAILURE;
+        }
+        
+        return Command::SUCCESS;
+    }
+    
+    private function formatBytes(int $bytes): string
+    {
+        $units = ['B', 'KB', 'MB', 'GB', 'TB'];
+        $i = 0;
+        
+        while ($bytes >= 1024 && $i < count($units) - 1) {
+            $bytes /= 1024;
+            $i++;
+        }
+        
+        return round($bytes, 2) . ' ' . $units[$i];
+    }
+}</code></pre>
+                            </div>
+                        </div>
+
+                        <div class="mb-8">
+                            <h3 class="text-xl font-semibold text-gray-900 mb-4">Application Maintenance Commands</h3>
+                            <div class="code-block p-4 text-white rounded">
+                                <pre><code class="language-php">// Maintenance mode command
+class MaintenanceCommand extends Command
+{
+    protected function configure(): void
+    {
+        $this
+            ->setName('down')
+            ->setDescription('Put the application into maintenance mode')
+            ->addOption('message', 'm', InputOption::VALUE_REQUIRED, 'Maintenance message')
+            ->addOption('retry', 'r', InputOption::VALUE_REQUIRED, 'Retry after seconds', 60)
+            ->addOption('allow', null, InputOption::VALUE_REQUIRED, 'Allowed IP addresses');
+        
+        $this->addSubcommand('up', new UpCommand());
+    }
+    
+    protected function execute(InputInterface $input, OutputInterface $output): int
+    {
+        $io = new SymfonyStyle($input, $output);
+        
+        $message = $input->getOption('message') ?? 'Application is under maintenance';
+        $retry = $input->getOption('retry');
+        $allow = $input->getOption('allow');
+        
+        $io->title('Maintenance Mode');
+        
+        // Create maintenance file
+        $maintenanceData = [
+            'time' => time(),
+            'message' => $message,
+            'retry' => $retry,
+            'allowed' => $allow ? explode(',', $allow) : []
+        ];
+        
+        file_put_contents(
+            storage_path('framework/maintenance.php'),
+            '<?php return ' . var_export($maintenanceData, true) . ';'
+        );
+        
+        $io->warning('Application is now in maintenance mode');
+        $io->text("Message: {$message}");
+        $io->text("Retry after: {$retry} seconds");
+        
+        if ($allow) {
+            $io->text("Allowed IPs: {$allow}");
+        }
+        
+        return Command::SUCCESS;
+    }
+}
+
+class UpCommand extends Command
+{
+    protected function configure(): void
+    {
+        $this
+            ->setName('up')
+            ->setDescription('Bring the application out of maintenance mode');
+    }
+    
+    protected function execute(InputInterface $input, OutputInterface $output): int
+    {
+        $io = new SymfonyStyle($input, $output);
+        
+        $maintenanceFile = storage_path('framework/maintenance.php');
+        
+        if (!file_exists($maintenanceFile)) {
+            $io->info('Application is not in maintenance mode');
+            return Command::SUCCESS;
+        }
+        
+        unlink($maintenanceFile);
+        
+        $io->success('Application is now live!');
+        
+        return Command::SUCCESS;
+    }
+}
+
+// Cache management command
+class CacheCommand extends Command
+{
+    protected function configure(): void
+    {
+        $this
+            ->setName('cache:clear')
+            ->setDescription('Clear application cache')
+            ->addOption('tags', 't', InputOption::VALUE_REQUIRED, 'Specific cache tags to clear')
+            ->addOption('stores', 's', InputOption::VALUE_REQUIRED, 'Specific cache stores to clear');
+    }
+    
+    protected function execute(InputInterface $input, OutputInterface $output): int
+    {
+        $io = new SymfonyStyle($input, $output);
+        
+        $tags = $input->getOption('tags');
+        $stores = $input->getOption('stores');
+        
+        $io->title('Clearing Application Cache');
+        
+        $storesToClear = $stores ? explode(',', $stores) : ['default'];
+        $tagsToClear = $tags ? explode(',', $tags) : [];
+        
+        $progressBar = $io->createProgressBar(count($storesToClear));
+        $progressBar->start();
+        
+        foreach ($storesToClear as $store) {
+            try {
+                if (!empty($tagsToClear)) {
+                    // Clear specific tags
+                    foreach ($tagsToClear as $tag) {
+                        cache()->store($store)->tags([$tag])->flush();
+                    }
+                } else {
+                    // Clear entire store
+                    cache()->store($store)->flush();
+                }
+                
+                $progressBar->advance();
+            } catch (\Exception $e) {
+                $progressBar->clear();
+                $io->error("Failed to clear cache store {$store}: " . $e->getMessage());
+                return Command::FAILURE;
+            }
+        }
+        
+        $progressBar->finish();
+        $io->newLine();
+        
+        $io->success('Cache cleared successfully!');
+        
+        return Command::SUCCESS;
+    }
+}</code></pre>
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- Best Practices -->
+                    <section id="best-practices" class="section-anchor mb-12">
+                        <div class="bg-yellow-50 border-l-4 border-yellow-500 p-6 mb-8">
+                            <h2 class="text-2xl font-bold text-gray-900 mb-4">
+                                <i class="fas fa-lightbulb text-yellow-600 mr-3"></i>Best Practices
+                            </h2>
+                            <p class="text-gray-700">
+                                Recommended patterns and guidelines for working with the CLI & Console system.
+                            </p>
+                        </div>
+
+                        <div class="grid md:grid-cols-2 gap-6">
+                            <div class="bg-white border border-gray-200 p-6 rounded-lg">
+                                <h4 class="font-semibold text-gray-900 mb-3">
+                                    <i class="fas fa-check-circle text-green-600 mr-2"></i>Do's
+                                </h4>
+                                <ul class="text-sm text-gray-600 space-y-2">
+                                    <li>• Use descriptive command names</li>
+                                    <li>• Provide helpful descriptions and help text</li>
+                                    <li>• Use appropriate exit codes</li>
+                                    <li>• Handle errors gracefully</li>
+                                    <li>• Use progress bars for long operations</li>
+                                    <li>• Provide verbose output options</li>
+                                    <li>• Use colors and formatting appropriately</li>
+                                    <li>• Validate input arguments and options</li>
+                                    <li>• Use confirmation prompts for destructive operations</li>
+                                    <li>• Provide meaningful error messages</li>
+                                </ul>
+                            </div>
+
+                            <div class="bg-white border border-gray-200 p-6 rounded-lg">
+                                <h4 class="font-semibold text-gray-900 mb-3">
+                                    <i class="fas fa-times-circle text-red-600 mr-2"></i>Don'ts
+                                </h4>
+                                <ul class="text-sm text-gray-600 space-y-2">
+                                    <li>• Don't use generic command names</li>
+                                    <li>• Don't ignore user input validation</li>
+                                    <li>• Don't use hardcoded values</li>
+                                    <li>• Don't ignore exit codes</li>
+                                    <li>• Don't overuse colors and formatting</li>
+                                    <li>• Don't assume interactive mode</li>
+                                    <li>• Don't ignore exceptions</li>
+                                    <li>• Don't use excessive output</li>
+                                    <li>• Don't ignore command dependencies</li>
+                                    <li>• Don't skip error handling</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </section>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="bg-white border-t mt-16">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+            <div class="text-center text-gray-600">
+                <p class="text-sm">
+                    Forge Engine Documentation - CLI & Console API
+                </p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Mobile menu toggle
+        const mobileMenuBtn = document.getElementById('mobile-menu-btn');
+        const mobileMenu = document.getElementById('mobile-menu');
+        const mobileMenuOverlay = document.getElementById('mobile-menu-overlay');
+
+        function toggleMobileMenu() {
+            mobileMenu.classList.toggle('hidden');
+            mobileMenuOverlay.classList.toggle('active');
+        }
+
+        if (mobileMenuBtn) {
+            mobileMenuBtn.addEventListener('click', toggleMobileMenu);
+        }
+
+        if (mobileMenuOverlay) {
+            mobileMenuOverlay.addEventListener('click', toggleMobileMenu);
+        }
+
+        // Close mobile menu when clicking on links
+        const mobileMenuLinks = mobileMenu.querySelectorAll('a');
+        mobileMenuLinks.forEach(link => {
+            link.addEventListener('click', () => {
+                mobileMenu.classList.add('hidden');
+                mobileMenuOverlay.classList.remove('active');
+            });
+        });
+
+        // Active navigation highlighting
+        const currentPath = window.location.pathname.split('/').pop();
+        const navLinks = document.querySelectorAll('.nav-link');
+        navLinks.forEach(link => {
+            if (link.getAttribute('href') === currentPath) {
+                link.classList.add('active');
+            }
+        });
+    </script>
+</body>
+
+</html>

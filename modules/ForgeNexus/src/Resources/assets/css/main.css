@@ -1,0 +1,105 @@
+/* ==========================================================================
+   Forge – main.css
+   --------------------------------------------------------------------------
+   Central stylesheet that composes the small, focused layers:
+   • reset  • variables  • utilities  • form  • components
+   + a few layout / theme touches
+   ========================================================================== */
+
+/* 1. Compose the layers ------------------------------------------------- */
+/* If you use a build step, replace these with actual file contents. */
+@import url("./reset.css");
+@import url("./variables.css");
+@import url("./utilities.css");
+@import url("./form.css");
+@import url("./components.css");
+
+/* 2. Global layout wrappers -------------------------------------------- */
+.container {
+    width: min(100% - var(--space-lg), 72rem);
+    margin-inline: auto;
+}
+
+.layout-shell {
+    display: flex;
+    min-height: 100vh;
+    flex-direction: column;
+}
+
+.layout-shell__main {
+    flex: 1 1 auto;
+    padding-block: var(--space-lg);
+}
+
+/* Sticky footer trick */
+.layout-shell__footer {
+    margin-top: auto;
+    padding: var(--space-sm) 0;
+    font-size: var(--fs-small);
+    text-align: center;
+    color: var(--color-text-muted, hsla(0, 0%, 0%, .55));
+}
+
+/* 3. Global headings spacing ------------------------------------------- */
+h1:not(:first-child),
+h2:not(:first-child),
+h3:not(:first-child) {
+    margin-top: var(--space-lg);
+}
+
+/* 4. Code blocks -------------------------------------------------------- */
+pre, code, kbd, samp {
+    font-family: var(--font-mono, ui-monospace, SFMono-Regular, "Roboto Mono", monospace);
+}
+
+pre {
+    background: var(--color-surface-alt, hsla(0, 0%, 0%, .04));
+    padding: var(--space-sm);
+    border-radius: var(--radius-base);
+    overflow-x: auto;
+}
+
+/* 5. Theme toggle helper (optional) ------------------------------------ */
+[data-theme="dark"] .brand-invert {
+    display: inline;
+}
+[data-theme="dark"] .brand-normal {
+    display: none;
+}
+[data-theme="light"] .brand-invert {
+    display: none;
+}
+[data-theme="light"] .brand-normal {
+    display: inline;
+}
+
+/* 6. Skip‑link for accessibility --------------------------------------- */
+.skip-link {
+    position: absolute;
+    top: 0;
+    inset-inline-start: 0;
+    transform: translateY(-100%);
+    background: var(--color-brand);
+    color: var(--color-neutral-100);
+    padding: var(--space-xs) var(--space-sm);
+    border-radius: var(--radius-base);
+    transition: transform .2s ease;
+}
+.skip-link:focus {
+    transform: translateY(0);
+}
+
+/* 7. Print tweaks ------------------------------------------------------- */
+@media print {
+    body {
+        background: #fff;
+        color: #000;
+    }
+    a:not([href^="#"])::after {
+        content: " (" attr(href) ")";
+        font-size: .85em;
+    }
+    nav, .btn, .alert {
+        display: none !important;
+    }
+}

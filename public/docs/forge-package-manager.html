@@ -1,0 +1,1175 @@
+<!doctype html>
+<html lang="en" class="scroll-smooth">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Forge Engine</title>
+        <script src="https://cdn.tailwindcss.com"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-core.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/autoloader/prism-autoloader.min.js"></script>
+        <link
+            href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css"
+            rel="stylesheet"
+        />
+        <link
+            href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+            rel="stylesheet"
+        />
+        <style>
+            .code-block {
+                background: #2d3748;
+                border-radius: 0.5rem;
+            }
+
+            .sidebar {
+                position: sticky;
+                top: 80px;
+                height: calc(100vh - 80px);
+                overflow-y: auto;
+            }
+
+            .feature-card {
+                transition: all 0.3s ease;
+            }
+
+            .feature-card:hover {
+                transform: translateY(-2px);
+            }
+
+            .nav-link {
+                transition: all 0.3s ease;
+            }
+
+            .nav-link:hover {
+                background-color: #f3f4f6;
+                padding-left: 1.5rem;
+            }
+
+            .nav-link.active {
+                background-color: #e0e7ff;
+                color: #4338ca;
+                border-left: 4px solid #6366f1;
+            }
+
+            .section-anchor {
+                scroll-margin-top: 2rem;
+            }
+
+            /* Mobile menu styles */
+            #mobile-menu {
+                display: none;
+            }
+
+            #mobile-menu:not(.hidden) {
+                display: block;
+            }
+
+            @media (max-width: 767px) {
+                .lg\:w-1\/4 {
+                    position: fixed;
+                    top: 0;
+                    left: 0;
+                    height: 100vh;
+                    width: 80%;
+                    max-width: 320px;
+                    z-index: 50;
+                    transform: translateX(-100%);
+                    transition: transform 0.3s ease;
+                    background: white;
+                    overflow-y: auto;
+                }
+
+                .lg\:w-1\/4.mobile-menu-open {
+                    transform: translateX(0);
+                }
+
+                .mobile-menu-overlay {
+                    position: fixed;
+                    top: 0;
+                    left: 0;
+                    width: 100%;
+                    height: 100%;
+                    background: rgba(0, 0, 0, 0.5);
+                    z-index: 40;
+                    display: none;
+                }
+
+                .mobile-menu-overlay.active {
+                    display: block;
+                }
+            }
+        </style>
+    </head>
+
+    <body class="bg-gray-50 text-gray-900">
+        <!-- Navigation -->
+        <nav class="bg-white shadow-sm border-b">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="flex justify-between h-16">
+                    <div class="flex items-center">
+                        <div class="flex-shrink-0">
+                            <h1 class="text-xl font-bold text-gray-900">
+                                Forge Engine
+                            </h1>
+                        </div>
+                        <div class="hidden sm:ml-6 sm:flex sm:space-x-8">
+                            <a
+                                href="index.html"
+                                class="text-gray-900 inline-flex items-center px-1 pt-1 text-sm font-medium hover:text-blue-600"
+                            >
+                                Home
+                            </a>
+                            <a
+                                href="getting-started.html"
+                                class="text-gray-900 inline-flex items-center px-1 pt-1 text-sm font-medium hover:text-blue-600"
+                            >
+                                Getting Started
+                            </a>
+                            <a
+                                href="core-concepts.html"
+                                class="text-gray-900 inline-flex items-center px-1 pt-1 text-sm font-medium hover:text-blue-600"
+                            >
+                                Core Concepts
+                            </a>
+                            <a
+                                href="modules.html"
+                                class="text-blue-600 inline-flex items-center px-1 pt-1 text-sm font-medium border-b-2 border-blue-600"
+                            >
+                                Modules
+                            </a>
+                            <a
+                                href="api-reference.html"
+                                class="text-gray-900 inline-flex items-center px-1 pt-1 text-sm font-medium hover:text-blue-600"
+                            >
+                                API Reference
+                            </a>
+                        </div>
+                    </div>
+                    <!-- Mobile menu button -->
+                    <div class="flex items-center sm:hidden">
+                        <button
+                            id="mobile-menu-button"
+                            class="text-gray-700 hover:text-blue-600 p-2"
+                        >
+                            <i class="fas fa-bars text-xl"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Mobile menu -->
+            <div
+                id="mobile-menu"
+                class="sm:hidden hidden bg-white border-t border-gray-200"
+            >
+                <div class="px-2 pt-2 pb-3 space-y-1">
+                    <a
+                        href="index.html"
+                        class="block px-3 py-2 text-gray-900 hover:text-blue-600"
+                    >
+                        Home
+                    </a>
+                    <a
+                        href="getting-started.html"
+                        class="block px-3 py-2 text-gray-900 hover:text-blue-600"
+                    >
+                        Getting Started
+                    </a>
+                    <a
+                        href="core-concepts.html"
+                        class="block px-3 py-2 text-gray-900 hover:text-blue-600"
+                    >
+                        Core Concepts
+                    </a>
+                    <a
+                        href="modules.html"
+                        class="block px-3 py-2 text-blue-600 font-medium"
+                    >
+                        Modules
+                    </a>
+                    <a
+                        href="api-reference.html"
+                        class="block px-3 py-2 text-gray-900 hover:text-blue-600"
+                    >
+                        API Reference
+                    </a>
+                </div>
+            </div>
+        </nav>
+
+        <!-- Main Content -->
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+            <div class="flex flex-col lg:flex-row gap-8">
+                <!-- Sidebar Navigation -->
+                <div id="sidebar-nav" class="lg:w-1/4">
+                    <!-- Mobile menu overlay -->
+                    <div
+                        id="mobile-menu-overlay"
+                        class="mobile-menu-overlay"
+                    ></div>
+
+                    <div class="bg-white rounded-lg shadow-sm p-6 sticky top-8">
+                        <h3 class="text-lg font-semibold text-gray-900 mb-4">
+                            PackageManager
+                        </h3>
+                        <nav class="space-y-2">
+                            <a
+                                href="#overview"
+                                class="nav-link block px-3 py-2 text-sm text-gray-700 rounded-md hover:text-blue-600"
+                            >
+                                Overview
+                            </a>
+                            <a
+                                href="#features"
+                                class="nav-link block px-3 py-2 text-sm text-gray-700 rounded-md hover:text-blue-600"
+                            >
+                                Features
+                            </a>
+                            <a
+                                href="#installation"
+                                class="nav-link block px-3 py-2 text-sm text-gray-700 rounded-md hover:text-blue-600"
+                            >
+                                Installation
+                            </a>
+                            <a
+                                href="#configuration"
+                                class="nav-link block px-3 py-2 text-sm text-gray-700 rounded-md hover:text-blue-600"
+                            >
+                                Configuration
+                            </a>
+                            <a
+                                href="#usage"
+                                class="nav-link block px-3 py-2 text-sm text-gray-700 rounded-md hover:text-blue-600"
+                            >
+                                Usage
+                            </a>
+                            <a
+                                href="#registries"
+                                class="nav-link block px-3 py-2 text-sm text-gray-700 rounded-md hover:text-blue-600"
+                            >
+                                Custom Registries
+                            </a>
+                            <a
+                                href="#commands"
+                                class="nav-link block px-3 py-2 text-sm text-gray-700 rounded-md hover:text-blue-600"
+                            >
+                                CLI Commands
+                            </a>
+                            <a
+                                href="#lock-file"
+                                class="nav-link block px-3 py-2 text-sm text-gray-700 rounded-md hover:text-blue-600"
+                            >
+                                Lock File
+                            </a>
+                            <a
+                                href="#best-practices"
+                                class="nav-link block px-3 py-2 text-sm text-gray-700 rounded-md hover:text-blue-600"
+                            >
+                                Best Practices
+                            </a>
+                        </nav>
+                    </div>
+                </div>
+
+                <!-- Main Content -->
+                <div class="lg:w-3/4">
+                    <div class="bg-white rounded-lg shadow-sm p-8">
+                        <h1 class="text-4xl font-bold text-gray-900 mb-6">
+                            ForgePackageManager
+                        </h1>
+                        <p class="text-xl text-gray-600 mb-8">
+                            Package and module management for Forge Engine.
+                        </p>
+
+                        <!-- Overview -->
+                        <section id="overview" class="section-anchor mb-12">
+                            <h2 class="text-2xl font-bold text-gray-900 mb-4">
+                                Overview
+                            </h2>
+                            <p class="text-gray-600 mb-6">
+                                Package manager for Forge modules with registry
+                                support and dependency management.
+                            </p>
+
+                            <div
+                                class="bg-blue-50 border border-blue-200 rounded-lg p-6"
+                            >
+                                <h3 class="font-semibold text-lg mb-4">
+                                    Key Benefits
+                                </h3>
+                                <div class="grid md:grid-cols-2 gap-4">
+                                    <div class="space-y-2">
+                                        <div class="flex items-center">
+                                            <span
+                                                >Integrity verification with
+                                                SHA-256 hashes</span
+                                            >
+                                        </div>
+                                        <div class="flex items-center">
+                                            <span
+                                                >Multiple registry support</span
+                                            >
+                                        </div>
+                                        <div class="flex items-center">
+                                            <span
+                                                >Version management and
+                                                constraints</span
+                                            >
+                                        </div>
+                                    </div>
+                                    <div class="space-y-2">
+                                        <div class="flex items-center">
+                                            <span
+                                                >Lock file for reproducible
+                                                installations</span
+                                            >
+                                        </div>
+                                        <div class="flex items-center">
+                                            <span
+                                                >Cached downloads for
+                                                performance</span
+                                            >
+                                        </div>
+                                        <div class="flex items-center">
+                                            <span
+                                                >Seamless Forge
+                                                integration</span
+                                            >
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </section>
+
+                        <!-- Features -->
+                        <section id="features" class="section-anchor mb-12">
+                            <h2 class="text-2xl font-bold text-gray-900 mb-6">
+                                Features
+                            </h2>
+
+                            <div class="grid md:grid-cols-2 gap-6">
+                                <div
+                                    class="feature-card bg-gradient-to-br from-blue-50 to-indigo-50 border border-blue-200 rounded-lg p-6"
+                                >
+                                    <div class="flex items-center mb-3">
+                                        <h3 class="text-lg font-semibold">
+                                            Multi-Registry Support
+                                        </h3>
+                                    </div>
+                                    <p class="text-gray-600 text-sm mb-3">
+                                        Connect to multiple registries including
+                                        official Forge registry and custom
+                                        private registries.
+                                    </p>
+                                    <ul class="text-xs text-gray-500 space-y-1">
+                                        <li>• Official Forge registry</li>
+                                        <li>• Private GitHub repositories</li>
+                                        <li>• Custom registry endpoints</li>
+                                    </ul>
+                                </div>
+
+                                <div
+                                    class="feature-card bg-gradient-to-br from-green-50 to-emerald-50 border border-green-200 rounded-lg p-6"
+                                >
+                                    <div class="flex items-center mb-3">
+                                        <h3 class="text-lg font-semibold">
+                                            Integrity Verification
+                                        </h3>
+                                    </div>
+                                    <p class="text-gray-600 text-sm mb-3">
+                                        Every module download is verified using
+                                        SHA-256 integrity hashes to ensure
+                                        security.
+                                    </p>
+                                    <ul class="text-xs text-gray-500 space-y-1">
+                                        <li>• SHA-256 hash verification</li>
+                                        <li>• Tamper detection</li>
+                                        <li>• Secure downloads</li>
+                                    </ul>
+                                </div>
+
+                                <div
+                                    class="feature-card bg-gradient-to-br from-purple-50 to-violet-50 border border-purple-200 rounded-lg p-6"
+                                >
+                                    <div class="flex items-center mb-3">
+                                        <h3 class="text-lg font-semibold">
+                                            Version Management
+                                        </h3>
+                                    </div>
+                                    <p class="text-gray-600 text-sm mb-3">
+                                        Sophisticated version resolution with
+                                        support for semantic versioning and
+                                        constraints.
+                                    </p>
+                                    <ul class="text-xs text-gray-500 space-y-1">
+                                        <li>• Semantic versioning</li>
+                                        <li>• Version constraints</li>
+                                        <li>• Latest version detection</li>
+                                    </ul>
+                                </div>
+
+                                <div
+                                    class="feature-card bg-gradient-to-br from-orange-50 to-red-50 border border-orange-200 rounded-lg p-6"
+                                >
+                                    <div class="flex items-center mb-3">
+                                        <h3 class="text-lg font-semibold">
+                                            Lock File Support
+                                        </h3>
+                                    </div>
+                                    <p class="text-gray-600 text-sm mb-3">
+                                        Generate and use lock files for
+                                        reproducible module installations across
+                                        environments.
+                                    </p>
+                                    <ul class="text-xs text-gray-500 space-y-1">
+                                        <li>• Reproducible installations</li>
+                                        <li>• Environment consistency</li>
+                                        <li>• Team collaboration</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </section>
+
+                        <!-- Installation -->
+                        <section id="installation" class="section-anchor mb-12">
+                            <h2 class="text-2xl font-bold text-gray-900 mb-4">
+                                Installation
+                            </h2>
+                            <p class="text-gray-600 mb-6">
+                                Pre-installed with Forge Engine. Manual
+                                installation options available.
+                            </p>
+
+                            <div
+                                class="code-block p-6 text-white rounded-lg mb-6"
+                            >
+                                <pre><code class="language-bash"># Install ForgePackageManager module
+php forge.php install:module ForgePackageManager
+
+# Install specific version
+php forge.php install:module ForgePackageManager@1.0.0
+
+# Verify installation
+php forge.php list:modules | grep ForgePackageManager</code></pre>
+                            </div>
+
+                            <div
+                                class="bg-green-50 border-l-4 border-green-400 p-4"
+                            >
+                                <div class="flex">
+                                    <div class="ml-3">
+                                        <p class="text-sm text-green-700">
+                                            <strong>Pre-installed:</strong>
+                                            ForgePackageManager is included by
+                                            default in new Forge installations.
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                        </section>
+
+                        <!-- Configuration -->
+                        <section
+                            id="configuration"
+                            class="section-anchor mb-12"
+                        >
+                            <h2 class="text-2xl font-bold text-gray-900 mb-4">
+                                Configuration
+                            </h2>
+                            <p class="text-gray-600 mb-6">
+                                Configure through
+                                <code class="bg-gray-100 px-2 py-1 rounded"
+                                    >config/forge_package_manager.php</code
+                                >
+                                file.
+                            </p>
+
+                            <h3 class="text-lg font-semibold mb-3">
+                                Basic Configuration
+                            </h3>
+                            <div
+                                class="code-block p-6 text-white rounded-lg mb-6"
+                            >
+                                <pre><code class="language-php"><?php
+
+return [
+    'registry' => [
+        // Official Forge registry (included by default)
+        [
+            'name' => 'kernel-module-registry',
+            'url' => 'https://github.com/forge-kernel/kernel-module-registry',
+            'branch' => 'main',
+            'private' => false,
+        ],
+        // Custom private registry example
+        [
+            'name' => 'my-company-modules',
+            'url' => 'https://github.com/mycompany/private-modules',
+            'branch' => 'main',
+            'private' => true,
+            'personal_token' => env('GITHUB_TOKEN', 'your-secret-token'),
+        ],
+    ],
+    'cache_ttl' => 3600, // Cache time-to-live in seconds
+];</code></pre>
+                            </div>
+
+                            <h3 class="text-lg font-semibold mb-3">
+                                Environment Variables
+                            </h3>
+                            <div
+                                class="bg-blue-50 border border-blue-200 rounded-lg p-6 mb-6"
+                            >
+                                <p class="text-gray-600 mb-3">
+                                    Use environment variables for sensitive
+                                    configuration:
+                                </p>
+                                <div
+                                    class="code-block p-4 text-white rounded-lg"
+                                >
+                                    <pre><code class="language-bash"># .env file
+GITHUB_TOKEN=ghp_your_github_personal_access_token
+PRIVATE_REGISTRY_TOKEN=your_private_registry_token
+CACHE_TTL=7200</code></pre>
+                                </div>
+                            </div>
+                        </section>
+
+                        <!-- Usage -->
+                        <section id="usage" class="section-anchor mb-12">
+                            <h2 class="text-2xl font-bold text-gray-900 mb-4">
+                                Usage
+                            </h2>
+
+                            <h3 class="text-lg font-semibold mb-3">
+                                Installing Modules
+                            </h3>
+                            <div
+                                class="code-block p-6 text-white rounded-lg mb-6"
+                            >
+                                <pre><code class="language-bash"># Install latest version of a module
+php forge.php install:module ForgeAuth
+
+# Install specific version
+php forge.php install:module ForgeAuth@1.2.0
+
+# Force refresh cache during installation
+php forge.php install:module ForgeAuth force
+
+# Install from specific registry
+php forge.php install:module --registry=my-company-modules CustomModule</code></pre>
+                            </div>
+
+                            <h3 class="text-lg font-semibold mb-3">
+                                Removing Modules
+                            </h3>
+                            <div
+                                class="code-block p-6 text-white rounded-lg mb-6"
+                            >
+                                <pre><code class="language-bash"># Remove a module
+php forge.php remove:module ForgeAuth
+
+# Remove with confirmation
+php forge.php remove:module ForgeAuth --confirm</code></pre>
+                            </div>
+
+                            <h3 class="text-lg font-semibold mb-3">
+                                Listing Modules
+                            </h3>
+                            <div
+                                class="code-block p-6 text-white rounded-lg mb-6"
+                            >
+                                <pre><code class="language-bash"># List all available modules
+php forge.php list:modules
+
+# List installed modules
+php forge.php list:modules --installed
+
+# List modules from specific registry
+php forge.php list:modules --registry=forge-engine-modules</code></pre>
+                            </div>
+                        </section>
+
+                        <!-- Custom Registries -->
+                        <section id="registries" class="section-anchor mb-12">
+                            <h2 class="text-2xl font-bold text-gray-900 mb-4">
+                                Custom Registries
+                            </h2>
+                            <p class="text-gray-600 mb-6">
+                                ForgePackageManager supports custom registries
+                                for private modules and enterprise deployments.
+                            </p>
+
+                            <h3 class="text-lg font-semibold mb-3">
+                                Adding a Custom Registry
+                            </h3>
+                            <div
+                                class="code-block p-6 text-white rounded-lg mb-6"
+                            >
+                                <pre><code class="language-php">// config/forge_package_manager.php
+return [
+    'registry' => [
+        // Private GitHub repository
+        [
+            'name' => 'acidlake-modules',
+            'url' => 'https://github.com/acidlake/acidlake-modules',
+            'branch' => 'main',
+            'private' => true,
+            'personal_token' => env('GITHUB_TOKEN', 'your-secret-token'),
+        ],
+
+        // Private GitLab repository
+        [
+            'name' => 'company-gitlab-modules',
+            'url' => 'https://gitlab.company.com/forge-modules',
+            'branch' => 'main',
+            'private' => true,
+            'personal_token' => env('GITLAB_TOKEN'),
+        ],
+
+        // Public custom registry
+        [
+            'name' => 'community-modules',
+            'url' => 'https://github.com/forge-community/modules',
+            'branch' => 'main',
+            'private' => false,
+        ],
+    ],
+    'cache_ttl' => 3600
+];</code></pre>
+                            </div>
+
+                            <h3 class="text-lg font-semibold mb-3">
+                                Registry Structure
+                            </h3>
+                            <p class="text-gray-600 mb-3">
+                                Your custom registry should follow the Forge
+                                module registry structure:
+                            </p>
+                            <div
+                                class="code-block p-6 text-white rounded-lg mb-6"
+                            >
+                                <pre><code class="language-text">your-registry-repo/
+├── modules/
+│   ├── YourModule1/
+│   │   ├── forge.json
+│   │   └── src/
+│   ├── YourModule2/
+│   │   ├── forge.json
+│   │   └── src/
+│   └── modules.json
+└── README.md</code></pre>
+                            </div>
+
+                            <h3 class="text-lg font-semibold mb-3">
+                                Advanced Registry Examples
+                            </h3>
+                            <p class="text-gray-600 mb-3">
+                                Here are more examples of different registry
+                                configurations you can add:
+                            </p>
+                            <div
+                                class="code-block p-6 text-white rounded-lg mb-6"
+                            >
+                                <pre><code class="language-php">// config/forge_package_manager.php
+return [
+    'registry' => [
+        // Enterprise GitHub with organization
+        [
+            'name' => 'company-enterprise-modules',
+            'url' => 'https://github.company.com/org/forge-modules',
+            'branch' => 'main',
+            'private' => true,
+            'personal_token' => env('GITHUB_ENTERPRISE_TOKEN'),
+        ],
+
+        // GitLab with specific group
+        [
+            'name' => 'gitlab-group-modules',
+            'url' => 'https://gitlab.com/my-group/forge-modules',
+            'branch' => 'develop',
+            'private' => true,
+            'personal_token' => env('GITLAB_ACCESS_TOKEN'),
+        ],
+
+        // Bitbucket private repository
+        [
+            'name' => 'bitbucket-modules',
+            'url' => 'https://bitbucket.org/team/forge-modules',
+            'branch' => 'master',
+            'private' => true,
+            'personal_token' => env('BITBUCKET_APP_PASSWORD'),
+        ],
+
+        // Azure DevOps repository
+        [
+            'name' => 'azure-devops-modules',
+            'url' => 'https://dev.azure.com/organization/project/_git/forge-modules',
+            'branch' => 'main',
+            'private' => true,
+            'personal_token' => env('AZURE_DEVOPS_TOKEN'),
+        ],
+
+        // Self-hosted Git server
+        [
+            'name' => 'self-hosted-modules',
+            'url' => 'https://git.company.com/forge/modules',
+            'branch' => 'stable',
+            'private' => true,
+            'personal_token' => env('SELF_HOSTED_TOKEN'),
+        ],
+
+        // Public community registry (no token needed)
+        [
+            'name' => 'community-contrib',
+            'url' => 'https://github.com/forge-community/contrib-modules',
+            'branch' => 'main',
+            'private' => false,
+        ],
+    ],
+    'cache_ttl' => 3600
+];</code></pre>
+                            </div>
+
+                            <div
+                                class="bg-green-50 border-l-4 border-green-400 p-4 mb-6"
+                            >
+                                <div class="flex">
+                                    <div class="ml-3">
+                                        <p class="text-sm text-green-700">
+                                            <strong>Pro Tip:</strong> Use
+                                            environment variables for tokens to
+                                            keep sensitive information out of
+                                            your codebase. Add them to your
+                                            <code>.env</code> file.
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div
+                                class="bg-yellow-50 border-l-4 border-yellow-400 p-4"
+                            >
+                                <div class="flex">
+                                    <div class="ml-3">
+                                        <p class="text-sm text-yellow-700">
+                                            <strong>Private Registries:</strong>
+                                            Ensure your personal access tokens
+                                            have appropriate permissions for
+                                            repository access.
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                        </section>
+
+                        <!-- Commands -->
+                        <section id="commands" class="section-anchor mb-12">
+                            <h2 class="text-2xl font-bold text-gray-900 mb-4">
+                                CLI Commands
+                            </h2>
+
+                            <div class="space-y-6">
+                                <div
+                                    class="border border-gray-200 rounded-lg p-6"
+                                >
+                                    <h3 class="font-semibold text-lg mb-2">
+                                        <code
+                                            class="bg-gray-100 px-2 py-1 rounded text-sm"
+                                            >install:module</code
+                                        >
+                                    </h3>
+                                    <p class="text-gray-600 text-sm mb-3">
+                                        Install a module from the configured
+                                        registries.
+                                    </p>
+                                    <div
+                                        class="code-block p-4 text-white rounded-lg"
+                                    >
+                                        <pre><code class="language-bash">php forge.php install:module [module-name] [version] [force]</code></pre>
+                                    </div>
+                                    <div class="mt-3 text-xs text-gray-500">
+                                        <strong>Examples:</strong>
+                                        <ul class="mt-1 space-y-1">
+                                            <li>
+                                                •
+                                                <code
+                                                    >php forge.php
+                                                    install:module
+                                                    ForgeAuth</code
+                                                >
+                                            </li>
+                                            <li>
+                                                •
+                                                <code
+                                                    >php forge.php
+                                                    install:module
+                                                    ForgeAuth@1.2.0</code
+                                                >
+                                            </li>
+                                            <li>
+                                                •
+                                                <code
+                                                    >php forge.php
+                                                    install:module ForgeAuth
+                                                    force</code
+                                                >
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </div>
+
+                                <div
+                                    class="border border-gray-200 rounded-lg p-6"
+                                >
+                                    <h3 class="font-semibold text-lg mb-2">
+                                        <code
+                                            class="bg-gray-100 px-2 py-1 rounded text-sm"
+                                            >remove:module</code
+                                        >
+                                    </h3>
+                                    <p class="text-gray-600 text-sm mb-3">
+                                        Remove an installed module from your
+                                        application.
+                                    </p>
+                                    <div
+                                        class="code-block p-4 text-white rounded-lg"
+                                    >
+                                        <pre><code class="language-bash">php forge.php remove:module [module-name] [--confirm]</code></pre>
+                                    </div>
+                                </div>
+
+                                <div
+                                    class="border border-gray-200 rounded-lg p-6"
+                                >
+                                    <h3 class="font-semibold text-lg mb-2">
+                                        <code
+                                            class="bg-gray-100 px-2 py-1 rounded text-sm"
+                                            >list:modules</code
+                                        >
+                                    </h3>
+                                    <p class="text-gray-600 text-sm mb-3">
+                                        List available or installed modules.
+                                    </p>
+                                    <div
+                                        class="code-block p-4 text-white rounded-lg"
+                                    >
+                                        <pre><code class="language-bash">php forge.php list:modules [--installed] [--registry=name]</code></pre>
+                                    </div>
+                                </div>
+                            </div>
+                        </section>
+
+                        <!-- Lock File -->
+                        <section id="lock-file" class="section-anchor mb-12">
+                            <h2 class="text-2xl font-bold text-gray-900 mb-4">
+                                Lock File (forge-lock.json)
+                            </h2>
+                            <p class="text-gray-600 mb-6">
+                                The lock file ensures reproducible installations
+                                by locking module versions and integrity hashes.
+                            </p>
+
+                            <h3 class="text-lg font-semibold mb-3">
+                                Lock File Structure
+                            </h3>
+                            <div
+                                class="code-block p-6 text-white rounded-lg mb-6"
+                            >
+                                <pre><code class="language-json">{
+  "modules": {
+    "ForgeAuth": {
+      "version": "1.2.0",
+      "url": "https://github.com/forge-kernel/kernel-module-registry/archive/main/modules/ForgeAuth.zip",
+      "integrity": "sha256-abc123def456...",
+      "registry": "kernel-module-registry"
+    },
+    "ForgeUI": {
+      "version": "2.1.0",
+      "url": "https://github.com/forge-kernel/kernel-module-registry/archive/main/modules/ForgeUI.zip",
+      "integrity": "sha256-def456ghi789...",
+      "registry": "kernel-module-registry"
+    },
+    "CustomModule": {
+      "version": "1.0.0",
+      "url": "https://github.com/mycompany/modules/archive/main/modules/CustomModule.zip",
+      "integrity": "sha256-ghi789jkl012...",
+      "registry": "my-company-modules"
+    }
+  },
+  "registries": {
+    "kernel-module-registry": {
+      "url": "https://github.com/forge-kernel/kernel-module-registry",
+      "branch": "main"
+    },
+    "my-company-modules": {
+      "url": "https://github.com/mycompany/modules",
+      "branch": "main"
+    }
+  }
+}</code></pre>
+                            </div>
+
+                            <h3 class="text-lg font-semibold mb-3">
+                                Generating Lock File
+                            </h3>
+                            <div
+                                class="code-block p-6 text-white rounded-lg mb-6"
+                            >
+                                <pre><code class="language-bash"># Generate lock file from current installations
+php forge.php modules:lock
+
+# Install from existing lock file
+php forge.php install:from-lock</code></pre>
+                            </div>
+
+                            <div
+                                class="bg-blue-50 border-l-4 border-blue-400 p-4"
+                            >
+                                <div class="flex">
+                                    <div class="ml-3">
+                                        <p class="text-sm text-blue-700">
+                                            <strong>Best Practice:</strong>
+                                            Commit your
+                                            <code>forge-lock.json</code> file to
+                                            version control for consistent
+                                            deployments across environments.
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                        </section>
+
+                        <!-- Best Practices -->
+                        <section
+                            id="best-practices"
+                            class="section-anchor mb-12"
+                        >
+                            <h2 class="text-2xl font-bold text-gray-900 mb-4">
+                                Best Practices
+                            </h2>
+
+                            <div class="grid md:grid-cols-2 gap-6">
+                                <div
+                                    class="bg-green-50 border border-green-200 rounded-lg p-6"
+                                >
+                                    <h3
+                                        class="font-semibold text-lg mb-3 text-green-700"
+                                    >
+                                        Do
+                                    </h3>
+                                    <ul class="space-y-2 text-sm text-gray-600">
+                                        <li>
+                                            • Use semantic versioning for your
+                                            modules
+                                        </li>
+                                        <li>
+                                            • Commit
+                                            <code>forge-lock.json</code> to
+                                            version control
+                                        </li>
+                                        <li>
+                                            • Use environment variables for
+                                            tokens
+                                        </li>
+                                        <li>
+                                            • Test module installations in CI/CD
+                                        </li>
+                                        <li>
+                                            • Keep registries organized and
+                                            documented
+                                        </li>
+                                        <li>• Use descriptive module names</li>
+                                    </ul>
+                                </div>
+
+                                <div
+                                    class="bg-red-50 border border-red-200 rounded-lg p-6"
+                                >
+                                    <h3
+                                        class="font-semibold text-lg mb-3 text-red-700"
+                                    >
+                                        Don't
+                                    </h3>
+                                    <ul class="space-y-2 text-sm text-gray-600">
+                                        <li>
+                                            • Hardcode tokens in configuration
+                                            files
+                                        </li>
+                                        <li>
+                                            • Ignore integrity verification
+                                            warnings
+                                        </li>
+                                        <li>
+                                            • Mix production and development
+                                            modules
+                                        </li>
+                                        <li>• Skip testing module updates</li>
+                                        <li>
+                                            • Use unstable versions in
+                                            production
+                                        </li>
+                                        <li>
+                                            • Forget to document dependencies
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+
+                            <div
+                                class="mt-6 bg-yellow-50 border border-yellow-200 rounded-lg p-6"
+                            >
+                                <h3
+                                    class="font-semibold text-lg mb-3 text-yellow-700"
+                                >
+                                    Security Considerations
+                                </h3>
+                                <ul class="space-y-2 text-sm text-gray-600">
+                                    <li>
+                                        • Always verify module integrity hashes
+                                    </li>
+                                    <li>
+                                        • Use private registries for sensitive
+                                        modules
+                                    </li>
+                                    <li>
+                                        • Rotate personal access tokens
+                                        regularly
+                                    </li>
+                                    <li>
+                                        • Audit module permissions and access
+                                    </li>
+                                    <li>• Monitor registry access logs</li>
+                                </ul>
+                            </div>
+                        </section>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <footer class="bg-gray-900 text-white py-8 mt-16">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+                <div class="mb-4">
+                    <span class="text-lg font-bold">Forge Engine</span>
+                </div>
+                <p class="text-gray-400">
+                    A toolbox for builders who like to do things their way.
+                </p>
+            </div>
+        </footer>
+
+        <script>
+            // Smooth scrolling for anchor links
+            document.querySelectorAll('a[href^="#"]').forEach((anchor) => {
+                anchor.addEventListener("click", function (e) {
+                    e.preventDefault();
+                    const target = document.querySelector(
+                        this.getAttribute("href"),
+                    );
+                    if (target) {
+                        target.scrollIntoView({
+                            behavior: "smooth",
+                            block: "start",
+                        });
+                    }
+                });
+            });
+
+            // Mobile menu toggle
+            const mobileMenuButton =
+                document.getElementById("mobile-menu-button");
+            const mobileMenu = document.getElementById("mobile-menu");
+            const mobileSidebarButton = document.getElementById(
+                "mobile-sidebar-button",
+            );
+            const mobileMenuOverlay = document.getElementById(
+                "mobile-menu-overlay",
+            );
+            const sidebar = document.getElementById("sidebar-nav");
+
+            function toggleMobileMenu() {
+                mobileMenu.classList.toggle("hidden");
+            }
+
+            function openMobileSidebar() {
+                sidebar.classList.add("mobile-menu-open");
+                mobileMenuOverlay.classList.add("active");
+            }
+
+            function closeMobileSidebar() {
+                sidebar.classList.remove("mobile-menu-open");
+                mobileMenuOverlay.classList.remove("active");
+            }
+
+            if (mobileMenuButton) {
+                mobileMenuButton.addEventListener("click", toggleMobileMenu);
+            }
+
+            if (mobileSidebarButton) {
+                mobileSidebarButton.addEventListener(
+                    "click",
+                    openMobileSidebar,
+                );
+            }
+
+            if (mobileMenuOverlay) {
+                mobileMenuOverlay.addEventListener("click", closeMobileSidebar);
+            }
+
+            // Close mobile menu when clicking on a link
+            document.querySelectorAll("#mobile-menu a").forEach((link) => {
+                link.addEventListener("click", () => {
+                    mobileMenu.classList.add("hidden");
+                });
+            });
+
+            // Close mobile menu when clicking outside
+            document.addEventListener("click", function (event) {
+                const isClickInsideMenu =
+                    mobileMenu && mobileMenu.contains(event.target);
+                const isClickOnMenuButton =
+                    mobileMenuButton && mobileMenuButton.contains(event.target);
+
+                if (
+                    mobileMenu &&
+                    !mobileMenu.classList.contains("hidden") &&
+                    !isClickInsideMenu &&
+                    !isClickOnMenuButton
+                ) {
+                    mobileMenu.classList.add("hidden");
+                }
+            });
+
+            // Close mobile menu and sidebar on window resize if above mobile breakpoint
+            window.addEventListener("resize", function () {
+                if (window.innerWidth >= 640) {
+                    if (mobileMenu) mobileMenu.classList.add("hidden");
+                    closeMobileSidebar();
+                }
+            });
+
+            // Update active navigation on scroll
+            window.addEventListener("scroll", function () {
+                const sections = document.querySelectorAll(".section-anchor");
+                const navLinks = document.querySelectorAll(".nav-link");
+
+                let current = "";
+                sections.forEach((section) => {
+                    const sectionTop = section.offsetTop - 100;
+                    if (window.pageYOffset >= sectionTop) {
+                        current = section.getAttribute("id");
+                    }
+                });
+
+                navLinks.forEach((link) => {
+                    link.classList.remove("active");
+                    if (link.getAttribute("href") === "#" + current) {
+                        link.classList.add("active");
+                    }
+                });
+            });
+        </script>
+    </body>
+</html>

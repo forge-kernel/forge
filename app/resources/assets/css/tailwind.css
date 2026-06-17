@@ -1,0 +1,659 @@
+@import "tailwindcss";
+
+:root {
+    --fw-primary: theme('colors.blue.600');
+    --fw-success: theme('colors.green.600');
+    --fw-error: theme('colors.red.600');
+    --fw-warning: theme('colors.yellow.600');
+    --fw-info: theme('colors.blue.600');
+}
+
+/* Flash Container Styles */
+.fw-flash-container {
+    @apply fixed top-4 right-4 z-50 flex flex-col gap-2;
+}
+
+.fw-flash-message {
+    @apply px-4 py-3 rounded-lg shadow-md min-w-[300px] max-w-sm;
+    @apply transition-opacity duration-300;
+    @apply break-words;
+}
+
+.fw-flash-message[data-flash-type="success"] {
+    @apply bg-green-50 border border-green-200 text-green-800;
+}
+
+.fw-flash-message[data-flash-type="error"] {
+    @apply bg-red-50 border border-red-200 text-red-800;
+}
+
+.fw-flash-message[data-flash-type="info"] {
+    @apply bg-blue-50 border border-blue-200 text-blue-800;
+}
+
+.fw-flash-message[data-flash-type="warning"] {
+    @apply bg-yellow-50 border border-yellow-200 text-yellow-800;
+}
+
+.fw-flash-message-dismissing {
+    @apply opacity-0;
+}
+
+.fw-flash-message-text {
+    @apply break-words;
+}
+
+/* Modal Styles */
+.fw-modal {
+    @apply fixed inset-0 z-50 overflow-y-auto;
+    @apply opacity-0 pointer-events-none;
+    transition: opacity 0.2s ease-out;
+}
+
+.fw-modal:not(.hidden) {
+    @apply opacity-100 pointer-events-auto;
+}
+
+.fw-modal.hidden {
+    @apply hidden;
+}
+
+.fw-modal-backdrop {
+    @apply fixed inset-0 bg-black/50 backdrop-blur-sm;
+    @apply opacity-0;
+    transition: opacity 0.2s ease-out;
+}
+
+.fw-modal:not(.hidden) .fw-modal-backdrop {
+    @apply opacity-100;
+}
+
+.fw-modal-wrapper {
+    @apply flex items-center justify-center min-h-screen px-4 py-4;
+}
+
+.fw-modal-content {
+    @apply relative bg-white rounded-lg shadow-xl transform;
+    @apply max-w-md w-full mx-auto;
+    @apply opacity-0;
+    transform: translateY(-20px) scale(0.95);
+    transition: opacity 0.3s ease-out, transform 0.3s ease-out;
+}
+
+.fw-modal:not(.hidden) .fw-modal-content {
+    @apply opacity-100;
+    transform: translateY(0) scale(1);
+}
+
+.fw-modal-content-sm {
+    @apply max-w-sm;
+}
+
+.fw-modal-content-lg {
+    @apply max-w-lg;
+}
+
+.fw-modal-content-xl {
+    @apply max-w-xl;
+}
+
+.fw-modal-content-2xl {
+    @apply max-w-2xl;
+}
+
+.fw-modal-content-full {
+    @apply max-w-full;
+}
+
+.fw-modal-header {
+    @apply px-6 pt-4 flex justify-between items-center;
+}
+
+.fw-modal-title {
+    @apply text-xl font-semibold text-gray-900;
+}
+
+.fw-modal-body {
+    @apply px-6 py-4;
+}
+
+.fw-modal-message {
+    @apply text-gray-600;
+}
+
+.fw-modal-footer {
+    @apply px-6 pb-4 flex justify-end gap-2;
+}
+
+.fw-modal-close {
+    @apply text-gray-400 hover:text-gray-600 transition-colors;
+}
+
+.fw-modal-button {
+    @apply px-4 py-2 rounded transition-colors;
+}
+
+.fw-modal-button-primary {
+    @apply bg-blue-600 hover:bg-blue-700 text-white;
+}
+
+.fw-modal-button-secondary {
+    @apply bg-gray-200 hover:bg-gray-300 text-gray-800;
+}
+
+.fw-modal-cancel {
+    @apply px-4 py-2 rounded transition-colors;
+    @apply bg-gray-200 hover:bg-gray-300 text-gray-800;
+}
+
+.fw-modal-confirm {
+    @apply px-4 py-2 rounded transition-colors;
+    @apply bg-blue-600 hover:bg-blue-700 text-white;
+}
+
+/* Notification Styles */
+.fw-notifications-container {
+    @apply fixed top-4 right-4 z-[9999] flex flex-col gap-3;
+    @apply pointer-events-none;
+}
+
+.fw-notification {
+    @apply p-4 rounded-lg shadow-lg min-w-[320px] max-w-md;
+    @apply flex items-start gap-3;
+    @apply pointer-events-auto;
+    animation: fw-notification-slideIn 0.3s ease-out;
+}
+
+.fw-notification[data-type="success"] {
+    @apply bg-green-50 border-l-4 border-green-500 text-green-800;
+}
+
+.fw-notification[data-type="error"] {
+    @apply bg-red-50 border-l-4 border-red-500 text-red-800;
+}
+
+.fw-notification[data-type="info"] {
+    @apply bg-blue-50 border-l-4 border-blue-500 text-blue-800;
+}
+
+.fw-notification[data-type="warning"] {
+    @apply bg-yellow-50 border-l-4 border-yellow-500 text-yellow-800;
+}
+
+.fw-notification-dismissing {
+    animation: fw-notification-slideOut 0.3s ease-out forwards;
+}
+
+.fw-notification-icon {
+    @apply flex-shrink-0 w-5 h-5 mt-0.5;
+}
+
+.fw-notification-content {
+    @apply flex-1 break-words leading-relaxed;
+}
+
+.fw-notification-close {
+    @apply flex-shrink-0 bg-transparent border-0 cursor-pointer p-0;
+    @apply opacity-60 hover:opacity-100 transition-opacity duration-200;
+}
+
+/* Animation Classes */
+.fw-animate {
+    @apply duration-500 ease-in-out;
+    animation-fill-mode: both;
+}
+
+.fw-animate-fadeIn {
+    animation-name: fw-fadeIn;
+}
+
+.fw-animate-fadeOut {
+    animation-name: fw-fadeOut;
+}
+
+.fw-animate-slideIn {
+    animation-name: fw-slideIn;
+}
+
+.fw-animate-slideOut {
+    animation-name: fw-slideOut;
+}
+
+/* Keyframe Animations */
+@keyframes fw-modal-fadeIn {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+@keyframes fw-modal-backdrop-fadeIn {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+@keyframes fw-modal-slideIn {
+    from {
+        opacity: 0;
+        transform: translateY(-20px) scale(0.95);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+@keyframes fw-notification-slideIn {
+    from {
+        transform: translateX(100%);
+        opacity: 0;
+    }
+    to {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
+
+@keyframes fw-notification-slideOut {
+    from {
+        transform: translateX(0);
+        opacity: 1;
+    }
+    to {
+        transform: translateX(100%);
+        opacity: 0;
+    }
+}
+
+@keyframes fw-fadeIn {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+@keyframes fw-fadeOut {
+    from {
+        opacity: 1;
+    }
+    to {
+        opacity: 0;
+    }
+}
+
+@keyframes fw-slideIn {
+    from {
+        transform: translateY(-20px);
+        opacity: 0;
+    }
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+
+@keyframes fw-slideOut {
+    from {
+        transform: translateY(0);
+        opacity: 1;
+    }
+    to {
+        transform: translateY(-20px);
+        opacity: 0;
+    }
+}
+
+/* Tooltip Styles */
+.fw-tooltip {
+    @apply absolute z-50 px-3 py-2 text-sm font-medium text-white bg-gray-900 rounded-lg shadow-lg;
+    @apply pointer-events-none;
+}
+
+.fw-tooltip-arrow {
+    @apply absolute w-2 h-2 bg-gray-900;
+    transform: rotate(45deg);
+}
+
+.fw-tooltip-top .fw-tooltip-arrow {
+    @apply bottom-0 left-1/2 -translate-x-1/2 translate-y-1/2;
+}
+
+.fw-tooltip-bottom .fw-tooltip-arrow {
+    @apply top-0 left-1/2 -translate-x-1/2 -translate-y-1/2;
+}
+
+.fw-tooltip-left .fw-tooltip-arrow {
+    @apply right-0 top-1/2 translate-x-1/2 -translate-y-1/2;
+}
+
+.fw-tooltip-right .fw-tooltip-arrow {
+    @apply left-0 top-1/2 -translate-x-1/2 -translate-y-1/2;
+}
+
+/* Dropdown Styles */
+.fw-dropdown {
+    @apply relative inline-block;
+}
+
+.fw-dropdown-menu {
+    @apply absolute z-50 mt-2 min-w-[200px] bg-white rounded-lg shadow-lg;
+    @apply border border-gray-200 py-1;
+    @apply opacity-0 invisible transform scale-95 transition-all duration-200;
+}
+
+.fw-dropdown-menu.open {
+    @apply opacity-100 visible scale-100;
+}
+
+.fw-dropdown-item {
+    @apply block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100;
+    @apply cursor-pointer transition-colors;
+}
+
+.fw-dropdown-item.disabled {
+    @apply opacity-50 cursor-not-allowed;
+}
+
+.fw-dropdown-divider {
+    @apply my-1 border-t border-gray-200;
+}
+
+/* Tabs Styles */
+.fw-tabs {
+    @apply w-full;
+}
+
+.fw-tabs-list {
+    @apply flex border-b border-gray-200;
+}
+
+.fw-tabs-list-vertical {
+    @apply flex-col border-b-0 border-r border-gray-200;
+}
+
+.fw-tabs-trigger {
+    @apply px-4 py-2 text-sm font-medium text-gray-600;
+    @apply border-b-2 border-transparent hover:text-gray-900;
+    @apply transition-colors cursor-pointer;
+}
+
+.fw-tabs-trigger.active {
+    @apply text-blue-600 border-blue-600;
+}
+
+.fw-tabs-content {
+    @apply mt-4;
+}
+
+.fw-tabs-panel {
+    @apply hidden;
+}
+
+.fw-tabs-panel.active {
+    @apply block;
+}
+
+/* Accordion Styles */
+.fw-accordion {
+    @apply w-full space-y-2;
+}
+
+.fw-accordion-item {
+    @apply border border-gray-200 rounded-lg overflow-hidden;
+}
+
+.fw-accordion-trigger {
+    @apply w-full px-4 py-3 text-left flex items-center justify-between;
+    @apply bg-white hover:bg-gray-50 transition-colors;
+    @apply cursor-pointer;
+}
+
+.fw-accordion-trigger-icon {
+    @apply transition-transform duration-200;
+}
+
+.fw-accordion-trigger.open .fw-accordion-trigger-icon {
+    @apply rotate-180;
+}
+
+.fw-accordion-content {
+    @apply px-4 py-3 bg-gray-50;
+    @apply max-h-0 overflow-hidden transition-all duration-300;
+}
+
+.fw-accordion-content.open {
+    @apply max-h-[1000px];
+}
+
+/* Loading Styles */
+.fw-loading {
+    @apply inline-block;
+}
+
+.fw-loading-overlay {
+    @apply fixed inset-0 z-50 flex items-center justify-center;
+    @apply bg-black/20 backdrop-blur-sm;
+}
+
+.fw-loading-spinner {
+    @apply w-8 h-8 border-4 border-gray-200 border-t-blue-600 rounded-full;
+    animation: fw-spin 1s linear infinite;
+}
+
+.fw-loading-dots {
+    @apply flex gap-1;
+}
+
+.fw-loading-dot {
+    @apply w-2 h-2 bg-blue-600 rounded-full;
+    animation: fw-bounce 1.4s infinite ease-in-out both;
+}
+
+.fw-loading-dot:nth-child(1) {
+    animation-delay: -0.32s;
+}
+
+.fw-loading-dot:nth-child(2) {
+    animation-delay: -0.16s;
+}
+
+@keyframes fw-spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+@keyframes fw-bounce {
+    0%, 80%, 100% {
+        transform: scale(0);
+    }
+    40% {
+        transform: scale(1);
+    }
+}
+
+/* Progress Styles */
+.fw-progress {
+    @apply w-full bg-gray-200 rounded-full overflow-hidden;
+}
+
+.fw-progress-bar {
+    @apply h-full bg-blue-600 transition-all duration-300;
+}
+
+.fw-progress-circular {
+    @apply relative inline-block;
+}
+
+.fw-progress-circle {
+    @apply transform -rotate-90;
+}
+
+.fw-progress-label {
+    @apply text-sm font-medium text-gray-700 mt-1;
+}
+
+/* Toast Styles */
+.fw-toast-container {
+    @apply fixed bottom-4 right-4 z-[9999] flex flex-col gap-2;
+    @apply pointer-events-none;
+}
+
+.fw-toast {
+    @apply px-4 py-3 rounded-lg shadow-lg min-w-[300px] max-w-md;
+    @apply pointer-events-auto;
+    @apply flex items-center gap-2;
+    animation: fw-toast-slideIn 0.3s ease-out;
+}
+
+.fw-toast[data-type="success"] {
+    @apply bg-green-50 border-l-4 border-green-500 text-green-800;
+}
+
+.fw-toast[data-type="error"] {
+    @apply bg-red-50 border-l-4 border-red-500 text-red-800;
+}
+
+.fw-toast[data-type="info"] {
+    @apply bg-blue-50 border-l-4 border-blue-500 text-blue-800;
+}
+
+.fw-toast[data-type="warning"] {
+    @apply bg-yellow-50 border-l-4 border-yellow-500 text-yellow-800;
+}
+
+.fw-toast-dismissing {
+    animation: fw-toast-slideOut 0.3s ease-out forwards;
+}
+
+@keyframes fw-toast-slideIn {
+    from {
+        transform: translateY(100%);
+        opacity: 0;
+    }
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+
+@keyframes fw-toast-slideOut {
+    from {
+        transform: translateY(0);
+        opacity: 1;
+    }
+    to {
+        transform: translateY(100%);
+        opacity: 0;
+    }
+}
+
+/* Drawer Styles */
+.fw-drawer {
+    @apply fixed z-50 bg-white shadow-xl;
+    @apply transition-transform duration-300 ease-in-out;
+}
+
+.fw-drawer-left {
+    @apply top-0 left-0 h-full;
+    transform: translateX(-100%);
+}
+
+.fw-drawer-left.open {
+    @apply translate-x-0;
+}
+
+.fw-drawer-right {
+    @apply top-0 right-0 h-full;
+    transform: translateX(100%);
+}
+
+.fw-drawer-right.open {
+    @apply translate-x-0;
+}
+
+.fw-drawer-top {
+    @apply top-0 left-0 right-0 w-full;
+    transform: translateY(-100%);
+}
+
+.fw-drawer-top.open {
+    @apply translate-y-0;
+}
+
+.fw-drawer-bottom {
+    @apply bottom-0 left-0 right-0 w-full;
+    transform: translateY(100%);
+}
+
+.fw-drawer-bottom.open {
+    @apply translate-y-0;
+}
+
+.fw-drawer-backdrop {
+    @apply fixed inset-0 bg-black/50 backdrop-blur-sm z-40;
+    @apply opacity-0 transition-opacity duration-300;
+}
+
+.fw-drawer-backdrop.open {
+    @apply opacity-100;
+}
+
+.fw-drawer-header {
+    @apply px-6 py-4 border-b border-gray-200 flex items-center justify-between;
+}
+
+.fw-drawer-title {
+    @apply text-lg font-semibold text-gray-900;
+}
+
+.fw-drawer-body {
+    @apply px-6 py-4 overflow-y-auto;
+}
+
+.fw-drawer-close {
+    @apply text-gray-400 hover:text-gray-600 transition-colors;
+}
+
+/* Popover Styles */
+.fw-popover {
+    @apply absolute z-50 bg-white rounded-lg shadow-lg border border-gray-200;
+    @apply p-4 min-w-[200px] max-w-sm;
+}
+
+.fw-popover-arrow {
+    @apply absolute w-2 h-2 bg-white border border-gray-200;
+    transform: rotate(45deg);
+}
+
+.fw-popover-top .fw-popover-arrow {
+    @apply bottom-0 left-1/2 -translate-x-1/2 translate-y-1/2;
+    border-top: none;
+    border-right: none;
+}
+
+.fw-popover-bottom .fw-popover-arrow {
+    @apply top-0 left-1/2 -translate-x-1/2 -translate-y-1/2;
+    border-bottom: none;
+    border-left: none;
+}
+
+.fw-popover-left .fw-popover-arrow {
+    @apply right-0 top-1/2 translate-x-1/2 -translate-y-1/2;
+    border-left: none;
+    border-bottom: none;
+}
+
+.fw-popover-right .fw-popover-arrow {
+    @apply left-0 top-1/2 -translate-x-1/2 -translate-y-1/2;
+    border-right: none;
+    border-top: none;
+}

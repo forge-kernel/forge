@@ -1,0 +1,99 @@
+# APP
+APP_NAME="Forge Kernel"
+APP_ENV=development
+APP_METRICS_ENABLED=false
+APP_DEBUG=true
+APP_KEY=331d08349477c654c730f2a7fe3b354f231706f336e856b4e417492ff0cb6280
+
+# CACHE
+CACHE_DRIVER=sqlite
+
+# Security
+CSP_ENABLED=false
+IP_WHITE_LIST=[127.0.0.1, ::1]
+CORS_ALLOWED_ORIGINS=["http://localhost:8000", "https://forge-v3.test"]
+CORS_ALLOWED_METHODS=['GET, POST, PUT, PATCH, DELETE, OPTIONS']
+CORS_ALLOWED_HEADERS=['Content-Type', 'Authorization']
+
+CSRF_STRICT_SCHEME=true
+TRUST_PROXIES=true
+
+#Queue
+#drivers=Database|in-memory|file
+QUEUE_DRIVER=database
+QUEUE_LIST=[notifications,cache_refresh,page_visits]
+
+#Database
+DB_DRIVER=sqlite
+DB_HOST=127.0.0.1
+DB_PORT=3306
+DB_NAME=forge_v3
+DB_USER=root
+DB_PASS=root
+SQLITE_PATH=/storage/database
+SQLITE_DB=/database.sqlite
+
+# Session Configuration
+SESSION_DRIVER=sqlite
+SESSION_DB_PATH=/storage/database/security.sqlite
+SESSION_NAME=FORGE_SESSID
+SESSION_LIFETIME=3600
+SESSION_PATH=/
+SESSION_DOMAIN=
+SESSION_SECURE=true
+SESSION_HTTPONLY=true
+SESSION_SAMESITE=Lax
+
+# Cookie Defaults
+COOKIE_PATH=/
+COOKIE_DOMAIN=
+COOKIE_SECURE=true
+COOKIE_HTTPONLY=true
+COOKIE_SAMESITE=Lax
+SESSION_ENABLED=false
+
+# Rate Limit Configuration
+RATE_LIMIT_DRIVER=sqlite
+RATE_LIMIT_DB_PATH=/storage/framework/security.sqlite
+RATE_LIMIT_MAX_REQUESTS=100
+RATE_LIMIT_TIME_WINDOW=60
+RATE_LIMIT_DISABLE_IN_DEV=true
+RATE_LIMIT_ENABLED=true
+
+# Circuit Breaker Configuration
+CIRCUIT_BREAKER_DRIVER=sqlite
+CIRCUIT_BREAKER_DB_PATH=/storage/framework/security.sqlite
+CIRCUIT_BREAKER_MAX_FAILURES=50
+CIRCUIT_BREAKER_RESET_TIME=300
+CIRCUIT_BREAKER_DISABLE_IN_DE=true
+
+# Customize logging
+LOG_DRIVER=file
+LOG_PATH=/storage/logs/forge.log
+
+# Mail configuration
+SMTP_HOST=localhost
+SMTP_PORT=1025
+SMTP_ENCRYPTION=none
+SMTP_FROM_ADDRESS=noreply@forge.test
+SMTP_FROM_NAME="Forge Application"
+
+# File Storage
+FILE_STORAGE_PATH=public/storage/files
+STORAGE_PROVIDER=local
+
+#Package Manager Github Access Token
+GITHUB_TOKEN=your-github-token
+
+FORGE_DEVELOPER_MODE=false
+
+#Forge Deployment
+FORGE_DEPLOYMENT_DIGITALOCEAN_API_TOKEN=your-do-token
+FORGE_DEPLOYMENT_CLOUDFLARE_API_TOKEN=your-cf-token
+
+DISABLED_MODULES=['ForgeWelcome']
+# Auto-generated from module config
+FORGE_WIRE_USE_MINIFIED=true
+FORGE_DEBUG_BAR_ENABLED=false
+FORGE_WIRE_STALE_THRESHOLD=200
+FORGE_JWT_ENABLED=true

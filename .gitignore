@@ -1,0 +1,119 @@
+# Ignore sensitive environment files
+.env
+!.env.example
+.DS_Store
+
+# Ignore compiled source code
+/vendor/
+/node_modules/
+
+# Ignore modules
+!cache/.gitkeep
+
+tailwindcss
+
+# Ignore temporary files and logs
+/storage/*.key
+/storage/*.log
+/storage/app/*
+/storage/cache/*
+/storage/sessions/*
+/storage/framework/views/*
+!/storage/.gitignore
+/storage/*.key
+/storage/logs/*
+/storage/database.sqlite
+/storage/memory.sqlite
+/storage/framework/modules/*
+/storage/framework/tmp/*
+/storage/framework/cache/*
+/storage/framework/cache/modules/*
+/storage/framework/routes/
+/storage/*.sqlite
+/storage/database/*
+/storage/framework/logs/*
+/storage/tailwindcss/*
+#
+/kernel/Core/Module/module_registry.php
+/storage/framework/cache/class-map.php
+
+
+# Ignore cache and logs
+*.log
+*.cache
+
+# Ignore IDE and editor settings
+.idea/
+*.sublime-workspace
+*.sublime-project
+.vscode/
+*.code-workspace
+.fleet/
+.nova/*
+
+# Ignore OS-specific files
+.DS_Store
+Thumbs.db
+
+# Ignore PHPStorm project settings
+/.idea/
+
+# Ignore PHPUnit and testing files
+phpunit.xml
+phpunit.xml.dist
+tests/_output/
+
+# Ignore deployment files
+*.swp
+*.bak
+*.tmp
+
+# Ignore build and deployment artifacts
+/build/
+/public/build/
+/public/storage/
+/public/hot
+/public/mix-manifest.json
+
+# Ignore composer files
+composer.lock
+
+# Ignore application cache
+bootstrap/cache/*
+!/bootstrap/cache/.gitignore
+
+# Ignore backups and archives
+*.sql
+*.tar.gz
+*.zip
+*.rar
+*.7z
+
+# Ignore custom files
+*.env.local
+*.env.testing
+.env.*
+
+# Ignore user-defined secrets
+secrets.json
+
+# Prevent committing local SSL keys
+*.crt
+*.key
+
+# Optional: Ignore debug files
+*.debug
+*.trace
+
+# Forge Modules:
+.forge-deployment-state.json
+todo.md
+todo-2.md
+contract.md
+conventions.md
+OPENCODE_AGENT_GUIDE.MD
+.forge/*
+.clippy/*
+kernel/*
+/public/assets/modules/*
+/storage/framework/*

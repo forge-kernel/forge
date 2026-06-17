@@ -1,0 +1,1175 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Security API - Forge Engine Documentation</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-php.min.js"></script>
+    <style>
+        .nav-link.active {
+            @apply bg-blue-100 text-blue-700 border-l-4 border-blue-500;
+        }
+
+        .code-block {
+            background: #2d3748;
+            font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
+        }
+
+        .section-anchor {
+            scroll-margin-top: 2rem;
+        }
+
+        .mobile-menu-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 40;
+        }
+
+        .mobile-menu-overlay.active {
+            display: block;
+        }
+    </style>
+</head>
+
+<body class="bg-gray-50 font-sans">
+    <!-- Header -->
+    <header class="bg-white shadow-sm border-b border-gray-200 sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-16">
+                <div class="flex items-center">
+                    <a href="index.html" class="text-xl font-bold text-gray-900">
+                        <i class="fas fa-fire text-blue-600 mr-2"></i>Forge Engine
+                    </a>
+                    <span class="ml-4 text-sm text-gray-500">Security API Documentation</span>
+                </div>
+                <nav class="hidden md:flex space-x-8">
+                    <a href="index.html" class="text-gray-600 hover:text-gray-900">Home</a>
+                    <a href="getting-started.html" class="text-gray-600 hover:text-gray-900">Getting Started</a>
+                    <a href="api-reference.html" class="text-gray-900 font-medium">API Reference</a>
+                    <a href="modules.html" class="text-gray-600 hover:text-gray-900">Modules</a>
+                </nav>
+                <button id="mobile-menu-btn" class="md:hidden text-gray-600 hover:text-gray-900">
+                    <i class="fas fa-bars text-xl"></i>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Mobile Menu -->
+    <div id="mobile-menu" class="hidden fixed inset-0 z-50 bg-white">
+        <div class="flex justify-between items-center p-4 border-b">
+            <span class="text-lg font-semibold">Menu</span>
+            <button id="close-mobile-menu" class="text-gray-600 hover:text-gray-900">
+                <i class="fas fa-times text-xl"></i>
+            </button>
+        </div>
+        <nav class="p-4">
+            <div class="space-y-4">
+                <a href="index.html" class="block text-gray-600 hover:text-gray-900">Home</a>
+                <a href="getting-started.html" class="block text-gray-600 hover:text-gray-900">Getting Started</a>
+                <a href="api-reference.html" class="block text-blue-600 font-medium">API Reference</a>
+                <a href="modules.html" class="block text-gray-600 hover:text-gray-900">Modules</a>
+            </div>
+            <div class="mt-8">
+                <h3 class="text-sm font-semibold text-gray-500 uppercase tracking-wide mb-3">API Sections</h3>
+                <div class="space-y-2 pl-4">
+                    <a href="api-core.html" class="block text-sm text-gray-600 hover:text-gray-900">Core Engine</a>
+                    <a href="api-http.html" class="block text-sm text-gray-600 hover:text-gray-900">HTTP Layer</a>
+                    <a href="api-database.html" class="block text-sm text-gray-600 hover:text-gray-900">Database &
+                        ORM</a>
+                    <a href="api-di.html" class="block text-sm text-gray-600 hover:text-gray-900">DI Container</a>
+                    <a href="api-routing.html" class="block text-sm text-gray-600 hover:text-gray-900">Routing</a>
+                    <a href="api-modules.html" class="block text-sm text-gray-600 hover:text-gray-900">Module System</a>
+                    <a href="api-cli.html" class="block text-sm text-gray-600 hover:text-gray-900">CLI & Console</a>
+                    <a href="api-cache.html" class="block text-sm text-gray-600 hover:text-gray-900">Caching</a>
+                    <a href="api-validation.html" class="block text-sm text-gray-600 hover:text-gray-900">Validation</a>
+                    <a href="api-helpers.html" class="block text-sm text-gray-600 hover:text-gray-900">Helpers &
+                        Traits</a>
+                    <a href="api-events.html" class="block text-sm text-gray-600 hover:text-gray-900">Events</a>
+                    <a href="api-security.html" class="block text-sm text-blue-600 font-medium">Security</a>
+                </div>
+            </div>
+        </nav>
+    </div>
+    <div id="mobile-menu-overlay" class="mobile-menu-overlay"></div>
+
+    <!-- Main Content -->
+    <div class="flex">
+        <!-- Sidebar Navigation -->
+        <nav class="hidden lg:block w-64 bg-white shadow-sm min-h-screen sticky top-16 overflow-y-auto">
+            <div class="p-6">
+                <h3 class="text-sm font-semibold text-gray-500 uppercase tracking-wide mb-4">API Sections</h3>
+                <div class="space-y-2">
+                    <a href="api-reference.html"
+                        class="nav-link block px-3 py-2 rounded-md text-sm font-medium text-gray-700 hover:bg-gray-100">
+                        <i class="fas fa-home mr-2"></i>API Reference Home
+                    </a>
+                    <a href="api-core.html"
+                        class="nav-link block px-3 py-2 rounded-md text-sm font-medium text-gray-700 hover:bg-gray-100">
+                        <i class="fas fa-cog mr-2"></i>Core Engine
+                    </a>
+                    <a href="api-http.html"
+                        class="nav-link block px-3 py-2 rounded-md text-sm font-medium text-gray-700 hover:bg-gray-100">
+                        <i class="fas fa-globe mr-2"></i>HTTP Layer
+                    </a>
+                    <a href="api-database.html"
+                        class="nav-link block px-3 py-2 rounded-md text-sm font-medium text-gray-700 hover:bg-gray-100">
+                        <i class="fas fa-database mr-2"></i>Database & ORM
+                    </a>
+                    <a href="api-di.html"
+                        class="nav-link block px-3 py-2 rounded-md text-sm font-medium text-gray-700 hover:bg-gray-100">
+                        <i class="fas fa-sitemap mr-2"></i>DI Container
+                    </a>
+                    <a href="api-routing.html"
+                        class="nav-link block px-3 py-2 rounded-md text-sm font-medium text-gray-700 hover:bg-gray-100">
+                        <i class="fas fa-route mr-2"></i>Routing
+                    </a>
+                    <a href="api-modules.html"
+                        class="nav-link block px-3 py-2 rounded-md text-sm font-medium text-gray-700 hover:bg-gray-100">
+                        <i class="fas fa-puzzle-piece mr-2"></i>Module System
+                    </a>
+                    <a href="api-cli.html"
+                        class="nav-link block px-3 py-2 rounded-md text-sm font-medium text-gray-700 hover:bg-gray-100">
+                        <i class="fas fa-terminal mr-2"></i>CLI & Console
+                    </a>
+                    <a href="api-cache.html"
+                        class="nav-link block px-3 py-2 rounded-md text-sm font-medium text-gray-700 hover:bg-gray-100">
+                        <i class="fas fa-memory mr-2"></i>Caching
+                    </a>
+                    <a href="api-validation.html"
+                        class="nav-link block px-3 py-2 rounded-md text-sm font-medium text-gray-700 hover:bg-gray-100">
+                        <i class="fas fa-check-circle mr-2"></i>Validation
+                    </a>
+                    <a href="api-helpers.html"
+                        class="nav-link block px-3 py-2 rounded-md text-sm font-medium text-gray-700 hover:bg-gray-100">
+                        <i class="fas fa-tools mr-2"></i>Helpers & Traits
+                    </a>
+                    <a href="api-events.html"
+                        class="nav-link block px-3 py-2 rounded-md text-sm font-medium text-gray-700 hover:bg-gray-100">
+                        <i class="fas fa-calendar-alt mr-2"></i>Events
+                    </a>
+                    <a href="api-security.html"
+                        class="nav-link block px-3 py-2 rounded-md text-sm font-medium text-blue-700 bg-blue-100 border-l-4 border-blue-500">
+                        <i class="fas fa-shield-alt mr-2"></i>Security
+                    </a>
+                </div>
+            </div>
+        </nav>
+
+        <!-- Main Content Area -->
+        <main class="flex-1 max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+            <div class="bg-white rounded-lg shadow-sm">
+                <div class="px-8 py-6 border-b border-gray-200">
+                    <h1 class="text-3xl font-bold text-gray-900 mb-2">
+                        <i class="fas fa-shield-alt text-blue-600 mr-3"></i>Security API
+                    </h1>
+                    <p class="text-gray-600">
+                        Comprehensive security features including authentication, authorization, encryption, and
+                        security best practices for Forge Engine applications.
+                    </p>
+                </div>
+
+                <div class="px-8 py-6">
+                    <!-- Introduction -->
+                    <section id="introduction" class="section-anchor mb-12">
+                        <div class="bg-red-50 border-l-4 border-red-500 p-6 mb-8">
+                            <h2 class="text-2xl font-bold text-gray-900 mb-4">
+                                <i class="fas fa-exclamation-triangle text-red-600 mr-3"></i>Security Overview
+                            </h2>
+                            <p class="text-gray-700">
+                                Security is a critical aspect of any web application. Forge Engine provides a
+                                comprehensive security layer
+                                that includes authentication, authorization, encryption, CSRF protection, input
+                                sanitization, and more.
+                                This guide covers all security-related APIs and best practices.
+                            </p>
+                        </div>
+
+                        <div class="grid md:grid-cols-2 gap-6 mb-8">
+                            <div class="bg-white border border-gray-200 rounded-lg p-6 shadow-sm">
+                                <h3 class="text-lg font-semibold text-gray-900 mb-3">
+                                    <i class="fas fa-user-lock text-blue-600 mr-2"></i>Authentication
+                                </h3>
+                                <p class="text-gray-600 text-sm">
+                                    Secure user authentication with multiple providers, session management, and
+                                    token-based authentication.
+                                </p>
+                            </div>
+                            <div class="bg-white border border-gray-200 rounded-lg p-6 shadow-sm">
+                                <h3 class="text-lg font-semibold text-gray-900 mb-3">
+                                    <i class="fas fa-key text-blue-600 mr-2"></i>Authorization
+                                </h3>
+                                <p class="text-gray-600 text-sm">
+                                    Role-based access control (RBAC), permissions, policies, and resource-level
+                                    authorization.
+                                </p>
+                            </div>
+                            <div class="bg-white border border-gray-200 rounded-lg p-6 shadow-sm">
+                                <h3 class="text-lg font-semibold text-gray-900 mb-3">
+                                    <i class="fas fa-lock text-blue-600 mr-2"></i>Encryption
+                                </h3>
+                                <p class="text-gray-600 text-sm">
+                                    Data encryption, hashing, secure key management, and cryptographic operations.
+                                </p>
+                            </div>
+                            <div class="bg-white border border-gray-200 rounded-lg p-6 shadow-sm">
+                                <h3 class="text-lg font-semibold text-gray-900 mb-3">
+                                    <i class="fas fa-shield-virus text-blue-600 mr-2"></i>Protection
+                                </h3>
+                                <p class="text-gray-600 text-sm">
+                                    CSRF protection, XSS prevention, SQL injection prevention, and security headers.
+                                </p>
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- Authentication -->
+                    <section id="authentication" class="section-anchor mb-12">
+                        <h2 class="text-2xl font-bold text-gray-900 mb-6">
+                            <i class="fas fa-user-lock text-blue-600 mr-3"></i>Authentication
+                        </h2>
+
+                        <div class="api-method bg-gray-50 p-4 rounded-lg mb-4">
+                            <h4 class="font-semibold text-lg mb-2">Auth Manager</h4>
+                            <p class="text-gray-600 text-sm mb-3">Central authentication management with multiple
+                                providers and strategies.</p>
+                            <div class="code-block p-4 text-white rounded">
+                                <pre><code class="language-php">use Forge\Security\AuthManager;
+use Forge\Security\Providers\DatabaseAuthProvider;
+use Forge\Security\Providers\TokenAuthProvider;
+
+$authManager = new AuthManager();
+
+/**
+ * Register authentication providers
+ */
+$authManager->registerProvider('database', new DatabaseAuthProvider());
+$authManager->registerProvider('token', new TokenAuthProvider());
+
+/**
+ * Authenticate user with credentials
+ */
+$user = $authManager->attempt([
+    'email' => 'user@example.com',
+    'password' => 'password123'
+], 'database');
+
+if ($user) {
+    // Authentication successful
+    echo "Welcome, {$user->name}!";
+} else {
+    // Authentication failed
+    echo "Invalid credentials";
+}
+
+/**
+ * Authenticate with token
+ */
+$user = $authManager->attempt([
+    'token' => $request->bearerToken()
+], 'token');
+
+/**
+ * Check if user is authenticated
+ */
+if ($authManager->check()) {
+    $currentUser = $authManager->user();
+}
+
+/**
+ * Get current user
+ */
+$user = $authManager->user();
+
+/**
+ * Logout user
+ */
+$authManager->logout();
+
+/**
+ * Get authentication guard
+ */
+$guard = $authManager->guard('web');
+$guard = $authManager->guard('api');</code></pre>
+                            </div>
+                        </div>
+
+                        <div class="api-method bg-gray-50 p-4 rounded-lg mb-4">
+                            <h4 class="font-semibold text-lg mb-2">Session-based Authentication</h4>
+                            <p class="text-gray-600 text-sm mb-3">Traditional session-based authentication with secure
+                                session management.</p>
+                            <div class="code-block p-4 text-white rounded">
+                                <pre><code class="language-php">use Forge\Security\SessionManager;
+use Forge\Security\Providers\SessionAuthProvider;
+
+$sessionManager = new SessionManager();
+$sessionAuth = new SessionAuthProvider($sessionManager);
+
+/**
+ * Start secure session
+ */
+$sessionManager->start([
+    'name' => 'forge_session',
+    'lifetime' => 7200, // 2 hours
+    'path' => '/',
+    'domain' => '.example.com',
+    'secure' => true,
+    'httponly' => true,
+    'samesite' => 'strict'
+]);
+
+/**
+ * Login user and create session
+ */
+public function login(Request $request): Response
+{
+    $credentials = $request->validate([
+        'email' => 'required|email',
+        'password' => 'required|string'
+    ]);
+    
+    $user = $this->auth->attempt($credentials);
+    
+    if ($user) {
+        // Regenerate session ID for security
+        $this->session->regenerate();
+        
+        // Store user data in session
+        $this->session->put('user_id', $user->id);
+        $this->session->put('user_data', [
+            'id' => $user->id,
+            'email' => $user->email,
+            'name' => $user->name,
+            'roles' => $user->roles->pluck('name')->toArray()
+        ]);
+        
+        // Set additional security flags
+        $this->session->put('ip_address', $request->ip());
+        $this->session->put('user_agent', $request->userAgent());
+        $this->session->put('login_time', time());
+        
+        return redirect('/dashboard')->with('success', 'Login successful');
+    }
+    
+    return back()->withErrors(['email' => 'Invalid credentials']);
+}
+
+/**
+ * Remember me functionality
+ */
+public function loginWithRemember(Request $request): Response
+{
+    $credentials = $request->validate([
+        'email' => 'required|email',
+        'password' => 'required|string',
+        'remember' => 'boolean'
+    ]);
+    
+    $remember = $request->boolean('remember', false);
+    
+    if ($this->auth->attempt($credentials, $remember)) {
+        if ($remember) {
+            // Create remember token
+            $token = $this->createRememberToken($request->user());
+            
+            // Set secure cookie
+            $this->cookie->queue('remember_token', $token, 60 * 24 * 30); // 30 days
+        }
+        
+        return redirect('/dashboard');
+    }
+    
+    return back()->withErrors(['email' => 'Invalid credentials']);
+}
+
+/**
+ * Session security checks
+ */
+public function validateSession(Request $request): bool
+{
+    $sessionData = $this->session->get('user_data');
+    
+    if (!$sessionData) {
+        return false;
+    }
+    
+    // Check IP address (optional - can be problematic with mobile users)
+    if ($this->session->get('ip_address') !== $request->ip()) {
+        Log::warning('Session IP mismatch', [
+            'expected' => $this->session->get('ip_address'),
+            'actual' => $request->ip()
+        ]);
+        
+        // Optionally invalidate session
+        // return false;
+    }
+    
+    // Check user agent
+    if ($this->session->get('user_agent') !== $request->userAgent()) {
+        Log::warning('Session user agent mismatch');
+        return false;
+    }
+    
+    // Check session timeout
+    $loginTime = $this->session->get('login_time', 0);
+    $timeout = config('session.lifetime', 7200);
+    
+    if (time() - $loginTime > $timeout) {
+        $this->session->invalidate();
+        return false;
+    }
+    
+    return true;
+}</code></pre>
+                            </div>
+                        </div>
+
+                        <div class="api-method bg-gray-50 p-4 rounded-lg mb-4">
+                            <h4 class="font-semibold text-lg mb-2">Token-based Authentication</h4>
+                            <p class="text-gray-600 text-sm mb-3">JWT and API token authentication for stateless
+                                applications.</p>
+                            <div class="code-block p-4 text-white rounded">
+                                <pre><code class="language-php">use Forge\Security\TokenManager;
+use Forge\Security\JWTManager;
+use Firebase\JWT\JWT;
+
+$tokenManager = new TokenManager();
+$jwtManager = new JWTManager();
+
+/**
+ * Generate API token
+ */
+public function createApiToken(User $user): string
+{
+    $token = bin2hex(random_bytes(32));
+    
+    // Store token in database
+    ApiToken::create([
+        'user_id' => $user->id,
+        'token' => hash('sha256', $token),
+        'name' => 'API Token',
+        'abilities' => ['read', 'write'],
+        'expires_at' => now()->addDays(30)
+    ]);
+    
+    return $token;
+}
+
+/**
+ * Generate JWT token
+ */
+public function createJwtToken(User $user): string
+{
+    $payload = [
+        'iss' => 'forge-engine', // Issuer
+        'sub' => $user->id,      // Subject
+        'aud' => 'api-users',    // Audience
+        'iat' => time(),         // Issued at
+        'exp' => time() + 3600,  // Expiration (1 hour)
+        'nbf' => time(),         // Not before
+        'jti' => uniqid(),       // JWT ID
+        'data' => [
+            'user_id' => $user->id,
+            'email' => $user->email,
+            'roles' => $user->roles->pluck('name')->toArray()
+        ]
+    ];
+    
+    return JWT::encode($payload, config('app.jwt_secret'), 'HS256');
+}
+
+/**
+ * Refresh JWT token
+ */
+public function refreshJwtToken(string $refreshToken): ?string
+{
+    try {
+        // Validate refresh token
+        $refreshData = JWT::decode($refreshToken, config('app.jwt_refresh_secret'), ['HS256']);
+        
+        // Get user
+        $user = User::find($refreshData->sub);
+        if (!$user) {
+            return null;
+        }
+        
+        // Generate new access token
+        return $this->createJwtToken($user);
+        
+    } catch (\Exception $e) {
+        Log::error('JWT refresh failed', ['error' => $e->getMessage()]);
+        return null;
+    }
+}
+
+/**
+ * Validate API token
+ */
+public function validateApiToken(string $token): ?User
+{
+    $hashedToken = hash('sha256', $token);
+    
+    $apiToken = ApiToken::where('token', $hashedToken)
+        ->where('expires_at', '>', now())
+        ->first();
+    
+    if ($apiToken) {
+        // Update last used timestamp
+        $apiToken->update(['last_used_at' => now()]);
+        
+        return $apiToken->user;
+    }
+    
+    return null;
+}
+
+/**
+ * Validate JWT token
+ */
+public function validateJwtToken(string $token): ?array
+{
+    try {
+        $decoded = JWT::decode($token, config('app.jwt_secret'), ['HS256']);
+        
+        // Check expiration
+        if ($decoded->exp < time()) {
+            return null;
+        }
+        
+        // Check if token is blacklisted
+        if (Cache::has("blacklist:{$decoded->jti}")) {
+            return null;
+        }
+        
+        return (array) $decoded;
+        
+    } catch (\Exception $e) {
+        Log::error('JWT validation failed', ['error' => $e->getMessage()]);
+        return null;
+    }
+}
+
+/**
+ * Revoke token
+ */
+public function revokeToken(string $token): void
+{
+    // For JWT, add to blacklist
+    try {
+        $decoded = JWT::decode($token, config('app.jwt_secret'), ['HS256']);
+        $ttl = $decoded->exp - time();
+        
+        if ($ttl > 0) {
+            Cache::put("blacklist:{$decoded->jti}", true, $ttl);
+        }
+    } catch (\Exception $e) {
+        // Token is already invalid
+    }
+    
+    // For API tokens, delete from database
+    $hashedToken = hash('sha256', $token);
+    ApiToken::where('token', $hashedToken)->delete();
+}</code></pre>
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- Authorization -->
+                    <section id="authorization" class="section-anchor mb-12">
+                        <h2 class="text-2xl font-bold text-gray-900 mb-6">
+                            <i class="fas fa-key text-blue-600 mr-3"></i>Authorization
+                        </h2>
+
+                        <div class="api-method bg-gray-50 p-4 rounded-lg mb-4">
+                            <h4 class="font-semibold text-lg mb-2">Permission-based Authorization</h4>
+                            <p class="text-gray-600 text-sm mb-3">Fine-grained permission system for resource access
+                                control.</p>
+                            <div class="code-block p-4 text-white rounded">
+                                <pre><code class="language-php">use Forge\Security\Authorization\PermissionManager;
+use Forge\Security\Authorization\Permission;
+
+$permissionManager = new PermissionManager();
+
+/**
+ * Define permissions
+ */
+$permissions = [
+    new Permission('users.create', 'Create new users'),
+    new Permission('users.read', 'View user information'),
+    new Permission('users.update', 'Update user information'),
+    new Permission('users.delete', 'Delete users'),
+    new Permission('posts.create', 'Create new posts'),
+    new Permission('posts.update', 'Update posts'),
+    new Permission('posts.delete', 'Delete posts'),
+    new Permission('posts.publish', 'Publish posts'),
+    new Permission('admin.access', 'Access admin panel'),
+    new Permission('settings.manage', 'Manage application settings')
+];
+
+foreach ($permissions as $permission) {
+    $permissionManager->registerPermission($permission);
+}
+
+/**
+ * Check user permissions
+ */
+public function createUser(Request $request): Response
+{
+    // Check if user has permission
+    if (!$this->auth->user()->can('users.create')) {
+        return response()->json(['error' => 'Insufficient permissions'], 403);
+    }
+    
+    // Alternative syntax
+    if ($this->auth->user()->cannot('users.create')) {
+        return response()->json(['error' => 'Insufficient permissions'], 403);
+    }
+    
+    // Check multiple permissions
+    if (!$this->auth->user()->hasAnyPermission(['users.create', 'admin.access'])) {
+        return response()->json(['error' => 'Insufficient permissions'], 403);
+    }
+    
+    // Check all permissions
+    if (!$this->auth->user()->hasAllPermissions(['users.create', 'users.read'])) {
+        return response()->json(['error' => 'Insufficient permissions'], 403);
+    }
+    
+    // Create user
+    $user = User::create($request->validated());
+    
+    return response()->json($user, 201);
+}
+
+/**
+ * Resource-specific permissions
+ */
+public function updatePost(Request $request, Post $post): Response
+{
+    $user = $this->auth->user();
+    
+    // Check if user owns the post
+    if ($post->user_id === $user->id) {
+        // User can update their own posts
+        $post->update($request->validated());
+        return response()->json($post);
+    }
+    
+    // Check if user has global update permission
+    if ($user->can('posts.update')) {
+        $post->update($request->validated());
+        return response()->json($post);
+    }
+    
+    return response()->json(['error' => 'Unauthorized'], 403);
+}
+
+/**
+ * Permission inheritance
+ */
+class PermissionManager
+{
+    private array $permissionHierarchy = [
+        'admin' => [
+            'users.*',
+            'posts.*',
+            'settings.*'
+        ],
+        'editor' => [
+            'posts.create',
+            'posts.update',
+            'posts.publish'
+        ],
+        'author' => [
+            'posts.create',
+            'posts.update.own'
+        ]
+    ];
+    
+    public function hasPermission(User $user, string $permission): bool
+    {
+        // Check direct permission
+        if ($user->permissions->contains('name', $permission)) {
+            return true;
+        }
+        
+        // Check inherited permissions
+        foreach ($user->roles as $role) {
+            if ($this->roleHasPermission($role, $permission)) {
+                return true;
+            }
+        }
+        
+        return false;
+    }
+    
+    private function roleHasPermission(Role $role, string $permission): bool
+    {
+        $rolePermissions = $this->permissionHierarchy[$role->name] ?? [];
+        
+        foreach ($rolePermissions as $rolePermission) {
+            if ($this->matchesPermission($rolePermission, $permission)) {
+                return true;
+            }
+        }
+        
+        return false;
+    }
+    
+    private function matchesPermission(string $rolePermission, string $permission): bool
+    {
+        // Support wildcards
+        $pattern = str_replace('*', '.*', $rolePermission);
+        return preg_match("/^$pattern$/", $permission) === 1;
+    }
+}</code></pre>
+                            </div>
+                        </div>
+
+                        <div class="api-method bg-gray-50 p-4 rounded-lg mb-4">
+                            <h4 class="font-semibold text-lg mb-2">Role-based Authorization</h4>
+                            <p class="text-gray-600 text-sm mb-3">Role-based access control (RBAC) for simplified
+                                permission management.</p>
+                            <div class="code-block p-4 text-white rounded">
+                                <pre><code class="language-php">use Forge\Security\Authorization\RoleManager;
+use Forge\Security\Authorization\Role;
+
+$roleManager = new RoleManager();
+
+/**
+ * Define roles
+ */
+$roles = [
+    new Role('super_admin', 'Super Administrator', 'Full system access'),
+    new Role('admin', 'Administrator', 'Administrative access'),
+    new Role('editor', 'Editor', 'Content management access'),
+    new Role('author', 'Author', 'Content creation access'),
+    new Role('user', 'User', 'Standard user access'),
+    new Role('guest', 'Guest', 'Limited read-only access')
+];
+
+foreach ($roles as $role) {
+    $roleManager->registerRole($role);
+}
+
+/**
+ * Assign roles to users
+ */
+public function assignRole(User $user, string $roleName): void
+{
+    $role = Role::where('name', $roleName)->first();
+    
+    if ($role) {
+        $user->roles()->attach($role);
+        
+        // Log role assignment
+        Log::info('Role assigned', [
+            'user_id' => $user->id,
+            'role' => $roleName,
+            'assigned_by' => auth()->id()
+        ]);
+    }
+}
+
+/**
+ * Check user roles
+ */
+public function adminDashboard(): Response
+{
+    // Check single role
+    if (!$this->auth->user()->hasRole('admin')) {
+        return redirect('/')->with('error', 'Access denied');
+    }
+    
+    // Check multiple roles
+    if (!$this->auth->user()->hasAnyRole(['admin', 'super_admin'])) {
+        return redirect('/')->with('error', 'Access denied');
+    }
+    
+    // Check all roles
+    if (!$this->auth->user()->hasAllRoles(['admin', 'editor'])) {
+        return redirect('/')->with('error', 'Insufficient privileges');
+    }
+    
+    return view('admin.dashboard');
+}
+
+/**
+ * Role-based middleware
+ */
+class RoleMiddleware
+{
+    public function handle(Request $request, Closure $next, string $role): mixed
+    {
+        if (!$request->user() || !$request->user()->hasRole($role)) {
+            return response()->json(['error' => 'Insufficient privileges'], 403);
+        }
+        
+        return $next($request);
+    }
+}
+
+// Usage in routes
+Route::middleware(['auth', 'role:admin'])->group(function () {
+    Route::get('/admin', 'AdminController@index');
+    Route::get('/admin/users', 'AdminController@users');
+});
+
+Route::middleware(['auth', 'role:editor'])->group(function () {
+    Route::get('/content', 'ContentController@index');
+    Route::post('/content', 'ContentController@store');
+});
+
+/**
+ * Dynamic role permissions
+ */
+class DynamicRoleManager
+{
+    private array $rolePermissions = [
+        'super_admin' => [
+            'users' => ['create', 'read', 'update', 'delete'],
+            'posts' => ['create', 'read', 'update', 'delete', 'publish'],
+            'settings' => ['read', 'update'],
+            'reports' => ['read']
+        ],
+        'admin' => [
+            'users' => ['create', 'read', 'update'],
+            'posts' => ['create', 'read', 'update', 'publish'],
+            'reports' => ['read']
+        ],
+        'editor' => [
+            'posts' => ['create', 'read', 'update', 'publish'],
+            'users' => ['read']
+        ],
+        'author' => [
+            'posts' => ['create', 'read', 'update.own']
+        ]
+    ];
+    
+    public function can(User $user, string $resource, string $action, ?Model $resourceInstance = null): bool
+    {
+        foreach ($user->roles as $role) {
+            if ($this->roleCan($role, $resource, $action, $resourceInstance)) {
+                return true;
+            }
+        }
+        
+        return false;
+    }
+    
+    private function roleCan(Role $role, string $resource, string $action, ?Model $resourceInstance = null): bool
+    {
+        $permissions = $this->rolePermissions[$role->name] ?? [];
+        
+        if (!isset($permissions[$resource])) {
+            return false;
+        }
+        
+        $resourcePermissions = $permissions[$resource];
+        
+        // Check for specific action
+        if (in_array($action, $resourcePermissions)) {
+            return true;
+        }
+        
+        // Check for own resource permission
+        if (in_array("$action.own", $resourcePermissions)) {
+            return $resourceInstance && $resourceInstance->user_id === $role->id;
+        }
+        
+        return false;
+     }
+ }
+
+                    <!-- Security Headers -->
+                    <section id="security-headers" class="section-anchor mb-12">
+                        <h2 class="text-2xl font-bold text-gray-900 mb-6">
+                            <i class="fas fa-shield-alt text-blue-600 mr-3"></i>Security Headers
+                        </h2>
+
+                        <div class="api-method bg-gray-50 p-4 rounded-lg mb-4">
+                            <h4 class="font-semibold text-lg mb-2">Security Headers Manager</h4>
+                            <p class="text-gray-600 text-sm mb-3">Comprehensive security headers for HTTP responses.</p>
+                            <div class="code-block p-4 text-white rounded">
+                                <pre><code class="language-php">use Forge\Security\Headers\SecurityHeaders;
+use Forge\Security\Headers\HeaderManager;
+
+$headerManager = new HeaderManager();
+$securityHeaders = new SecurityHeaders();
+
+/**
+ * Set security headers
+ */
+public function setSecurityHeaders(Response $response): Response
+{
+    // X-Content-Type-Options
+    $response->header('X-Content-Type-Options', 'nosniff');
+    
+    // X-Frame-Options
+    $response->header('X-Frame-Options', 'DENY');
+    
+    // X-XSS-Protection
+    $response->header('X-XSS-Protection', '1; mode=block');
+    
+    // Strict-Transport-Security
+    $response->header('Strict-Transport-Security', 'max-age=31536000; includeSubDomains; preload');
+    
+    // Referrer-Policy
+    $response->header('Referrer-Policy', 'strict-origin-when-cross-origin');
+    
+    // Permissions-Policy
+    $response->header('Permissions-Policy', 'geolocation=(), microphone=(), camera=()');
+    
+    return $response;
+}
+
+/**
+ * Content Security Policy headers
+ */
+public function setCspHeaders(Response $response): Response
+{
+    $csp = "default-src 'self'; " .
+           "script-src 'self' 'unsafe-inline' https://cdn.example.com; " .
+           "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; " .
+           "img-src 'self' data: https:; " .
+           "font-src 'self' https://fonts.gstatic.com; " .
+           "connect-src 'self' https://api.example.com; " .
+           "frame-src 'none'; " .
+           "object-src 'none'; " .
+           "base-uri 'self'; " .
+           "form-action 'self';";
+    
+    $response->header('Content-Security-Policy', $csp);
+    
+    return $response;
+}
+
+/**
+ * Security headers middleware
+ */
+class SecurityHeadersMiddleware
+{
+    private array $headers = [
+        'X-Content-Type-Options' => 'nosniff',
+        'X-Frame-Options' => 'DENY',
+        'X-XSS-Protection' => '1; mode=block',
+        'Strict-Transport-Security' => 'max-age=31536000; includeSubDomains',
+        'Referrer-Policy' => 'strict-origin-when-cross-origin',
+        'Permissions-Policy' => 'geolocation=(), microphone=(), camera=()'
+    ];
+    
+    public function handle(Request $request, Closure $next): mixed
+    {
+        $response = $next($request);
+        
+        foreach ($this->headers as $header => $value) {
+            $response->header($header, $value);
+        }
+        
+        return $response;
+    }
+    
+    public function setHeader(string $header, string $value): void
+    {
+        $this->headers[$header] = $value;
+    }
+    
+    public function removeHeader(string $header): void
+    {
+        unset($this->headers[$header]);
+    }
+}</code></pre>
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- Best Practices -->
+                    <section id="best-practices" class="section-anchor mb-12">
+                        <h2 class="text-2xl font-bold text-gray-900 mb-6">
+                            <i class="fas fa-lightbulb text-blue-600 mr-3"></i>Security Best Practices
+                        </h2>
+
+                        <div class="grid md:grid-cols-2 gap-6 mb-8">
+                            <div class="bg-green-50 border border-green-200 rounded-lg p-6">
+                                <h3 class="text-lg font-semibold text-green-800 mb-3">
+                                    <i class="fas fa-check-circle mr-2"></i>Do's
+                                </h3>
+                                <ul class="text-sm text-green-700 space-y-2">
+                                    <li>✅ Use HTTPS everywhere</li>
+                                    <li>✅ Implement proper authentication</li>
+                                    <li>✅ Use parameterized queries</li>
+                                    <li>✅ Validate and sanitize all input</li>
+                                    <li>✅ Use strong encryption for sensitive data</li>
+                                    <li>✅ Implement rate limiting</li>
+                                    <li>✅ Keep dependencies updated</li>
+                                    <li>✅ Use security headers</li>
+                                    <li>✅ Implement proper logging</li>
+                                    <li>✅ Regular security audits</li>
+                                </ul>
+                            </div>
+                            <div class="bg-red-50 border border-red-200 rounded-lg p-6">
+                                <h3 class="text-lg font-semibold text-red-800 mb-3">
+                                    <i class="fas fa-times-circle mr-2"></i>Don'ts
+                                </h3>
+                                <ul class="text-sm text-red-700 space-y-2">
+                                    <li>❌ Don't store passwords in plain text</li>
+                                    <li>❌ Don't trust user input</li>
+                                    <li>❌ Don't expose sensitive data in URLs</li>
+                                    <li>❌ Don't use weak encryption</li>
+                                    <li>❌ Don't disable CSRF protection</li>
+                                    <li>❌ Don't store secrets in code</li>
+                                    <li>❌ Don't ignore security warnings</li>
+                                    <li>❌ Don't use outdated libraries</li>
+                                    <li>❌ Don't expose error details</li>
+                                    <li>❌ Don't skip input validation</li>
+                                </ul>
+                            </div>
+                        </div>
+
+                        <div class="bg-blue-50 border border-blue-200 rounded-lg p-6 mb-8">
+                            <h3 class="text-lg font-semibold text-blue-800 mb-3">
+                                <i class="fas fa-shield-alt mr-2"></i>Security Checklist
+                            </h3>
+                            <div class="grid md:grid-cols-2 gap-4">
+                                <div>
+                                    <h4 class="font-medium text-blue-700 mb-2">Authentication</h4>
+                                    <ul class="text-sm text-blue-600 space-y-1">
+                                        <li>• Use strong password requirements</li>
+                                        <li>• Implement account lockout</li>
+                                        <li>• Use secure session management</li>
+                                        <li>• Implement 2FA when possible</li>
+                                    </ul>
+                                </div>
+                                <div>
+                                    <h4 class="font-medium text-blue-700 mb-2">Data Protection</h4>
+                                    <ul class="text-sm text-blue-600 space-y-1">
+                                        <li>• Encrypt sensitive data at rest</li>
+                                        <li>• Use TLS for data in transit</li>
+                                        <li>• Implement proper key management</li>
+                                        <li>• Regular data backups</li>
+                                    </ul>
+                                </div>
+                                <div>
+                                    <h4 class="font-medium text-blue-700 mb-2">Input Validation</h4>
+                                    <ul class="text-sm text-blue-600 space-y-1">
+                                        <li>• Validate all user input</li>
+                                        <li>• Use parameterized queries</li>
+                                        <li>• Implement proper error handling</li>
+                                        <li>• Sanitize output data</li>
+                                    </ul>
+                                </div>
+                                <div>
+                                    <h4 class="font-medium text-blue-700 mb-2">Monitoring</h4>
+                                    <ul class="text-sm text-blue-600 space-y-1">
+                                        <li>• Log security events</li>
+                                        <li>• Monitor for suspicious activity</li>
+                                        <li>• Set up alerts</li>
+                                        <li>• Regular security reviews</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- Navigation -->
+                    <div class="flex justify-between items-center mt-12 pt-6 border-t border-gray-200">
+                        <a href="api-events.html" class="flex items-center text-blue-600 hover:text-blue-800">
+                            <i class="fas fa-arrow-left mr-2"></i>
+                            Events API
+                        </a>
+                        <a href="api-reference.html" class="flex items-center text-blue-600 hover:text-blue-800">
+                            API Reference Home
+                            <i class="fas fa-arrow-right ml-2"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Footer -->
+    <footer class="bg-gray-800 text-white py-8 mt-12">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center">
+                <p class="text-gray-400">&copy; 2024 Forge Engine. All rights reserved.</p>
+                <p class="text-gray-500 text-sm mt-2">Built with ❤️ for developers</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Mobile menu toggle
+        const mobileMenu = document.getElementById('mobile-menu');
+        const mobileMenuOverlay = document.getElementById('mobile-menu-overlay');
+        const mobileMenuBtn = document.getElementById('mobile-menu-btn');
+        const closeMobileMenu = document.getElementById('close-mobile-menu');
+
+        mobileMenuBtn.addEventListener('click', () => {
+            mobileMenu.classList.remove('hidden');
+            mobileMenuOverlay.classList.add('active');
+            document.body.style.overflow = 'hidden';
+        });
+
+        function closeMobileMenuFunc() {
+            mobileMenu.classList.add('hidden');
+            mobileMenuOverlay.classList.remove('active');
+            document.body.style.overflow = 'auto';
+        }
+
+        closeMobileMenu.addEventListener('click', closeMobileMenuFunc);
+        mobileMenuOverlay.addEventListener('click', closeMobileMenuFunc);
+
+        // Active navigation highlighting
+        const currentPath = window.location.pathname;
+        const navLinks = document.querySelectorAll('.nav-link');
+
+        navLinks.forEach(link => {
+            if (link.getAttribute('href') === currentPath.split('/').pop()) {
+                link.classList.add('active');
+            }
+        });
+
+        // Smooth scrolling for anchor links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+
+        // Copy code functionality
+        document.querySelectorAll('pre code').forEach(block => {
+            const button = document.createElement('button');
+            button.className = 'copy-button absolute top-2 right-2 bg-gray-700 hover:bg-gray-600 text-white px-2 py-1 rounded text-xs';
+            button.textContent = 'Copy';
+            button.onclick = () => {
+                navigator.clipboard.writeText(block.textContent).then(() => {
+                    button.textContent = 'Copied!';
+                    setTimeout(() => button.textContent = 'Copy', 2000);
+                });
+            };
+
+            const pre = block.parentElement;
+            pre.style.position = 'relative';
+            pre.appendChild(button);
+        });
+    </script>
+</body>
+
+</html>

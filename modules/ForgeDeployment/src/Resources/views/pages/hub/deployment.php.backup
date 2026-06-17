@@ -1,0 +1,2066 @@
+<?php
+
+layout(name: "hub", fromModule: true, moduleName: "ForgeHub");
+?>
+<div class="space-y-6">
+  <div class="flex flex-col gap-4 sm:flex-row sm:justify-between sm:items-center">
+    <div>
+      <h1 class="text-2xl font-bold text-gray-900">Deployment</h1>
+      <p class="mt-1 text-sm text-gray-500">Manage and monitor your deployments</p>
+    </div>
+    <div class="flex flex-wrap gap-2 items-center w-full sm:w-auto sm:justify-end">
+      <?php $isProduction = $is_production ?? false; ?>
+      <button id="refreshStatusBtn"
+        class="flex gap-2 items-center px-4 py-2 text-sm font-medium text-gray-700 bg-gray-100 rounded-lg transition-colors hover:bg-gray-200">
+        <i class="fa-solid fa-rotate" id="refreshIcon"></i>
+        <span>Refresh</span>
+      </button>
+      <button id="editConfigBtn" <?= $isProduction ? 'disabled' : '' ?>
+        class="px-4 py-2 bg-gray-900 text-white rounded-lg hover:bg-gray-800 text-sm font-medium transition-colors <?= $isProduction ? 'opacity-50 cursor-not-allowed' : '' ?>">
+        Edit Config
+      </button>
+      <button id="manageSecretsBtn" <?= $isProduction ? 'disabled' : '' ?>
+        class="px-4 py-2 bg-gray-900 text-white rounded-lg hover:bg-gray-800 text-sm font-medium transition-colors <?= $isProduction ? 'opacity-50 cursor-not-allowed' : '' ?>">
+        Manage Secrets
+      </button>
+    </div>
+  </div>
+
+  <div class="grid grid-cols-1 gap-6 lg:grid-cols-2">
+    <div class="p-6 bg-white rounded-xl border border-gray-200">
+      <h2 class="mb-4 text-lg font-semibold text-gray-900">Deployment Status</h2>
+      <?php if ($status['has_state']): ?>
+        <div class="space-y-4">
+          <?php if ($status['server_ip']): ?>
+            <div>
+              <dt class="text-sm font-medium text-gray-500">Server IP</dt>
+              <dd class="mt-1 text-sm font-semibold text-gray-900" id="status-server-ip">
+                <?= htmlspecialchars($status['server_ip']) ?>
+              </dd>
+            </div>
+          <?php endif; ?>
+          <?php if ($status['domain']): ?>
+            <div>
+              <dt class="text-sm font-medium text-gray-500">Domain</dt>
+              <dd class="mt-1 text-sm font-semibold text-gray-900" id="status-domain">
+                <?php
+                $isComplete = !empty($status['completed_steps']) && in_array('post_deployment_completed', $status['completed_steps']);
+                if ($isComplete):
+                  $domainUrl = 'https://' . htmlspecialchars($status['domain']);
+                  ?>
+                  <a href="<?= $domainUrl ?>" target="_blank" rel="noopener noreferrer"
+                    class="inline-flex gap-1 items-center text-blue-600 hover:text-blue-800 hover:underline">
+                    <?= htmlspecialchars($status['domain']) ?>
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path>
+                    </svg>
+                  </a>
+                <?php else: ?>
+                  <?= htmlspecialchars($status['domain']) ?>
+                <?php endif; ?>
+              </dd>
+            </div>
+          <?php endif; ?>
+          <div>
+            <div class="flex justify-between items-center mb-2">
+              <dt class="text-sm font-medium text-gray-500">Progress</dt>
+              <dd class="text-sm font-semibold text-gray-900" id="status-progress">
+                <?= htmlspecialchars((string) $status['progress_percentage']) ?>%
+              </dd>
+            </div>
+            <div class="w-full h-2 bg-gray-200 rounded-full">
+              <div class="h-2 bg-blue-600 rounded-full transition-all" id="status-progress-bar"
+                style="width: <?= htmlspecialchars((string) $status['progress_percentage']) ?>%"></div>
+            </div>
+          </div>
+          <div>
+            <dt class="mb-2 text-sm font-medium text-gray-500">Completed Steps</dt>
+            <dd class="text-sm text-gray-900" id="status-completed-steps">
+              <?php if (!empty($status['completed_steps'])): ?>
+                <ul class="space-y-1">
+                  <?php foreach ($status['completed_steps'] as $step): ?>
+                    <li class="flex gap-2 items-center">
+                      <i class="text-green-600 fa-solid fa-check"></i>
+                      <span><?= htmlspecialchars($step) ?></span>
+                    </li>
+                  <?php endforeach; ?>
+                </ul>
+              <?php else: ?>
+                <span class="text-gray-400">No steps completed yet</span>
+              <?php endif; ?>
+            </dd>
+          </div>
+          <?php if ($status['current_step']): ?>
+            <div>
+              <dt class="text-sm font-medium text-gray-500">Current Step</dt>
+              <dd class="mt-1 text-sm font-semibold text-blue-600" id="status-current-step">
+                <?= htmlspecialchars($status['current_step']) ?>
+              </dd>
+            </div>
+          <?php endif; ?>
+          <?php if ($status['last_updated']): ?>
+            <div>
+              <dt class="text-sm font-medium text-gray-500">Last Updated</dt>
+              <dd class="mt-1 text-sm text-gray-900" id="status-last-updated">
+                <?= htmlspecialchars($status['last_updated']) ?>
+              </dd>
+            </div>
+          <?php endif; ?>
+          <div>
+            <dt class="text-sm font-medium text-gray-500">Server Status</dt>
+            <dd class="mt-1">
+              <?php if ($status['is_accessible']): ?>
+                <span class="px-2 py-1 text-xs font-semibold text-green-800 bg-green-100 rounded-full"
+                  id="status-accessible">Accessible</span>
+              <?php else: ?>
+                <span class="px-2 py-1 text-xs font-semibold text-red-800 bg-red-100 rounded-full"
+                  id="status-accessible">Not Accessible</span>
+              <?php endif; ?>
+            </dd>
+          </div>
+        </div>
+      <?php else: ?>
+        <div class="py-8 text-center">
+          <svg class="mx-auto w-12 h-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+              d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+          </svg>
+          <h3 class="mt-2 text-sm font-medium text-gray-900">No deployment state</h3>
+          <p class="mt-1 text-sm text-gray-500">Start a new deployment to see status here.</p>
+        </div>
+      <?php endif; ?>
+    </div>
+
+    <div class="p-6 bg-white rounded-xl border border-gray-200">
+      <div class="flex justify-between items-center mb-4">
+        <h2 class="text-lg font-semibold text-gray-900">Deployment Actions</h2>
+        <button id="viewDeploymentOutputBtn" onclick="openDeploymentOutputModalFromButton()"
+          class="flex hidden gap-1.5 items-center px-3 py-1.5 text-sm text-gray-600 rounded transition-colors hover:text-gray-900 hover:bg-gray-100">
+          <i class="fa-solid fa-terminal"></i>
+          <span>View Console</span>
+        </button>
+      </div>
+      <div class="p-3 mb-4 text-xs text-blue-800 bg-blue-50 rounded border border-blue-200">
+        <p class="mb-1 font-medium">PHP Command Info:</p>
+        <p class="text-blue-700" id="phpInfoDisplay">
+          <?php if (isset($php_info) && !empty($php_info)): ?>
+            <?php if ($php_info['is_default'] ?? false): ?>
+              Using default PHP CLI command (<code class="px-1 bg-blue-100 rounded">php</code>).
+            <?php else: ?>
+              Using PHP at <code class="px-1 bg-blue-100 rounded"><?= htmlspecialchars($php_info['path'] ?? 'php') ?></code>
+              <?php if (!empty($php_info['version'] ?? '')): ?>
+                (version <?= htmlspecialchars($php_info['version']) ?>)
+              <?php endif; ?>
+            <?php endif; ?>
+          <?php else: ?>
+            Loading PHP information...
+          <?php endif; ?>
+        </p>
+        <div class="mt-2">
+          <label for="phpExecutableSelect" class="block mb-1 text-xs font-medium text-blue-900">Select PHP
+            Executable:</label>
+          <select id="phpExecutableSelect"
+            class="px-2 py-1.5 w-full text-xs bg-white rounded border border-blue-300 focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500">
+            <option value="">Loading...</option>
+          </select>
+        </div>
+      </div>
+      <div class="space-y-3">
+        <?php
+        $isProduction = $is_production ?? false;
+        $deployDisabled = $isProduction ? 'disabled' : '';
+        $deployDisabledClass = $isProduction ? 'opacity-50 cursor-not-allowed' : '';
+        ?>
+        <button id="deployBtn" <?= $deployDisabled ?>
+          class="w-full px-4 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 text-sm font-medium transition-colors flex items-center justify-center gap-2 <?= $deployDisabledClass ?>">
+          <i class="fa-solid fa-rocket"></i>
+          <span><?= $isProduction ? 'Deployed' : 'Deploy' ?></span>
+        </button>
+
+        <button id="updateBtn" <?= $deployDisabled ?>
+          class="flex gap-2 justify-center items-center px-4 py-3 w-full text-sm font-medium text-white bg-purple-600 rounded-lg opacity-50 transition-colors cursor-not-allowed hover:bg-purple-700"
+          disabled>
+          <i class="fa-solid fa-arrow-up"></i>
+          <span>Update</span>
+        </button>
+        <button id="rollbackBtn" <?= $deployDisabled ?>
+          class="flex gap-2 justify-center items-center px-4 py-3 w-full text-sm font-medium text-white bg-orange-600 rounded-lg opacity-50 transition-colors cursor-not-allowed hover:bg-orange-700"
+          disabled>
+          <i class="fa-solid fa-undo"></i>
+          <span>Rollback</span>
+        </button>
+        <button id="deployEnvBtn" <?= $deployDisabled ?>
+          class="flex gap-2 justify-center items-center px-4 py-3 w-full text-sm font-medium text-white bg-indigo-600 rounded-lg opacity-50 transition-colors cursor-not-allowed hover:bg-indigo-700"
+          disabled>
+          <i class="fa-solid fa-file-code"></i>
+          <span>Deploy Env</span>
+        </button>
+        <button id="deleteServerBtn" <?= $deployDisabled ?>
+          class="flex gap-2 justify-center items-center px-4 py-3 w-full text-sm font-medium text-white bg-red-600 rounded-lg opacity-50 transition-colors cursor-not-allowed hover:bg-red-700"
+          disabled>
+          <i class="fa-solid fa-trash"></i>
+          <span>Delete Server</span>
+        </button>
+      </div>
+    </div>
+
+    <div class="p-6 bg-white rounded-xl border border-gray-200">
+      <h2 class="mb-4 text-lg font-semibold text-gray-900">Configuration</h2>
+      <?php if ($has_config && $config): ?>
+        <div class="space-y-3">
+          <?php if (isset($config['server'])): ?>
+            <div>
+              <dt class="text-sm font-medium text-gray-500">Server</dt>
+              <dd class="mt-1 text-sm text-gray-900">
+                <?php if (isset($config['server']['name'])): ?>
+                  <span><?= htmlspecialchars($config['server']['name']) ?></span>
+                <?php endif; ?>
+                <?php if (isset($config['server']['region'])): ?>
+                  <span class="text-gray-400"> • <?= htmlspecialchars($config['server']['region']) ?></span>
+                <?php endif; ?>
+              </dd>
+            </div>
+          <?php endif; ?>
+          <?php if (isset($config['provision'])): ?>
+            <div>
+              <dt class="text-sm font-medium text-gray-500">Provision</dt>
+              <dd class="mt-1 text-sm text-gray-900">
+                <?php if (isset($config['provision']['php_version'])): ?>
+                  <span>PHP <?= htmlspecialchars($config['provision']['php_version']) ?></span>
+                <?php endif; ?>
+                <?php if (isset($config['provision']['database_type'])): ?>
+                  <span class="text-gray-400"> • <?= htmlspecialchars($config['provision']['database_type']) ?></span>
+                <?php endif; ?>
+              </dd>
+            </div>
+          <?php endif; ?>
+          <?php if (isset($config['deployment'])): ?>
+            <div>
+              <dt class="text-sm font-medium text-gray-500">Deployment</dt>
+              <dd class="mt-1 text-sm text-gray-900">
+                <?php if (isset($config['deployment']['domain'])): ?>
+                  <span><?= htmlspecialchars($config['deployment']['domain']) ?></span>
+                <?php endif; ?>
+              </dd>
+            </div>
+          <?php endif; ?>
+          <?php if ($config_path): ?>
+            <div class="pt-2 border-t border-gray-200">
+              <dt class="text-sm font-medium text-gray-500">Config File</dt>
+              <dd class="mt-1 font-mono text-xs text-gray-600"><?= htmlspecialchars($config_path) ?></dd>
+            </div>
+          <?php endif; ?>
+        </div>
+      <?php else: ?>
+        <div class="py-8 text-center">
+          <p class="text-sm text-gray-500">No configuration found</p>
+          <button onclick="editConfig()" class="mt-2 text-sm text-blue-600 hover:text-blue-800">Create
+            Configuration</button>
+        </div>
+      <?php endif; ?>
+    </div>
+
+    <?php if ($has_config && $config && isset($config['deployment'])): ?>
+      <div class="p-6 bg-white rounded-xl border border-gray-200">
+        <div class="flex justify-between items-center mb-4">
+          <h2 class="text-lg font-semibold text-gray-900">Post-Deployment Commands</h2>
+          <?php $isProduction = $is_production ?? false; ?>
+          <button id="editPostCommandsBtn" <?= $isProduction ? 'disabled' : '' ?>
+            class="px-3 py-1 text-xs font-medium text-blue-600 hover:text-blue-800 hover:bg-blue-50 rounded transition-colors <?= $isProduction ? 'opacity-50 cursor-not-allowed' : '' ?>">
+            <i class="fa-solid fa-edit"></i> Edit
+          </button>
+        </div>
+        <?php if (!empty($config['deployment']['post_deployment_commands'])): ?>
+          <div class="overflow-y-auto pr-2 space-y-2 max-h-64" id="postCommandsDisplay">
+            <?php foreach ($config['deployment']['post_deployment_commands'] as $cmd): ?>
+              <div class="flex gap-2 items-center p-2 bg-gray-50 rounded border border-gray-200">
+                <i class="text-xs text-gray-400 fa-solid fa-terminal"></i>
+                <span class="font-mono text-sm text-gray-900"><?= htmlspecialchars($cmd) ?></span>
+              </div>
+            <?php endforeach; ?>
+          </div>
+        <?php else: ?>
+          <div class="py-4 text-center" id="postCommandsDisplay">
+            <p class="text-sm text-gray-500">No post-deployment commands configured</p>
+          </div>
+        <?php endif; ?>
+      </div>
+
+      <div class="p-6 bg-white rounded-xl border border-gray-200">
+        <div class="flex justify-between items-center mb-4">
+          <h2 class="text-lg font-semibold text-gray-900">Environment Variables</h2>
+          <?php $isProduction = $is_production ?? false; ?>
+          <button id="editEnvVarsBtn" <?= $isProduction ? 'disabled' : '' ?>
+            class="px-3 py-1 text-xs font-medium text-blue-600 hover:text-blue-800 hover:bg-blue-50 rounded transition-colors <?= $isProduction ? 'opacity-50 cursor-not-allowed' : '' ?>">
+            <i class="fa-solid fa-edit"></i> Edit
+          </button>
+        </div>
+        <?php if (!empty($config['deployment']['env_vars'])): ?>
+          <div class="overflow-y-auto pr-2 space-y-2 max-h-64" id="envVarsDisplay">
+            <?php foreach ($config['deployment']['env_vars'] as $key => $value): ?>
+              <?php
+              $displayValue = is_array($value)
+                ? '[' . implode(', ', array_map(fn($v) => '"' . addslashes((string) $v) . '"', $value)) . ']'
+                : (string) $value;
+              ?>
+              <div class="flex justify-between items-center p-2 bg-gray-50 rounded border border-gray-200">
+                <div class="flex flex-1 gap-2 items-center min-w-0">
+                  <span class="text-sm font-medium text-gray-700"><?= htmlspecialchars($key) ?></span>
+                  <span class="text-sm text-gray-400">=</span>
+                  <span class="font-mono text-sm text-gray-900 truncate"><?= htmlspecialchars($displayValue) ?></span>
+                </div>
+              </div>
+            <?php endforeach; ?>
+          </div>
+        <?php else: ?>
+          <div class="py-4 text-center" id="envVarsDisplay">
+            <p class="text-sm text-gray-500">No environment variables configured</p>
+          </div>
+        <?php endif; ?>
+      </div>
+    <?php endif; ?>
+
+    <div class="p-6 bg-white rounded-xl border border-gray-200">
+      <h2 class="mb-4 text-lg font-semibold text-gray-900">Recent Deployments</h2>
+      <?php if (!empty($recent_logs)): ?>
+        <div class="overflow-y-auto pr-2 space-y-2 max-h-64">
+          <?php foreach ($recent_logs as $log): ?>
+            <div class="flex justify-between items-center p-3 rounded-lg border border-gray-200 hover:bg-gray-50">
+              <div class="flex-1 min-w-0">
+                <div class="text-sm font-medium text-gray-900 truncate"><?= htmlspecialchars($log['id']) ?></div>
+                <div class="text-xs text-gray-500"><?= date('M j, Y H:i:s', $log['modified']) ?></div>
+              </div>
+              <button onclick="viewLogs('<?= htmlspecialchars($log['id']) ?>')"
+                class="px-3 py-1 ml-2 text-xs font-medium text-blue-600 rounded hover:text-blue-800 hover:bg-blue-50">
+                View
+              </button>
+            </div>
+          <?php endforeach; ?>
+        </div>
+      <?php else: ?>
+        <div class="py-8 text-center">
+          <p class="text-sm text-gray-500">No deployment logs yet</p>
+        </div>
+      <?php endif; ?>
+    </div>
+  </div>
+</div>
+
+
+  <script>
+  let currentDeploymentId = null;
+  const isProduction = <?= ($is_production ?? false) ? 'true' : 'false' ?>;
+
+  document.getElementById('refreshStatusBtn')?.addEventListener('click', async function () {
+    const button = this;
+    const icon = document.getElementById('refreshIcon');
+    const originalText = button.querySelector('span')?.textContent;
+
+    button.disabled = true;
+    if (icon) {
+      icon.classList.add('fa-spin');
+    }
+
+    try {
+      const [statusResponse, configResponse] = await Promise.all([
+        fetch('/hub/deployment/status', {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json',
+            'X-CSRF-Token': window.csrfToken || ''
+          }
+        }),
+        fetch('/hub/deployment/config', {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json',
+            'X-CSRF-Token': window.csrfToken || ''
+          }
+        })
+      ]);
+
+      const statusData = await statusResponse.json();
+      if (statusData.success) {
+        updateStatus(statusData.status);
+      }
+
+      const configData = await configResponse.json();
+      if (configData.success) {
+        await refreshPostCommandsDisplay();
+        await refreshEnvVarsDisplay();
+      }
+
+      showNotification('success', 'Refreshed', 'Deployment status and configuration refreshed');
+    } catch (error) {
+      showNotification('error', 'Refresh Failed', 'Failed to refresh: ' + (error.message || 'Unknown error'));
+    } finally {
+      button.disabled = false;
+      if (icon) {
+        icon.classList.remove('fa-spin');
+      }
+    }
+  });
+
+  document.getElementById('deployBtn')?.addEventListener('click', () => {
+    if (isProduction) {
+      showNotification('error', 'Production Mode', 'Deployment actions are disabled in production mode');
+      return;
+    }
+    executeDeployment('deploy');
+  });
+  document.getElementById('deployAppBtn')?.addEventListener('click', () => {
+    if (isProduction) {
+      showNotification('error', 'Production Mode', 'Deployment actions are disabled in production mode');
+      return;
+    }
+    executeDeployment('deploy-app');
+  });
+  document.getElementById('updateBtn')?.addEventListener('click', () => {
+    if (isProduction) {
+      showNotification('error', 'Production Mode', 'Deployment actions are disabled in production mode');
+      return;
+    }
+    executeDeployment('update');
+  });
+  document.getElementById('rollbackBtn')?.addEventListener('click', () => {
+    if (isProduction) {
+      showNotification('error', 'Production Mode', 'Deployment actions are disabled in production mode');
+      return;
+    }
+    executeDeployment('rollback');
+  });
+  document.getElementById('deployEnvBtn')?.addEventListener('click', () => {
+    if (isProduction) {
+      showNotification('error', 'Production Mode', 'Deployment actions are disabled in production mode');
+      return;
+    }
+    executeDeployment('deploy-env');
+  });
+  document.getElementById('deleteServerBtn')?.addEventListener('click', () => {
+    if (isProduction) {
+      showNotification('error', 'Production Mode', 'Deployment actions are disabled in production mode');
+      return;
+    }
+    confirmDeleteServer();
+  });
+  document.getElementById('editConfigBtn')?.addEventListener('click', () => {
+    if (isProduction) {
+      showNotification('error', 'Production Mode', 'Edit functionality is disabled in production mode');
+      return;
+    }
+    editConfig();
+  });
+  document.getElementById('manageSecretsBtn')?.addEventListener('click', () => {
+    if (isProduction) {
+      showNotification('error', 'Production Mode', 'Edit functionality is disabled in production mode');
+      return;
+    }
+    manageSecrets();
+  });
+  document.getElementById('editPostCommandsBtn')?.addEventListener('click', () => {
+    if (isProduction) {
+      showNotification('error', 'Production Mode', 'Edit functionality is disabled in production mode');
+      return;
+    }
+    editPostCommands();
+  });
+  document.getElementById('editEnvVarsBtn')?.addEventListener('click', () => {
+    if (isProduction) {
+      showNotification('error', 'Production Mode', 'Edit functionality is disabled in production mode');
+      return;
+    }
+    editEnvVars();
+  });
+
+  function updateStatus(status) {
+    if (!status.has_state) {
+      return;
+    }
+
+    if (status.server_ip) {
+      const el = document.getElementById('status-server-ip');
+      if (el) el.textContent = status.server_ip;
+    }
+    if (status.domain) {
+      const el = document.getElementById('status-domain');
+      if (el) {
+        const isComplete = status.completed_steps && status.completed_steps.includes('post_deployment_completed');
+        if (isComplete) {
+          const domainUrl = 'https://' + status.domain;
+          el.innerHTML = `<a href="${domainUrl}" target="_blank" rel="noopener noreferrer"
+            class="inline-flex gap-1 items-center text-blue-600 hover:text-blue-800 hover:underline">
+            ${status.domain}
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path>
+            </svg>
+          </a>`;
+        } else {
+          el.textContent = status.domain;
+        }
+      }
+    }
+    if (status.progress_percentage !== undefined) {
+      const el = document.getElementById('status-progress');
+      const bar = document.getElementById('status-progress-bar');
+      if (el) el.textContent = status.progress_percentage + '%';
+      if (bar) bar.style.width = status.progress_percentage + '%';
+    }
+    if (status.current_step) {
+      const el = document.getElementById('status-current-step');
+      if (el) el.textContent = status.current_step;
+    }
+    if (status.last_updated) {
+      const el = document.getElementById('status-last-updated');
+      if (el) el.textContent = status.last_updated;
+    }
+    if (status.is_accessible !== undefined) {
+      const el = document.getElementById('status-accessible');
+      if (el) {
+        el.textContent = status.is_accessible ? 'Accessible' : 'Not Accessible';
+        el.className = status.is_accessible
+          ? 'px-2 py-1 text-xs font-semibold rounded-full bg-green-100 text-green-800'
+          : 'px-2 py-1 text-xs font-semibold rounded-full bg-red-100 text-red-800';
+      }
+    }
+
+    const isComplete = status.completed_steps && status.completed_steps.includes('post_deployment_completed');
+    const isDeleting = status.current_step && status.current_step.includes('Deleting server');
+    const deployBtn = document.getElementById('deployBtn');
+    const deployAppBtn = document.getElementById('deployAppBtn');
+    const updateBtn = document.getElementById('updateBtn');
+    const rollbackBtn = document.getElementById('rollbackBtn');
+    const deployEnvBtn = document.getElementById('deployEnvBtn');
+    const deleteServerBtn = document.getElementById('deleteServerBtn');
+
+    // In production mode, all deploy buttons should remain disabled
+    if (isProduction) {
+      if (deployBtn) {
+        deployBtn.disabled = true;
+        deployBtn.classList.add('opacity-50', 'cursor-not-allowed');
+        const span = deployBtn.querySelector('span');
+        if (span) {
+          span.textContent = 'Deployed';
+        }
+      }
+      if (deployAppBtn) {
+        deployAppBtn.disabled = true;
+        deployAppBtn.classList.add('opacity-50', 'cursor-not-allowed');
+      }
+      if (updateBtn) {
+        updateBtn.disabled = true;
+        updateBtn.classList.add('opacity-50', 'cursor-not-allowed');
+      }
+      if (rollbackBtn) {
+        rollbackBtn.disabled = true;
+        rollbackBtn.classList.add('opacity-50', 'cursor-not-allowed');
+      }
+      if (deployEnvBtn) {
+        deployEnvBtn.disabled = true;
+        deployEnvBtn.classList.add('opacity-50', 'cursor-not-allowed');
+      }
+      if (deleteServerBtn) {
+        deleteServerBtn.disabled = true;
+        deleteServerBtn.classList.add('opacity-50', 'cursor-not-allowed');
+      }
+
+      return;
+    }
+      if (updateBtn) {
+        updateBtn.disabled = true;
+        updateBtn.classList.add('opacity-50', 'cursor-not-allowed');
+      }
+      if (rollbackBtn) {
+        rollbackBtn.disabled = true;
+        rollbackBtn.classList.add('opacity-50', 'cursor-not-allowed');
+      }
+      if (deployEnvBtn) {
+        deployEnvBtn.disabled = true;
+        deployEnvBtn.classList.add('opacity-50', 'cursor-not-allowed');
+      }
+      return;
+    }
+
+    if (deployAppBtn) {
+      deployAppBtn.disabled = true;
+      deployAppBtn.classList.add('opacity-50', 'cursor-not-allowed');
+    }
+      if (updateBtn) {
+        updateBtn.disabled = true;
+        updateBtn.classList.add('opacity-50', 'cursor-not-allowed');
+      }
+      if (rollbackBtn) {
+        rollbackBtn.disabled = true;
+        rollbackBtn.classList.add('opacity-50', 'cursor-not-allowed');
+      }
+      if (deployEnvBtn) {
+        deployEnvBtn.disabled = true;
+        deployEnvBtn.classList.add('opacity-50', 'cursor-not-allowed');
+      }
+      if (deleteServerBtn) {
+        deleteServerBtn.disabled = true;
+        deleteServerBtn.classList.add('opacity-50', 'cursor-not-allowed');
+      }
+
+      return;
+    }
+
+    if (deployBtn) {
+      if (isComplete) {
+        deployBtn.disabled = true;
+        deployBtn.classList.add('opacity-50', 'cursor-not-allowed');
+        const span = deployBtn.querySelector('span');
+        if (span) {
+          span.textContent = 'Deployed';
+        }
+      } else {
+        deployBtn.disabled = false;
+        deployBtn.classList.remove('opacity-50', 'cursor-not-allowed');
+        const span = deployBtn.querySelector('span');
+        if (span) {
+          span.textContent = 'Deploy';
+        }
+      }
+    }
+
+    if (deployAppBtn) {
+      if (isComplete) {
+        deployAppBtn.disabled = false;
+        deployAppBtn.classList.remove('opacity-50', 'cursor-not-allowed');
+        const span = deployAppBtn.querySelector('span');
+        if (span) {
+          span.textContent = 'Deploy App';
+        }
+      } else {
+        deployAppBtn.disabled = true;
+        deployAppBtn.classList.add('opacity-50', 'cursor-not-allowed');
+        const span = deployAppBtn.querySelector('span');
+        if (span) {
+          span.textContent = 'Deploy App';
+        }
+      }
+    }
+
+    if (updateBtn) {
+      if (isComplete) {
+        updateBtn.disabled = false;
+        updateBtn.classList.remove('opacity-50', 'cursor-not-allowed');
+      } else {
+        updateBtn.disabled = true;
+        updateBtn.classList.add('opacity-50', 'cursor-not-allowed');
+      }
+    }
+
+    if (rollbackBtn) {
+      if (isComplete) {
+        rollbackBtn.disabled = false;
+        rollbackBtn.classList.remove('opacity-50', 'cursor-not-allowed');
+      } else {
+        rollbackBtn.disabled = true;
+        rollbackBtn.classList.add('opacity-50', 'cursor-not-allowed');
+      }
+    }
+
+    if (deployEnvBtn) {
+      if (isComplete) {
+        deployEnvBtn.disabled = false;
+        deployEnvBtn.classList.remove('opacity-50', 'cursor-not-allowed');
+      } else {
+        deployEnvBtn.disabled = true;
+        deployEnvBtn.classList.add('opacity-50', 'cursor-not-allowed');
+      }
+    }
+
+    if (deleteServerBtn) {
+      if (isComplete && !isDeleting) {
+        deleteServerBtn.disabled = false;
+        deleteServerBtn.classList.remove('opacity-50', 'cursor-not-allowed');
+        const span = deleteServerBtn.querySelector('span');
+        if (span) {
+          span.textContent = 'Delete Server';
+        }
+      } else {
+        deleteServerBtn.disabled = true;
+        deleteServerBtn.classList.add('opacity-50', 'cursor-not-allowed');
+        const span = deleteServerBtn.querySelector('span');
+        if (span) {
+          span.textContent = isDeleting ? 'Deleting...' : 'Delete Server';
+        }
+      }
+    }
+  }
+
+  async function executeDeployment(type) {
+    if (isProduction) {
+      showNotification('error', 'Production Mode', 'Deployment actions are disabled in production mode');
+      return;
+    }
+    showConfirmation(
+      'Confirm Deployment',
+      `Are you sure you want to ${type}? This may take several minutes.`,
+      () => {
+        performDeployment(type);
+      }
+    );
+  }
+
+  function confirmDeleteServer() {
+    if (isProduction) {
+      showNotification('error', 'Production Mode', 'Deployment actions are disabled in production mode');
+      return;
+    }
+    showConfirmation(
+      'Delete Server',
+      'Are you sure you want to delete the server? This will permanently remove the server, DNS records, deployment state, and all deployment files. This action cannot be undone.',
+      () => {
+        performDeleteServer();
+      }
+    );
+  }
+
+  async function performDeleteServer() {
+    if (isProduction) {
+      showNotification('error', 'Production Mode', 'Deployment actions are disabled in production mode');
+      return;
+    }
+
+    try {
+      const response = await fetch('/hub/deployment/delete-server', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'X-CSRF-Token': window.csrfToken || ''
+        }
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json().catch(() => ({ message: 'Unknown error occurred' }));
+        showNotification('error', 'Delete Server Failed', errorData.message || `HTTP ${response.status}: ${response.statusText}`);
+        return;
+      }
+
+      const data = await response.json();
+      if (data.success) {
+        currentDeploymentId = data.deployment_id;
+        const viewBtn = document.getElementById('viewDeploymentOutputBtn');
+        if (viewBtn) {
+          viewBtn.classList.remove('hidden');
+        }
+        showNotification('success', 'Server Deletion Started', `Server deletion started successfully. ID: ${data.deployment_id}`);
+        setTimeout(() => {
+          if (data.deployment_id) {
+            openDeploymentOutputModal(data.deployment_id, 'delete-server');
+          }
+        }, 500);
+      } else {
+        showNotification('error', 'Delete Server Failed', data.message || 'Unknown error occurred');
+      }
+    } catch (error) {
+      showNotification('error', 'Error', 'Error deleting server: ' + error.message);
+    }
+  }
+
+  async function performDeployment(type) {
+    if (isProduction) {
+      showNotification('error', 'Production Mode', 'Deployment actions are disabled in production mode');
+      return;
+    }
+    const endpoint = `/hub/deployment/${type}`;
+
+    const args = {};
+    if (type === 'rollback') {
+      args['skip-confirmation'] = true;
+    } else if (type === 'deploy-app') {
+      const statusResponse = await fetch('/hub/deployment/status', {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          'X-CSRF-Token': window.csrfToken || ''
+        }
+      });
+      if (statusResponse.ok) {
+        const statusData = await statusResponse.json();
+        if (statusData.success && statusData.status && statusData.status.has_state) {
+          if (statusData.status.server_ip) {
+            args['host'] = statusData.status.server_ip;
+          }
+          if (statusData.status.domain) {
+            args['domain'] = statusData.status.domain;
+      }
+    }
+    }
+
+    try {
+      const response = await fetch(endpoint, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'X-CSRF-Token': window.csrfToken || ''
+        },
+        body: JSON.stringify({ args: args })
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json().catch(() => ({ message: 'Unknown error occurred' }));
+        showNotification('error', 'Deployment Failed', errorData.message || `HTTP ${response.status}: ${response.statusText}`);
+        return;
+      }
+
+      const data = await response.json();
+      if (data.success) {
+        currentDeploymentId = data.deployment_id;
+        const viewBtn = document.getElementById('viewDeploymentOutputBtn');
+        if (viewBtn) {
+          viewBtn.classList.remove('hidden');
+        }
+        showNotification('success', 'Deployment Started', `Deployment started successfully. ID: ${data.deployment_id}`);
+        setTimeout(() => {
+          if (data.deployment_id) {
+            openDeploymentOutputModal(data.deployment_id, type);
+          }
+        }, 500);
+      } else {
+        showNotification('error', 'Deployment Failed', data.message || 'Unknown error occurred');
+      }
+    } catch (error) {
+      showNotification('error', 'Error', 'Error starting deployment: ' + error.message);
+    }
+  }
+
+  function editConfig() {
+    if (isProduction) {
+      showNotification('error', 'Production Mode', 'Edit functionality is disabled in production mode');
+      return;
+    }
+    const modal = document.getElementById('configModal');
+    if (modal) {
+      modal.classList.remove('hidden');
+    }
+  }
+
+  function manageSecrets() {
+    if (isProduction) {
+      showNotification('error', 'Production Mode', 'Edit functionality is disabled in production mode');
+      return;
+    }
+    const modal = document.getElementById('secretsModal');
+    if (modal) {
+      modal.classList.remove('hidden');
+    }
+  }
+
+  function editPostCommands() {
+    if (isProduction) {
+      showNotification('error', 'Production Mode', 'Edit functionality is disabled in production mode');
+      return;
+    }
+    const modal = document.getElementById('postCommandsModal');
+    if (modal) {
+      modal.classList.remove('hidden');
+      loadPostCommands();
+    }
+  }
+
+  function editEnvVars() {
+    if (isProduction) {
+      showNotification('error', 'Production Mode', 'Edit functionality is disabled in production mode');
+      return;
+    }
+    const modal = document.getElementById('envVarsModal');
+    if (modal) {
+      modal.classList.remove('hidden');
+      loadEnvVars();
+    }
+  }
+
+  function closePostCommandsModal() {
+    const modal = document.getElementById('postCommandsModal');
+    if (modal) {
+      modal.classList.add('hidden');
+    }
+  }
+
+  function closeEnvVarsModal() {
+    const modal = document.getElementById('envVarsModal');
+    if (modal) {
+      modal.classList.add('hidden');
+    }
+  }
+
+  async function loadPostCommands() {
+    try {
+      const response = await fetch('/hub/deployment/config', {
+        headers: {
+          'X-CSRF-Token': window.csrfToken || ''
+        }
+      });
+      const data = await response.json();
+      if (data.success && data.config?.deployment?.post_deployment_commands) {
+        const textarea = document.getElementById('postCommandsTextarea');
+        if (textarea) {
+          textarea.value = data.config.deployment.post_deployment_commands.join('\n');
+        }
+      }
+    } catch (error) {
+    }
+  }
+
+  async function refreshPostCommandsDisplay() {
+    try {
+      const response = await fetch('/hub/deployment/config', {
+        headers: {
+          'X-CSRF-Token': window.csrfToken || ''
+        }
+      });
+      const data = await response.json();
+      const display = document.getElementById('postCommandsDisplay');
+      if (!display) return;
+
+      if (data.success && data.config?.deployment?.post_deployment_commands && data.config.deployment.post_deployment_commands.length > 0) {
+        display.className = 'space-y-2 max-h-64 overflow-y-auto pr-2';
+        display.innerHTML = data.config.deployment.post_deployment_commands.map(cmd => `
+          <div class="flex gap-2 items-center p-2 bg-gray-50 rounded border border-gray-200">
+            <i class="text-xs text-gray-400 fa-solid fa-terminal"></i>
+            <span class="font-mono text-sm text-gray-900">${escapeHtml(cmd)}</span>
+          </div>
+        `).join('');
+      } else {
+        display.className = 'text-center py-4';
+        display.innerHTML = '<p class="text-sm text-gray-500">No post-deployment commands configured</p>';
+      }
+    } catch (error) {
+    }
+  }
+
+  async function refreshEnvVarsDisplay() {
+    try {
+      const response = await fetch('/hub/deployment/config', {
+        headers: {
+          'X-CSRF-Token': window.csrfToken || ''
+        }
+      });
+      const data = await response.json();
+      const display = document.getElementById('envVarsDisplay');
+      if (!display) return;
+
+      if (data.success && data.config?.deployment?.env_vars && Object.keys(data.config.deployment.env_vars).length > 0) {
+        display.className = 'space-y-2 max-h-64 overflow-y-auto pr-2';
+        display.innerHTML = Object.entries(data.config.deployment.env_vars).map(([key, value]) => {
+          const stringValue = convertArrayToString(value);
+          return `
+          <div class="flex justify-between items-center p-2 bg-gray-50 rounded border border-gray-200">
+            <div class="flex flex-1 gap-2 items-center min-w-0">
+              <span class="text-sm font-medium text-gray-700">${escapeHtml(key)}</span>
+              <span class="text-sm text-gray-400">=</span>
+              <span class="font-mono text-sm text-gray-900 truncate">${escapeHtml(stringValue)}</span>
+            </div>
+          </div>
+        `;
+        }).join('');
+      } else {
+        display.className = 'text-center py-4';
+        display.innerHTML = '<p class="text-sm text-gray-500">No environment variables configured</p>';
+      }
+    } catch (error) {
+    }
+  }
+
+  function escapeHtml(text) {
+    const div = document.createElement('div');
+    div.textContent = text;
+    return div.innerHTML;
+  }
+
+  function escapeHtmlAttribute(str) {
+    const div = document.createElement('div');
+    div.textContent = str;
+    return div.innerHTML.replace(/"/g, '&quot;');
+  }
+
+  function convertArrayToString(value) {
+    if (Array.isArray(value)) {
+      return '[' + value.map(item => '"' + String(item).replace(/"/g, '\\"') + '"').join(', ') + ']';
+    }
+    return String(value);
+  }
+
+  async function loadEnvVars() {
+    try {
+      const response = await fetch('/hub/deployment/config', {
+        headers: {
+          'X-CSRF-Token': window.csrfToken || ''
+        }
+      });
+      const data = await response.json();
+      const container = document.getElementById('envVarsContainer');
+      if (!container) return;
+
+      container.innerHTML = '';
+
+      if (data.success && data.config?.deployment?.env_vars) {
+        Object.entries(data.config.deployment.env_vars).forEach(([key, value]) => {
+          const stringValue = convertArrayToString(value);
+          addEnvVarRow(key, stringValue);
+        });
+      }
+
+      if (container.children.length === 0) {
+        addEnvVarRow();
+      }
+    } catch (error) {
+    }
+  }
+
+  function addEnvVarRow(key = '', value = '') {
+    const container = document.getElementById('envVarsContainer');
+    if (!container) return;
+
+    const row = document.createElement('div');
+    row.className = 'flex items-center gap-2';
+    row.innerHTML = `
+      <input type="text" placeholder="Variable name" value="${escapeHtmlAttribute(key)}"
+        class="flex-1 px-3 py-2 text-sm rounded-lg border border-gray-200 focus:outline-none focus:ring-1 focus:ring-blue-500"
+        required>
+      <span class="text-gray-400">=</span>
+      <input type="text" placeholder="Variable value" value="${escapeHtmlAttribute(value)}"
+        class="flex-1 px-3 py-2 text-sm rounded-lg border border-gray-200 focus:outline-none focus:ring-1 focus:ring-blue-500"
+        required>
+      <button type="button" onclick="removeEnvVarRow(this)"
+        class="px-3 py-2 text-red-600 rounded transition-colors hover:text-red-800 hover:bg-red-50">
+        <i class="fa-solid fa-trash"></i>
+      </button>
+    `;
+    container.appendChild(row);
+  }
+
+  function removeEnvVarRow(button) {
+    button.closest('div').remove();
+  }
+
+  function attachFormListeners() {
+    const postCommandsForm = document.getElementById('postCommandsForm');
+    if (postCommandsForm) {
+      postCommandsForm.addEventListener('submit', async function (e) {
+        e.preventDefault();
+        const textarea = document.getElementById('postCommandsTextarea');
+        const commands = textarea.value.split('\n').map(cmd => cmd.trim()).filter(cmd => cmd.length > 0);
+
+        try {
+          const response = await fetch('/hub/deployment/config', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              'X-CSRF-Token': window.csrfToken || ''
+            },
+            body: JSON.stringify({
+              update: 'post_deployment_commands',
+              post_deployment_commands: commands
+            })
+          });
+
+          const data = await response.json();
+          if (data.success) {
+            showNotification('success', 'Commands Saved', 'Post-deployment commands saved successfully');
+            closePostCommandsModal();
+            await refreshPostCommandsDisplay();
+          } else {
+            showNotification('error', 'Save Failed', 'Failed to save commands: ' + (data.message || 'Unknown error'));
+          }
+        } catch (error) {
+          showNotification('error', 'Error', 'Error saving commands: ' + error.message);
+        }
+      });
+    }
+
+    const envVarsForm = document.getElementById('envVarsForm');
+    if (envVarsForm) {
+      envVarsForm.addEventListener('submit', async function (e) {
+        e.preventDefault();
+        const container = document.getElementById('envVarsContainer');
+        const rows = container.querySelectorAll('div');
+        const envVars = {};
+
+        rows.forEach(row => {
+          const inputs = row.querySelectorAll('input');
+          if (inputs.length >= 2) {
+            const key = inputs[0].value.trim();
+            const value = inputs[1].value.trim();
+            if (key) {
+              envVars[key] = value;
+            }
+          }
+        });
+
+        try {
+          const response = await fetch('/hub/deployment/config', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              'X-CSRF-Token': window.csrfToken || ''
+            },
+            body: JSON.stringify({
+              update: 'env_vars',
+              env_vars: envVars
+            })
+          });
+
+          const data = await response.json();
+          if (data.success) {
+            showNotification('success', 'Variables Saved', 'Environment variables saved successfully');
+            closeEnvVarsModal();
+            await refreshEnvVarsDisplay();
+          } else {
+            showNotification('error', 'Save Failed', 'Failed to save variables: ' + (data.message || 'Unknown error'));
+          }
+        } catch (error) {
+          showNotification('error', 'Error', 'Error saving variables: ' + error.message);
+        }
+      });
+    }
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', attachFormListeners);
+  } else {
+    attachFormListeners();
+  }
+
+  function viewLogs(deploymentId) {
+    currentDeploymentId = deploymentId;
+    const modal = document.getElementById('logsModal');
+    if (modal) {
+      modal.classList.remove('hidden');
+      loadLogs(deploymentId);
+    }
+  }
+
+  async function loadLogs(deploymentId) {
+    const logsContent = document.getElementById('logsContent');
+    if (!logsContent) return;
+
+    try {
+      const response = await fetch(`/hub/deployment/logs/${deploymentId}`, {
+        method: 'GET',
+        headers: {
+          'X-CSRF-Token': window.csrfToken || ''
+        }
+      });
+
+      const data = await response.json();
+      if (data.success) {
+        logsContent.textContent = data.logs || 'No logs available';
+        logsContent.scrollTop = logsContent.scrollHeight;
+      } else {
+        logsContent.textContent = 'Failed to load logs: ' + (data.message || 'Unknown error');
+      }
+    } catch (error) {
+      logsContent.textContent = 'Error loading logs: ' + error.message;
+    }
+  }
+</script>
+
+<div id="configModal" class="hidden overflow-y-auto fixed inset-0 z-50">
+  <div class="fixed inset-0 bg-black bg-opacity-50 backdrop-blur-sm transition-opacity" onclick="closeConfigModal()">
+  </div>
+  <div class="flex relative justify-center items-center p-4 min-h-screen sm:p-6">
+    <div class="relative w-full max-w-4xl bg-white rounded-lg shadow-xl" onclick="event.stopPropagation()">
+      <div class="flex justify-between items-center px-6 py-4 border-b border-gray-200">
+        <h3 class="text-xl font-semibold text-gray-900">Deployment Configuration</h3>
+        <button onclick="closeConfigModal()"
+          class="p-1 text-gray-400 rounded-lg transition-colors hover:text-gray-600 focus:outline-none focus:ring-2 focus:ring-gray-500">
+          <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+          </svg>
+        </button>
+      </div>
+      <div class="px-6 py-6">
+        <form id="configForm" class="space-y-6">
+          <div>
+            <h4 class="mb-4 text-lg font-medium text-gray-900">Server Configuration</h4>
+            <div class="grid grid-cols-1 gap-4 md:grid-cols-2">
+              <div>
+                <label class="block mb-1 text-sm font-medium text-gray-700">Server Name</label>
+                <input type="text" name="server[name]" id="serverName"
+                  class="px-3 py-2 w-full text-sm rounded-lg border border-gray-200 focus:outline-none focus:ring-1 focus:ring-blue-500">
+              </div>
+              <div>
+                <label class="block mb-1 text-sm font-medium text-gray-700">Region</label>
+                <input type="text" name="server[region]" id="serverRegion"
+                  class="px-3 py-2 w-full text-sm rounded-lg border border-gray-200 focus:outline-none focus:ring-1 focus:ring-blue-500">
+              </div>
+              <div>
+                <label class="block mb-1 text-sm font-medium text-gray-700">Size</label>
+                <input type="text" name="server[size]" id="serverSize"
+                  class="px-3 py-2 w-full text-sm rounded-lg border border-gray-200 focus:outline-none focus:ring-1 focus:ring-blue-500">
+              </div>
+              <div>
+                <label class="block mb-1 text-sm font-medium text-gray-700">Image</label>
+                <input type="text" name="server[image]" id="serverImage"
+                  class="px-3 py-2 w-full text-sm rounded-lg border border-gray-200 focus:outline-none focus:ring-1 focus:ring-blue-500">
+              </div>
+            </div>
+          </div>
+          <div>
+            <h4 class="mb-4 text-lg font-medium text-gray-900">Provision Configuration</h4>
+            <div class="grid grid-cols-1 gap-4 md:grid-cols-2">
+              <div>
+                <label class="block mb-1 text-sm font-medium text-gray-700">PHP Version</label>
+                <input type="text" name="provision[php_version]" id="phpVersion"
+                  class="px-3 py-2 w-full text-sm rounded-lg border border-gray-200 focus:outline-none focus:ring-1 focus:ring-blue-500">
+              </div>
+              <div>
+                <label class="block mb-1 text-sm font-medium text-gray-700">Database Type</label>
+                <input type="text" name="provision[database_type]" id="databaseType"
+                  class="px-3 py-2 w-full text-sm rounded-lg border border-gray-200 focus:outline-none focus:ring-1 focus:ring-blue-500">
+              </div>
+              <div>
+                <label class="block mb-1 text-sm font-medium text-gray-700">Database Version</label>
+                <input type="text" name="provision[database_version]" id="databaseVersion"
+                  class="px-3 py-2 w-full text-sm rounded-lg border border-gray-200 focus:outline-none focus:ring-1 focus:ring-blue-500">
+              </div>
+              <div>
+                <label class="block mb-1 text-sm font-medium text-gray-700">Database Name</label>
+                <input type="text" name="provision[database_name]" id="databaseName"
+                  class="px-3 py-2 w-full text-sm rounded-lg border border-gray-200 focus:outline-none focus:ring-1 focus:ring-blue-500">
+              </div>
+            </div>
+          </div>
+          <div>
+            <h4 class="mb-4 text-lg font-medium text-gray-900">Deployment Configuration</h4>
+            <div class="space-y-4">
+              <div>
+                <label class="block mb-1 text-sm font-medium text-gray-700">Domain</label>
+                <input type="text" name="deployment[domain]" id="deploymentDomain"
+                  class="px-3 py-2 w-full text-sm rounded-lg border border-gray-200 focus:outline-none focus:ring-1 focus:ring-blue-500">
+              </div>
+              <div>
+                <label class="block mb-1 text-sm font-medium text-gray-700">SSL Email</label>
+                <input type="email" name="deployment[ssl_email]" id="sslEmail"
+                  class="px-3 py-2 w-full text-sm rounded-lg border border-gray-200 focus:outline-none focus:ring-1 focus:ring-blue-500">
+              </div>
+            </div>
+          </div>
+          <div class="flex gap-3 justify-end items-center pt-4 border-t border-gray-200">
+            <button type="button" onclick="closeConfigModal()"
+              class="px-4 py-2 text-sm font-medium text-gray-700 bg-gray-100 rounded-lg transition-colors hover:bg-gray-200">
+              Cancel
+            </button>
+            <button type="submit"
+              class="px-4 py-2 text-sm font-medium text-white bg-blue-600 rounded-lg transition-colors hover:bg-blue-700">
+              Save Configuration
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div id="deploymentOutputModal" class="hidden fixed inset-0 z-[60] overflow-y-auto">
+  <div class="fixed inset-0 bg-black bg-opacity-50 backdrop-blur-sm transition-opacity"
+    onclick="closeDeploymentOutputModal()"></div>
+  <div class="flex relative justify-center items-center p-4 py-12 sm:p-6">
+    <div class="relative w-full max-w-5xl h-[85vh] bg-white rounded-lg shadow-xl flex flex-col"
+      onclick="event.stopPropagation()">
+      <div class="flex justify-between items-center px-6 py-4 border-b border-gray-200">
+        <h3 class="text-xl font-semibold text-gray-900" id="deploymentOutputTitle">Deployment Output</h3>
+        <div class="flex gap-2 items-center">
+          <select id="autoRefreshInterval" onchange="updateAutoRefresh()"
+            class="px-3 py-1.5 text-sm bg-white rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500">
+            <option value="0">Auto-refresh: OFF</option>
+            <option value="5">Auto-refresh: 5s</option>
+            <option value="10">Auto-refresh: 10s</option>
+            <option value="30">Auto-refresh: 30s</option>
+            <option value="60">Auto-refresh: 1m</option>
+          </select>
+          <button id="refreshDeploymentOutputBtn" onclick="refreshDeploymentOutput()"
+            class="flex gap-1 items-center px-3 py-1.5 text-sm text-gray-600 rounded transition-colors hover:text-gray-900 hover:bg-gray-100">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15">
+              </path>
+            </svg>
+            Refresh
+          </button>
+          <button id="closeDeploymentOutputBtn" onclick="closeDeploymentOutputModal()"
+            class="p-1 text-gray-400 rounded-lg transition-colors hover:text-gray-600 focus:outline-none focus:ring-2 focus:ring-gray-500">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+            </svg>
+          </button>
+        </div>
+      </div>
+      <div class="flex overflow-hidden flex-col flex-1 px-6 py-6 min-h-0">
+        <div
+          class="overflow-y-auto overflow-x-hidden flex-1 p-4 min-h-0 font-mono text-xs text-gray-100 bg-gray-900 rounded-lg border border-gray-700">
+          <pre id="deploymentOutputContent" class="whitespace-pre-wrap break-words">Loading output...</pre>
+        </div>
+        <p class="flex-shrink-0 mt-2 text-xs text-gray-500">Deployment output is updated as the process runs. Use the
+          refresh button
+          or enable auto-refresh to see the latest output.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div id="secretsModal" class="hidden overflow-y-auto fixed inset-0 z-50">
+  <div class="fixed inset-0 bg-black bg-opacity-50 backdrop-blur-sm transition-opacity" onclick="closeSecretsModal()">
+  </div>
+  <div class="flex relative justify-center items-center p-4 min-h-screen sm:p-6">
+    <div class="relative w-full max-w-2xl bg-white rounded-lg shadow-xl" onclick="event.stopPropagation()">
+      <div class="flex justify-between items-center px-6 py-4 border-b border-gray-200">
+        <h3 class="text-xl font-semibold text-gray-900">Manage Secrets</h3>
+        <button onclick="closeSecretsModal()"
+          class="p-1 text-gray-400 rounded-lg transition-colors hover:text-gray-600 focus:outline-none focus:ring-2 focus:ring-gray-500">
+          <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+          </svg>
+        </button>
+      </div>
+      <div class="px-6 py-6">
+        <form id="secretsForm" class="space-y-4">
+          <div>
+            <label class="block mb-1 text-sm font-medium text-gray-700">DigitalOcean API Token</label>
+            <div class="flex gap-2 items-center">
+              <input type="password" name="digitalocean_api_token" id="digitaloceanToken"
+                class="flex-1 px-3 py-2 text-sm rounded-lg border border-gray-200 focus:outline-none focus:ring-1 focus:ring-blue-500"
+                placeholder="Enter API token or leave blank to keep current">
+              <button type="button" onclick="togglePassword('digitaloceanToken')"
+                class="px-3 py-2 text-sm text-gray-600 rounded transition-colors hover:text-gray-900 hover:bg-gray-100">
+                <i class="fa-solid fa-eye" id="digitaloceanTokenIcon"></i>
+              </button>
+            </div>
+            <p class="mt-1 text-xs text-gray-500">Leave blank to keep current value (masked as ••••••••)</p>
+          </div>
+          <div>
+            <label class="block mb-1 text-sm font-medium text-gray-700">Cloudflare API Token</label>
+            <div class="flex gap-2 items-center">
+              <input type="password" name="cloudflare_api_token" id="cloudflareToken"
+                class="flex-1 px-3 py-2 text-sm rounded-lg border border-gray-200 focus:outline-none focus:ring-1 focus:ring-blue-500"
+                placeholder="Enter API token or leave blank to keep current">
+              <button type="button" onclick="togglePassword('cloudflareToken')"
+                class="px-3 py-2 text-sm text-gray-600 rounded transition-colors hover:text-gray-900 hover:bg-gray-100">
+                <i class="fa-solid fa-eye" id="cloudflareTokenIcon"></i>
+              </button>
+            </div>
+            <p class="mt-1 text-xs text-gray-500">Leave blank to keep current value (masked as ••••••••)</p>
+          </div>
+          <div class="p-4 bg-yellow-50 rounded-lg border border-yellow-200">
+            <div class="flex gap-2 items-start">
+              <i class="mt-0.5 text-yellow-600 fa-solid fa-exclamation-triangle"></i>
+              <div class="text-sm text-yellow-800">
+                <p class="mb-1 font-medium">Security Notice</p>
+                <p>Secrets are stored securely. Only enter new values if you need to update them. Existing values are
+                  masked for security.</p>
+              </div>
+            </div>
+          </div>
+          <div class="flex gap-3 justify-end items-center pt-4 border-t border-gray-200">
+            <button type="button" onclick="closeSecretsModal()"
+              class="px-4 py-2 text-sm font-medium text-gray-700 bg-gray-100 rounded-lg transition-colors hover:bg-gray-200">
+              Cancel
+            </button>
+            <button type="submit"
+              class="px-4 py-2 text-sm font-medium text-white bg-blue-600 rounded-lg transition-colors hover:bg-blue-700">
+              Save Secrets
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div id="postCommandsModal" class="hidden overflow-y-auto fixed inset-0 z-50">
+  <div class="fixed inset-0 bg-black bg-opacity-50 backdrop-blur-sm transition-opacity"
+    onclick="closePostCommandsModal()"></div>
+  <div class="flex relative justify-center items-center p-4 min-h-screen sm:p-6">
+    <div class="relative w-full max-w-3xl bg-white rounded-lg shadow-xl" onclick="event.stopPropagation()">
+      <div class="flex justify-between items-center px-6 py-4 border-b border-gray-200">
+        <h3 class="text-xl font-semibold text-gray-900">Edit Post-Deployment Commands</h3>
+        <button onclick="closePostCommandsModal()"
+          class="p-1 text-gray-400 rounded-lg transition-colors hover:text-gray-600 focus:outline-none focus:ring-2 focus:ring-gray-500">
+          <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+          </svg>
+        </button>
+      </div>
+      <div class="px-6 py-6">
+        <form id="postCommandsForm" class="space-y-4">
+          <div>
+            <label class="block mb-2 text-sm font-medium text-gray-700">Commands (one per line)</label>
+            <textarea id="postCommandsTextarea" rows="10"
+              class="px-3 py-2 w-full font-mono text-sm rounded-lg border border-gray-200 focus:outline-none focus:ring-1 focus:ring-blue-500"
+              placeholder="cache:flush&#10;migrate&#10;queue:restart"></textarea>
+            <p class="mt-1 text-xs text-gray-500">Enter one command per line. These commands will run after deployment
+              completes.</p>
+          </div>
+          <div class="flex gap-3 justify-end items-center pt-4 border-t border-gray-200">
+            <button type="button" onclick="closePostCommandsModal()"
+              class="px-4 py-2 text-sm font-medium text-gray-700 bg-gray-100 rounded-lg transition-colors hover:bg-gray-200">
+              Cancel
+            </button>
+            <button type="submit"
+              class="px-4 py-2 text-sm font-medium text-white bg-blue-600 rounded-lg transition-colors hover:bg-blue-700">
+              Save Commands
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div id="envVarsModal" class="hidden overflow-y-auto fixed inset-0 z-50">
+  <div class="fixed inset-0 bg-black bg-opacity-50 backdrop-blur-sm transition-opacity" onclick="closeEnvVarsModal()">
+  </div>
+  <div class="flex relative justify-center items-center p-4 min-h-screen sm:p-6">
+    <div class="relative w-full max-w-3xl bg-white rounded-lg shadow-xl" onclick="event.stopPropagation()">
+      <div class="flex justify-between items-center px-6 py-4 border-b border-gray-200">
+        <h3 class="text-xl font-semibold text-gray-900">Edit Environment Variables</h3>
+        <button onclick="closeEnvVarsModal()"
+          class="p-1 text-gray-400 rounded-lg transition-colors hover:text-gray-600 focus:outline-none focus:ring-2 focus:ring-gray-500">
+          <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+          </svg>
+        </button>
+      </div>
+      <div class="px-6 py-6">
+        <form id="envVarsForm" class="space-y-4">
+          <div id="envVarsContainer" class="space-y-3">
+          </div>
+          <button type="button" id="addEnvVarBtn" onclick="addEnvVarRow()"
+            class="px-4 py-2 w-full text-sm font-medium text-blue-600 bg-blue-50 rounded-lg transition-colors hover:bg-blue-100">
+            <i class="mr-2 fa-solid fa-plus"></i> Add Variable
+          </button>
+          <div class="flex gap-3 justify-end items-center pt-4 border-t border-gray-200">
+            <button type="button" onclick="closeEnvVarsModal()"
+              class="px-4 py-2 text-sm font-medium text-gray-700 bg-gray-100 rounded-lg transition-colors hover:bg-gray-200">
+              Cancel
+            </button>
+            <button type="submit"
+              class="px-4 py-2 text-sm font-medium text-white bg-blue-600 rounded-lg transition-colors hover:bg-blue-700">
+              Save Variables
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div id="notificationModal" class="hidden fixed inset-0 z-[60] overflow-y-auto pointer-events-none">
+  <div class="flex justify-center items-end px-4 pt-4 pb-20 min-h-screen text-center sm:block sm:p-0">
+    <div class="fixed inset-0 bg-transparent transition-opacity" aria-hidden="true"></div>
+    <div
+      class="inline-block overflow-hidden text-left align-bottom bg-white rounded-lg shadow-xl transition-all transform pointer-events-auto sm:my-8 sm:align-middle sm:max-w-lg sm:w-full"
+      id="notificationContent">
+      <div class="px-4 pt-5 pb-4 bg-white sm:p-6 sm:pb-4">
+        <div class="sm:flex sm:items-start">
+          <div
+            class="flex flex-shrink-0 justify-center items-center mx-auto w-12 h-12 rounded-full sm:mx-0 sm:h-10 sm:w-10"
+            id="notificationIcon">
+          </div>
+          <div class="flex-1 mt-3 text-center sm:mt-0 sm:ml-4 sm:text-left">
+            <h3 class="text-lg font-medium leading-6 text-gray-900" id="notificationTitle">
+            </h3>
+            <div class="mt-2">
+              <p class="text-sm text-gray-500" id="notificationMessage">
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="px-4 py-3 bg-gray-50 sm:px-6 sm:flex sm:flex-row-reverse">
+        <button type="button" id="notificationOkBtn"
+          class="inline-flex justify-center px-4 py-2 w-full text-base font-medium text-white bg-blue-600 rounded-md border border-transparent shadow-sm hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 sm:ml-3 sm:w-auto sm:text-sm">
+          OK
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div id="confirmationModal" class="hidden fixed inset-0 z-[100] overflow-y-auto">
+  <div class="flex justify-center items-end px-4 pt-4 pb-20 min-h-screen text-center sm:block sm:p-0">
+    <div class="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity -z-10" aria-hidden="true"
+      onclick="closeConfirmationModal()"></div>
+    <div
+      class="inline-block overflow-hidden text-left align-bottom bg-white rounded-lg shadow-xl transition-all transform sm:my-8 sm:align-middle sm:max-w-lg sm:w-full"
+      onclick="event.stopPropagation()">
+      <div class="px-4 pt-5 pb-4 bg-white sm:p-6 sm:pb-4">
+        <div class="sm:flex sm:items-start">
+          <div
+            class="flex flex-shrink-0 justify-center items-center mx-auto w-12 h-12 bg-yellow-100 rounded-full sm:mx-0 sm:h-10 sm:w-10">
+            <svg class="w-6 h-6 text-yellow-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z">
+              </path>
+            </svg>
+          </div>
+          <div class="flex-1 mt-3 text-center sm:mt-0 sm:ml-4 sm:text-left">
+            <h3 class="text-lg font-medium leading-6 text-gray-900" id="confirmationTitle">
+            </h3>
+            <div class="mt-2">
+              <p class="text-sm text-gray-500" id="confirmationMessage">
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="px-4 py-3 bg-gray-50 sm:px-6 sm:flex sm:flex-row-reverse">
+        <button type="button" id="confirmationConfirmBtn"
+          class="inline-flex justify-center px-4 py-2 w-full text-base font-medium text-white bg-blue-600 rounded-md border border-transparent shadow-sm hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 sm:ml-3 sm:w-auto sm:text-sm">
+          Confirm
+        </button>
+        <button type="button" id="confirmationCancelBtn"
+          class="inline-flex justify-center px-4 py-2 mt-3 w-full text-base font-medium text-gray-700 bg-white rounded-md border border-gray-300 shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 sm:mt-0 sm:ml-3 sm:w-auto sm:text-sm">
+          Cancel
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  function showNotification(type, title, message, autoClose = true) {
+    const modal = document.getElementById('notificationModal');
+    const content = document.getElementById('notificationContent');
+    const icon = document.getElementById('notificationIcon');
+    const titleEl = document.getElementById('notificationTitle');
+    const messageEl = document.getElementById('notificationMessage');
+    const okBtn = document.getElementById('notificationOkBtn');
+
+    if (!modal || !content || !icon || !titleEl || !messageEl || !okBtn) {
+      return;
+    }
+
+    titleEl.textContent = title;
+    messageEl.textContent = message;
+
+    icon.innerHTML = '';
+    icon.className = 'mx-auto flex-shrink-0 flex items-center justify-center h-12 w-12 rounded-full sm:mx-0 sm:h-10 sm:w-10 ';
+
+    let iconSvg = '';
+    let bgColor = '';
+
+    if (type === 'success') {
+      bgColor = 'bg-green-100';
+      iconSvg = '<svg class="w-6 h-6 text-green-600" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>';
+      okBtn.className = 'w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-green-600 text-base font-medium text-white hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 sm:ml-3 sm:w-auto sm:text-sm';
+    } else if (type === 'error') {
+      bgColor = 'bg-red-100';
+      iconSvg = '<svg class="w-6 h-6 text-red-600" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>';
+      okBtn.className = 'w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-red-600 text-base font-medium text-white hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 sm:ml-3 sm:w-auto sm:text-sm';
+    } else if (type === 'warning') {
+      bgColor = 'bg-yellow-100';
+      iconSvg = '<svg class="w-6 h-6 text-yellow-600" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path></svg>';
+      okBtn.className = 'w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-yellow-600 text-base font-medium text-white hover:bg-yellow-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-yellow-500 sm:ml-3 sm:w-auto sm:text-sm';
+    } else {
+      bgColor = 'bg-blue-100';
+      iconSvg = '<svg class="w-6 h-6 text-blue-600" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>';
+      okBtn.className = 'w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-blue-600 text-base font-medium text-white hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 sm:ml-3 sm:w-auto sm:text-sm';
+    }
+
+    icon.className += bgColor;
+    icon.innerHTML = iconSvg;
+
+    modal.classList.remove('hidden');
+
+    const closeNotification = () => {
+      modal.classList.add('hidden');
+    };
+
+    okBtn.onclick = closeNotification;
+
+    if (autoClose) {
+      setTimeout(closeNotification, 5000);
+    }
+  }
+
+  let confirmationCallback = null;
+
+  function showConfirmation(title, message, onConfirm) {
+    const deploymentOutputModal = document.getElementById('deploymentOutputModal');
+    if (deploymentOutputModal && !deploymentOutputModal.classList.contains('hidden')) {
+      closeDeploymentOutputModal();
+    }
+
+    const modal = document.getElementById('confirmationModal');
+    const titleEl = document.getElementById('confirmationTitle');
+    const messageEl = document.getElementById('confirmationMessage');
+    const confirmBtn = document.getElementById('confirmationConfirmBtn');
+    const cancelBtn = document.getElementById('confirmationCancelBtn');
+
+    if (!modal || !titleEl || !messageEl || !confirmBtn || !cancelBtn) {
+      if (onConfirm) onConfirm();
+      return;
+    }
+
+    titleEl.textContent = title;
+    messageEl.textContent = message;
+    confirmationCallback = onConfirm;
+
+    modal.classList.remove('hidden');
+
+    const closeModal = () => {
+      modal.classList.add('hidden');
+      confirmationCallback = null;
+    };
+
+    confirmBtn.onclick = () => {
+      if (confirmationCallback) {
+        confirmationCallback();
+      }
+      closeModal();
+    };
+
+    cancelBtn.onclick = closeModal;
+  }
+
+  function closeConfirmationModal() {
+    const modal = document.getElementById('confirmationModal');
+    if (modal) {
+      modal.classList.add('hidden');
+      confirmationCallback = null;
+    }
+  }
+
+  window.showNotification = showNotification;
+  window.showConfirmation = showConfirmation;
+  window.closeConfirmationModal = closeConfirmationModal;
+</script>
+
+<script>
+  async function loadConfig() {
+    try {
+      const response = await fetch('/hub/deployment/config', {
+        method: 'GET',
+        headers: {
+          'X-CSRF-Token': window.csrfToken || ''
+        }
+      });
+      const data = await response.json();
+      if (data.success && data.config) {
+        const config = data.config;
+        if (config.server) {
+          if (config.server.name) document.getElementById('serverName').value = config.server.name;
+          if (config.server.region) document.getElementById('serverRegion').value = config.server.region;
+          if (config.server.size) document.getElementById('serverSize').value = config.server.size;
+          if (config.server.image) document.getElementById('serverImage').value = config.server.image;
+        }
+        if (config.provision) {
+          if (config.provision.php_version) document.getElementById('phpVersion').value = config.provision.php_version;
+          if (config.provision.database_type) document.getElementById('databaseType').value = config.provision.database_type;
+          if (config.provision.database_version) document.getElementById('databaseVersion').value = config.provision.database_version;
+          if (config.provision.database_name) document.getElementById('databaseName').value = config.provision.database_name;
+        }
+        if (config.deployment) {
+          if (config.deployment.domain) document.getElementById('deploymentDomain').value = config.deployment.domain;
+          if (config.deployment.ssl_email) document.getElementById('sslEmail').value = config.deployment.ssl_email;
+        }
+      }
+    } catch (error) {
+    }
+  }
+
+  function closeConfigModal() {
+    const modal = document.getElementById('configModal');
+    if (modal) modal.classList.add('hidden');
+  }
+
+  document.getElementById('configForm')?.addEventListener('submit', async function (e) {
+    e.preventDefault();
+    const formData = new FormData(this);
+    const config = { server: {}, provision: {}, deployment: {} };
+    for (const [key, value] of formData.entries()) {
+      const parts = key.split('[');
+      if (parts.length === 2) {
+        const section = parts[0];
+        const field = parts[1].replace(']', '');
+        if (section === 'server' || section === 'provision' || section === 'deployment') {
+          config[section][field] = value;
+        }
+      }
+    }
+    try {
+      const response = await fetch('/hub/deployment/config', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'X-CSRF-Token': window.csrfToken || ''
+        },
+        body: JSON.stringify({ config })
+      });
+      const data = await response.json();
+      if (data.success) {
+        showNotification('success', 'Configuration Saved', 'Configuration saved successfully');
+        closeConfigModal();
+        setTimeout(() => location.reload(), 1500);
+      } else {
+        showNotification('error', 'Save Failed', 'Failed to save configuration: ' + (data.message || 'Unknown error'));
+      }
+    } catch (error) {
+      showNotification('error', 'Error', 'Error saving configuration: ' + error.message);
+    }
+  });
+
+  document.getElementById('configModal')?.addEventListener('click', function (e) {
+    if (e.target === this) closeConfigModal();
+  });
+
+  const editConfigBtn = document.getElementById('editConfigBtn');
+  if (editConfigBtn) {
+    editConfigBtn.addEventListener('click', function () {
+      const modal = document.getElementById('configModal');
+      if (modal) {
+        modal.classList.remove('hidden');
+        loadConfig();
+      }
+    });
+  }
+
+  let currentDeploymentOutputId = null;
+  let currentDeploymentType = 'deploy';
+  let autoRefreshInterval = null;
+  let autoRefreshTimer = null;
+
+  function openDeploymentOutputModal(deploymentId, deploymentType = 'deploy') {
+    if (!deploymentId) {
+      console.error('openDeploymentOutputModal: No deployment ID provided');
+      return;
+    }
+    currentDeploymentOutputId = deploymentId;
+    currentDeploymentType = deploymentType;
+    const modal = document.getElementById('deploymentOutputModal');
+    const title = document.getElementById('deploymentOutputTitle');
+    const viewBtn = document.getElementById('viewDeploymentOutputBtn');
+
+    if (!modal) {
+      console.error('openDeploymentOutputModal: Modal element not found');
+      return;
+    }
+
+    if (!title) {
+      console.error('openDeploymentOutputModal: Title element not found');
+      return;
+    }
+
+    const typeLabels = {
+      'deploy': 'Deploy',
+      'deploy-app': 'Deploy App',
+      'update': 'Update',
+      'rollback': 'Rollback',
+      'delete-server': 'Delete Server'
+    };
+    title.textContent = `${typeLabels[deploymentType] || 'Deployment'} Output`;
+    modal.classList.remove('hidden');
+    document.body.style.overflow = 'hidden';
+
+    if (viewBtn) {
+      viewBtn.classList.remove('hidden');
+    }
+
+    loadDeploymentOutput(deploymentId);
+    updateAutoRefresh();
+  }
+
+  function openDeploymentOutputModalFromButton() {
+    if (currentDeploymentOutputId) {
+      openDeploymentOutputModal(currentDeploymentOutputId, currentDeploymentType);
+    }
+  }
+
+  function closeDeploymentOutputModal() {
+    const modal = document.getElementById('deploymentOutputModal');
+    if (modal) {
+      modal.classList.add('hidden');
+      document.body.style.overflow = '';
+      stopAutoRefresh();
+    }
+  }
+
+  function refreshDeploymentOutput() {
+    if (currentDeploymentOutputId) {
+      loadDeploymentOutput(currentDeploymentOutputId);
+    }
+  }
+
+  function stripAnsiCodes(text) {
+    return text.replace(/\u001b\[[0-9;]*m/g, '');
+  }
+
+  async function loadDeploymentOutput(deploymentId) {
+    const outputContent = document.getElementById('deploymentOutputContent');
+    if (!outputContent) return;
+
+    outputContent.textContent = 'Loading output...';
+
+    try {
+      const response = await fetch(`/hub/deployment/logs/${deploymentId}`, {
+        method: 'GET',
+        headers: { 'X-CSRF-Token': window.csrfToken || '' }
+      });
+      const data = await response.json();
+      if (data.success) {
+        if (data.logs && data.logs.trim() !== '') {
+          const cleanLogs = stripAnsiCodes(data.logs);
+          outputContent.textContent = cleanLogs;
+          const container = outputContent.parentElement;
+          if (container) {
+            setTimeout(() => {
+              container.scrollTop = container.scrollHeight;
+            }, 100);
+          }
+        } else {
+          outputContent.textContent = 'No output available yet. The deployment is starting...';
+        }
+      } else {
+        outputContent.textContent = 'Failed to load output: ' + (data.message || 'Unknown error');
+      }
+    } catch (error) {
+      outputContent.textContent = 'Error loading output: ' + error.message;
+    }
+  }
+
+  function updateAutoRefresh() {
+    stopAutoRefresh();
+    const select = document.getElementById('autoRefreshInterval');
+    if (!select) return;
+
+    const interval = parseInt(select.value, 10);
+    if (interval > 0 && currentDeploymentOutputId) {
+      autoRefreshTimer = setInterval(() => {
+        if (currentDeploymentOutputId) {
+          loadDeploymentOutput(currentDeploymentOutputId);
+        }
+      }, interval * 1000);
+    }
+  }
+
+  function stopAutoRefresh() {
+    if (autoRefreshTimer) {
+      clearInterval(autoRefreshTimer);
+      autoRefreshTimer = null;
+    }
+  }
+
+  let availablePhpBinaries = [];
+  let currentPhpPath = '<?= htmlspecialchars($php_info['path'] ?? '') ?>';
+
+  async function loadPhpBinaries() {
+    try {
+      const response = await fetch('/hub/deployment/php-binaries', {
+        method: 'GET',
+        headers: { 'X-CSRF-Token': window.csrfToken || '' }
+      });
+      const data = await response.json();
+      if (data.success && data.binaries) {
+        availablePhpBinaries = data.binaries;
+        updatePhpSelector();
+      }
+    } catch (error) {
+      console.error('Error loading PHP binaries:', error);
+    }
+  }
+
+  function updatePhpSelector() {
+    const select = document.getElementById('phpExecutableSelect');
+    if (!select) return;
+
+    select.innerHTML = '';
+
+    if (availablePhpBinaries.length === 0) {
+      const option = document.createElement('option');
+      option.value = '';
+      option.textContent = 'No PHP binaries found';
+      select.appendChild(option);
+      return;
+    }
+
+    availablePhpBinaries.forEach(binary => {
+      const option = document.createElement('option');
+      option.value = binary.path;
+      option.textContent = `${binary.path}${binary.version ? ' (PHP ' + binary.version + ')' : ''}${binary.has_ssh2 ? ' ✓ SSH2' : ' ✗ No SSH2'}`;
+      if (binary.path === currentPhpPath) {
+        option.selected = true;
+      }
+      select.appendChild(option);
+    });
+  }
+
+  document.getElementById('phpExecutableSelect')?.addEventListener('change', async function () {
+    const selectedPath = this.value;
+    if (!selectedPath || selectedPath === currentPhpPath) {
+      return;
+    }
+
+    try {
+      const response = await fetch('/hub/deployment/php-executable', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'X-CSRF-Token': window.csrfToken || ''
+        },
+        body: JSON.stringify({ path: selectedPath })
+      });
+      const data = await response.json();
+      if (data.success) {
+        currentPhpPath = selectedPath;
+        if (data.php_info) {
+          updatePhpInfoDisplay(data.php_info);
+        }
+        showNotification('success', 'PHP Executable Updated', 'PHP executable preference saved successfully');
+      } else {
+        showNotification('error', 'Update Failed', data.message || 'Failed to update PHP executable preference');
+        this.value = currentPhpPath;
+      }
+    } catch (error) {
+      showNotification('error', 'Error', 'Error updating PHP executable: ' + error.message);
+      this.value = currentPhpPath;
+    }
+  });
+
+  function updatePhpInfoDisplay(phpInfo) {
+    const display = document.getElementById('phpInfoDisplay');
+    if (!display) return;
+
+    if (phpInfo.is_default) {
+      display.innerHTML = 'Using default PHP CLI command (<code class="px-1 bg-blue-100 rounded">php</code>).';
+    } else {
+      display.innerHTML = `Using PHP at <code class="px-1 bg-blue-100 rounded">${escapeHtml(phpInfo.path)}</code>${phpInfo.version ? ' (version ' + escapeHtml(phpInfo.version) + ')' : ''}`;
+    }
+  }
+
+  function escapeHtml(text) {
+    const div = document.createElement('div');
+    div.textContent = text;
+    return div.innerHTML;
+  }
+
+  function initializePage() {
+    loadPhpBinaries();
+
+    // Initialize status on page load
+    const initialStatus = <?= json_encode($status) ?>;
+    if (initialStatus && initialStatus.has_state) {
+      updateStatus(initialStatus);
+    }
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initializePage);
+  } else {
+    initializePage();
+  }
+
+  const deploymentOutputModal = document.getElementById('deploymentOutputModal');
+  if (deploymentOutputModal) {
+    const backdrop = deploymentOutputModal.querySelector('.backdrop') || deploymentOutputModal.firstElementChild;
+    if (backdrop) {
+      backdrop.addEventListener('click', function (e) {
+        if (e.target === this) {
+          closeDeploymentOutputModal();
+        }
+      });
+    }
+  }
+
+  document.addEventListener('keydown', function (e) {
+    if (e.key === 'Escape') {
+      const modal = document.getElementById('deploymentOutputModal');
+      if (modal && !modal.classList.contains('hidden')) {
+        closeDeploymentOutputModal();
+      }
+    }
+  });
+
+  window.viewLogs = function (deploymentId) {
+    openDeploymentOutputModal(deploymentId, 'deploy');
+  };
+
+  async function loadSecrets() {
+    try {
+      const response = await fetch('/hub/deployment/secrets', {
+        method: 'GET',
+        headers: { 'X-CSRF-Token': window.csrfToken || '' }
+      });
+      const data = await response.json();
+      if (data.success && data.secrets) {
+        const digitaloceanInput = document.getElementById('digitaloceanToken');
+        const cloudflareInput = document.getElementById('cloudflareToken');
+        if (digitaloceanInput && data.secrets.digitalocean_api_token) {
+          digitaloceanInput.placeholder = 'Current value: ' + data.secrets.digitalocean_api_token;
+        }
+        if (cloudflareInput && data.secrets.cloudflare_api_token) {
+          cloudflareInput.placeholder = 'Current value: ' + data.secrets.cloudflare_api_token;
+        }
+      }
+    } catch (error) {
+    }
+  }
+
+  function togglePassword(inputId) {
+    const input = document.getElementById(inputId);
+    const icon = document.getElementById(inputId + 'Icon');
+    if (input && icon) {
+      if (input.type === 'password') {
+        input.type = 'text';
+        icon.classList.remove('fa-eye');
+        icon.classList.add('fa-eye-slash');
+      } else {
+        input.type = 'password';
+        icon.classList.remove('fa-eye-slash');
+        icon.classList.add('fa-eye');
+      }
+    }
+  }
+
+  function closeSecretsModal() {
+    const modal = document.getElementById('secretsModal');
+    if (modal) modal.classList.add('hidden');
+  }
+
+  document.getElementById('secretsForm')?.addEventListener('submit', async function (e) {
+    e.preventDefault();
+    const formData = new FormData(this);
+    const secrets = {
+      digitalocean_api_token: formData.get('digitalocean_api_token') || '••••••••',
+      cloudflare_api_token: formData.get('cloudflare_api_token') || '••••••••',
+    };
+    try {
+      const response = await fetch('/hub/deployment/secrets', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'X-CSRF-Token': window.csrfToken || ''
+        },
+        body: JSON.stringify({ secrets })
+      });
+      const data = await response.json();
+      if (data.success) {
+        showNotification('success', 'Secrets Updated', 'Secrets updated successfully');
+        closeSecretsModal();
+      } else {
+        showNotification('error', 'Update Failed', 'Failed to update secrets: ' + (data.message || 'Unknown error'));
+      }
+    } catch (error) {
+      showNotification('error', 'Error', 'Error updating secrets: ' + error.message);
+    }
+  });
+
+  document.getElementById('secretsModal')?.addEventListener('click', function (e) {
+    if (e.target === this) closeSecretsModal();
+  });
+
+  const manageSecretsBtn = document.getElementById('manageSecretsBtn');
+  if (manageSecretsBtn) {
+    manageSecretsBtn.addEventListener('click', function () {
+      const modal = document.getElementById('secretsModal');
+      if (modal) {
+        modal.classList.remove('hidden');
+        loadSecrets();
+      }
+    });
+  }
+</script>

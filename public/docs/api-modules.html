@@ -1,0 +1,1987 @@
+<!doctype html>
+<html lang="en" class="scroll-smooth">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Module System API - Forge Engine Documentation</title>
+        <script src="https://cdn.tailwindcss.com"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-core.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/autoloader/prism-autoloader.min.js"></script>
+        <link
+            href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css"
+            rel="stylesheet"
+        />
+        <link
+            href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+            rel="stylesheet"
+        />
+        <style>
+            .code-block {
+                background: #2d3748;
+                border-radius: 0.5rem;
+            }
+
+            .nav-link.active {
+                background-color: #eef2ff;
+                color: #4f46e5;
+                font-weight: 500;
+            }
+
+            .nav-link.active:hover {
+                background-color: #e0e7ff;
+            }
+
+            .section-anchor {
+                scroll-margin-top: 120px;
+            }
+
+            /* Mobile menu styles */
+            @media (max-width: 640px) {
+                .lg\:w-1\/4 {
+                    position: fixed;
+                    top: 0;
+                    left: -100%;
+                    width: 80%;
+                    max-width: 320px;
+                    height: 100vh;
+                    z-index: 50;
+                    transition: transform 0.3s ease;
+                    background: white;
+                    overflow-y: auto;
+                }
+
+                .lg\:w-1\/4.mobile-menu-open {
+                    transform: translateX(0);
+                }
+
+                .mobile-menu-overlay {
+                    position: fixed;
+                    top: 0;
+                    left: 0;
+                    width: 100%;
+                    height: 100%;
+                    background: rgba(0, 0, 0, 0.5);
+                    z-index: 40;
+                    display: none;
+                }
+
+                .mobile-menu-overlay.active {
+                    display: block;
+                }
+            }
+        </style>
+    </head>
+
+    <body class="bg-gray-50">
+        <!-- Navigation -->
+        <nav class="bg-white shadow-sm border-b">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="flex justify-between h-16">
+                    <div class="flex items-center">
+                        <div class="flex-shrink-0">
+                            <h1 class="text-xl font-bold text-gray-900">
+                                Forge Engine
+                            </h1>
+                        </div>
+                        <div class="hidden sm:ml-6 sm:flex sm:space-x-8">
+                            <a
+                                href="index.html"
+                                class="text-gray-900 inline-flex items-center px-1 pt-1 text-sm font-medium hover:text-blue-600"
+                            >
+                                Home
+                            </a>
+                            <a
+                                href="getting-started.html"
+                                class="text-gray-900 inline-flex items-center px-1 pt-1 text-sm font-medium hover:text-blue-600"
+                            >
+                                Getting Started
+                            </a>
+                            <a
+                                href="core-concepts.html"
+                                class="text-gray-900 inline-flex items-center px-1 pt-1 text-sm font-medium hover:text-blue-600"
+                            >
+                                Core Concepts
+                            </a>
+                            <a
+                                href="modules.html"
+                                class="text-gray-900 inline-flex items-center px-1 pt-1 text-sm font-medium hover:text-blue-600"
+                            >
+                                Modules
+                            </a>
+                            <a
+                                href="api-reference.html"
+                                class="text-blue-600 inline-flex items-center px-1 pt-1 text-sm font-medium border-b-2 border-blue-600"
+                            >
+                                API Reference
+                            </a>
+                        </div>
+                    </div>
+                    <div class="flex items-center sm:hidden">
+                        <button
+                            id="mobile-menu-btn"
+                            class="text-gray-700 hover:text-blue-600"
+                            data-mobile-menu-toggle
+                        >
+                            <i class="fas fa-bars text-xl"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+            <!-- Mobile menu -->
+            <div id="mobile-menu" class="hidden sm:hidden bg-white border-t">
+                <div class="px-2 pt-2 pb-3 space-y-1">
+                    <a
+                        href="index.html"
+                        class="block px-3 py-2 text-gray-700 hover:text-blue-600"
+                    >
+                        Home
+                    </a>
+                    <a
+                        href="getting-started.html"
+                        class="block px-3 py-2 text-gray-700 hover:text-blue-600"
+                    >
+                        Getting Started
+                    </a>
+                    <a
+                        href="core-concepts.html"
+                        class="block px-3 py-2 text-gray-700 hover:text-blue-600"
+                    >
+                        Core Concepts
+                    </a>
+                    <a
+                        href="modules.html"
+                        class="block px-3 py-2 text-gray-700 hover:text-blue-600"
+                    >
+                        Modules
+                    </a>
+                    <a
+                        href="api-reference.html"
+                        class="block px-3 py-2 text-blue-600"
+                    >
+                        API Reference
+                    </a>
+                </div>
+            </div>
+        </nav>
+
+        <!-- Mobile Menu Overlay -->
+        <div id="mobile-menu-overlay" class="mobile-menu-overlay"></div>
+
+        <!-- Main Content -->
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+            <div class="flex flex-col lg:flex-row gap-8">
+                <!-- Sidebar Navigation -->
+                <div class="lg:w-1/4">
+                    <div class="bg-white rounded-lg shadow-sm p-6 sticky top-8">
+                        <h3 class="text-lg font-semibold text-gray-900 mb-4">
+                            API Reference
+                        </h3>
+                        <nav class="space-y-2">
+                            <a
+                                href="api-core.html"
+                                class="nav-link block px-3 py-2 text-sm text-gray-700 rounded-md hover:text-blue-600"
+                            >
+                                <i class="fas fa-cogs mr-2"></i>Core Engine
+                            </a>
+                            <a
+                                href="api-http.html"
+                                class="nav-link block px-3 py-2 text-sm text-gray-700 rounded-md hover:text-blue-600"
+                            >
+                                <i class="fas fa-globe mr-2"></i>HTTP Layer
+                            </a>
+                            <a
+                                href="api-database.html"
+                                class="nav-link block px-3 py-2 text-sm text-gray-700 rounded-md hover:text-blue-600"
+                            >
+                                <i class="fas fa-database mr-2"></i>Database &
+                                ORM
+                            </a>
+                            <a
+                                href="api-di.html"
+                                class="nav-link block px-3 py-2 text-sm text-gray-700 rounded-md hover:text-blue-600"
+                            >
+                                <i class="fas fa-puzzle-piece mr-2"></i>DI
+                                Container
+                            </a>
+                            <a
+                                href="api-routing.html"
+                                class="nav-link block px-3 py-2 text-sm text-gray-700 rounded-md hover:text-blue-600"
+                            >
+                                <i class="fas fa-route mr-2"></i>Routing
+                            </a>
+                            <a
+                                href="api-modules.html"
+                                class="nav-link block px-3 py-2 text-sm text-gray-700 rounded-md hover:text-blue-600 active"
+                            >
+                                <i class="fas fa-plug mr-2"></i>Module System
+                            </a>
+                            <a
+                                href="api-cli.html"
+                                class="nav-link block px-3 py-2 text-sm text-gray-700 rounded-md hover:text-blue-600"
+                            >
+                                <i class="fas fa-terminal mr-2"></i>CLI &
+                                Console
+                            </a>
+                            <a
+                                href="api-cache.html"
+                                class="nav-link block px-3 py-2 text-sm text-gray-700 rounded-md hover:text-blue-600"
+                            >
+                                <i class="fas fa-memory mr-2"></i>Caching
+                            </a>
+                            <a
+                                href="api-validation.html"
+                                class="nav-link block px-3 py-2 text-sm text-gray-700 rounded-md hover:text-blue-600"
+                            >
+                                <i class="fas fa-check-circle mr-2"></i
+                                >Validation
+                            </a>
+                            <a
+                                href="api-helpers.html"
+                                class="nav-link block px-3 py-2 text-sm text-gray-700 rounded-md hover:text-blue-600"
+                            >
+                                <i class="fas fa-tools mr-2"></i>Helpers &
+                                Traits
+                            </a>
+                            <a
+                                href="api-events.html"
+                                class="nav-link block px-3 py-2 text-sm text-gray-700 rounded-md hover:text-blue-600"
+                            >
+                                <i class="fas fa-broadcast-tower mr-2"></i
+                                >Events
+                            </a>
+                            <a
+                                href="api-security.html"
+                                class="nav-link block px-3 py-2 text-sm text-gray-700 rounded-md hover:text-blue-600"
+                            >
+                                <i class="fas fa-shield-alt mr-2"></i>Security
+                            </a>
+                        </nav>
+                    </div>
+                </div>
+
+                <!-- Main Content -->
+                <div class="lg:w-3/4">
+                    <div class="bg-white rounded-lg shadow-sm p-8">
+                        <h1 class="text-4xl font-bold text-gray-900 mb-6">
+                            Module System API
+                        </h1>
+                        <p class="text-xl text-gray-600 mb-8">
+                            Module discovery, registration, lifecycle
+                            management, and dependency resolution. The Module
+                            System provides a powerful plugin architecture that
+                            allows you to extend the framework's functionality
+                            through modular components.
+                        </p>
+
+                        <!-- Module Attribute -->
+                        <section
+                            id="module-attribute"
+                            class="section-anchor mb-12"
+                        >
+                            <div
+                                class="bg-blue-50 border-l-4 border-blue-500 p-6 mb-8"
+                            >
+                                <h2
+                                    class="text-2xl font-bold text-gray-900 mb-4"
+                                >
+                                    <i
+                                        class="fas fa-cube text-blue-600 mr-3"
+                                    ></i
+                                    >Module Attribute
+                                </h2>
+                                <p class="text-gray-700">
+                                    PHP 8 attribute that marks a class as a
+                                    Forge Engine module. Modules use attributes
+                                    for configuration rather than extending a
+                                    base class, providing a clean and modern
+                                    approach to module definition.
+                                </p>
+                            </div>
+
+                            <div class="mb-8">
+                                <h3
+                                    class="text-xl font-semibold text-gray-900 mb-4"
+                                >
+                                    Module Structure
+                                </h3>
+
+                                <div
+                                    class="api-method bg-gray-50 p-4 rounded-lg mb-4"
+                                >
+                                    <h4 class="font-semibold text-lg mb-2">
+                                        Basic Module Definition
+                                    </h4>
+                                    <p class="text-gray-600 text-sm mb-3">
+                                        Create a custom module using PHP 8
+                                        attributes to mark the class as a Forge
+                                        Engine module.
+                                    </p>
+                                    <div
+                                        class="code-block p-4 text-white rounded"
+                                    >
+                                        <pre><code class="language-php">&lt;?php
+
+declare(strict_types=1);
+
+namespace App\Modules\Blog;
+
+use Forge\Core\DI\Container;
+use Forge\Core\Module\Attributes\Module;
+use Forge\Core\Module\Attributes\LifecycleHook;
+use Forge\Core\Module\Attributes\Compatibility;
+use Forge\Core\Module\Attributes\Provides;
+use Forge\Core\Module\Attributes\Requires;
+use Forge\Core\Module\Attributes\Repository;
+use Forge\Core\Module\LifecycleHookName;
+
+#[
+    Module(
+        name: "Blog",
+        description: "Blog functionality for the application",
+        version: "1.0.0",
+        order: 100,
+        core: false,
+        isCli: false
+    ),
+    Compatibility(framework: ">=0.1.0", php: ">=8.3"),
+    Repository(type: "git", url: "https://github.com/forge-kernel/kernel-module-registry"),
+    Provides(interface: BlogServiceInterface::class, version: "1.0.0")
+]
+#[Requires]
+final class BlogModule
+{
+    public function register(Container $container): void
+    {
+        // Register services early in the application lifecycle
+        $container->bind(BlogService::class, BlogService::class);
+        $container->bind(PostRepository::class, PostRepository::class);
+    }
+
+    #[LifecycleHook(hook: LifecycleHookName::AFTER_MODULE_REGISTER)]
+    public function onAfterModuleRegister(): void
+    {
+        // Module initialization logic after registration
+    }
+}</code></pre>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="mb-8">
+                                <h3
+                                    class="text-xl font-semibold text-gray-900 mb-4"
+                                >
+                                    Module Attribute Properties
+                                </h3>
+
+                                <div
+                                    class="api-method bg-gray-50 p-4 rounded-lg mb-4"
+                                >
+                                    <h4 class="font-semibold text-lg mb-2">
+                                        Module Attribute Parameters
+                                    </h4>
+                                    <p class="text-gray-600 text-sm mb-3">
+                                        Properties available in the Module
+                                        attribute constructor.
+                                    </p>
+                                    <div
+                                        class="code-block p-4 text-white rounded"
+                                    >
+                                        <pre><code class="language-php">#[Module(
+    name: "Blog",                    // Module identifier (required)
+    version: "1.0.0",                // Semantic version (optional)
+    description: "Blog functionality", // Human-readable description (optional)
+    order: 100,                      // Loading order, higher loads first (optional, default: PHP_INT_MAX)
+    core: false,                     // Whether this is a core module (optional, default: false)
+    isCli: false                     // Whether module provides CLI commands (optional, default: false)
+)]</code></pre>
+                                    </div>
+                                </div>
+
+                                <div
+                                    class="api-method bg-gray-50 p-4 rounded-lg mb-4"
+                                >
+                                    <h4 class="font-semibold text-lg mb-2">
+                                        Additional Module Attributes
+                                    </h4>
+                                    <p class="text-gray-600 text-sm mb-3">
+                                        Other attributes used to configure
+                                        modules.
+                                    </p>
+                                    <div
+                                        class="code-block p-4 text-white rounded"
+                                    >
+                                        <pre><code class="language-php">#[Compatibility(framework: ">=0.1.0", php: ">=8.3")]
+#[Repository(type: "git", url: "https://github.com/forge-kernel/kernel-module-registry")]
+#[Provides(interface: BlogServiceInterface::class, version: "1.0.0")]
+#[Requires] // Can specify required modules or interfaces</code></pre>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="mb-8">
+                                <h3
+                                    class="text-xl font-semibold text-gray-900 mb-4"
+                                >
+                                    Module Lifecycle Hooks
+                                </h3>
+
+                                <div
+                                    class="api-method bg-gray-50 p-4 rounded-lg mb-4"
+                                >
+                                    <h4 class="font-semibold text-lg mb-2">
+                                        register(Container $container): void
+                                    </h4>
+                                    <p class="text-gray-600 text-sm mb-3">
+                                        Register services early in the
+                                        application lifecycle. This method is
+                                        called for all modules before any
+                                        lifecycle hooks.
+                                    </p>
+                                    <div
+                                        class="code-block p-4 text-white rounded"
+                                    >
+                                        <pre><code class="language-php">public function register(Container $container): void
+{
+    // Register services that other modules might depend on
+    $container->bind(BlogService::class, BlogService::class);
+
+    // Register configuration
+    $container->bind('blog.config', function() {
+        return new Config([
+            'posts_per_page' => 10,
+            'allow_comments' => true,
+            'moderation_required' => true,
+            'seo_enabled' => true
+        ]);
+    });
+
+    // Register repositories
+    $container->bind(PostRepository::class, PostRepository::class);
+}</code></pre>
+                                    </div>
+                                </div>
+
+                                <div
+                                    class="api-method bg-gray-50 p-4 rounded-lg mb-4"
+                                >
+                                    <h4 class="font-semibold text-lg mb-2">
+                                        Lifecycle Hook Methods
+                                    </h4>
+                                    <p class="text-gray-600 text-sm mb-3">
+                                        Use attributes to mark methods that
+                                        should be called at specific points in
+                                        the application lifecycle.
+                                    </p>
+                                    <div
+                                        class="code-block p-4 text-white rounded"
+                                    >
+                                        <pre><code class="language-php">use Forge\Core\Module\Attributes\LifecycleHook;
+use Forge\Core\Module\LifecycleHookName;
+
+#[LifecycleHook(hook: LifecycleHookName::AFTER_MODULE_REGISTER)]
+public function onAfterModuleRegister(): void
+{
+    // Called after all modules have been registered
+    // Safe to interact with other modules here
+}
+
+#[LifecycleHook(hook: LifecycleHookName::AFTER_BOOT)]
+public function onAfterBoot(): void
+{
+    // Called after the application has booted
+    // All services are available
+}
+
+#[LifecycleHook(hook: LifecycleHookName::BEFORE_REQUEST)]
+public function onBeforeRequest(): void
+{
+    // Called before each request is processed
+    // Useful for request-specific initialization
+}
+
+#[LifecycleHook(hook: LifecycleHookName::AFTER_REQUEST)]
+public function onAfterRequest(): void
+{
+    // Called after each request is processed
+    // Useful for cleanup or logging
+}</code></pre>
+                                    </div>
+                                </div>
+
+                                <div
+                                    class="api-method bg-gray-50 p-4 rounded-lg mb-4"
+                                >
+                                    <h4 class="font-semibold text-lg mb-2">
+                                        Available Lifecycle Hooks
+                                    </h4>
+                                    <p class="text-gray-600 text-sm mb-3">
+                                        All available lifecycle hook names from
+                                        the LifecycleHookName enum.
+                                    </p>
+                                    <div
+                                        class="code-block p-4 text-white rounded"
+                                    >
+                                        <pre><code class="language-php">enum LifecycleHookName: string
+{
+    case AFTER_BOOT = 'afterBoot';                    // After application boot
+    case AFTER_MODULE_LOAD = 'afterModuleLoad';      // After modules are loaded
+    case AFTER_MODULE_REGISTER = 'afterModuleRegister'; // After all modules registered
+    case AFTER_CONFIG_LOADED = 'afterConfigLoaded';  // After configuration loaded
+    case APP_BOOTED = 'appBooted';                    // After application fully booted
+    case BEFORE_REQUEST = 'beforeRequest';          // Before each request
+    case AFTER_REQUEST = 'afterRequest';             // After each request
+    case AFTER_RESPONSE = 'afterResponse';           // After response sent
+}</code></pre>
+                                    </div>
+                                </div>
+                            </div>
+                        </section>
+
+                        <!-- Module Attributes Reference -->
+                        <section
+                            id="module-attributes"
+                            class="section-anchor mb-12"
+                        >
+                            <div
+                                class="bg-purple-50 border-l-4 border-purple-500 p-6 mb-8"
+                            >
+                                <h2
+                                    class="text-2xl font-bold text-gray-900 mb-4"
+                                >
+                                    <i
+                                        class="fas fa-tags text-purple-600 mr-3"
+                                    ></i
+                                    >Module Attributes Reference
+                                </h2>
+                                <p class="text-gray-700">
+                                    Complete reference of all available PHP 8
+                                    attributes for defining and configuring
+                                    modules in Forge Engine. These attributes
+                                    provide a declarative way to configure
+                                    module metadata, dependencies,
+                                    compatibility, and behavior.
+                                </p>
+                            </div>
+
+                            <div class="mb-8">
+                                <h3
+                                    class="text-xl font-semibold text-gray-900 mb-4"
+                                >
+                                    Core Module Attributes
+                                </h3>
+
+                                <div
+                                    class="api-method bg-gray-50 p-4 rounded-lg mb-4"
+                                >
+                                    <h4 class="font-semibold text-lg mb-2">
+                                        #[Module] - Primary Module Definition
+                                    </h4>
+                                    <p class="text-gray-600 text-sm mb-3">
+                                        Required attribute that marks a class as
+                                        a Forge Engine module and defines its
+                                        basic properties.
+                                    </p>
+                                    <div
+                                        class="code-block p-4 text-white rounded"
+                                    >
+                                        <pre><code class="language-php">use Forge\Core\Module\Attributes\Module;
+
+#[Module(
+    name: "Blog",                    // Required: Module identifier
+    version: "1.0.0",                // Optional: Semantic version
+    description: "Blog functionality", // Optional: Human-readable description
+    order: 100,                      // Optional: Loading order (higher loads first)
+    core: false,                     // Optional: Whether this is a core module
+    isCli: false                     // Optional: Whether module provides CLI commands
+)]
+final class BlogModule
+{
+    // Module implementation
+}</code></pre>
+                                    </div>
+                                </div>
+
+                                <div
+                                    class="api-method bg-gray-50 p-4 rounded-lg mb-4"
+                                >
+                                    <h4 class="font-semibold text-lg mb-2">
+                                        #[Compatibility] - Framework & PHP
+                                        Version Requirements
+                                    </h4>
+                                    <p class="text-gray-600 text-sm mb-3">
+                                        Defines compatibility requirements for
+                                        Forge Engine framework and PHP versions.
+                                    </p>
+                                    <div
+                                        class="code-block p-4 text-white rounded"
+                                    >
+                                        <pre><code class="language-php">use Forge\Core\Module\Attributes\Compatibility;
+
+#[Compatibility(
+    framework: ">=0.1.0",            // Forge Engine version constraint
+    php: ">=8.3"                    // PHP version constraint
+)]
+final class BlogModule
+{
+    // Module implementation
+}</code></pre>
+                                    </div>
+                                </div>
+
+                                <div
+                                    class="api-method bg-gray-50 p-4 rounded-lg mb-4"
+                                >
+                                    <h4 class="font-semibold text-lg mb-2">
+                                        #[Repository] - Source Code Repository
+                                    </h4>
+                                    <p class="text-gray-600 text-sm mb-3">
+                                        Specifies the source code repository for
+                                        the module, used by the PackageManager.
+                                    </p>
+                                    <div
+                                        class="code-block p-4 text-white rounded"
+                                    >
+                                        <pre><code class="language-php">use Forge\Core\Module\Attributes\Repository;
+
+#[Repository(
+    type: "git",                     // Repository type (git, svn, etc.)
+    url: "https://github.com/forge-kenel/forge-blog.git" // Repository URL
+)]
+final class BlogModule
+{
+    // Module implementation
+}</code></pre>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="mb-8">
+                                <h3
+                                    class="text-xl font-semibold text-gray-900 mb-4"
+                                >
+                                    Dependency & Service Attributes
+                                </h3>
+
+                                <div
+                                    class="api-method bg-gray-50 p-4 rounded-lg mb-4"
+                                >
+                                    <h4 class="font-semibold text-lg mb-2">
+                                        #[Provides] - Service Interface
+                                        Provision
+                                    </h4>
+                                    <p class="text-gray-600 text-sm mb-3">
+                                        Declares that this module provides
+                                        implementations for specific interfaces.
+                                        Can be repeated multiple times.
+                                    </p>
+                                    <div
+                                        class="code-block p-4 text-white rounded"
+                                    >
+                                        <pre><code class="language-php">use Forge\Core\Module\Attributes\Provides;
+
+#[Provides(interface: BlogServiceInterface::class, version: "1.0.0")]
+#[Provides(interface: PostRepositoryInterface::class, version: "1.0.0")]
+#[Provides(interface: CommentServiceInterface::class, version: "1.0.0")]
+final class BlogModule
+{
+    // Module provides implementations for these interfaces
+}</code></pre>
+                                    </div>
+                                </div>
+
+                                <div
+                                    class="api-method bg-gray-50 p-4 rounded-lg mb-4"
+                                >
+                                    <h4 class="font-semibold text-lg mb-2">
+                                        #[Requires] - Dependency Declaration
+                                    </h4>
+                                    <p class="text-gray-600 text-sm mb-3">
+                                        Declares dependencies on other modules
+                                        or interfaces. Can be used on the class
+                                        or specific methods.
+                                    </p>
+                                    <div
+                                        class="code-block p-4 text-white rounded"
+                                    >
+                                        <pre><code class="language-php">use Forge\Core\Module\Attributes\Requires;
+
+#[Requires] // Class-level dependency (module requires other modules)
+final class BlogModule
+{
+    #[Requires] // Method-level dependency
+    public function register(Container $container): void
+    {
+        // This method requires other modules to be available
+    }
+}</code></pre>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="mb-8">
+                                <h3
+                                    class="text-xl font-semibold text-gray-900 mb-4"
+                                >
+                                    Configuration & CLI Attributes
+                                </h3>
+
+                                <div
+                                    class="api-method bg-gray-50 p-4 rounded-lg mb-4"
+                                >
+                                    <h4 class="font-semibold text-lg mb-2">
+                                        #[ConfigDefaults] - Default
+                                        Configuration Values
+                                    </h4>
+                                    <p class="text-gray-600 text-sm mb-3">
+                                        Defines default configuration values for
+                                        the module. These values are merged with
+                                        user configuration.
+                                    </p>
+                                    <div
+                                        class="code-block p-4 text-white rounded"
+                                    >
+                                        <pre><code class="language-php">use Forge\Core\Module\Attributes\ConfigDefaults;
+
+#[ConfigDefaults([
+    'posts_per_page' => 10,
+    'allow_comments' => true,
+    'moderation_required' => true,
+    'seo_enabled' => true,
+    'cache_ttl' => 3600
+])]
+final class BlogModule
+{
+    // Module with default configuration
+}</code></pre>
+                                    </div>
+                                    <p class="text-gray-600 text-sm mt-3">
+                                        Example from ForgePackageManager module:
+                                    </p>
+                                    <div
+                                        class="code-block p-4 text-white rounded mt-2"
+                                    >
+                                        <pre><code class="language-php">#[ConfigDefaults([
+    'repositories' => [
+        'packagist' => [
+            'type' => 'composer',
+            'url' => 'https://repo.packagist.org'
+        ]
+    ],
+    'cache_ttl' => 3600,
+    'auto_update' => false
+])]
+final class ForgePackageManager
+{
+    // Package manager with default repository configuration
+}</code></pre>
+                                    </div>
+                                </div>
+
+                                <div
+                                    class="api-method bg-gray-50 p-4 rounded-lg mb-4"
+                                >
+                                    <h4 class="font-semibold text-lg mb-2">
+                                        #[CLICommand] - CLI Command Definition
+                                    </h4>
+                                    <p class="text-gray-600 text-sm mb-3">
+                                        Defines a CLI command that this module
+                                        provides. Used to register commands with
+                                        the CLI system.
+                                    </p>
+                                    <div
+                                        class="code-block p-4 text-white rounded"
+                                    >
+                                        <pre><code class="language-php">use Forge\Core\Module\Attributes\CLICommand;
+
+#[CLICommand(
+    name: "blog:install",            // Command name
+    description: "Install the blog module" // Command description
+)]
+final class InstallCommand
+{
+    // CLI command implementation
+}</code></pre>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="mb-8">
+                                <h3
+                                    class="text-xl font-semibold text-gray-900 mb-4"
+                                >
+                                    UI & Navigation Attributes
+                                </h3>
+
+                                <div
+                                    class="api-method bg-gray-50 p-4 rounded-lg mb-4"
+                                >
+                                    <h4 class="font-semibold text-lg mb-2">
+                                        #[HubItem] - Admin Hub Navigation Item
+                                    </h4>
+                                    <p class="text-gray-600 text-sm mb-3">
+                                        Defines navigation items for the admin
+                                        hub interface. Can be repeated multiple
+                                        times for multiple menu items.
+                                    </p>
+                                    <div
+                                        class="code-block p-4 text-white rounded"
+                                    >
+                                        <pre><code class="language-php">use Forge\Core\Module\Attributes\HubItem;
+use Forge\Core\Module\ForgeIcon;
+
+#[HubItem(
+    label: "Blog Posts",             // Menu item label
+    route: "admin.blog.posts",       // Route name
+    icon: ForgeIcon::POSTS,          // Icon constant
+    order: 10,                       // Menu order (lower appears first)
+    permissions: ["blog.manage"]       // Required permissions
+)]
+#[HubItem(
+    label: "Categories",
+    route: "admin.blog.categories",
+    icon: ForgeIcon::CATEGORIES,
+    order: 20,
+    permissions: ["blog.manage"]
+)]
+final class BlogModule
+{
+    // Module adds navigation items to admin hub
+}</code></pre>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="mb-8">
+                                <h3
+                                    class="text-xl font-semibold text-gray-900 mb-4"
+                                >
+                                    Lifecycle Hook Attributes
+                                </h3>
+
+                                <div
+                                    class="api-method bg-gray-50 p-4 rounded-lg mb-4"
+                                >
+                                    <h4 class="font-semibold text-lg mb-2">
+                                        #[LifecycleHook] - Lifecycle Method
+                                        Marker
+                                    </h4>
+                                    <p class="text-gray-600 text-sm mb-3">
+                                        Marks a method to be called at specific
+                                        points in the application lifecycle.
+                                    </p>
+                                    <div
+                                        class="code-block p-4 text-white rounded"
+                                    >
+                                        <pre><code class="language-php">use Forge\Core\Module\Attributes\LifecycleHook;
+use Forge\Core\Module\LifecycleHookName;
+
+#[LifecycleHook(hook: LifecycleHookName::AFTER_MODULE_REGISTER)]
+public function onAfterModuleRegister(): void
+{
+    // Called after all modules have been registered
+}
+
+#[LifecycleHook(hook: LifecycleHookName::AFTER_BOOT)]
+public function onAfterBoot(): void
+{
+    // Called after the application has fully booted
+}
+
+#[LifecycleHook(hook: LifecycleHookName::BEFORE_REQUEST)]
+public function onBeforeRequest(): void
+{
+    // Called before each HTTP request
+}</code></pre>
+                                    </div>
+                                </div>
+                            </div>
+                        </section>
+
+                        <!-- ModuleManager Class -->
+                        <section
+                            id="module-manager"
+                            class="section-anchor mb-12"
+                        >
+                            <div
+                                class="bg-green-50 border-l-4 border-green-500 p-6 mb-8"
+                            >
+                                <h2
+                                    class="text-2xl font-bold text-gray-900 mb-4"
+                                >
+                                    <i
+                                        class="fas fa-cogs text-green-600 mr-3"
+                                    ></i
+                                    >ModuleManager
+                                </h2>
+                                <p class="text-gray-700">
+                                    Central manager for module discovery,
+                                    loading, and lifecycle management. The
+                                    ModuleManager handles dependency resolution,
+                                    module ordering, and provides methods for
+                                    enabling, disabling, and updating modules.
+                                </p>
+                            </div>
+
+                            <div class="mb-8">
+                                <h3
+                                    class="text-xl font-semibold text-gray-900 mb-4"
+                                >
+                                    Module Loading System
+                                </h3>
+                                <p class="text-gray-600 mb-4">
+                                    Forge Engine uses a ModuleLoader to
+                                    discover, load, and manage modules
+                                    throughout the application lifecycle.
+                                    Modules are loaded based on their
+                                    <code>forge.json</code> configuration files.
+                                </p>
+
+                                <div
+                                    class="api-method bg-gray-50 p-4 rounded-lg mb-4"
+                                >
+                                    <h4 class="font-semibold text-lg mb-2">
+                                        Module Discovery
+                                    </h4>
+                                    <p class="text-gray-600 text-sm mb-3">
+                                        Modules are automatically discovered by
+                                        scanning the
+                                        <code>/modules</code> directory for
+                                        <code>forge.json</code> files.
+                                    </p>
+                                    <div
+                                        class="code-block p-4 text-white rounded"
+                                    >
+                                        <pre><code class="language-php">// The ModuleLoader automatically discovers modules in the modules directory
+$loader = new ModuleLoader($this->container);
+
+// Modules are discovered based on forge.json files
+// Example forge.json structure:
+{
+    "$schema": "kernel/Core/Schema/module-schema.json",
+    "name": "ForgeBlog",
+    "version": "1.0.0",
+    "description": "Blog functionality for Forge Engine",
+    "type": "module",
+    "order": 10,
+    "provides": ["blog", "posts"],
+    "requires": {
+        "ForgeAuth": "^1.0.0",
+        "ForgeUI": "^1.0.0"
+    },
+    "lifecycleHooks": {
+        "register": "register",
+        "afterModuleRegister": "onAfterModuleRegister"
+    },
+    "class": "Modules\\ForgeBlog\\ForgeBlogModule",
+    "cli": {
+        "commands": {
+            "blog:install": "Modules\\ForgeBlog\\Commands\\InstallCommand"
+        }
+    },
+    "compatibility": {
+        "engine": "^3.0.0"
+    },
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/forge-kernel/forge-blog.git"
+    }
+}</code></pre>
+                                    </div>
+                                </div>
+
+                                <div
+                                    class="api-method bg-gray-50 p-4 rounded-lg mb-4"
+                                >
+                                    <h4 class="font-semibold text-lg mb-2">
+                                        Module Loading Process
+                                    </h4>
+                                    <p class="text-gray-600 text-sm mb-3">
+                                        The ModuleLoader follows a specific
+                                        process to load and register modules.
+                                    </p>
+                                    <div
+                                        class="code-block p-4 text-white rounded"
+                                    >
+                                        <pre><code class="language-php">// In ModuleSetup.php - the bootstrap process
+public function loadModules(): void
+{
+    $loader = new ModuleLoader($this->container);
+
+    // 1. Discover all modules by scanning forge.json files
+    $modules = $loader->discoverModules();
+
+    // 2. Sort modules based on order and dependencies
+    $sortedModules = $loader->sortModulesByDependencies($modules);
+
+    // 3. Load each module class
+    foreach ($sortedModules as $moduleConfig) {
+        $moduleClass = $moduleConfig['class'];
+        $module = new $moduleClass();
+
+        // 4. Call register() method on each module
+        $module->register($this->container);
+
+        // 5. Store module instance for later use
+        $this->modules[$moduleConfig['name']] = $module;
+    }
+
+    // 6. Trigger AFTER_MODULE_LOAD lifecycle hook
+    $this->eventDispatcher->dispatch(LifecycleHookName::AFTER_MODULE_LOAD);
+
+    // 7. Call lifecycle hook methods on each module
+    foreach ($this->modules as $module) {
+        $this->callLifecycleHooks($module);
+    }
+}</code></pre>
+                                    </div>
+                                </div>
+
+                                <div
+                                    class="api-method bg-gray-50 p-4 rounded-lg mb-4"
+                                >
+                                    <h4 class="font-semibold text-lg mb-2">
+                                        Dependency Resolution
+                                    </h4>
+                                    <p class="text-gray-600 text-sm mb-3">
+                                        Modules are loaded in the correct order
+                                        based on their dependencies.
+                                    </p>
+                                    <div
+                                        class="code-block p-4 text-white rounded"
+                                    >
+                                        <pre><code class="language-php">// Example dependency resolution
+$modules = [
+    'ForgeAuth' => ['order' => 1, 'provides' => ['auth']],
+    'ForgeUI' => ['order' => 2, 'provides' => ['ui', 'templates']],
+    'ForgeBlog' => ['order' => 10, 'requires' => ['auth', 'ui']]
+];
+
+// The loader will automatically:
+// 1. Load ForgeAuth first (order 1, no dependencies)
+// 2. Load ForgeUI second (order 2, no dependencies)
+// 3. Load ForgeBlog last (order 10, depends on auth and ui)
+
+// If circular dependencies are detected, an exception is thrown
+// If required modules are missing, an exception is thrown</code></pre>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="mb-8">
+                                <h3
+                                    class="text-xl font-semibold text-gray-900 mb-4"
+                                >
+                                    Module Management
+                                </h3>
+                                <p class="text-gray-600 mb-4">
+                                    Module management in Forge Engine is handled
+                                    through the PackageManager module and CLI
+                                    commands, not through a programmatic API.
+                                </p>
+
+                                <div
+                                    class="api-method bg-gray-50 p-4 rounded-lg mb-4"
+                                >
+                                    <h4 class="font-semibold text-lg mb-2">
+                                        CLI Commands
+                                    </h4>
+                                    <p class="text-gray-600 text-sm mb-3">
+                                        Use the Forge CLI to manage modules from
+                                        the command line.
+                                    </p>
+                                    <div
+                                        class="code-block p-4 text-white rounded"
+                                    >
+                                        <pre><code class="language-bash"># List all available modules
+php forge module:list
+
+# Install a module
+php forge module:install ForgeBlog
+
+# Uninstall a module
+php forge module:uninstall ForgeBlog
+
+# Enable a module
+php forge module:enable ForgeBlog
+
+# Disable a module
+php forge module:disable ForgeBlog
+
+# Update a module
+php forge module:update ForgeBlog
+
+# Check module status
+php forge module:status ForgeBlog</code></pre>
+                                    </div>
+                                </div>
+
+                                <div
+                                    class="api-method bg-gray-50 p-4 rounded-lg mb-4"
+                                >
+                                    <h4 class="font-semibold text-lg mb-2">
+                                        PackageManager Service
+                                    </h4>
+                                    <p class="text-gray-600 text-sm mb-3">
+                                        For programmatic module management, use
+                                        the PackageManager service.
+                                    </p>
+                                    <div
+                                        class="code-block p-4 text-white rounded"
+                                    >
+                                        <pre><code class="language-php">use Forge\Core\PackageManager\Services\PackageManagerService;
+
+$packageManager = $container->make(PackageManagerService::class);
+
+// Get all installed modules
+$modules = $packageManager->getInstalledModules();
+
+// Install a module from repository
+$result = $packageManager->installModule('ForgeBlog', '1.0.0');
+
+// Uninstall a module
+$result = $packageManager->uninstallModule('ForgeBlog');
+
+// Update a module
+$result = $packageManager->updateModule('ForgeBlog', '2.0.0');
+
+// Check if module is installed
+$isInstalled = $packageManager->isModuleInstalled('ForgeBlog');
+
+// Get module information
+$moduleInfo = $packageManager->getModuleInfo('ForgeBlog');</code></pre>
+                                    </div>
+                                </div>
+
+                                <div
+                                    class="api-method bg-gray-50 p-4 rounded-lg mb-4"
+                                >
+                                    <h4 class="font-semibold text-lg mb-2">
+                                        Module Configuration
+                                    </h4>
+                                    <p class="text-gray-600 text-sm mb-3">
+                                        Module configuration is managed through
+                                        the <code>forge.json</code> file and can
+                                        be accessed programmatically.
+                                    </p>
+                                    <div
+                                        class="code-block p-4 text-white rounded"
+                                    >
+                                        <pre><code class="language-php">// Access module configuration from within a module
+public function register(Container $container): void
+{
+    // Get the current module's configuration
+    $moduleConfig = $this->getModuleConfig();
+
+    // Access specific configuration values
+    $postsPerPage = $moduleConfig['posts_per_page'] ?? 10;
+    $allowComments = $moduleConfig['allow_comments'] ?? true;
+
+    // Register configuration as a service
+    $container->bind('blog.config', function() use ($moduleConfig) {
+        return new Config($moduleConfig);
+    });
+}
+
+// Update module configuration programmatically
+$packageManager = $container->make(PackageManagerService::class);
+$packageManager->updateModuleConfig('ForgeBlog', [
+    'posts_per_page' => 20,
+    'allow_comments' => false
+]);</code></pre>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="mb-8">
+                                <h3
+                                    class="text-xl font-semibold text-gray-900 mb-4"
+                                >
+                                    Module Information
+                                </h3>
+
+                                <div
+                                    class="api-method bg-gray-50 p-4 rounded-lg mb-4"
+                                >
+                                    <h4 class="font-semibold text-lg mb-2">
+                                        Accessing Module Information
+                                    </h4>
+                                    <p class="text-gray-600 text-sm mb-3">
+                                        Get information about loaded modules
+                                        from the container or PackageManager.
+                                    </p>
+                                    <div
+                                        class="code-block p-4 text-white rounded"
+                                    >
+                                        <pre><code class="language-php">use Forge\Core\PackageManager\Services\PackageManagerService;
+
+$packageManager = $container->make(PackageManagerService::class);
+
+// Get information about a specific module
+$moduleInfo = $packageManager->getModuleInfo('ForgeBlog');
+
+if ($moduleInfo) {
+    echo "Module: " . $moduleInfo['name'] . "\n";
+    echo "Version: " . $moduleInfo['version'] . "\n";
+    echo "Description: " . $moduleInfo['description'] . "\n";
+    echo "Type: " . $moduleInfo['type'] . "\n";
+    echo "Order: " . $moduleInfo['order'] . "\n";
+    echo "Provides: " . implode(', ', $moduleInfo['provides'] ?? []) . "\n";
+    echo "Requires: " . json_encode($moduleInfo['requires'] ?? []) . "\n";
+    echo "Author: " . ($moduleInfo['author'] ?? 'Unknown') . "\n";
+    echo "License: " . ($moduleInfo['license'] ?? 'Unknown') . "\n";
+}
+
+// Get all installed modules
+$allModules = $packageManager->getInstalledModules();
+
+foreach ($allModules as $moduleName => $moduleData) {
+    echo "Module: {$moduleName}\n";
+    echo "  Version: {$moduleData['version']}\n";
+    echo "  Description: {$moduleData['description']}\n";
+    echo "  Status: " . ($moduleData['enabled'] ? 'Enabled' : 'Disabled') . "\n";
+}
+    echo "\n";
+}</code></pre>
+                                    </div>
+                                </div>
+
+                                <div
+                                    class="api-method bg-gray-50 p-4 rounded-lg mb-4"
+                                >
+                                    <h4 class="font-semibold text-lg mb-2">
+                                        getStatus(string $name): string
+                                    </h4>
+                                    <p class="text-gray-600 text-sm mb-3">
+                                        Get the status of a module.
+                                    </p>
+                                    <div
+                                        class="code-block p-4 text-white rounded"
+                                    >
+                                        <pre><code class="language-php">$status = $manager->getStatus('blog');
+
+switch ($status) {
+    case 'installed':
+        echo "Module is installed and ready";
+        break;
+    case 'enabled':
+        echo "Module is enabled and active";
+        break;
+    case 'disabled':
+        echo "Module is disabled";
+        break;
+    case 'not_installed':
+        echo "Module is not installed";
+        break;
+    case 'error':
+        echo "Module has errors";
+        break;
+}</code></pre>
+                                    </div>
+                                </div>
+                            </div>
+                        </section>
+
+                        <!-- Module Loading System -->
+                        <section
+                            id="module-loader"
+                            class="section-anchor mb-12"
+                        >
+                            <div
+                                class="bg-purple-50 border-l-4 border-purple-500 p-6 mb-8"
+                            >
+                                <h2
+                                    class="text-2xl font-bold text-gray-900 mb-4"
+                                >
+                                    <i
+                                        class="fas fa-download text-purple-600 mr-3"
+                                    ></i
+                                    >Module Loading System
+                                </h2>
+                                <p class="text-gray-700">
+                                    Forge Engine uses a sophisticated module
+                                    loading system that discovers modules
+                                    through their
+                                    <code>forge.json</code> configuration files
+                                    and loads them using PHP 8 attributes. The
+                                    system handles dependency resolution,
+                                    lifecycle hooks, and module validation
+                                    automatically.
+                                </p>
+                            </div>
+
+                            <div class="mb-8">
+                                <h3
+                                    class="text-xl font-semibold text-gray-900 mb-4"
+                                >
+                                    Module Discovery
+                                </h3>
+
+                                <div
+                                    class="api-method bg-gray-50 p-4 rounded-lg mb-4"
+                                >
+                                    <h4 class="font-semibold text-lg mb-2">
+                                        Automatic Discovery
+                                    </h4>
+                                    <p class="text-gray-600 text-sm mb-3">
+                                        Modules are automatically discovered by
+                                        scanning the
+                                        <code>/modules</code> directory for
+                                        <code>forge.json</code> files.
+                                    </p>
+                                    <div
+                                        class="code-block p-4 text-white rounded"
+                                    >
+                                        <pre><code class="language-php">// The ModuleLoader automatically discovers modules during bootstrap
+// No manual discovery needed - just place your module in the /modules directory
+
+// Example module structure:
+/modules/
+├── ForgeAuth/
+│   ├── forge.json          # Module configuration
+│   ├── src/
+│   │   └── ForgeAuthModule.php  # Module class
+│   └── ...
+├── ForgeBlog/
+│   ├── forge.json
+│   ├── src/
+│   │   └── ForgeBlogModule.php
+│   └── ...
+└── ForgeUI/
+    ├── forge.json
+    ├── src/
+    │   └── ForgeUIModule.php
+    └── ...</code></pre>
+                                    </div>
+                                </div>
+
+                                <div
+                                    class="api-method bg-gray-50 p-4 rounded-lg mb-4"
+                                >
+                                    <h4 class="font-semibold text-lg mb-2">
+                                        Module Validation
+                                    </h4>
+                                    <p class="text-gray-600 text-sm mb-3">
+                                        Modules are validated against the JSON
+                                        schema during discovery.
+                                    </p>
+                                    <div
+                                        class="code-block p-4 text-white rounded"
+                                    >
+                                        <pre><code class="language-php">// The ModuleLoader validates each forge.json against the schema
+// kernel/Core/Schema/module-schema.json
+
+// Validation checks include:
+// - Required fields (name, version, class)
+// - Version format compliance
+// - Dependency format
+// - Lifecycle hook method existence
+// - Class file accessibility
+
+// If validation fails, the module is skipped and an error is logged</code></pre>
+                                    </div>
+                                </div>
+
+                                <div
+                                    class="api-method bg-gray-50 p-4 rounded-lg mb-4"
+                                >
+                                    <h4 class="font-semibold text-lg mb-2">
+                                        Dependency Resolution
+                                    </h4>
+                                    <p class="text-gray-600 text-sm mb-3">
+                                        Modules are loaded in the correct order
+                                        based on their dependencies and order
+                                        values.
+                                    </p>
+                                    <div
+                                        class="code-block p-4 text-white rounded"
+                                    >
+                                        <pre><code class="language-php">// Example dependency resolution process:
+$modules = [
+    'ForgeAuth' => ['order' => 1, 'provides' => ['auth']],
+    'ForgeUI' => ['order' => 2, 'provides' => ['ui', 'templates']],
+    'ForgeBlog' => ['order' => 10, 'requires' => ['auth', 'ui']]
+];
+
+// The loader will:
+// 1. Sort by order field (lower numbers first)
+// 2. Resolve dependencies (required modules loaded first)
+// 3. Detect circular dependencies
+// 4. Throw exception if required modules are missing
+// 5. Load modules in resolved order</code></pre>
+                                    </div>
+                                </div>
+                            </div>
+                        </section>
+
+                        <!-- Usage Examples -->
+                        <section id="examples" class="section-anchor mb-12">
+                            <div
+                                class="bg-gray-50 border-l-4 border-gray-500 p-6 mb-8"
+                            >
+                                <h2
+                                    class="text-2xl font-bold text-gray-900 mb-4"
+                                >
+                                    <i
+                                        class="fas fa-code text-gray-600 mr-3"
+                                    ></i
+                                    >Usage Examples
+                                </h2>
+                                <p class="text-gray-700">
+                                    Common patterns and examples for working
+                                    with the Module System.
+                                </p>
+                            </div>
+
+                            <div class="mb-8">
+                                <h3
+                                    class="text-xl font-semibold text-gray-900 mb-4"
+                                >
+                                    Basic Module Setup
+                                </h3>
+                                <div class="code-block p-4 text-white rounded">
+                                    <pre><code class="language-php">// Example ForgeBlogModule.php
+namespace Modules\ForgeBlog;
+
+use Forge\Core\Module\Attributes\Module;
+use Forge\Core\Module\Attributes\Compatibility;
+use Forge\Core\Module\Attributes\Repository;
+use Forge\Core\Module\Attributes\Provides;
+use Forge\Core\Module\Attributes\Requires;
+use Forge\Core\Module\Attributes\LifecycleHook;
+use Forge\Core\Module\LifecycleHookName;
+
+#[Module(
+    name: "ForgeBlog",
+    version: "1.0.0",
+    description: "Blog functionality for Forge Engine",
+    order: 10,
+    core: false,
+    isCli: false
+)]
+#[Compatibility(engine: "^3.0.0")]
+#[Repository(type: "git", url: "https://github.com/forge-kernel/forge-blog.git")]
+#[Provides("blog")]
+#[Provides("posts")]
+#[Requires("ForgeAuth", "^1.0.0")]
+#[Requires("ForgeUI", "^1.0.0")]
+class ForgeBlogModule
+{
+    public function register(Container $container): void
+    {
+        // Register blog services
+        $container->bind(BlogService::class, BlogService::class);
+        $container->bind(PostRepository::class, PostRepository::class);
+
+        // Register configuration
+        $container->bind('blog.config', function() {
+            return new Config([
+                'posts_per_page' => 10,
+                'allow_comments' => true,
+                'moderation_required' => true,
+                'seo_enabled' => true
+            ]);
+        });
+    }
+
+    #[LifecycleHook(hook: LifecycleHookName::AFTER_MODULE_REGISTER)]
+    public function onAfterModuleRegister(): void
+    {
+        // Register routes, event listeners, etc.
+        // This is called after all modules are registered
+        $this->registerRoutes();
+        $this->registerEventListeners();
+    }
+
+    private function registerRoutes(): void
+    {
+        // Register blog routes
+        $router = Container::getInstance()->make('router');
+        $router->get('/blog', [BlogController::class, 'index']);
+        $router->get('/blog/{slug}', [BlogController::class, 'show']);
+    }
+
+    private function registerEventListeners(): void
+    {
+        $events = Container::getInstance()->make('events');
+        $events->listen('blog.post.created', function($post) {
+            // Handle post creation
+        });
+    }
+}</code></pre>
+                                </div>
+                            </div>
+
+                            <div class="mb-8">
+                                <h3
+                                    class="text-xl font-semibold text-gray-900 mb-4"
+                                >
+                                    Module Configuration
+                                </h3>
+                                <div class="code-block p-4 text-white rounded">
+                                    <pre><code class="language-php">// forge.json - Module configuration file
+{
+    "name": "ForgeBlog",
+    "version": "1.0.0",
+    "description": "Blog functionality for Forge Engine",
+    "type": "module",
+    "keywords": ["blog", "posts", "content"],
+    "homepage": "https://github.com/forge-kernel/forge-blog",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Forge Kernel Team",
+            "email": "team@forge-kernel.com"
+        }
+    ],
+    "support": {
+        "issues": "https://github.com/forge-kernel/forge-blog/issues",
+        "source": "https://github.com/forge-kernel/forge-blog"
+    },
+    "require": {
+        "php": "^8.1",
+        "forge-kernel/core": "^3.0.0",
+        "forge-kernel/forge-auth": "^1.0.0",
+        "forge-kernel/forge-ui": "^1.0.0"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "^10.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "Modules\\ForgeBlog\\": "src/"
+        }
+    },
+    "extra": {
+        "forge": {
+            "class": "Modules\\ForgeBlog\\ForgeBlogModule",
+            "order": 10,
+            "core": false,
+            "isCli": false,
+            "provides": ["blog", "posts"],
+            "compatibility": {
+                "engine": "^3.0.0"
+            }
+        }
+    }
+}</code></pre>
+                                </div>
+                            </div>
+
+                            <div class="mb-8">
+                                <h3
+                                    class="text-xl font-semibold text-gray-900 mb-4"
+                                >
+                                    Module Dependencies
+                                </h3>
+                                <div class="code-block p-4 text-white rounded">
+                                    <pre><code class="language-php">// ForgeBlogModule.php - Using attributes for dependencies
+use Forge\Core\Module\Attributes\Requires;
+use Forge\Core\Module\Attributes\Provides;
+
+#[Module(
+    name: "ForgeBlog",
+    version: "1.0.0",
+    description: "Blog functionality for Forge Engine"
+)]
+#[Requires("ForgeAuth", "^1.0.0")]      // Requires auth module
+#[Requires("ForgeUI", "^1.0.0")]        // Requires UI module
+#[Requires("ForgeDatabase", "^1.0.0")]    // Requires database module
+#[Provides("blog")]                        // Provides blog functionality
+#[Provides("posts")]                      // Provides posts functionality
+class ForgeBlogModule
+{
+    public function register(Container $container): void
+    {
+        // Services are automatically available through dependency injection
+        $authService = $container->make('ForgeAuth');
+        $uiService = $container->make('ForgeUI');
+        $dbService = $container->make('ForgeDatabase');
+
+        // Register blog services with dependencies
+        $container->bind(BlogService::class, function($container) use ($authService, $dbService) {
+            return new BlogService(
+                $container->make(PostRepository::class),
+                $authService,
+                $dbService
+            );
+        });
+    }
+
+    #[LifecycleHook(hook: LifecycleHookName::AFTER_MODULE_REGISTER)]
+    public function onAfterModuleRegister(): void
+    {
+        // Dependencies are guaranteed to be loaded at this point
+        $this->registerBlogRoutes();
+        $this->setupBlogDatabase();
+    }
+
+    private function registerBlogRoutes(): void
+    {
+        // Use services from required modules via dependency injection
+        $auth = Container::getInstance()->make('ForgeAuth');
+        $router = Container::getInstance()->make('router');
+
+        // Register protected blog routes
+        $router->get('/blog', [BlogController::class, 'index']);
+        $router->get('/blog/{slug}', [BlogController::class, 'show']);
+
+        // Admin routes (require auth)
+        $router->group(['middleware' => $auth->getAuthMiddleware()], function($router) {
+            $router->get('/admin/blog', [AdminBlogController::class, 'index']);
+            $router->post('/admin/blog/posts', [AdminBlogController::class, 'create']);
+        });
+    }
+
+    private function setupBlogDatabase(): void
+    {
+        $db = Container::getInstance()->make('ForgeDatabase');
+
+        // Create blog tables using the database service
+        $db->createTable('blog_posts', function($table) {
+            $table->id();
+            $table->string('title');
+            $table->string('slug')->unique();
+            $table->text('content');
+            $table->foreignId('author_id')->constrained('users');
+            $table->timestamps();
+        });
+    }
+}</code></pre>
+                                </div>
+                            </div>
+
+                            <div class="mb-8">
+                                <h3
+                                    class="text-xl font-semibold text-gray-900 mb-4"
+                                >
+                                    Module Events
+                                </h3>
+                                <div class="code-block p-4 text-white rounded">
+                                    <pre><code class="language-php">// ForgeBlogModule.php - Using lifecycle hooks and events
+use Forge\Core\Module\Attributes\LifecycleHook;
+use Forge\Core\Module\LifecycleHookName;
+
+#[Module(name: "ForgeBlog", version: "1.0.0")]
+class ForgeBlogModule
+{
+    #[LifecycleHook(hook: LifecycleHookName::AFTER_BOOT)]
+    public function onAfterBoot(): void
+    {
+        // Register module-level event listeners
+        $events = Container::getInstance()->make('events');
+
+        // Listen for module system events
+        $events->listen('module.installed', function($moduleName) {
+            if ($moduleName === 'ForgeBlog') {
+                $this->onBlogModuleInstalled();
+            }
+        });
+
+        $events->listen('module.enabled', function($moduleName) {
+            if ($moduleName === 'ForgeBlog') {
+                $this->onBlogModuleEnabled();
+            }
+        });
+
+        $events->listen('module.disabled', function($moduleName) {
+            if ($moduleName === 'ForgeBlog') {
+                $this->onBlogModuleDisabled();
+            }
+        });
+    }
+
+    #[LifecycleHook(hook: LifecycleHookName::AFTER_MODULE_REGISTER)]
+    public function onAfterModuleRegister(): void
+    {
+        // Register blog-specific event listeners
+        $events = Container::getInstance()->make('events');
+
+        // Blog post events
+        $events->listen('blog.post.created', function($post) {
+            $this->clearPostCache($post->id);
+            $this->notifySubscribers($post);
+            $this->updateSearchIndex($post);
+        });
+
+        $events->listen('blog.post.updated', function($post) {
+            $this->clearRelatedCaches($post);
+            $this->updateSearchIndex($post);
+        });
+
+        $events->listen('blog.post.deleted', function($post) {
+            $this->removeFromSearchIndex($post);
+            $this->cleanupMedia($post);
+            $this->clearPostCache($post->id);
+        });
+
+        // Category events
+        $events->listen('blog.category.created', function($category) {
+            $this->clearCategoryCache($category->id);
+        });
+
+        // Comment events
+        $events->listen('blog.comment.created', function($comment) {
+            $this->notifyPostAuthor($comment);
+            $this->moderateComment($comment);
+        });
+    }
+
+    private function onBlogModuleInstalled(): void
+    {
+        // Create default blog settings
+        $config = Container::getInstance()->make('config');
+        $config->set('blog.settings', [
+            'posts_per_page' => 10,
+            'allow_comments' => true,
+            'moderation_required' => true
+        ]);
+
+        // Log installation
+        Container::getInstance()->make('log')->info('ForgeBlog module installed successfully');
+    }
+
+    private function onBlogModuleEnabled(): void
+    {
+        // Clear blog-related caches
+        Container::getInstance()->make('cache')->forget('blog.posts');
+        Container::getInstance()->make('cache')->forget('blog.categories');
+
+        // Rebuild search index
+        $this->rebuildSearchIndex();
+
+        // Log enablement
+        Container::getInstance()->make('log')->info('ForgeBlog module enabled');
+    }
+
+    private function onBlogModuleDisabled(): void
+    {
+        // Clear all blog caches
+        $this->clearAllBlogCaches();
+
+        // Log disablement
+        Container::getInstance()->make('log')->info('ForgeBlog module disabled');
+    }
+
+    // Helper methods for event handling
+    private function clearPostCache($postId): void
+    {
+        Container::getInstance()->make('cache')->forget("blog.post.{$postId}");
+        Container::getInstance()->make('cache')->forget("blog.post.{$postId}.html");
+    }
+
+    private function notifySubscribers($post): void
+    {
+        $notificationService = Container::getInstance()->make('notification');
+        $subscribers = $this->getPostSubscribers($post->id);
+
+        foreach ($subscribers as $subscriber) {
+            $notificationService->send($subscriber, 'New blog post: ' . $post->title);
+        }
+    }
+
+    private function updateSearchIndex($post): void
+    {
+        $searchService = Container::getInstance()->make('search');
+        $searchService->index('blog_posts', $post->id, [
+            'title' => $post->title,
+            'content' => $post->content,
+            'tags' => $post->tags,
+            'category' => $post->category->name
+        ]);
+    }
+}</code></pre>
+                                </div>
+                            </div>
+                        </section>
+
+                        <!-- Best Practices -->
+                        <section
+                            id="best-practices"
+                            class="section-anchor mb-12"
+                        >
+                            <div
+                                class="bg-yellow-50 border-l-4 border-yellow-500 p-6 mb-8"
+                            >
+                                <h2
+                                    class="text-2xl font-bold text-gray-900 mb-4"
+                                >
+                                    <i
+                                        class="fas fa-lightbulb text-yellow-600 mr-3"
+                                    ></i
+                                    >Best Practices
+                                </h2>
+                                <p class="text-gray-700">
+                                    Recommended patterns and guidelines for
+                                    working with the Module System.
+                                </p>
+                            </div>
+
+                            <div class="grid md:grid-cols-2 gap-6">
+                                <div
+                                    class="bg-white border border-gray-200 p-6 rounded-lg"
+                                >
+                                    <h4
+                                        class="font-semibold text-gray-900 mb-3"
+                                    >
+                                        <i
+                                            class="fas fa-check-circle text-green-600 mr-2"
+                                        ></i
+                                        >Do's
+                                    </h4>
+                                    <ul class="text-sm text-gray-600 space-y-2">
+                                        <li>
+                                            • Use PHP 8 attributes for module
+                                            configuration
+                                        </li>
+                                        <li>
+                                            • Define module metadata in
+                                            forge.json
+                                        </li>
+                                        <li>
+                                            • Use semantic versioning (semver)
+                                        </li>
+                                        <li>
+                                            • Document all dependencies with
+                                            #[Requires]
+                                        </li>
+                                        <li>
+                                            • Declare provided services with
+                                            #[Provides]
+                                        </li>
+                                        <li>
+                                            • Use lifecycle hooks appropriately
+                                        </li>
+                                        <li>
+                                            • Implement register() method for
+                                            service registration
+                                        </li>
+                                        <li>
+                                            • Use dependency injection container
+                                        </li>
+                                        <li>
+                                            • Handle module enable/disable
+                                            events
+                                        </li>
+                                        <li>• Test modules in isolation</li>
+                                        <li>• Use PSR-4 autoloading</li>
+                                        <li>• Include proper error handling</li>
+                                    </ul>
+                                </div>
+
+                                <div
+                                    class="bg-white border border-gray-200 p-6 rounded-lg"
+                                >
+                                    <h4
+                                        class="font-semibold text-gray-900 mb-3"
+                                    >
+                                        <i
+                                            class="fas fa-times-circle text-red-600 mr-2"
+                                        ></i
+                                        >Don'ts
+                                    </h4>
+                                    <ul class="text-sm text-gray-600 space-y-2">
+                                        <li>
+                                            • Don't extend base Module classes
+                                        </li>
+                                        <li>
+                                            • Don't create circular dependencies
+                                        </li>
+                                        <li>
+                                            • Don't hardcode module paths or
+                                            names
+                                        </li>
+                                        <li>
+                                            • Don't ignore dependency version
+                                            constraints
+                                        </li>
+                                        <li>
+                                            • Don't use global variables or
+                                            state
+                                        </li>
+                                        <li>
+                                            • Don't skip compatibility checks
+                                        </li>
+                                        <li>
+                                            • Don't leave temporary files on
+                                            uninstall
+                                        </li>
+                                        <li>
+                                            • Don't modify core engine files
+                                        </li>
+                                        <li>
+                                            • Don't make modules too large or
+                                            monolithic
+                                        </li>
+                                        <li>
+                                            • Don't forget cleanup in disable
+                                            hooks
+                                        </li>
+                                        <li>
+                                            • Don't ignore security best
+                                            practices
+                                        </li>
+                                        <li>
+                                            • Don't bypass the service container
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </section>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <footer class="bg-white border-t mt-16">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+                <div class="text-center text-gray-600">
+                    <p class="text-sm">
+                        Forge Engine Documentation - Module System API
+                    </p>
+                </div>
+            </div>
+        </footer>
+
+        <script>
+            // Mobile menu toggle
+            const mobileMenuBtn = document.getElementById("mobile-menu-btn");
+            const mobileMenu = document.getElementById("mobile-menu");
+            const mobileMenuOverlay = document.getElementById(
+                "mobile-menu-overlay",
+            );
+
+            function toggleMobileMenu() {
+                mobileMenu.classList.toggle("hidden");
+                mobileMenuOverlay.classList.toggle("active");
+            }
+
+            if (mobileMenuBtn) {
+                mobileMenuBtn.addEventListener("click", toggleMobileMenu);
+            }
+
+            if (mobileMenuOverlay) {
+                mobileMenuOverlay.addEventListener("click", toggleMobileMenu);
+            }
+
+            // Close mobile menu when clicking on links
+            const mobileMenuLinks = mobileMenu.querySelectorAll("a");
+            mobileMenuLinks.forEach((link) => {
+                link.addEventListener("click", () => {
+                    mobileMenu.classList.add("hidden");
+                    mobileMenuOverlay.classList.remove("active");
+                });
+            });
+
+            // Active navigation highlighting
+            const currentPath = window.location.pathname.split("/").pop();
+            const navLinks = document.querySelectorAll(".nav-link");
+            navLinks.forEach((link) => {
+                if (link.getAttribute("href") === currentPath) {
+                    link.classList.add("active");
+                }
+            });
+        </script>
+    </body>
+</html>

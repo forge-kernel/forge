@@ -1,0 +1,26 @@
+<?php
+declare(strict_types=1);
+
+namespace {{ middlewareNamespace }};
+
+use App\Modules\ForgeRouter\Traits\ResponseHelper;
+use App\Modules\ForgeRouter\Http\Middleware;
+use App\Modules\ForgeRouter\Http\Request;
+use App\Modules\ForgeRouter\Http\Response;
+use App\Modules\ForgeRouter\Middleware\Attributes\RegisterMiddleware;
+use ReflectionException;
+
+#[RegisterMiddleware(group: 'web', order: PHP_INT_MAX)]
+final class {{ middlewareName }} extends Middleware
+{
+    use ResponseHelper;
+    /**
+     * @throws ReflectionException
+     */
+    public function handle(Request $request, callable $next): Response
+    {
+        // your logic here
+        return $next($request);
+    }
+
+}

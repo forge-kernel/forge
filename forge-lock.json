@@ -1,0 +1,191 @@
+{
+  "modules": {
+    "forge-storage": {
+      "version": "0.2.0",
+      "registry": "kernel-module-registry",
+      "module_path": "forge-storage/0.2.0",
+      "integrity": "658ee144d77d034f0403bd868faa8abe3931e210621b5ea8515d71b7bf515c64",
+      "source_type": "git",
+      "source_config": {
+        "name": "kernel-module-registry",
+        "type": "git",
+        "url": "https://github.com/forge-kernel/kernel-module-registry",
+        "branch": "main",
+        "private": false,
+        "description": "Forge Kernel Official Modules",
+        "debug": false
+      }
+    },
+    "forge-logger": {
+      "version": "0.1.0",
+      "registry": "kernel-module-registry",
+      "url": "https://raw.githubusercontent.com/forge-kernel/kernel-module-registry/main/modules/forge-logger/0.1.0/0.1.0.zip",
+      "integrity": "8def0730460d208b0de2b339e79d44ca8d5cbe6b36409e5c406c95d7d2808e4a"
+    },
+    "forge-error-handler": {
+      "version": "0.1.0",
+      "registry": "kernel-module-registry",
+      "url": "https://raw.githubusercontent.com/forge-kernel/kernel-module-registry/main/modules/forge-error-handler/0.1.0/0.1.0.zip",
+      "integrity": "6b59bfc2b8547a2440eeb5473185bed31e3927d0f5a28b0ae06be3f95601fb30"
+    },
+    "forge-auth": {
+      "version": "1.0.0",
+      "registry": "kernel-module-registry",
+      "module_path": "forge-auth/1.0.0",
+      "integrity": "bc33bfd1efafca192987486736be033b72c08cdc0aa9c5284a71b780771f8e19",
+      "source_type": "git",
+      "source_config": {
+        "name": "kernel-module-registry",
+        "type": "git",
+        "url": "https://github.com/forge-kernel/kernel-module-registry",
+        "branch": "main",
+        "private": false,
+        "description": "Forge Kernel Official Modules",
+        "debug": false
+      }
+    },
+    "forge-testing": {
+      "version": "0.1.4",
+      "registry": "kernel-module-registry",
+      "module_path": "forge-testing/0.1.4",
+      "integrity": "33d9bba8f6bf0ccc9109479a00e91d920b5e8e4ec21d612dd0d814060f5d39ad",
+      "source_type": "git",
+      "source_config": {
+        "name": "kernel-module-registry",
+        "type": "git",
+        "url": "https://github.com/forge-kernel/kernel-module-registry",
+        "branch": "main",
+        "private": false,
+        "description": "Forge Kernel Official Modules",
+        "debug": false
+      }
+    },
+    "forge-package-manager": {
+      "version": "1.1.0",
+      "registry": "kernel-module-registry",
+      "module_path": "forge-package-manager/1.1.0",
+      "integrity": "baa219a9b7d127bb80a303bb13b6967459c2c3b8c0b2785c921c96798cd7ce4b",
+      "source_type": "git",
+      "source_config": {
+        "name": "kernel-module-registry",
+        "type": "git",
+        "url": "https://github.com/forge-kernel/kernel-module-registry",
+        "branch": "main",
+        "private": false,
+        "debug": false
+      }
+    },
+    "forge-deployment": {
+      "version": "0.4.0",
+      "registry": "kernel-module-registry",
+      "module_path": "forge-deployment/0.4.0",
+      "integrity": "949839d5133353f25da78453ce9547517a914b7024aa9da578363325310adbba",
+      "source_type": "git",
+      "source_config": {
+        "name": "kernel-module-registry",
+        "type": "git",
+        "url": "https://github.com/forge-kernel/kernel-module-registry",
+        "branch": "main",
+        "private": false,
+        "description": "Forge Kernel Official Modules",
+        "debug": false
+      }
+    },
+    "forge-debug-bar": {
+      "version": "0.1.3",
+      "registry": "kernel-module-registry",
+      "module_path": "forge-debug-bar/0.1.3",
+      "integrity": "e4bcc3f52c4309de72dba75b452aa9d6d344aa8d61ff807a0123ecc2ba3fb450",
+      "source_type": "git",
+      "source_config": {
+        "name": "kernel-module-registry",
+        "type": "git",
+        "url": "https://github.com/forge-kernel/kernel-module-registry",
+        "branch": "main",
+        "private": false,
+        "description": "Forge Kernel Official Modules",
+        "debug": false
+      }
+    },
+    "forge-welcome": {
+      "version": "1.1.0",
+      "registry": "kernel-module-registry",
+      "module_path": "forge-welcome/1.1.0",
+      "integrity": "dc0ad9f75cdb28df463faa554f5f93b99ae63e75b58b16c6404ebf936cd51bcb",
+      "source_type": "git",
+      "source_config": {
+        "name": "kernel-module-registry",
+        "type": "git",
+        "url": "https://github.com/forge-kernel/kernel-module-registry",
+        "branch": "main",
+        "private": false,
+        "description": "Forge Kernel Official Modules",
+        "debug": false
+      }
+    },
+    "forge-wire": {
+      "version": "2.4.0",
+      "registry": "kernel-module-registry",
+      "module_path": "forge-wire/2.4.0",
+      "integrity": "487460b153dc93fa3e908114d9242e3d0835bc52b377fc73e24519476b81d947",
+      "source_type": "git",
+      "source_config": {
+        "name": "kernel-module-registry",
+        "type": "git",
+        "url": "https://github.com/forge-kernel/kernel-module-registry",
+        "branch": "main",
+        "private": false,
+        "description": "Forge Kernel Official Modules",
+        "debug": false
+      }
+    },
+    "app-auth": {
+      "version": "1.1.0",
+      "registry": "kernel-module-registry",
+      "module_path": "app-auth/1.1.0",
+      "integrity": "502339cc2a3927f7afe6ad94dabf98501807869a112824839f9937750d51c2b8",
+      "source_type": "git",
+      "source_config": {
+        "name": "kernel-module-registry",
+        "type": "git",
+        "url": "https://github.com/forge-kernel/kernel-module-registry",
+        "branch": "main",
+        "private": false,
+        "description": "Forge Kernel Official Modules",
+        "debug": false
+      }
+    },
+    "forge-multi-tenant": {
+      "version": "0.3.0",
+      "registry": "kernel-module-registry",
+      "module_path": "forge-multi-tenant/0.3.0",
+      "integrity": "f3bb4212981a18652ff0c47b7010f41d5b3316aecfa991cc9b8e7a29f6d94eac",
+      "source_type": "git",
+      "source_config": {
+        "name": "kernel-module-registry",
+        "type": "git",
+        "url": "https://github.com/forge-kernel/kernel-module-registry",
+        "branch": "main",
+        "private": false,
+        "description": "Forge Kernel Official Modules",
+        "debug": false
+      }
+    },
+    "forge-hub": {
+      "version": "2.5.0",
+      "registry": "kernel-module-registry",
+      "module_path": "forge-hub/2.5.0",
+      "integrity": "9d2a8a8b12bcaf87e9a41d98bba033091f62725b168a50655e2353a479387f77",
+      "source_type": "git",
+      "source_config": {
+        "name": "kernel-module-registry",
+        "type": "git",
+        "url": "https://github.com/forge-kernel/kernel-module-registry",
+        "branch": "main",
+        "private": false,
+        "description": "Forge Kernel Official Modules",
+        "debug": false
+      }
+    }
+  }
+}

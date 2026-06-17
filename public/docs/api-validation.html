@@ -1,0 +1,615 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Validation API - Forge Engine Documentation</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-core.min.js"></script>
+    <script
+        src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/autoloader/prism-autoloader.min.js"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        .code-block {
+            background: #2d3748;
+            border-radius: 0.5rem;
+        }
+
+        .nav-link.active {
+            background-color: #eef2ff;
+            color: #4f46e5;
+            font-weight: 500;
+        }
+
+        .nav-link.active:hover {
+            background-color: #e0e7ff;
+        }
+
+        .section-anchor {
+            scroll-margin-top: 120px;
+        }
+
+        /* Mobile menu styles */
+        @media (max-width: 640px) {
+            .lg\:w-1\/4 {
+                position: fixed;
+                top: 0;
+                left: -100%;
+                width: 80%;
+                max-width: 320px;
+                height: 100vh;
+                z-index: 50;
+                transition: transform 0.3s ease;
+                background: white;
+                overflow-y: auto;
+            }
+
+            .lg\:w-1\/4.mobile-menu-open {
+                transform: translateX(0);
+            }
+
+            .mobile-menu-overlay {
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                background: rgba(0, 0, 0, 0.5);
+                z-index: 40;
+                display: none;
+            }
+
+            .mobile-menu-overlay.active {
+                display: block;
+            }
+        }
+    </style>
+</head>
+
+<body class="bg-gray-50">
+    <!-- Navigation -->
+    <nav class="bg-white shadow-sm border-b">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-16">
+                <div class="flex items-center">
+                    <div class="flex-shrink-0">
+                        <h1 class="text-xl font-bold text-gray-900">
+                            Forge Engine
+                        </h1>
+                    </div>
+                    <div class="hidden sm:ml-6 sm:flex sm:space-x-8">
+                        <a href="index.html"
+                            class="text-gray-900 inline-flex items-center px-1 pt-1 text-sm font-medium hover:text-blue-600">
+                            Home
+                        </a>
+                        <a href="getting-started.html"
+                            class="text-gray-900 inline-flex items-center px-1 pt-1 text-sm font-medium hover:text-blue-600">
+                            Getting Started
+                        </a>
+                        <a href="core-concepts.html"
+                            class="text-gray-900 inline-flex items-center px-1 pt-1 text-sm font-medium hover:text-blue-600">
+                            Core Concepts
+                        </a>
+                        <a href="modules.html"
+                            class="text-gray-900 inline-flex items-center px-1 pt-1 text-sm font-medium hover:text-blue-600">
+                            Modules
+                        </a>
+                        <a href="api-reference.html"
+                            class="text-blue-600 inline-flex items-center px-1 pt-1 text-sm font-medium border-b-2 border-blue-600">
+                            API Reference
+                        </a>
+                    </div>
+                </div>
+                <div class="flex items-center sm:hidden">
+                    <button id="mobile-menu-btn" class="text-gray-700 hover:text-blue-600" data-mobile-menu-toggle>
+                        <i class="fas fa-bars text-xl"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+        <!-- Mobile menu -->
+        <div id="mobile-menu" class="hidden sm:hidden bg-white border-t">
+            <div class="px-2 pt-2 pb-3 space-y-1">
+                <a href="index.html" class="block px-3 py-2 text-gray-700 hover:text-blue-600">
+                    Home
+                </a>
+                <a href="getting-started.html" class="block px-3 py-2 text-gray-700 hover:text-blue-600">
+                    Getting Started
+                </a>
+                <a href="core-concepts.html" class="block px-3 py-2 text-gray-700 hover:text-blue-600">
+                    Core Concepts
+                </a>
+                <a href="modules.html" class="block px-3 py-2 text-gray-700 hover:text-blue-600">
+                    Modules
+                </a>
+                <a href="api-reference.html" class="block px-3 py-2 text-blue-600">
+                    API Reference
+                </a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Mobile Menu Overlay -->
+    <div id="mobile-menu-overlay" class="mobile-menu-overlay"></div>
+
+    <!-- Main Content -->
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <div class="flex flex-col lg:flex-row gap-8">
+            <!-- Sidebar Navigation -->
+            <div class="lg:w-1/4">
+                <div class="bg-white rounded-lg shadow-sm p-6 sticky top-8">
+                    <h3 class="text-lg font-semibold text-gray-900 mb-4">
+                        API Reference
+                    </h3>
+                    <nav class="space-y-2">
+                        <a href="api-core.html"
+                            class="nav-link block px-3 py-2 text-sm text-gray-700 rounded-md hover:text-blue-600">
+                            <i class="fas fa-cogs mr-2"></i>Core Engine
+                        </a>
+                        <a href="api-http.html"
+                            class="nav-link block px-3 py-2 text-sm text-gray-700 rounded-md hover:text-blue-600">
+                            <i class="fas fa-globe mr-2"></i>HTTP Layer
+                        </a>
+                        <a href="api-database.html"
+                            class="nav-link block px-3 py-2 text-sm text-gray-700 rounded-md hover:text-blue-600">
+                            <i class="fas fa-database mr-2"></i>Database & ORM
+                        </a>
+                        <a href="api-di.html"
+                            class="nav-link block px-3 py-2 text-sm text-gray-700 rounded-md hover:text-blue-600">
+                            <i class="fas fa-puzzle-piece mr-2"></i>DI Container
+                        </a>
+                        <a href="api-routing.html"
+                            class="nav-link block px-3 py-2 text-sm text-gray-700 rounded-md hover:text-blue-600">
+                            <i class="fas fa-route mr-2"></i>Routing
+                        </a>
+                        <a href="api-modules.html"
+                            class="nav-link block px-3 py-2 text-sm text-gray-700 rounded-md hover:text-blue-600">
+                            <i class="fas fa-plug mr-2"></i>Module System
+                        </a>
+                        <a href="api-cli.html"
+                            class="nav-link block px-3 py-2 text-sm text-gray-700 rounded-md hover:text-blue-600">
+                            <i class="fas fa-terminal mr-2"></i>CLI & Console
+                        </a>
+                        <a href="api-cache.html"
+                            class="nav-link block px-3 py-2 text-sm text-gray-700 rounded-md hover:text-blue-600">
+                            <i class="fas fa-memory mr-2"></i>Caching
+                        </a>
+                        <a href="api-validation.html"
+                            class="nav-link block px-3 py-2 text-sm text-gray-700 rounded-md hover:text-blue-600 active">
+                            <i class="fas fa-check-circle mr-2"></i>Validation
+                        </a>
+                        <a href="api-helpers.html"
+                            class="nav-link block px-3 py-2 text-sm text-gray-700 rounded-md hover:text-blue-600">
+                            <i class="fas fa-tools mr-2"></i>Helpers & Traits
+                        </a>
+                        <a href="api-events.html"
+                            class="nav-link block px-3 py-2 text-sm text-gray-700 rounded-md hover:text-blue-600">
+                            <i class="fas fa-broadcast-tower mr-2"></i>Events
+                        </a>
+                        <a href="api-security.html"
+                            class="nav-link block px-3 py-2 text-sm text-gray-700 rounded-md hover:text-blue-600">
+                            <i class="fas fa-shield-alt mr-2"></i>Security
+                        </a>
+                    </nav>
+                </div>
+            </div>
+
+            <!-- Main Content -->
+            <div class="lg:w-3/4">
+                <div class="bg-white rounded-lg shadow-sm p-8">
+                    <h1 class="text-4xl font-bold text-gray-900 mb-6">
+                        Validation API
+                    </h1>
+                    <p class="text-xl text-gray-600 mb-8">
+                        Comprehensive validation system with built-in rules, custom validators, and advanced validation
+                        patterns.
+                        The validation system provides server-side and client-side validation with support for
+                        conditional rules,
+                        nested data validation, and internationalization.
+                    </p>
+
+                    <!-- Validator Class -->
+                    <section id="validator" class="section-anchor mb-12">
+                        <div class="bg-blue-50 border-l-4 border-blue-500 p-6 mb-8">
+                            <h2 class="text-2xl font-bold text-gray-900 mb-4">
+                                <i class="fas fa-check-double text-blue-600 mr-3"></i>Validator Class
+                            </h2>
+                            <p class="text-gray-700">
+                                Main validation class that provides a fluent interface for defining validation rules,
+                                running validations, and handling validation results. The Validator supports chaining,
+                                custom error messages, and multiple validation contexts.
+                            </p>
+                        </div>
+
+                        <div class="mb-8">
+                            <h3 class="text-xl font-semibold text-gray-900 mb-4">Basic Validation</h3>
+
+                            <div class="api-method bg-gray-50 p-4 rounded-lg mb-4">
+                                <h4 class="font-semibold text-lg mb-2">Creating Validators</h4>
+                                <p class="text-gray-600 text-sm mb-3">Initialize and configure validation rules.</p>
+                                <div class="code-block p-4 text-white rounded">
+                                    <pre><code class="language-php">use Forge\Validation\Validator;
+use Forge\Validation\Rules\RuleFactory;
+
+// Create validator instance
+$validator = new Validator();
+
+// Basic validation
+$validator->make($data, [
+    'name' => 'required|string|min:3|max:255',
+    'email' => 'required|email|unique:users,email',
+    'age' => 'required|integer|min:18|max:120',
+    'password.min' => 'Your password must be at least 8 characters long for security.',
+    'password.confirmed' => 'The password confirmation does not match. Please try again.',
+    'terms.accepted' => 'You must accept the terms and conditions to continue.'
+];
+
+// Using custom messages with validator
+$validator = Validator::make($data, $rules, $messages);
+
+// Dynamic error messages
+$validator->setCustomMessages([
+    'name.required' => 'Please tell us your name.',
+    'email.unique' => 'This email is already registered. Try logging in or use a different email.'
+]);
+
+// Localization support
+$messages = [
+    'required' => trans('validation.required'),
+    'email' => trans('validation.email'),
+    'min' => trans('validation.min'),
+    'custom' => [
+        'attribute-name' => [
+            'rule-name' => trans('validation.custom.attribute-name.rule-name')
+        ]
+    ]
+];
+
+// Attribute aliases (friendly names)
+$attributes = [
+    'email' => 'email address',
+    'first_name' => 'first name',
+    'last_name' => 'last name',
+    'dob' => 'date of birth',
+    'pwd' => 'password',
+    'addr' => 'address',
+    'ph' => 'phone number'
+];
+
+$validator = Validator::make($data, $rules, $messages, $attributes);
+
+// Getting error messages
+if ($validator->fails()) {
+    // Get all errors
+    $errors = $validator->errors();
+    
+    // Get errors for specific field
+    $emailErrors = $validator->errors()->get('email');
+    
+    // Get first error for field
+    $firstEmailError = $validator->errors()->first('email');
+    
+    // Get all errors as array
+    $allErrors = $validator->errors()->all();
+    
+    // Get errors as JSON
+    $errorsJson = $validator->errors()->toJson();
+    
+    // Get errors as array with field names
+    $errorsArray = $validator->errors()->toArray();
+    
+    // Check if field has errors
+    $hasEmailErrors = $validator->errors()->has('email');
+    
+    // Add custom error
+    $validator->errors()->add('field', 'Custom error message');
+    
+    // Merge additional errors
+    $validator->errors()->merge([
+        'field1' => ['Additional error 1'],
+        'field2' => ['Additional error 2']
+    ]);
+    
+    // Set error bag name
+    $validator->errors()->setBag('login');
+    
+    // Get specific error bag
+    $loginErrors = $validator->errors()->getBag('login');
+}
+
+// Error message formatting
+$messages = [
+    'required' => 'The :attribute field is required.',
+    'min' => [
+        'numeric' => 'The :attribute must be at least :min.',
+        'file' => 'The :attribute must be at least :min kilobytes.',
+        'string' => 'The :attribute must be at least :min characters.',
+        'array' => 'The :attribute must have at least :min items.'
+    ],
+    'between' => [
+        'numeric' => 'The :attribute must be between :min and :max.',
+        'file' => 'The :attribute must be between :min and :max kilobytes.',
+        'string' => 'The :attribute must be between :min and :max characters.',
+        'array' => 'The :attribute must have between :min and :max items.'
+    ]
+];
+
+// Custom placeholders
+$messages = [
+    'password' => 'The :attribute must contain at least one :uppercase, one :lowercase, and one :number.',
+    'password.uppercase' => 'uppercase letter',
+    'password.lowercase' => 'lowercase letter',
+    'password.number' => 'number'
+];</code></pre>
+                                </div>
+                            </div>
+
+                            <div class="api-method bg-gray-50 p-4 rounded-lg mb-4">
+                                <h4 class="font-semibold text-lg mb-2">Validation Feedback</h4>
+                                <p class="text-gray-600 text-sm mb-3">Provide user-friendly validation feedback and
+                                    suggestions.</p>
+                                <div class="code-block p-4 text-white rounded">
+                                    <pre><code class="language-php">// Get validation suggestions
+$suggestions = $validator->suggestions();
+
+// Add helpful suggestions
+$validator->addSuggestion('password', 'Consider using a longer password with mixed case letters and numbers.');
+$validator->addSuggestion('email', 'Use a professional email address for better credibility.');
+
+// Validation hints
+$hints = [
+    'password' => 'Use at least 8 characters with mixed case and numbers.',
+    'username' => 'Choose a unique username that represents you or your business.',
+    'phone' => 'Include country code for international contacts (e.g., +1 for US).'
+];
+
+$validator->setHints($hints);
+
+// Validation warnings (non-blocking)
+$validator->addWarning('password', 'Your password is strong, but consider adding special characters for extra security.');
+$validator->addWarning('email', 'Using a free email provider is fine, but a custom domain looks more professional.');
+
+// Success messages
+$validator->addSuccess('email', 'Email format is valid!');
+$validator->addSuccess('password', 'Great! Your password meets all security requirements.');
+
+// Validation summary
+$summary = $validator->summary();
+
+// Example: Return validation response for API
+public function validateForm(Request $request)
+{
+    $validator = Validator::make($request->all(), [
+        'name' => 'required|string|max:255',
+        'email' => 'required|email|unique:users',
+        'password' => 'required|strong_password'
+    ]);
+    
+    if ($validator->fails()) {
+        return response()->json([
+            'success' => false,
+            'message' => 'Validation failed',
+            'errors' => $validator->errors(),
+            'suggestions' => $validator->suggestions(),
+            'warnings' => $validator->warnings(),
+            'hints' => $validator->hints()
+        ], 422);
+    }
+    
+    return response()->json([
+        'success' => true,
+        'message' => 'Validation passed',
+        'data' => $validator->validated(),
+        'successes' => $validator->successes()
+    ]);
+}
+
+// Frontend-friendly error formatting
+public function formatErrorsForFrontend($validator)
+{
+    $errors = [];
+    
+    foreach ($validator->errors()->toArray() as $field => $messages) {
+        $errors[$field] = [
+            'message' => $messages[0], // First error message
+            'all_messages' => $messages,
+            'suggestion' => $validator->suggestions()->get($field),
+            'hint' => $validator->hints()->get($field)
+        ];
+    }
+    
+    return [
+        'has_errors' => $validator->fails(),
+        'errors' => $errors,
+        'warnings' => $validator->warnings()->toArray(),
+        'successes' => $validator->successes()->toArray()
+    ];
+}</code></pre>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- Best Practices -->
+                    <section id="best-practices" class="section-anchor mb-12">
+                        <h2 class="text-3xl font-bold text-gray-900 mb-6">
+                            <i class="fas fa-lightbulb text-yellow-500 mr-3"></i>Best Practices
+                        </h2>
+
+                        <div class="grid md:grid-cols-2 gap-6 mb-8">
+                            <div class="bg-green-50 p-6 rounded-lg">
+                                <h3 class="text-lg font-semibold text-green-800 mb-3">
+                                    <i class="fas fa-check-circle mr-2"></i>Do's
+                                </h3>
+                                <ul class="text-green-700 space-y-2">
+                                    <li>• Use descriptive field names and aliases</li>
+                                    <li>• Validate early and validate often</li>
+                                    <li>• Use built-in rules when possible</li>
+                                    <li>• Create reusable custom rules</li>
+                                    <li>• Provide helpful error messages</li>
+                                    <li>• Use conditional validation for complex logic</li>
+                                    <li>• Validate file uploads comprehensively</li>
+                                    <li>• Test validation rules thoroughly</li>
+                                    <li>• Use validation groups for different contexts</li>
+                                    <li>• Implement proper error handling</li>
+                                </ul>
+                            </div>
+                            <div class="bg-red-50 p-6 rounded-lg">
+                                <h3 class="text-lg font-semibold text-red-800 mb-3">
+                                    <i class="fas fa-times-circle mr-2"></i>Don'ts
+                                </h3>
+                                <ul class="text-red-700 space-y-2">
+                                    <li>• Don't trust client-side validation alone</li>
+                                    <li>• Don't expose sensitive information in errors</li>
+                                    <li>• Don't make validation rules too complex</li>
+                                    <li>• Don't ignore performance implications</li>
+                                    <li>• Don't hardcode error messages</li>
+                                    <li>• Don't validate the same data multiple times</li>
+                                    <li>• Don't forget about edge cases</li>
+                                    <li>• Don't ignore security validation</li>
+                                    <li>• Don't make assumptions about data format</li>
+                                    <li>• Don't skip validation for "trusted" sources</li>
+                                </ul>
+                            </div>
+                        </div>
+
+                        <div class="bg-blue-50 p-6 rounded-lg">
+                            <h3 class="text-lg font-semibold text-blue-800 mb-3">
+                                <i class="fas fa-star mr-2"></i>Performance Tips
+                            </h3>
+                            <ul class="text-blue-700 space-y-2">
+                                <li>• Use <code class="bg-blue-100 px-2 py-1 rounded">bail</code> rule to stop
+                                    validation on first failure</li>
+                                <li>• Cache validation rules that don't change frequently</li>
+                                <li>• Use database indexes for unique validation rules</li>
+                                <li>• Batch database queries for existence validation</li>
+                                <li>• Use lazy validation for large datasets</li>
+                                <li>• Implement validation rule caching</li>
+                                <li>• Use validation groups to avoid unnecessary checks</li>
+                                <li>• Optimize regular expressions in custom rules</li>
+                                <li>• Use native PHP functions when possible</li>
+                                <li>• Profile validation performance in production</li>
+                            </ul>
+                        </div>
+                    </section>
+
+                    <!-- Navigation and Cross-references -->
+                    <div class="mt-12 pt-8 border-t border-gray-200">
+                        <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+                            <a href="api-cache.html"
+                                class="inline-flex items-center px-4 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors">
+                                <i class="fas fa-arrow-left mr-2"></i>
+                                Caching API
+                            </a>
+
+                            <div class="flex gap-2">
+                                <a href="api-reference.html"
+                                    class="inline-flex items-center px-4 py-2 bg-blue-100 text-blue-700 rounded-lg hover:bg-blue-200 transition-colors">
+                                    <i class="fas fa-home mr-2"></i>
+                                    API Reference Home
+                                </a>
+                            </div>
+
+                            <a href="api-helpers.html"
+                                class="inline-flex items-center px-4 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors">
+                                Helpers & Traits API
+                                <i class="fas fa-arrow-right ml-2"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="bg-gray-800 text-white py-8 mt-16">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center">
+                <p class="text-gray-400">
+                    &copy; 2024 Forge Engine. All rights reserved.
+                </p>
+                <p class="text-gray-500 text-sm mt-2">
+                    Built with ❤️ for developers
+                </p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Mobile menu functionality
+        const mobileMenuBtn = document.getElementById('mobile-menu-btn');
+        const mobileMenu = document.getElementById('mobile-menu');
+        const mobileMenuOverlay = document.getElementById('mobile-menu-overlay');
+
+        function toggleMobileMenu() {
+            mobileMenu.classList.toggle('hidden');
+            mobileMenuOverlay.classList.toggle('active');
+        }
+
+        if (mobileMenuBtn) {
+            mobileMenuBtn.addEventListener('click', toggleMobileMenu);
+        }
+
+        if (mobileMenuOverlay) {
+            mobileMenuOverlay.addEventListener('click', toggleMobileMenu);
+        }
+
+        // Active navigation highlighting
+        const currentPath = window.location.pathname.split('/').pop();
+        const navLinks = document.querySelectorAll('.nav-link');
+
+        navLinks.forEach(link => {
+            if (link.getAttribute('href') === currentPath) {
+                link.classList.add('active');
+            }
+        });
+
+        // Smooth scrolling for anchor links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+
+        // Copy code functionality
+        document.querySelectorAll('.code-block').forEach(block => {
+            const button = document.createElement('button');
+            button.innerHTML = '<i class="fas fa-copy"></i>';
+            button.className = 'absolute top-2 right-2 bg-gray-700 hover:bg-gray-600 text-white p-2 rounded text-sm';
+            button.style.position = 'absolute';
+            button.style.top = '8px';
+            button.style.right = '8px';
+
+            const pre = block.querySelector('pre');
+            if (pre) {
+                pre.style.position = 'relative';
+                pre.appendChild(button);
+
+                button.addEventListener('click', () => {
+                    const code = pre.textContent;
+                    navigator.clipboard.writeText(code).then(() => {
+                        button.innerHTML = '<i class="fas fa-check"></i>';
+                        button.className = 'absolute top-2 right-2 bg-green-600 text-white p-2 rounded text-sm';
+
+                        setTimeout(() => {
+                            button.innerHTML = '<i class="fas fa-copy"></i>';
+                            button.className = 'absolute top-2 right-2 bg-gray-700 hover:bg-gray-600 text-white p-2 rounded text-sm';
+                        }, 2000);
+                    });
+                });
+            }
+        });
+    </script>
+</body>
+
+</html>

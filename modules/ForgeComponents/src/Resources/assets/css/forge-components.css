@@ -1,0 +1,17 @@
+/* Forge Components design system
+ *
+ * Layers (lowest → highest specificity):
+ *   fc.tokens      — CSS custom properties, semantic tokens
+ *   fc.base        — reset, box-sizing, html/body defaults
+ *   fc.components  — button, input, checkbox, badge, card, alert
+ *   fc.layouts     — stack, split, center, sidebar primitives
+ *   fc.auth        — auth-split, auth-center, auth-cover page layouts
+ *
+ * Source files in forge-components/_*.css
+ */
+
+@import url("forge-components/_tokens.css") layer(fc.tokens);
+@import url("forge-components/_base.css") layer(fc.base);
+@import url("forge-components/_components.css") layer(fc.components);
+@import url("forge-components/_layouts.css") layer(fc.layouts);
+@import url("forge-components/_auth.css") layer(fc.auth);

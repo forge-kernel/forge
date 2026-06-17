@@ -1,0 +1,1282 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Events API - Forge Engine Documentation</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-php.min.js"></script>
+    <style>
+        .nav-link.active {
+            @apply bg-blue-100 text-blue-700 border-l-4 border-blue-500;
+        }
+        .code-block {
+            background: #2d3748;
+            font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
+        }
+        .section-anchor {
+            scroll-margin-top: 2rem;
+        }
+        .mobile-menu-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 40;
+        }
+        .mobile-menu-overlay.active {
+            display: block;
+        }
+    </style>
+</head>
+
+<body class="bg-gray-50 font-sans">
+    <!-- Header -->
+    <header class="bg-white shadow-sm border-b border-gray-200 sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-16">
+                <div class="flex items-center">
+                    <a href="index.html" class="text-xl font-bold text-gray-900">
+                        <i class="fas fa-fire text-blue-600 mr-2"></i>Forge Engine
+                    </a>
+                    <span class="ml-4 text-sm text-gray-500">Events API Documentation</span>
+                </div>
+                <nav class="hidden md:flex space-x-8">
+                    <a href="index.html" class="text-gray-600 hover:text-gray-900">Home</a>
+                    <a href="getting-started.html" class="text-gray-600 hover:text-gray-900">Getting Started</a>
+                    <a href="api-reference.html" class="text-gray-900 font-medium">API Reference</a>
+                    <a href="modules.html" class="text-gray-600 hover:text-gray-900">Modules</a>
+                </nav>
+                <button id="mobile-menu-btn" class="md:hidden text-gray-600 hover:text-gray-900">
+                    <i class="fas fa-bars text-xl"></i>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Mobile Menu -->
+    <div id="mobile-menu" class="hidden fixed inset-0 z-50 bg-white">
+        <div class="flex justify-between items-center p-4 border-b">
+            <span class="text-lg font-semibold">Menu</span>
+            <button id="close-mobile-menu" class="text-gray-600 hover:text-gray-900">
+                <i class="fas fa-times text-xl"></i>
+            </button>
+        </div>
+        <nav class="p-4">
+            <div class="space-y-4">
+                <a href="index.html" class="block text-gray-600 hover:text-gray-900">Home</a>
+                <a href="getting-started.html" class="block text-gray-600 hover:text-gray-900">Getting Started</a>
+                <a href="api-reference.html" class="block text-blue-600 font-medium">API Reference</a>
+                <a href="modules.html" class="block text-gray-600 hover:text-gray-900">Modules</a>
+            </div>
+            <div class="mt-8">
+                <h3 class="text-sm font-semibold text-gray-500 uppercase tracking-wide mb-3">API Sections</h3>
+                <div class="space-y-2 pl-4">
+                    <a href="api-core.html" class="block text-sm text-gray-600 hover:text-gray-900">Core Engine</a>
+                    <a href="api-http.html" class="block text-sm text-gray-600 hover:text-gray-900">HTTP Layer</a>
+                    <a href="api-database.html" class="block text-sm text-gray-600 hover:text-gray-900">Database & ORM</a>
+                    <a href="api-di.html" class="block text-sm text-gray-600 hover:text-gray-900">DI Container</a>
+                    <a href="api-routing.html" class="block text-sm text-gray-600 hover:text-gray-900">Routing</a>
+                    <a href="api-modules.html" class="block text-sm text-gray-600 hover:text-gray-900">Module System</a>
+                    <a href="api-cli.html" class="block text-sm text-gray-600 hover:text-gray-900">CLI & Console</a>
+                    <a href="api-cache.html" class="block text-sm text-gray-600 hover:text-gray-900">Caching</a>
+                    <a href="api-validation.html" class="block text-sm text-gray-600 hover:text-gray-900">Validation</a>
+                    <a href="api-helpers.html" class="block text-sm text-gray-600 hover:text-gray-900">Helpers & Traits</a>
+                    <a href="api-events.html" class="block text-sm text-blue-600 font-medium">Events</a>
+                    <a href="api-security.html" class="block text-sm text-gray-600 hover:text-gray-900">Security</a>
+                </div>
+            </div>
+        </nav>
+    </div>
+    <div id="mobile-menu-overlay" class="mobile-menu-overlay"></div>
+
+    <!-- Main Content -->
+    <div class="flex">
+        <!-- Sidebar Navigation -->
+        <nav class="hidden lg:block w-64 bg-white shadow-sm min-h-screen sticky top-16 overflow-y-auto">
+            <div class="p-6">
+                <h3 class="text-sm font-semibold text-gray-500 uppercase tracking-wide mb-4">API Sections</h3>
+                <div class="space-y-2">
+                    <a href="api-reference.html" class="nav-link block px-3 py-2 rounded-md text-sm font-medium text-gray-700 hover:bg-gray-100">
+                        <i class="fas fa-home mr-2"></i>API Reference Home
+                    </a>
+                    <a href="api-core.html" class="nav-link block px-3 py-2 rounded-md text-sm font-medium text-gray-700 hover:bg-gray-100">
+                        <i class="fas fa-cog mr-2"></i>Core Engine
+                    </a>
+                    <a href="api-http.html" class="nav-link block px-3 py-2 rounded-md text-sm font-medium text-gray-700 hover:bg-gray-100">
+                        <i class="fas fa-globe mr-2"></i>HTTP Layer
+                    </a>
+                    <a href="api-database.html" class="nav-link block px-3 py-2 rounded-md text-sm font-medium text-gray-700 hover:bg-gray-100">
+                        <i class="fas fa-database mr-2"></i>Database & ORM
+                    </a>
+                    <a href="api-di.html" class="nav-link block px-3 py-2 rounded-md text-sm font-medium text-gray-700 hover:bg-gray-100">
+                        <i class="fas fa-sitemap mr-2"></i>DI Container
+                    </a>
+                    <a href="api-routing.html" class="nav-link block px-3 py-2 rounded-md text-sm font-medium text-gray-700 hover:bg-gray-100">
+                        <i class="fas fa-route mr-2"></i>Routing
+                    </a>
+                    <a href="api-modules.html" class="nav-link block px-3 py-2 rounded-md text-sm font-medium text-gray-700 hover:bg-gray-100">
+                        <i class="fas fa-puzzle-piece mr-2"></i>Module System
+                    </a>
+                    <a href="api-cli.html" class="nav-link block px-3 py-2 rounded-md text-sm font-medium text-gray-700 hover:bg-gray-100">
+                        <i class="fas fa-terminal mr-2"></i>CLI & Console
+                    </a>
+                    <a href="api-cache.html" class="nav-link block px-3 py-2 rounded-md text-sm font-medium text-gray-700 hover:bg-gray-100">
+                        <i class="fas fa-memory mr-2"></i>Caching
+                    </a>
+                    <a href="api-validation.html" class="nav-link block px-3 py-2 rounded-md text-sm font-medium text-gray-700 hover:bg-gray-100">
+                        <i class="fas fa-check-circle mr-2"></i>Validation
+                    </a>
+                    <a href="api-helpers.html" class="nav-link block px-3 py-2 rounded-md text-sm font-medium text-gray-700 hover:bg-gray-100">
+                        <i class="fas fa-tools mr-2"></i>Helpers & Traits
+                    </a>
+                    <a href="api-events.html" class="nav-link block px-3 py-2 rounded-md text-sm font-medium text-blue-700 bg-blue-100 border-l-4 border-blue-500">
+                        <i class="fas fa-calendar-alt mr-2"></i>Events
+                    </a>
+                    <a href="api-security.html" class="nav-link block px-3 py-2 rounded-md text-sm font-medium text-gray-700 hover:bg-gray-100">
+                        <i class="fas fa-shield-alt mr-2"></i>Security
+                    </a>
+                </div>
+            </div>
+        </nav>
+
+        <!-- Main Content Area -->
+        <main class="flex-1 max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+            <div class="bg-white rounded-lg shadow-sm">
+                <div class="px-8 py-6 border-b border-gray-200">
+                    <h1 class="text-3xl font-bold text-gray-900 mb-2">
+                        <i class="fas fa-calendar-alt text-blue-600 mr-3"></i>Events API
+                    </h1>
+                    <p class="text-gray-600">
+                        Comprehensive guide to the event system in Forge Engine, including event dispatching, listeners, and event handling.
+                    </p>
+                </div>
+
+                <div class="px-8 py-6">
+                    <!-- Introduction -->
+                    <section id="introduction" class="section-anchor mb-12">
+                        <div class="bg-blue-50 border-l-4 border-blue-500 p-6 mb-8">
+                            <h2 class="text-2xl font-bold text-gray-900 mb-4">
+                                <i class="fas fa-info-circle text-blue-600 mr-3"></i>Introduction
+                            </h2>
+                            <p class="text-gray-700">
+                                The Forge Engine event system provides a powerful and flexible way to implement the observer pattern in your applications. 
+                                Events allow you to decouple your application components and create more maintainable, testable code.
+                            </p>
+                        </div>
+
+                        <div class="grid md:grid-cols-2 gap-6 mb-8">
+                            <div class="bg-white border border-gray-200 rounded-lg p-6 shadow-sm">
+                                <h3 class="text-lg font-semibold text-gray-900 mb-3">
+                                    <i class="fas fa-broadcast-tower text-blue-600 mr-2"></i>Event Dispatching
+                                </h3>
+                                <p class="text-gray-600 text-sm">
+                                    Events are dispatched throughout the application lifecycle, allowing other parts of your application to respond to specific occurrences.
+                                </p>
+                            </div>
+                            <div class="bg-white border border-gray-200 rounded-lg p-6 shadow-sm">
+                                <h3 class="text-lg font-semibold text-gray-900 mb-3">
+                                    <i class="fas fa-headphones text-blue-600 mr-2"></i>Event Listening
+                                </h3>
+                                <p class="text-gray-600 text-sm">
+                                    Listeners are registered to handle specific events, enabling reactive programming patterns and loose coupling between components.
+                                </p>
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- Event System Classes -->
+                    <section id="event-system" class="section-anchor mb-12">
+                        <h2 class="text-2xl font-bold text-gray-900 mb-6">
+                            <i class="fas fa-cogs text-blue-600 mr-3"></i>Event System Classes
+                        </h2>
+
+                        <div class="api-method bg-gray-50 p-4 rounded-lg mb-4">
+                            <h4 class="font-semibold text-lg mb-2">Event</h4>
+                            <p class="text-gray-600 text-sm mb-3">Base class for all events in the system.</p>
+                            <div class="code-block p-4 text-white rounded">
+                                <pre><code class="language-php">use Forge\Events\Event;
+
+class UserRegisteredEvent extends Event
+{
+    public function __construct(
+        public readonly User $user,
+        public readonly array $registrationData = []
+    ) {}
+    
+    /**
+     * Get event name
+     */
+    public function getName(): string
+    {
+        return 'user.registered';
+    }
+    
+    /**
+     * Stop event propagation
+     */
+    public function stopPropagation(): void
+    {
+        $this->propagationStopped = true;
+    }
+    
+    /**
+     * Check if propagation is stopped
+     */
+    public function isPropagationStopped(): bool
+    {
+        return $this->propagationStopped;
+    }
+}
+
+// Usage
+$event = new UserRegisteredEvent($user, $data);
+echo $event->getName(); // 'user.registered'</code></pre>
+                            </div>
+                        </div>
+
+                        <div class="api-method bg-gray-50 p-4 rounded-lg mb-4">
+                            <h4 class="font-semibold text-lg mb-2">EventDispatcher</h4>
+                            <p class="text-gray-600 text-sm mb-3">Central hub for event dispatching and listener management.</p>
+                            <div class="code-block p-4 text-white rounded">
+                                <pre><code class="language-php">use Forge\Events\EventDispatcher;
+
+$dispatcher = new EventDispatcher();
+
+/**
+ * Add event listener
+ */
+$dispatcher->addListener('user.registered', function(UserRegisteredEvent $event) {
+    // Handle the event
+    $user = $event->user;
+    $this->sendWelcomeEmail($user);
+});
+
+/**
+ * Add subscriber
+ */
+$dispatcher->addSubscriber(new UserEventSubscriber());
+
+/**
+ * Dispatch event
+ */
+$event = new UserRegisteredEvent($user, $data);
+$dispatcher->dispatch($event, 'user.registered');
+
+/**
+ * Remove listener
+ */
+$dispatcher->removeListener('user.registered', $listener);
+
+/**
+ * Get listeners for event
+ */
+$listeners = $dispatcher->getListeners('user.registered');
+
+/**
+ * Check if has listeners
+ */
+if ($dispatcher->hasListeners('user.registered')) {
+    // Event has listeners
+}
+
+/**
+ * Priority-based listening
+ */
+$dispatcher->addListener('user.registered', $highPriorityListener, 100);
+$dispatcher->addListener('user.registered', $lowPriorityListener, 10);</code></pre>
+                            </div>
+                        </div>
+
+                        <div class="api-method bg-gray-50 p-4 rounded-lg mb-4">
+                            <h4 class="font-semibold text-lg mb-2">EventSubscriber</h4>
+                            <p class="text-gray-600 text-sm mb-3">Interface for classes that subscribe to multiple events.</p>
+                            <div class="code-block p-4 text-white rounded">
+                                <pre><code class="language-php">use Forge\Events\EventSubscriberInterface;
+
+class UserEventSubscriber implements EventSubscriberInterface
+{
+    /**
+     * Returns an array of event names this subscriber wants to listen to
+     */
+    public static function getSubscribedEvents(): array
+    {
+        return [
+            'user.registered' => 'onUserRegistered',
+            'user.logged_in' => 'onUserLoggedIn',
+            'user.logged_out' => [
+                ['onUserLoggedOut', 10],
+                ['clearUserCache', 5],
+            ],
+            'user.password_changed' => [
+                ['onPasswordChanged', 100],
+                ['sendPasswordChangeNotification', 50],
+            ],
+        ];
+    }
+    
+    public function onUserRegistered(UserRegisteredEvent $event): void
+    {
+        $user = $event->user;
+        $this->sendWelcomeEmail($user);
+        $this->createUserProfile($user);
+    }
+    
+    public function onUserLoggedIn(UserLoggedInEvent $event): void
+    {
+        $this->updateLastLoginTime($event->user);
+        $this->logUserActivity($event->user, 'login');
+    }
+    
+    public function onUserLoggedOut(UserLoggedOutEvent $event): void
+    {
+        $this->logUserActivity($event->user, 'logout');
+    }
+    
+    public function clearUserCache(UserLoggedOutEvent $event): void
+    {
+        Cache::forget('user.' . $event->user->id);
+    }
+    
+    public function onPasswordChanged(PasswordChangedEvent $event): void
+    {
+        $this->logSecurityEvent($event->user, 'password_changed');
+    }
+    
+    public function sendPasswordChangeNotification(PasswordChangedEvent $event): void
+    {
+        Mail::to($event->user->email)->send(new PasswordChangedNotification($event->user));
+    }
+}
+
+// Register subscriber
+$dispatcher->addSubscriber(new UserEventSubscriber());</code></pre>
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- Event Dispatching -->
+                    <section id="event-dispatching" class="section-anchor mb-12">
+                        <h2 class="text-2xl font-bold text-gray-900 mb-6">
+                            <i class="fas fa-broadcast-tower text-blue-600 mr-3"></i>Event Dispatching
+                        </h2>
+
+                        <div class="api-method bg-gray-50 p-4 rounded-lg mb-4">
+                            <h4 class="font-semibold text-lg mb-2">Basic Event Dispatching</h4>
+                            <p class="text-gray-600 text-sm mb-3">Simple event dispatching with automatic listener execution.</p>
+                            <div class="code-block p-4 text-white rounded">
+                                <pre><code class="language-php">use Forge\Events\EventDispatcher;
+
+// Create event dispatcher
+$dispatcher = new EventDispatcher();
+
+// Define event class
+class OrderPlacedEvent extends Event
+{
+    public function __construct(
+        public readonly Order $order,
+        public readonly User $user,
+        public readonly float $totalAmount
+    ) {}
+    
+    public function getName(): string
+    {
+        return 'order.placed';
+    }
+}
+
+// Add listener
+$dispatcher->addListener('order.placed', function(OrderPlacedEvent $event) {
+    // Send order confirmation email
+    Mail::to($event->user->email)->send(new OrderConfirmation($event->order));
+    
+    // Update inventory
+    foreach ($event->order->items as $item) {
+        $item->product->decrement('stock', $item->quantity);
+    }
+    
+    // Log order activity
+    Log::info('Order placed', [
+        'order_id' => $event->order->id,
+        'user_id' => $event->user->id,
+        'amount' => $event->totalAmount
+    ]);
+});
+
+// Dispatch event
+$order = Order::create($orderData);
+$event = new OrderPlacedEvent($order, $user, $totalAmount);
+$dispatcher->dispatch($event, 'order.placed');</code></pre>
+                            </div>
+                        </div>
+
+                        <div class="api-method bg-gray-50 p-4 rounded-lg mb-4">
+                            <h4 class="font-semibold text-lg mb-2">Conditional Event Dispatching</h4>
+                            <p class="text-gray-600 text-sm mb-3">Dispatch events based on conditions and stop propagation when needed.</p>
+                            <div class="code-block p-4 text-white rounded">
+                                <pre><code class="language-php">class PaymentProcessedEvent extends Event
+{
+    private bool $propagationStopped = false;
+    
+    public function __construct(
+        public readonly Payment $payment,
+        public readonly string $status,
+        public readonly ?string $errorMessage = null
+    ) {}
+    
+    public function getName(): string
+    {
+        return 'payment.processed';
+    }
+    
+    public function isSuccessful(): bool
+    {
+        return $this->status === 'success';
+    }
+    
+    public function isFailed(): bool
+    {
+        return $this->status === 'failed';
+    }
+    
+    public function stopPropagation(): void
+    {
+        $this->propagationStopped = true;
+    }
+    
+    public function isPropagationStopped(): bool
+    {
+        return $this->propagationStopped;
+    }
+}
+
+// Add validation listener (high priority)
+$dispatcher->addListener('payment.processed', function(PaymentProcessedEvent $event) {
+    if ($event->payment->amount <= 0) {
+        $event->stopPropagation();
+        Log::warning('Invalid payment amount', ['payment' => $event->payment->id]);
+    }
+}, 1000);
+
+// Add processing listeners (normal priority)
+$dispatcher->addListener('payment.processed', function(PaymentProcessedEvent $event) {
+    if ($event->isSuccessful()) {
+        // Update user balance
+        $event->payment->user->increment('balance', $event->payment->amount);
+        
+        // Send success notification
+        $this->sendPaymentSuccessNotification($event->payment);
+    }
+}, 100);
+
+$dispatcher->addListener('payment.processed', function(PaymentProcessedEvent $event) {
+    if ($event->isFailed()) {
+        // Send failure notification
+        $this->sendPaymentFailureNotification($event->payment, $event->errorMessage);
+    }
+}, 100);
+
+// Add logging listener (low priority)
+$dispatcher->addListener('payment.processed', function(PaymentProcessedEvent $event) {
+    Log::info('Payment processed', [
+        'payment_id' => $event->payment->id,
+        'status' => $event->status,
+        'amount' => $event->payment->amount
+    ]);
+}, 10);
+
+// Dispatch event
+$payment = Payment::create($paymentData);
+$event = new PaymentProcessedEvent($payment, 'success');
+$dispatcher->dispatch($event, 'payment.processed');</code></pre>
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- Event Listeners -->
+                    <section id="event-listeners" class="section-anchor mb-12">
+                        <h2 class="text-2xl font-bold text-gray-900 mb-6">
+                            <i class="fas fa-headphones text-blue-600 mr-3"></i>Event Listeners
+                        </h2>
+
+                        <div class="api-method bg-gray-50 p-4 rounded-lg mb-4">
+                            <h4 class="font-semibold text-lg mb-2">Closure Listeners</h4>
+                            <p class="text-gray-600 text-sm mb-3">Simple closure-based event listeners for quick event handling.</p>
+                            <div class="code-block p-4 text-white rounded">
+                                <pre><code class="language-php">// Simple closure listener
+$dispatcher->addListener('user.created', function(UserCreatedEvent $event) {
+    $user = $event->user;
+    
+    // Send welcome email
+    Mail::to($user->email)->send(new WelcomeEmail($user));
+    
+    // Create user profile
+    Profile::create([
+        'user_id' => $user->id,
+        'bio' => '',
+        'avatar' => null
+    ]);
+    
+    // Log user creation
+    Log::info('User created', ['user_id' => $user->id, 'email' => $user->email]);
+});
+
+// Closure with dependency injection
+$dispatcher->addListener('order.shipped', function(OrderShippedEvent $event) use ($trackingService) {
+    $order = $event->order;
+    
+    // Generate tracking number
+    $trackingNumber = $trackingService->generateTrackingNumber($order);
+    
+    // Update order with tracking info
+    $order->update([
+        'tracking_number' => $trackingNumber,
+        'shipped_at' => now()
+    ]);
+    
+    // Send shipping notification
+    Mail::to($order->user->email)->send(new OrderShippedNotification($order, $trackingNumber));
+});
+
+// Multiple listeners for same event
+$dispatcher->addListener('product.viewed', function(ProductViewedEvent $event) {
+    // Increment view count
+    $event->product->increment('view_count');
+});
+
+$dispatcher->addListener('product.viewed', function(ProductViewedEvent $event) {
+    // Track user activity
+    Activity::create([
+        'user_id' => auth()->id(),
+        'type' => 'product_view',
+        'data' => ['product_id' => $event->product->id]
+    ]);
+});
+
+$dispatcher->addListener('product.viewed', function(ProductViewedEvent $event) {
+    // Update recommendation engine
+    RecommendationEngine::trackProductView($event->product, auth()->user());
+});</code></pre>
+                            </div>
+                        </div>
+
+                        <div class="api-method bg-gray-50 p-4 rounded-lg mb-4">
+                            <h4 class="font-semibold text-lg mb-2">Class-based Listeners</h4>
+                            <p class="text-gray-600 text-sm mb-3">Object-oriented listeners with dependency injection and better organization.</p>
+                            <div class="code-block p-4 text-white rounded">
+                                <pre><code class="language-php">class UserEventListener
+{
+    public function __construct(
+        private EmailService $emailService,
+        private NotificationService $notificationService,
+        private LogService $logService
+    ) {}
+    
+    public function onUserCreated(UserCreatedEvent $event): void
+    {
+        $user = $event->user;
+        
+        // Send welcome email
+        $this->emailService->sendWelcomeEmail($user);
+        
+        // Send push notification
+        $this->notificationService->sendWelcomeNotification($user);
+        
+        // Log the event
+        $this->logService->logUserCreation($user);
+    }
+    
+    public function onUserUpdated(UserUpdatedEvent $event): void
+    {
+        $user = $event->user;
+        $changes = $event->changes;
+        
+        // Log profile changes
+        if (isset($changes['profile'])) {
+            $this->logService->logProfileUpdate($user, $changes['profile']);
+        }
+        
+        // Send notification for important changes
+        if (isset($changes['email'])) {
+            $this->emailService->sendEmailChangeNotification($user, $changes['email']);
+        }
+    }
+    
+    public function onUserDeleted(UserDeletedEvent $event): void
+    {
+        $user = $event->user;
+        
+        // Clean up user data
+        $this->cleanupUserData($user);
+        
+        // Log deletion
+        $this->logService->logUserDeletion($user);
+    }
+    
+    private function cleanupUserData(User $user): void
+    {
+        // Delete user files
+        Storage::deleteDirectory("users/{$user->id}");
+        
+        // Delete user sessions
+        Session::where('user_id', $user->id)->delete();
+        
+        // Anonymize user data
+        $user->update([
+            'name' => 'Deleted User',
+            'email' => "deleted_{$user->id}@example.com",
+            'deleted_at' => now()
+        ]);
+    }
+}
+
+// Register class-based listeners
+$listener = new UserEventListener($emailService, $notificationService, $logService);
+
+$dispatcher->addListener('user.created', [$listener, 'onUserCreated']);
+$dispatcher->addListener('user.updated', [$listener, 'onUserUpdated']);
+$dispatcher->addListener('user.deleted', [$listener, 'onUserDeleted']);
+
+// Or use method names as strings
+$dispatcher->addListener('user.created', 'UserEventListener@onUserCreated');
+$dispatcher->addListener('user.updated', 'UserEventListener@onUserUpdated');</code></pre>
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- Advanced Event Features -->
+                    <section id="advanced-features" class="section-anchor mb-12">
+                        <h2 class="text-2xl font-bold text-gray-900 mb-6">
+                            <i class="fas fa-cogs text-blue-600 mr-3"></i>Advanced Event Features
+                        </h2>
+
+                        <div class="api-method bg-gray-50 p-4 rounded-lg mb-4">
+                            <h4 class="font-semibold text-lg mb-2">Event Wildcards</h4>
+                            <p class="text-gray-600 text-sm mb-3">Listen to multiple events using wildcard patterns.</p>
+                            <div class="code-block p-4 text-white rounded">
+                                <pre><code class="language-php">// Listen to all user events
+$dispatcher->addListener('user.*', function(Event $event) {
+    $eventName = $event->getName();
+    Log::info("User event triggered: {$eventName}");
+});
+
+// Listen to all model events
+$dispatcher->addListener('model.*', function(ModelEvent $event) {
+    $model = $event->model;
+    $action = $event->action; // 'created', 'updated', 'deleted'
+    
+    Log::info("Model {$action}", [
+        'model' => get_class($model),
+        'id' => $model->id
+    ]);
+});
+
+// Listen to specific namespace events
+$dispatcher->addListener('app.services.*', function(ServiceEvent $event) {
+    $this->monitorServiceHealth($event->service);
+});
+
+// Complex wildcard patterns
+$dispatcher->addListener('api.v1.users.*', function(ApiEvent $event) {
+    $this->logApiActivity($event);
+});
+
+$dispatcher->addListener('payment.*.completed', function(PaymentEvent $event) {
+    $this->processCompletedPayment($event);
+});</code></pre>
+                            </div>
+                        </div>
+
+                        <div class="api-method bg-gray-50 p-4 rounded-lg mb-4">
+                            <h4 class="font-semibold text-lg mb-2">Async Event Handling</h4>
+                            <p class="text-gray-600 text-sm mb-3">Handle events asynchronously using queues and background processing.</p>
+                            <div class="code-block p-4 text-white rounded">
+                                <pre><code class="language-php">use Forge\Events\AsyncEventListener;
+use Forge\Queue\QueueManager;
+
+class AsyncUserEventListener extends AsyncEventListener
+{
+    public function __construct(
+        private QueueManager $queue,
+        private EmailService $emailService
+    ) {}
+    
+    public function onUserRegistered(UserRegisteredEvent $event): void
+    {
+        // Queue welcome email
+        $this->queue->push(new SendWelcomeEmailJob($event->user));
+    }
+    
+    public function onUserPurchased(UserPurchasedEvent $event): void
+    {
+        // Queue purchase processing
+        $this->queue->push(new ProcessPurchaseJob($event->purchase));
+        
+        // Queue analytics tracking
+        $this->queue->push(new TrackPurchaseAnalyticsJob($event->purchase));
+    }
+}
+
+// Register async listener
+$asyncListener = new AsyncUserEventListener($queue, $emailService);
+$dispatcher->addListener('user.registered', [$asyncListener, 'onUserRegistered']);
+$dispatcher->addListener('user.purchased', [$asyncListener, 'onUserPurchased']);
+
+// Async job implementation
+class SendWelcomeEmailJob
+{
+    public function __construct(private User $user) {}
+    
+    public function handle(): void
+    {
+        Mail::to($this->user->email)->send(new WelcomeEmail($this->user));
+    }
+}
+
+// Deferred event handling
+class DeferredEventListener
+{
+    public function onBulkImportStarted(BulkImportStartedEvent $event): void
+    {
+        // Defer heavy processing
+        $this->defer(function() use ($event) {
+            $this->processBulkImport($event->importData);
+        });
+    }
+    
+    private function defer(callable $callback): void
+    {
+        // Register shutdown function or use queue
+        register_shutdown_function($callback);
+    }
+}</code></pre>
+                            </div>
+                        </div>
+
+                        <div class="api-method bg-gray-50 p-4 rounded-lg mb-4">
+                            <h4 class="font-semibold text-lg mb-2">Event Middleware</h4>
+                            <p class="text-gray-600 text-sm mb-3">Intercept and modify events before they reach listeners.</p>
+                            <div class="code-block p-4 text-white rounded">
+                                <pre><code class="language-php">interface EventMiddlewareInterface
+{
+    public function process(Event $event, callable $next): Event;
+}
+
+class EventValidationMiddleware implements EventMiddlewareInterface
+{
+    public function process(Event $event, callable $next): Event
+    {
+        // Validate event data
+        if (!$this->validateEvent($event)) {
+            throw new InvalidEventException('Event validation failed');
+        }
+        
+        // Pass to next middleware
+        return $next($event);
+    }
+    
+    private function validateEvent(Event $event): bool
+    {
+        // Custom validation logic
+        return true;
+    }
+}
+
+class EventLoggingMiddleware implements EventMiddlewareInterface
+{
+    public function process(Event $event, callable $next): Event
+    {
+        // Log event before processing
+        Log::info('Event processing started', [
+            'event' => $event->getName(),
+            'data' => $this->extractEventData($event)
+        ]);
+        
+        $startTime = microtime(true);
+        
+        try {
+            // Process event
+            $result = $next($event);
+            
+            // Log successful processing
+            $duration = microtime(true) - $startTime;
+            Log::info('Event processed successfully', [
+                'event' => $event->getName(),
+                'duration' => $duration
+            ]);
+            
+            return $result;
+        } catch (\Exception $e) {
+            // Log error
+            Log::error('Event processing failed', [
+                'event' => $event->getName(),
+                'error' => $e->getMessage()
+            ]);
+            
+            throw $e;
+        }
+    }
+}
+
+// Apply middleware to dispatcher
+class MiddlewareEventDispatcher extends EventDispatcher
+{
+    private array $middleware = [];
+    
+    public function addMiddleware(EventMiddlewareInterface $middleware): void
+    {
+        $this->middleware[] = $middleware;
+    }
+    
+    public function dispatch(Event $event, ?string $eventName = null): Event
+    {
+        $pipeline = array_reduce(
+            array_reverse($this->middleware),
+            function ($next, $middleware) {
+                return function ($event) use ($next, $middleware) {
+                    return $middleware->process($event, $next);
+                };
+            },
+            function ($event) use ($eventName) {
+                return parent::dispatch($event, $eventName);
+            }
+        );
+        
+        return $pipeline($event);
+    }
+}</code></pre>
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- Common Event Patterns -->
+                    <section id="common-patterns" class="section-anchor mb-12">
+                        <h2 class="text-2xl font-bold text-gray-900 mb-6">
+                            <i class="fas fa-pattern text-blue-600 mr-3"></i>Common Event Patterns
+                        </h2>
+
+                        <div class="api-method bg-gray-50 p-4 rounded-lg mb-4">
+                            <h4 class="font-semibold text-lg mb-2">Domain Events</h4>
+                            <p class="text-gray-600 text-sm mb-3">Events that represent important business domain occurrences.</p>
+                            <div class="code-block p-4 text-white rounded">
+                                <pre><code class="language-php">// Domain event base class
+abstract class DomainEvent extends Event
+{
+    private DateTimeImmutable $occurredOn;
+    
+    public function __construct()
+    {
+        $this->occurredOn = new DateTimeImmutable();
+    }
+    
+    public function getOccurredOn(): DateTimeImmutable
+    {
+        return $this->occurredOn;
+    }
+    
+    abstract public function getAggregateId(): string;
+}
+
+// Specific domain events
+class OrderPlacedDomainEvent extends DomainEvent
+{
+    public function __construct(
+        private string $orderId,
+        private string $customerId,
+        private float $totalAmount,
+        private array $items
+    ) {
+        parent::__construct();
+    }
+    
+    public function getName(): string
+    {
+        return 'domain.order.placed';
+    }
+    
+    public function getAggregateId(): string
+    {
+        return $this->orderId;
+    }
+    
+    public function getOrderId(): string
+    {
+        return $this->orderId;
+    }
+    
+    public function getCustomerId(): string
+    {
+        return $this->customerId;
+    }
+    
+    public function getTotalAmount(): float
+    {
+        return $this->totalAmount;
+    }
+    
+    public function getItems(): array
+    {
+        return $this->items;
+    }
+}
+
+class PaymentReceivedDomainEvent extends DomainEvent
+{
+    public function __construct(
+        private string $paymentId,
+        private string $orderId,
+        private float $amount,
+        private string $paymentMethod
+    ) {
+        parent::__construct();
+    }
+    
+    public function getName(): string
+    {
+        return 'domain.payment.received';
+    }
+    
+    public function getAggregateId(): string
+    {
+        return $this->orderId;
+    }
+}
+
+// Domain event subscriber
+class DomainEventSubscriber implements EventSubscriberInterface
+{
+    public static function getSubscribedEvents(): array
+    {
+        return [
+            'domain.order.placed' => 'onOrderPlaced',
+            'domain.payment.received' => 'onPaymentReceived',
+        ];
+    }
+    
+    public function onOrderPlaced(OrderPlacedDomainEvent $event): void
+    {
+        // Update inventory
+        $this->updateInventory($event->getItems());
+        
+        // Notify warehouse
+        $this->notifyWarehouse($event->getOrderId());
+        
+        // Update analytics
+        $this->updateOrderAnalytics($event);
+    }
+    
+    public function onPaymentReceived(PaymentReceivedDomainEvent $event): void
+    {
+        // Update order status
+        $this->updateOrderStatus($event->getOrderId(), 'paid');
+        
+        // Trigger fulfillment process
+        $this->triggerFulfillment($event->getOrderId());
+    }
+}</code></pre>
+                            </div>
+                        </div>
+
+                        <div class="api-method bg-gray-50 p-4 rounded-lg mb-4">
+                            <h4 class="font-semibold text-lg mb-2">Integration Events</h4>
+                            <p class="text-gray-600 text-sm mb-3">Events for system integration and external service communication.</p>
+                            <div class="code-block p-4 text-white rounded">
+                                <pre><code class="language-php">// Integration event for external services
+class UserCreatedIntegrationEvent extends Event
+{
+    public function __construct(
+        public readonly string $userId,
+        public readonly string $email,
+        public readonly string $name,
+        public readonly array $metadata = []
+    ) {}
+    
+    public function getName(): string
+    {
+        return 'integration.user.created';
+    }
+    
+    public function toWebhookPayload(): array
+    {
+        return [
+            'event' => 'user.created',
+            'data' => [
+                'id' => $this->userId,
+                'email' => $this->email,
+                'name' => $this->name,
+                'timestamp' => now()->toIso8601String(),
+            ],
+            'metadata' => $this->metadata
+        ];
+    }
+}
+
+// Integration event subscriber
+class IntegrationEventSubscriber implements EventSubscriberInterface
+{
+    public function __construct(
+        private WebhookService $webhookService,
+        private QueueService $queueService,
+        private ApiClient $apiClient
+    ) {}
+    
+    public static function getSubscribedEvents(): array
+    {
+        return [
+            'integration.user.created' => 'onUserCreated',
+            'integration.order.placed' => 'onOrderPlaced',
+            'integration.payment.processed' => 'onPaymentProcessed',
+        ];
+    }
+    
+    public function onUserCreated(UserCreatedIntegrationEvent $event): void
+    {
+        // Send webhook to CRM system
+        $this->webhookService->send('crm', $event->toWebhookPayload());
+        
+        // Queue analytics sync
+        $this->queueService->push(new SyncUserToAnalyticsJob($event->userId));
+        
+        // Notify external services
+        $this->notifyExternalServices('user.created', $event);
+    }
+    
+    private function notifyExternalServices(string $eventType, IntegrationEvent $event): void
+    {
+        $services = config('integration.services');
+        
+        foreach ($services as $service) {
+            try {
+                $this->apiClient->post($service['webhook_url'], $event->toWebhookPayload());
+            } catch (\Exception $e) {
+                Log::error("Failed to notify service {$service['name']}", [
+                    'error' => $e->getMessage(),
+                    'event' => $eventType
+                ]);
+            }
+        }
+    }
+}
+
+// Integration event factory
+class IntegrationEventFactory
+{
+    public static function createFromDomainEvent(DomainEvent $domainEvent): ?IntegrationEvent
+    {
+        return match (true) {
+            $domainEvent instanceof UserCreatedDomainEvent => new UserCreatedIntegrationEvent(
+                $domainEvent->getUserId(),
+                $domainEvent->getEmail(),
+                $domainEvent->getName()
+            ),
+            $domainEvent instanceof OrderPlacedDomainEvent => new OrderPlacedIntegrationEvent(
+                $domainEvent->getOrderId(),
+                $domainEvent->getCustomerId(),
+                $domainEvent->getTotalAmount()
+            ),
+            default => null
+        };
+    }
+}</code></pre>
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- Best Practices -->
+                    <section id="best-practices" class="section-anchor mb-12">
+                        <div class="bg-indigo-50 border-l-4 border-indigo-500 p-6 mb-8">
+                            <h2 class="text-2xl font-bold text-gray-900 mb-4">
+                                <i class="fas fa-lightbulb text-indigo-600 mr-3"></i>Best Practices
+                            </h2>
+                            <p class="text-gray-700">
+                                Guidelines and recommendations for effectively using the event system in your Forge Engine applications.
+                            </p>
+                        </div>
+
+                        <div class="mb-8">
+                            <h3 class="text-xl font-semibold text-gray-900 mb-4">Event Design Best Practices</h3>
+                            
+                            <div class="bg-green-50 border border-green-200 rounded-lg p-6 mb-6">
+                                <h4 class="font-semibold text-green-800 mb-3">
+                                    <i class="fas fa-check-circle mr-2"></i>Do's
+                                </h4>
+                                <ul class="text-green-700 space-y-2">
+                                    <li><strong>Use descriptive event names:</strong> Choose clear, action-oriented names like 'user.created' or 'order.shipped'</li>
+                                    <li><strong>Keep events focused:</strong> Each event should represent a single business occurrence</li>
+                                    <li><strong>Use immutable data:</strong> Make event properties readonly to prevent modification</li>
+                                    <li><strong>Include relevant context:</strong> Provide all necessary data for listeners to act</li>
+                                    <li><strong>Document events:</strong> Clearly document event structure and when they're triggered</li>
+                                </ul>
+                            </div>
+
+                            <div class="bg-red-50 border border-red-200 rounded-lg p-6 mb-6">
+                                <h4 class="font-semibold text-red-800 mb-3">
+                                    <i class="fas fa-times-circle mr-2"></i>Don'ts
+                                </h4>
+                                <ul class="text-red-700 space-y-2">
+                                    <li><strong>Don't create overly generic events:</strong> Avoid events like 'data.changed' that lack specificity</li>
+                                    <li><strong>Don't modify events in listeners:</strong> Events should be immutable after creation</li>
+                                    <li><strong>Don't make events dependent on specific listeners:</strong> Events should be independent of their consumers</li>
+                                    <li><strong>Don't include sensitive data:</strong> Avoid including passwords, tokens, or personal information</li>
+                                    <li><strong>Don't use events for direct method calls:</strong> Events should represent occurrences, not commands</li>
+                                </ul>
+                            </div>
+                        </div>
+
+                        <div class="mb-8">
+                            <h3 class="text-xl font-semibold text-gray-900 mb-4">Listener Best Practices</h3>
+                            
+                            <div class="bg-green-50 border border-green-200 rounded-lg p-6 mb-6">
+                                <h4 class="font-semibold text-green-800 mb-3">
+                                    <i class="fas fa-check-circle mr-2"></i>Do's
+                                </h4>
+                                <ul class="text-green-700 space-y-2">
+                                    <li><strong>Handle exceptions gracefully:</strong> Use try-catch blocks to prevent listener failures</li>
+                                    <li><strong>Use appropriate priorities:</strong> Set listener priorities based on execution order requirements</li>
+                                    <li><strong>Keep listeners focused:</strong> Each listener should have a single responsibility</li>
+                                    <li><strong>Make listeners idempotent:</strong> Ensure listeners can handle duplicate events safely</li>
+                                    <li><strong>Use dependency injection:</strong> Inject services rather than creating them in listeners</li>
+                                </ul>
+                            </div>
+
+                            <div class="bg-red-50 border border-red-200 rounded-lg p-6">
+                                <h4 class="font-semibold text-red-800 mb-3">
+                                    <i class="fas fa-times-circle mr-2"></i>Don'ts
+                                </h4>
+                                <ul class="text-red-700 space-y-2">
+                                    <li><strong>Don't perform heavy operations synchronously:</strong> Use queues for time-consuming tasks</li>
+                                    <li><strong>Don't create circular dependencies:</strong> Avoid events that trigger other events in a loop</li>
+                                    <li><strong>Don't rely on listener execution order:</strong> Use priorities instead of assuming order</li>
+                                    <li><strong>Don't access the database directly:</strong> Use repositories or services</li>
+                                    <li><strong>Don't ignore performance:</strong> Profile and optimize slow listeners</li>
+                                </ul>
+                            </div>
+                        </div>
+
+                        <div class="mb-8">
+                            <h3 class="text-xl font-semibold text-gray-900 mb-4">Performance Considerations</h3>
+                            
+                            <div class="bg-blue-50 border border-blue-200 rounded-lg p-6">
+                                <h4 class="font-semibold text-blue-800 mb-3">
+                                    <i class="fas fa-tachometer-alt mr-2"></i>Performance Tips
+                                </h4>
+                                <ul class="text-blue-700 space-y-2">
+                                    <li><strong>Use lazy loading:</strong> Only load listeners when events are triggered</li>
+                                    <li><strong>Implement event caching:</strong> Cache compiled listener lists for better performance</li>
+                                    <li><strong>Use connection pooling:</strong> Reuse database connections in listeners</li>
+                                    <li><strong>Batch process events:</strong> Group similar events for bulk processing</li>
+                                    <li><strong>Monitor event performance:</strong> Track event dispatching and processing times</li>
+                                    <li><strong>Use selective listening:</strong> Only register listeners for events you actually handle</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- Navigation -->
+                    <div class="flex justify-between items-center mt-12 pt-8 border-t border-gray-200">
+                        <a href="api-helpers.html" class="flex items-center text-blue-600 hover:text-blue-800">
+                            <i class="fas fa-arrow-left mr-2"></i>
+                            Helpers & Traits
+                        </a>
+                        <a href="api-reference.html" class="text-gray-600 hover:text-gray-800">
+                            API Reference Home
+                        </a>
+                        <a href="api-security.html" class="flex items-center text-blue-600 hover:text-blue-800">
+                            Security API
+                            <i class="fas fa-arrow-right ml-2"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="bg-gray-800 text-white py-8 mt-16">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center">
+                <p class="text-gray-400">
+                    &copy; 2024 Forge Engine. All rights reserved.
+                </p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Mobile menu functionality
+        const mobileMenuBtn = document.getElementById('mobile-menu-btn');
+        const mobileMenu = document.getElementById('mobile-menu');
+        const mobileMenuOverlay = document.getElementById('mobile-menu-overlay');
+        const closeMobileMenuBtn = document.getElementById('close-mobile-menu');
+        
+        function toggleMobileMenu() {
+            mobileMenu.classList.toggle('hidden');
+            mobileMenuOverlay.classList.toggle('active');
+        }
+        
+        mobileMenuBtn.addEventListener('click', toggleMobileMenu);
+        closeMobileMenuBtn.addEventListener('click', toggleMobileMenu);
+        mobileMenuOverlay.addEventListener('click', toggleMobileMenu);
+        
+        // Close mobile menu when clicking on links
+        const mobileMenuLinks = mobileMenu.querySelectorAll('a');
+        mobileMenuLinks.forEach(link => {
+            link.addEventListener('click', toggleMobileMenu);
+        });
+
+        // Active navigation highlighting
+        const currentPath = window.location.pathname;
+        const navLinks = document.querySelectorAll('.nav-link');
+        
+        navLinks.forEach(link => {
+            if (link.getAttribute('href') && currentPath.includes(link.getAttribute('href'))) {
+                link.classList.add('active');
+            }
+        });
+
+        // Smooth scrolling for anchor links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+
+        // Copy code functionality
+        document.querySelectorAll('.code-block').forEach(block => {
+            const button = document.createElement('button');
+            button.className = 'absolute top-2 right-2 bg-gray-700 hover:bg-gray-600 text-white px-2 py-1 rounded text-xs';
+            button.textContent = 'Copy';
+            button.style.position = 'absolute';
+            
+            const container = block.parentElement;
+            container.style.position = 'relative';
+            container.appendChild(button);
+            
+            button.addEventListener('click', () => {
+                const code = block.textContent;
+                navigator.clipboard.writeText(code).then(() => {
+                    button.textContent = 'Copied!';
+                    setTimeout(() => {
+                        button.textContent = 'Copy';
+                    }, 2000);
+                });
+            });
+        });
+    </script>
+</body>
+
+</html>

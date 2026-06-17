@@ -1,0 +1,133 @@
+/* ==========================================================================
+   Forge Utilities – utilities.css
+   --------------------------------------------------------------------------
+   • Opt‑in, atomic helpers
+   • Only the ones we actually use right now
+   • All names start with `.u‑` to avoid collisions
+   ========================================================================== */
+
+/* 1. Spacing -------------------------------------------------------------- */
+/* Margin */
+.u‑m‑0 {
+    margin: 0 !important;
+}
+.u‑mt‑sm {
+    margin-top: var(--space-sm) !important;
+}
+.u‑mb‑sm {
+    margin-bottom: var(--space-sm) !important;
+}
+.u‑my‑md {
+    margin-block: var(--space-md) !important;
+}
+
+/* Padding */
+.u‑p‑0 {
+    padding: 0 !important;
+}
+.u‑p‑sm {
+    padding: var(--space-sm) !important;
+}
+.u‑px‑md {
+    padding-inline: var(--space-md) !important;
+}
+.u‑py‑lg {
+    padding-block: var(--space-lg) !important;
+}
+
+/* 2. Flex & Grid helpers -------------------------------------------------- */
+.u‑flex {
+    display: flex !important;
+}
+.u‑flex‑col {
+    flex-direction: column !important;
+}
+.u‑flex‑center {
+    justify-content: center !important;
+    align-items: center !important;
+}
+.u‑gap‑sm {
+    gap: var(--space-sm) !important;
+}
+
+.u‑grid‑2 {
+    display: grid !important;
+    grid-template-columns: repeat(2, 1fr) !important;
+}
+.u‑grid‑auto {
+    display: grid !important;
+    grid-template-columns: repeat(auto-fit, minmax(16rem, 1fr)) !important;
+}
+.u‑gap‑md {
+    gap: var(--space-md) !important;
+}
+
+/* 3. Typography ----------------------------------------------------------- */
+.u‑text‑center {
+    text-align: center !important;
+}
+.u‑text‑right {
+    text-align: right !important;
+}
+.u‑fs‑sm {
+    font-size: var(--fs-small) !important;
+}
+.u‑fs‑lg {
+    font-size: var(--fs-large) !important;
+}
+.u‑bold {
+    font-weight: 700 !important;
+}
+
+/* 4. Visibility ----------------------------------------------------------- */
+.u‑sr‑only {
+    position: absolute !important;
+    width: 1px !important;
+    height: 1px !important;
+    padding: 0 !important;
+    margin: -1px !important;
+    overflow: hidden !important;
+    clip: rect(0, 0, 0, 0) !important;
+    white-space: nowrap !important;
+    border: 0 !important;
+}
+
+/* Responsive quick‑hides */
+@media (max-width: var(--breakpoint-md)) {
+    .u‑hide‑md {
+        display: none !important;
+    }
+}
+@media (max-width: var(--breakpoint-sm)) {
+    .u‑hide‑sm {
+        display: none !important;
+    }
+}
+
+/* 5. Color helpers -------------------------------------------------------- */
+.u‑bg‑brand {
+    background: var(--color-brand);
+    color: var(--color-surface);
+}
+.u‑bg‑surface {
+    background: var(--color-surface);
+}
+.u‑color‑muted {
+    color: var(--color-muted);
+}
+
+/* 6. Radius & Shadow ------------------------------------------------------ */
+.u‑radius {
+    border-radius: var(--radius-base) !important;
+}
+.u‑shadow {
+    box-shadow: var(--shadow-base) !important;
+}
+
+/* 7. Quick width ---------------------------------------------------------- */
+.u‑w‑full {
+    width: 100% !important;
+}
+.u‑w‑fit {
+    width: fit-content !important;
+}

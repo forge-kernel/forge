@@ -1,0 +1,844 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DI Container API - Forge Engine Documentation</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-core.min.js"></script>
+    <script
+        src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/autoloader/prism-autoloader.min.js"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        .code-block {
+            background: #2d3748;
+            border-radius: 0.5rem;
+        }
+
+        .nav-link.active {
+            background-color: #eef2ff;
+            color: #4f46e5;
+            font-weight: 500;
+        }
+
+        .nav-link.active:hover {
+            background-color: #e0e7ff;
+        }
+
+        .section-anchor {
+            scroll-margin-top: 120px;
+        }
+
+        /* Mobile menu styles */
+        @media (max-width: 640px) {
+            .lg\:w-1\/4 {
+                position: fixed;
+                top: 0;
+                left: -100%;
+                width: 80%;
+                max-width: 320px;
+                height: 100vh;
+                z-index: 50;
+                transition: transform 0.3s ease;
+                background: white;
+                overflow-y: auto;
+            }
+
+            .lg\:w-1\/4.mobile-menu-open {
+                transform: translateX(0);
+            }
+
+            .mobile-menu-overlay {
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                background: rgba(0, 0, 0, 0.5);
+                z-index: 40;
+                display: none;
+            }
+
+            .mobile-menu-overlay.active {
+                display: block;
+            }
+        }
+    </style>
+</head>
+
+<body class="bg-gray-50">
+    <!-- Navigation -->
+    <nav class="bg-white shadow-sm border-b">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-16">
+                <div class="flex items-center">
+                    <div class="flex-shrink-0">
+                        <h1 class="text-xl font-bold text-gray-900">
+                            Forge Engine
+                        </h1>
+                    </div>
+                    <div class="hidden sm:ml-6 sm:flex sm:space-x-8">
+                        <a href="index.html"
+                            class="text-gray-900 inline-flex items-center px-1 pt-1 text-sm font-medium hover:text-blue-600">
+                            Home
+                        </a>
+                        <a href="getting-started.html"
+                            class="text-gray-900 inline-flex items-center px-1 pt-1 text-sm font-medium hover:text-blue-600">
+                            Getting Started
+                        </a>
+                        <a href="core-concepts.html"
+                            class="text-gray-900 inline-flex items-center px-1 pt-1 text-sm font-medium hover:text-blue-600">
+                            Core Concepts
+                        </a>
+                        <a href="modules.html"
+                            class="text-gray-900 inline-flex items-center px-1 pt-1 text-sm font-medium hover:text-blue-600">
+                            Modules
+                        </a>
+                        <a href="api-reference.html"
+                            class="text-blue-600 inline-flex items-center px-1 pt-1 text-sm font-medium border-b-2 border-blue-600">
+                            API Reference
+                        </a>
+                    </div>
+                </div>
+                <div class="flex items-center sm:hidden">
+                    <button id="mobile-menu-btn" class="text-gray-700 hover:text-blue-600" data-mobile-menu-toggle>
+                        <i class="fas fa-bars text-xl"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+        <!-- Mobile menu -->
+        <div id="mobile-menu" class="hidden sm:hidden bg-white border-t">
+            <div class="px-2 pt-2 pb-3 space-y-1">
+                <a href="index.html" class="block px-3 py-2 text-gray-700 hover:text-blue-600">
+                    Home
+                </a>
+                <a href="getting-started.html" class="block px-3 py-2 text-gray-700 hover:text-blue-600">
+                    Getting Started
+                </a>
+                <a href="core-concepts.html" class="block px-3 py-2 text-gray-700 hover:text-blue-600">
+                    Core Concepts
+                </a>
+                <a href="modules.html" class="block px-3 py-2 text-gray-700 hover:text-blue-600">
+                    Modules
+                </a>
+                <a href="api-reference.html" class="block px-3 py-2 text-blue-600">
+                    API Reference
+                </a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Mobile Menu Overlay -->
+    <div id="mobile-menu-overlay" class="mobile-menu-overlay"></div>
+
+    <!-- Main Content -->
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <div class="flex flex-col lg:flex-row gap-8">
+            <!-- Sidebar Navigation -->
+            <div class="lg:w-1/4">
+                <div class="bg-white rounded-lg shadow-sm p-6 sticky top-8">
+                    <h3 class="text-lg font-semibold text-gray-900 mb-4">
+                        API Reference
+                    </h3>
+                    <nav class="space-y-2">
+                        <a href="api-core.html" class="nav-link block px-3 py-2 text-sm text-gray-700 rounded-md hover:text-blue-600">
+                            <i class="fas fa-cogs mr-2"></i>Core Engine
+                        </a>
+                        <a href="api-http.html" class="nav-link block px-3 py-2 text-sm text-gray-700 rounded-md hover:text-blue-600">
+                            <i class="fas fa-globe mr-2"></i>HTTP Layer
+                        </a>
+                        <a href="api-database.html" class="nav-link block px-3 py-2 text-sm text-gray-700 rounded-md hover:text-blue-600">
+                            <i class="fas fa-database mr-2"></i>Database & ORM
+                        </a>
+                        <a href="api-di.html" class="nav-link block px-3 py-2 text-sm text-gray-700 rounded-md hover:text-blue-600 active">
+                            <i class="fas fa-puzzle-piece mr-2"></i>DI Container
+                        </a>
+                        <a href="api-routing.html" class="nav-link block px-3 py-2 text-sm text-gray-700 rounded-md hover:text-blue-600">
+                            <i class="fas fa-route mr-2"></i>Routing
+                        </a>
+                        <a href="api-modules.html" class="nav-link block px-3 py-2 text-sm text-gray-700 rounded-md hover:text-blue-600">
+                            <i class="fas fa-plug mr-2"></i>Module System
+                        </a>
+                        <a href="api-cli.html" class="nav-link block px-3 py-2 text-sm text-gray-700 rounded-md hover:text-blue-600">
+                            <i class="fas fa-terminal mr-2"></i>CLI & Console
+                        </a>
+                        <a href="api-cache.html" class="nav-link block px-3 py-2 text-sm text-gray-700 rounded-md hover:text-blue-600">
+                            <i class="fas fa-memory mr-2"></i>Caching
+                        </a>
+                        <a href="api-validation.html" class="nav-link block px-3 py-2 text-sm text-gray-700 rounded-md hover:text-blue-600">
+                            <i class="fas fa-check-circle mr-2"></i>Validation
+                        </a>
+                        <a href="api-helpers.html" class="nav-link block px-3 py-2 text-sm text-gray-700 rounded-md hover:text-blue-600">
+                            <i class="fas fa-tools mr-2"></i>Helpers & Traits
+                        </a>
+                        <a href="api-events.html" class="nav-link block px-3 py-2 text-sm text-gray-700 rounded-md hover:text-blue-600">
+                            <i class="fas fa-broadcast-tower mr-2"></i>Events
+                        </a>
+                        <a href="api-security.html" class="nav-link block px-3 py-2 text-sm text-gray-700 rounded-md hover:text-blue-600">
+                            <i class="fas fa-shield-alt mr-2"></i>Security
+                        </a>
+                    </nav>
+                </div>
+            </div>
+
+            <!-- Main Content -->
+            <div class="lg:w-3/4">
+                <div class="bg-white rounded-lg shadow-sm p-8">
+                    <h1 class="text-4xl font-bold text-gray-900 mb-6">
+                        Dependency Injection Container API
+                    </h1>
+                    <p class="text-xl text-gray-600 mb-8">
+                        Service container, dependency injection, service providers, and service discovery. 
+                        These classes provide comprehensive dependency management, automatic service resolution, 
+                        and lifecycle management for your Forge Engine applications.
+                    </p>
+
+                    <!-- Container Class -->
+                    <section id="container" class="section-anchor mb-12">
+                        <div class="bg-blue-50 border-l-4 border-blue-500 p-6 mb-8">
+                            <h2 class="text-2xl font-bold text-gray-900 mb-4">
+                                <i class="fas fa-box text-blue-600 mr-3"></i>Container
+                            </h2>
+                            <p class="text-gray-700">
+                                The main dependency injection container that manages service registration, 
+                                resolution, and lifecycle. The Container class provides automatic dependency 
+                                resolution, singleton management, and service provider support.
+                            </p>
+                        </div>
+
+                        <div class="mb-8">
+                            <h3 class="text-xl font-semibold text-gray-900 mb-4">Service Registration</h3>
+                            
+                            <div class="api-method bg-gray-50 p-4 rounded-lg mb-4">
+                                <h4 class="font-semibold text-lg mb-2">bind(string $abstract, mixed $concrete = null, bool $shared = false): void</h4>
+                                <p class="text-gray-600 text-sm mb-3">Register a binding in the container.</p>
+                                <div class="code-block p-4 text-white rounded">
+                                    <pre><code class="language-php">$container = new Container();
+
+// Bind an interface to an implementation
+$container->bind(UserRepositoryInterface::class, UserRepository::class);
+
+// Bind with a closure
+$container->bind('mailer', function($container) {
+    return new Mailer($container->make('config'));
+});
+
+// Bind as singleton
+$container->bind('cache', Cache::class, true);</code></pre>
+                                </div>
+                            </div>
+
+                            <div class="api-method bg-gray-50 p-4 rounded-lg mb-4">
+                                <h4 class="font-semibold text-lg mb-2">singleton(string $abstract, mixed $concrete = null): void</h4>
+                                <p class="text-gray-600 text-sm mb-3">Register a shared binding in the container.</p>
+                                <div class="code-block p-4 text-white rounded">
+                                    <pre><code class="language-php">// Register a singleton
+$container->singleton('config', Config::class);
+$container->singleton('db', DatabaseConnection::class);</code></pre>
+                                </div>
+                            </div>
+
+                            <div class="api-method bg-gray-50 p-4 rounded-lg mb-4">
+                                <h4 class="font-semibold text-lg mb-2">instance(string $abstract, mixed $instance): void</h4>
+                                <p class="text-gray-600 text-sm mb-3">Register an existing instance as shared in the container.</p>
+                                <div class="code-block p-4 text-white rounded">
+                                    <pre><code class="language-php">// Register an existing instance
+$config = new Config(['app.name' => 'My App']);
+$container->instance('config', $config);</code></pre>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="mb-8">
+                            <h3 class="text-xl font-semibold text-gray-900 mb-4">Service Resolution</h3>
+
+                            <div class="api-method bg-gray-50 p-4 rounded-lg mb-4">
+                                <h4 class="font-semibold text-lg mb-2">make(string $abstract, array $parameters = []): mixed</h4>
+                                <p class="text-gray-600 text-sm mb-3">Resolve the given type from the container.</p>
+                                <div class="code-block p-4 text-white rounded">
+                                    <pre><code class="language-php">// Resolve a class
+$userRepository = $container->make(UserRepository::class);
+
+// Resolve with parameters
+$mailer = $container->make(Mailer::class, ['driver' => 'smtp']);
+
+// Resolve an interface (will return bound implementation)
+$repository = $container->make(UserRepositoryInterface::class);</code></pre>
+                                </div>
+                            </div>
+
+                            <div class="api-method bg-gray-50 p-4 rounded-lg mb-4">
+                                <h4 class="font-semibold text-lg mb-2">get(string $id): mixed</h4>
+                                <p class="text-gray-600 text-sm mb-3">Alias for make() - PSR-11 container interface.</p>
+                                <div class="code-block p-4 text-white rounded">
+                                    <pre><code class="language-php">$service = $container->get('mailer');</code></pre>
+                                </div>
+                            </div>
+
+                            <div class="api-method bg-gray-50 p-4 rounded-lg mb-4">
+                                <h4 class="font-semibold text-lg mb-2">has(string $id): bool</h4>
+                                <p class="text-gray-600 text-sm mb-3">Check if the container has a binding.</p>
+                                <div class="code-block p-4 text-white rounded">
+                                    <pre><code class="language-php">if ($container->has('mailer')) {
+    $mailer = $container->get('mailer');
+}</code></pre>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="mb-8">
+                            <h3 class="text-xl font-semibold text-gray-900 mb-4">Advanced Features</h3>
+
+                            <div class="api-method bg-gray-50 p-4 rounded-lg mb-4">
+                                <h4 class="font-semibold text-lg mb-2">when(bool $value, callable $callback, callable $default = null): Container</h4>
+                                <p class="text-gray-600 text-sm mb-3">Register a conditional binding.</p>
+                                <div class="code-block p-4 text-white rounded">
+                                    <pre><code class="language-php">$container->when(true, function($container) {
+    $container->bind('cache', RedisCache::class);
+})->when(false, function($container) {
+    $container->bind('cache', FileCache::class);
+});</code></pre>
+                                </div>
+                            </div>
+
+                            <div class="api-method bg-gray-50 p-4 rounded-lg mb-4">
+                                <h4 class="font-semibold text-lg mb-2">extend(string $abstract, callable $closure): void</h4>
+                                <p class="text-gray-600 text-sm mb-3">Extend a binding with additional functionality.</p>
+                                <div class="code-block p-4 text-white rounded">
+                                    <pre><code class="language-php">$container->extend('mailer', function($mailer, $container) {
+    $mailer->setLogger($container->get('logger'));
+    return $mailer;
+});</code></pre>
+                                </div>
+                            </div>
+
+                            <div class="api-method bg-gray-50 p-4 rounded-lg mb-4">
+                                <h4 class="font-semibold text-lg mb-2">tag(array|string $abstracts, array|string $tags): void</h4>
+                                <p class="text-gray-600 text-sm mb-3">Tag a binding or group of bindings.</p>
+                                <div class="code-block p-4 text-white rounded">
+                                    <pre><code class="language-php">$container->tag([UserRepository::class, PostRepository::class], 'repositories');
+$container->tag([Cache::class, Session::class], 'caches');</code></pre>
+                                </div>
+                            </div>
+
+                            <div class="api-method bg-gray-50 p-4 rounded-lg mb-4">
+                                <h4 class="font-semibold text-lg mb-2">tagged(string $tag): array</h4>
+                                <p class="text-gray-600 text-sm mb-3">Get all services tagged with a specific tag.</p>
+                                <div class="code-block p-4 text-white rounded">
+                                    <pre><code class="language-php">$repositories = $container->tagged('repositories');
+foreach ($repositories as $repository) {
+    $repository->initialize();
+}</code></pre>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- ServiceProvider Class -->
+                    <section id="service-provider" class="section-anchor mb-12">
+                        <div class="bg-green-50 border-l-4 border-green-500 p-6 mb-8">
+                            <h2 class="text-2xl font-bold text-gray-900 mb-4">
+                                <i class="fas fa-plug text-green-600 mr-3"></i>ServiceProvider
+                            </h2>
+                            <p class="text-gray-700">
+                                Base class for service providers that register services and boot functionality 
+                                in the container. Service providers are the primary way to bootstrap your 
+                                application services and dependencies.
+                            </p>
+                        </div>
+
+                        <div class="mb-8">
+                            <h3 class="text-xl font-semibold text-gray-900 mb-4">Creating Service Providers</h3>
+                            
+                            <div class="api-method bg-gray-50 p-4 rounded-lg mb-4">
+                                <h4 class="font-semibold text-lg mb-2">Basic Service Provider</h4>
+                                <p class="text-gray-600 text-sm mb-3">Extend the base ServiceProvider class to create your own providers.</p>
+                                <div class="code-block p-4 text-white rounded">
+                                    <pre><code class="language-php">class AppServiceProvider extends ServiceProvider
+{
+    public function register(): void
+    {
+        // Register services in the container
+        $this->container->singleton('config', Config::class);
+        $this->container->bind(UserRepositoryInterface::class, UserRepository::class);
+        
+        // Register with closures
+        $this->container->bind('mailer', function($container) {
+            return new Mailer($container->get('config'));
+        });
+    }
+    
+    public function boot(): void
+    {
+        // Boot functionality after all services are registered
+        $this->loadViews();
+        $this->loadTranslations();
+        $this->registerCommands();
+    }
+    
+    protected function loadViews(): void
+    {
+        // Load view templates
+        View::addPath(__DIR__ . '/../views');
+    }
+    
+    protected function registerCommands(): void
+    {
+        // Register console commands
+        $this->container->bind('command.migrate', MigrateCommand::class);
+        $this->container->bind('command.seed', SeedCommand::class);
+    }
+}</code></pre>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="mb-8">
+                            <h3 class="text-xl font-semibold text-gray-900 mb-4">Provider Methods</h3>
+
+                            <div class="api-method bg-gray-50 p-4 rounded-lg mb-4">
+                                <h4 class="font-semibold text-lg mb-2">register(): void</h4>
+                                <p class="text-gray-600 text-sm mb-3">Register services in the container. This method is called first.</p>
+                                <div class="code-block p-4 text-white rounded">
+                                    <pre><code class="language-php">public function register(): void
+{
+    // Only register services, don't use them yet
+    $this->container->bind('logger', Logger::class);
+    $this->container->bind('cache', Cache::class);
+}</code></pre>
+                                </div>
+                            </div>
+
+                            <div class="api-method bg-gray-50 p-4 rounded-lg mb-4">
+                                <h4 class="font-semibold text-lg mb-2">boot(): void</h4>
+                                <p class="text-gray-600 text-sm mb-3">Boot the provider after all services are registered.</p>
+                                <div class="code-block p-4 text-white rounded">
+                                    <pre><code class="language-php">public function boot(): void
+{
+    // Now you can use services from the container
+    $logger = $this->container->get('logger');
+    $logger->info('Application booted');
+    
+    // Register event listeners
+    $this->registerEventListeners();
+}</code></pre>
+                                </div>
+                            </div>
+
+                            <div class="api-method bg-gray-50 p-4 rounded-lg mb-4">
+                                <h4 class="font-semibold text-lg mb-2">provides(): array</h4>
+                                <p class="text-gray-600 text-sm mb-3">Return the services provided by this provider.</p>
+                                <div class="code-block p-4 text-white rounded">
+                                    <pre><code class="language-php">public function provides(): array
+{
+    return [
+        'config',
+        'logger',
+        'cache',
+        UserRepositoryInterface::class
+    ];
+}</code></pre>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- ServiceDiscoverSetup Class -->
+                    <section id="service-discovery" class="section-anchor mb-12">
+                        <div class="bg-purple-50 border-l-4 border-purple-500 p-6 mb-8">
+                            <h2 class="text-2xl font-bold text-gray-900 mb-4">
+                                <i class="fas fa-search text-purple-600 mr-3"></i>ServiceDiscoverSetup
+                            </h2>
+                            <p class="text-gray-700">
+                                Automatically discovers and registers services, event listeners, and middleware 
+                                from your application. This class provides convention-based service discovery 
+                                to reduce manual configuration.
+                            </p>
+                        </div>
+
+                        <div class="mb-8">
+                            <h3 class="text-xl font-semibold text-gray-900 mb-4">Service Discovery</h3>
+                            
+                            <div class="api-method bg-gray-50 p-4 rounded-lg mb-4">
+                                <h4 class="font-semibold text-lg mb-2">discoverServices(string $namespace, string $path): void</h4>
+                                <p class="text-gray-600 text-sm mb-3">Discover and register services from a namespace.</p>
+                                <div class="code-block p-4 text-white rounded">
+                                    <pre><code class="language-php">$discoverer = new ServiceDiscoverSetup($container);
+
+// Discover services from App\Services namespace
+$discoverer->discoverServices('App\\Services', __DIR__ . '/../app/Services');
+
+// Discover repository services
+$discoverer->discoverServices('App\\Repositories', __DIR__ . '/../app/Repositories');</code></pre>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="mb-8">
+                            <h3 class="text-xl font-semibold text-gray-900 mb-4">Event Listener Discovery</h3>
+
+                            <div class="api-method bg-gray-50 p-4 rounded-lg mb-4">
+                                <h4 class="font-semibold text-lg mb-2">discoverListeners(string $namespace, string $path): void</h4>
+                                <p class="text-gray-600 text-sm mb-3">Discover and register event listeners.</p>
+                                <div class="code-block p-4 text-white rounded">
+                                    <pre><code class="language-php">// Discover event listeners
+$discoverer->discoverListeners('App\\Listeners', __DIR__ . '/../app/Listeners');
+
+// Example listener that would be discovered
+namespace App\Listeners;
+
+class UserRegisteredListener
+{
+    public function handle(UserRegisteredEvent $event): void
+    {
+        // Send welcome email
+        $this->sendWelcomeEmail($event->user);
+    }
+    
+    private function sendWelcomeEmail(User $user): void
+    {
+        // Email sending logic
+    }
+}</code></pre>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="mb-8">
+                            <h3 class="text-xl font-semibold text-gray-900 mb-4">Middleware Discovery</h3>
+
+                            <div class="api-method bg-gray-50 p-4 rounded-lg mb-4">
+                                <h4 class="font-semibold text-lg mb-2">discoverMiddleware(string $namespace, string $path): void</h4>
+                                <p class="text-gray-600 text-sm mb-3">Discover and register middleware classes.</p>
+                                <div class="code-block p-4 text-white rounded">
+                                    <pre><code class="language-php">// Discover middleware
+$discoverer->discoverMiddleware('App\\Middleware', __DIR__ . '/../app/Middleware');
+
+// Example middleware that would be discovered
+namespace App\Middleware;
+
+use Forge\Http\Request;
+use Forge\Http\Response;
+
+class AuthMiddleware
+{
+    public function handle(Request $request, callable $next): Response
+    {
+        if (!$request->user()) {
+            return new Response('Unauthorized', 401);
+        }
+        
+        return $next($request);
+    }
+}</code></pre>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- Usage Examples -->
+                    <section id="examples" class="section-anchor mb-12">
+                        <div class="bg-gray-50 border-l-4 border-gray-500 p-6 mb-8">
+                            <h2 class="text-2xl font-bold text-gray-900 mb-4">
+                                <i class="fas fa-code text-gray-600 mr-3"></i>Usage Examples
+                            </h2>
+                            <p class="text-gray-700">
+                                Common patterns and examples for working with the Dependency Injection Container.
+                            </p>
+                        </div>
+
+                        <div class="mb-8">
+                            <h3 class="text-xl font-semibold text-gray-900 mb-4">Basic Container Usage</h3>
+                            <div class="code-block p-4 text-white rounded">
+                                <pre><code class="language-php">// Create container
+$container = new Container();
+
+// Register simple bindings
+$container->bind('logger', Logger::class);
+$container->singleton('config', Config::class);
+
+// Register with closures
+$container->bind('mailer', function($container) {
+    return new Mailer(
+        $container->get('config')->get('mail'),
+        $container->get('logger')
+    );
+});
+
+// Resolve services
+$logger = $container->get('logger');
+$config = $container->get('config');
+$mailer = $container->get('mailer');</code></pre>
+                            </div>
+                        </div>
+
+                        <div class="mb-8">
+                            <h3 class="text-xl font-semibold text-gray-900 mb-4">Interface Binding</h3>
+                            <div class="code-block p-4 text-white rounded">
+                                <pre><code class="language-php">// Define interfaces
+interface UserRepositoryInterface
+{
+    public function find($id);
+    public function create(array $data);
+}
+
+interface CacheInterface
+{
+    public function get($key);
+    public function set($key, $value, $ttl = null);
+}
+
+// Bind interfaces to implementations
+$container->bind(UserRepositoryInterface::class, UserRepository::class);
+$container->bind(CacheInterface::class, RedisCache::class);
+
+// Constructor injection
+class UserService
+{
+    private $repository;
+    private $cache;
+    
+    public function __construct(
+        UserRepositoryInterface $repository,
+        CacheInterface $cache
+    ) {
+        $this->repository = $repository;
+        $this->cache = $cache;
+    }
+    
+    public function getUser($id)
+    {
+        $cacheKey = "user.{$id}";
+        
+        if ($cached = $this->cache->get($cacheKey)) {
+            return $cached;
+        }
+        
+        $user = $this->repository->find($id);
+        $this->cache->set($cacheKey, $user, 3600);
+        
+        return $user;
+    }
+}
+
+// Resolve with automatic injection
+$userService = $container->make(UserService::class);</code></pre>
+                            </div>
+                        </div>
+
+                        <div class="mb-8">
+                            <h3 class="text-xl font-semibold text-gray-900 mb-4">Service Provider Registration</h3>
+                            <div class="code-block p-4 text-white rounded">
+                                <pre><code class="language-php">// Application bootstrap
+class Application
+{
+    protected $container;
+    protected $providers = [];
+    
+    public function __construct()
+    {
+        $this->container = new Container();
+        $this->registerBaseProviders();
+        $this->registerApplicationProviders();
+    }
+    
+    protected function registerBaseProviders(): void
+    {
+        $this->register(new ConfigServiceProvider($this->container));
+        $this->register(new LoggingServiceProvider($this->container));
+        $this->register(new DatabaseServiceProvider($this->container));
+    }
+    
+    protected function registerApplicationProviders(): void
+    {
+        $this->register(new AppServiceProvider($this->container));
+        $this->register(new EventServiceProvider($this->container));
+        $this->register(new RouteServiceProvider($this->container));
+    }
+    
+    public function register(ServiceProvider $provider): void
+    {
+        $provider->register();
+        $this->providers[] = $provider;
+    }
+    
+    public function boot(): void
+    {
+        foreach ($this->providers as $provider) {
+            $provider->boot();
+        }
+    }
+    
+    public function getContainer(): Container
+    {
+        return $this->container;
+    }
+}
+
+// Usage
+$app = new Application();
+$app->boot();
+
+// Get services from container
+$logger = $app->getContainer()->get('logger');
+$db = $app->getContainer()->get('db');</code></pre>
+                            </div>
+                        </div>
+
+                        <div class="mb-8">
+                            <h3 class="text-xl font-semibold text-gray-900 mb-4">Tagged Services</h3>
+                            <div class="code-block p-4 text-white rounded">
+                                <pre><code class="language-php">// Register tagged services
+$container->bind('cache.redis', RedisCache::class);
+$container->bind('cache.file', FileCache::class);
+$container->bind('cache.memory', MemoryCache::class);
+
+$container->tag(['cache.redis', 'cache.file', 'cache.memory'], 'cache.drivers');
+
+// Get all tagged services
+$cacheDrivers = $container->tagged('cache.drivers');
+
+// Use in a cache manager
+class CacheManager
+{
+    protected $drivers = [];
+    protected $default;
+    
+    public function __construct(array $drivers, string $default)
+    {
+        $this->drivers = $drivers;
+        $this->default = $default;
+    }
+    
+    public function driver(string $name = null)
+    {
+        $name = $name ?: $this->default;
+        
+        if (!isset($this->drivers[$name])) {
+            throw new InvalidArgumentException("Cache driver [{$name}] not found.");
+        }
+        
+        return $this->drivers[$name];
+    }
+    
+    public function getDefaultDriver(): string
+    {
+        return $this->default;
+    }
+}
+
+// Register cache manager
+$container->bind('cache.manager', function($container) {
+    $drivers = $container->tagged('cache.drivers');
+    $default = $container->get('config')->get('cache.default', 'file');
+    
+    return new CacheManager($drivers, $default);
+});</code></pre>
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- Best Practices -->
+                    <section id="best-practices" class="section-anchor mb-12">
+                        <div class="bg-yellow-50 border-l-4 border-yellow-500 p-6 mb-8">
+                            <h2 class="text-2xl font-bold text-gray-900 mb-4">
+                                <i class="fas fa-lightbulb text-yellow-600 mr-3"></i>Best Practices
+                            </h2>
+                            <p class="text-gray-700">
+                                Recommended patterns and guidelines for working with the Dependency Injection Container.
+                            </p>
+                        </div>
+
+                        <div class="grid md:grid-cols-2 gap-6">
+                            <div class="bg-white border border-gray-200 p-6 rounded-lg">
+                                <h4 class="font-semibold text-gray-900 mb-3">
+                                    <i class="fas fa-check-circle text-green-600 mr-2"></i>Do's
+                                </h4>
+                                <ul class="text-sm text-gray-600 space-y-2">
+                                    <li>• Use constructor injection for required dependencies</li>
+                                    <li>• Program to interfaces, not implementations</li>
+                                    <li>• Use singletons for stateless services</li>
+                                    <li>• Keep service providers focused and small</li>
+                                    <li>• Use method injection for optional dependencies</li>
+                                    <li>• Register services in register(), boot in boot()</li>
+                                    <li>• Use tags for related services</li>
+                                    <li>• Document service contracts clearly</li>
+                                </ul>
+                            </div>
+
+                            <div class="bg-white border border-gray-200 p-6 rounded-lg">
+                                <h4 class="font-semibold text-gray-900 mb-3">
+                                    <i class="fas fa-times-circle text-red-600 mr-2"></i>Don'ts
+                                </h4>
+                                <ul class="text-sm text-gray-600 space-y-2">
+                                    <li>• Don't use the container as a service locator</li>
+                                    <li>• Don't inject the container into services</li>
+                                    <li>• Don't create circular dependencies</li>
+                                    <li>• Don't register services in boot() method</li>
+                                    <li>• Don't use property injection</li>
+                                    <li>• Don't make every service a singleton</li>
+                                    <li>• Don't ignore dependency cycles</li>
+                                    <li>• Don't hardcode service names</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </section>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="bg-white border-t mt-16">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+            <div class="text-center text-gray-600">
+                <p class="text-sm">
+                    Forge Engine Documentation - DI Container API
+                </p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Mobile menu toggle
+        const mobileMenuBtn = document.getElementById('mobile-menu-btn');
+        const mobileMenu = document.getElementById('mobile-menu');
+        const mobileMenuOverlay = document.getElementById('mobile-menu-overlay');
+
+        function toggleMobileMenu() {
+            mobileMenu.classList.toggle('hidden');
+            mobileMenuOverlay.classList.toggle('active');
+        }
+
+        if (mobileMenuBtn) {
+            mobileMenuBtn.addEventListener('click', toggleMobileMenu);
+        }
+
+        if (mobileMenuOverlay) {
+            mobileMenuOverlay.addEventListener('click', toggleMobileMenu);
+        }
+
+        // Close mobile menu when clicking on links
+        const mobileMenuLinks = mobileMenu.querySelectorAll('a');
+        mobileMenuLinks.forEach(link => {
+            link.addEventListener('click', () => {
+                mobileMenu.classList.add('hidden');
+                mobileMenuOverlay.classList.remove('active');
+            });
+        });
+
+        // Active navigation highlighting
+        const currentPath = window.location.pathname.split('/').pop();
+        const navLinks = document.querySelectorAll('.nav-link');
+        navLinks.forEach(link => {
+            if (link.getAttribute('href') === currentPath) {
+                link.classList.add('active');
+            }
+        });
+    </script>
+</body>
+
+</html>

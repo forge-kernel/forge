@@ -1,0 +1,1242 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Forge Engine - ForgeWire</title>
+        <link
+            href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css"
+            rel="stylesheet"
+        />
+        <link
+            rel="stylesheet"
+            href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
+        />
+        <link
+            rel="stylesheet"
+            href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.24.1/themes/prism-tomorrow.min.css"
+        />
+        <style>
+            .code-block {
+                background: #2d3748;
+                overflow-x: auto;
+            }
+
+            .code-block pre {
+                margin: 0;
+                padding: 1.5rem;
+            }
+
+            .nav-link {
+                transition: all 0.3s ease;
+            }
+
+            .nav-link:hover {
+                background-color: #f3f4f6;
+                padding-left: 1.5rem;
+            }
+
+            .nav-link.active {
+                background-color: #e0e7ff;
+                color: #4338ca;
+                border-left: 4px solid #6366f1;
+            }
+
+            .section-anchor {
+                scroll-margin-top: 2rem;
+            }
+
+            /* Mobile menu styles */
+            #mobile-menu {
+                display: none;
+            }
+
+            #mobile-menu:not(.hidden) {
+                display: block;
+            }
+
+            @media (max-width: 767px) {
+                .lg\:w-1\/4 {
+                    position: fixed;
+                    top: 0;
+                    left: 0;
+                    height: 100vh;
+                    width: 80%;
+                    max-width: 320px;
+                    z-index: 50;
+                    transform: translateX(-100%);
+                    transition: transform 0.3s ease;
+                    background: white;
+                    overflow-y: auto;
+                }
+
+                .lg\:w-1\/4.mobile-menu-open {
+                    transform: translateX(0);
+                }
+
+                .mobile-menu-overlay {
+                    position: fixed;
+                    top: 0;
+                    left: 0;
+                    width: 100%;
+                    height: 100%;
+                    background: rgba(0, 0, 0, 0.5);
+                    z-index: 40;
+                    display: none;
+                }
+
+                .mobile-menu-overlay.active {
+                    display: block;
+                }
+            }
+        </style>
+    </head>
+
+    <body class="bg-gray-50 font-sans">
+        <!-- Navigation -->
+        <nav class="bg-white shadow-sm border-b">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="flex justify-between h-16">
+                    <div class="flex items-center">
+                        <div class="flex-shrink-0">
+                            <h1 class="text-xl font-bold text-gray-900">
+                                Forge Engine
+                            </h1>
+                        </div>
+                        <div class="hidden sm:ml-6 sm:flex sm:space-x-8">
+                            <a
+                                href="index.html"
+                                class="text-gray-900 inline-flex items-center px-1 pt-1 text-sm font-medium hover:text-blue-600"
+                            >
+                                Home
+                            </a>
+                            <a
+                                href="getting-started.html"
+                                class="text-gray-900 inline-flex items-center px-1 pt-1 text-sm font-medium hover:text-blue-600"
+                            >
+                                Getting Started
+                            </a>
+                            <a
+                                href="core-concepts.html"
+                                class="text-gray-900 inline-flex items-center px-1 pt-1 text-sm font-medium hover:text-blue-600"
+                            >
+                                Core Concepts
+                            </a>
+                            <a
+                                href="modules.html"
+                                class="text-blue-600 inline-flex items-center px-1 pt-1 text-sm font-medium border-b-2 border-blue-600"
+                            >
+                                Modules
+                            </a>
+                            <a
+                                href="api-reference.html"
+                                class="text-gray-900 inline-flex items-center px-1 pt-1 text-sm font-medium hover:text-blue-600"
+                            >
+                                API Reference
+                            </a>
+                        </div>
+                    </div>
+                    <!-- Mobile menu button -->
+                    <div class="flex items-center sm:hidden">
+                        <button
+                            id="mobile-menu-button"
+                            class="text-gray-700 hover:text-blue-600 p-2"
+                        >
+                            <i class="fas fa-bars text-xl"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Mobile menu -->
+            <div
+                id="mobile-menu"
+                class="sm:hidden hidden bg-white border-t border-gray-200"
+            >
+                <div class="px-2 pt-2 pb-3 space-y-1">
+                    <a
+                        href="index.html"
+                        class="block px-3 py-2 text-gray-900 hover:text-blue-600"
+                    >
+                        Home
+                    </a>
+                    <a
+                        href="getting-started.html"
+                        class="block px-3 py-2 text-gray-900 hover:text-blue-600"
+                    >
+                        Getting Started
+                    </a>
+                    <a
+                        href="core-concepts.html"
+                        class="block px-3 py-2 text-gray-900 hover:text-blue-600"
+                    >
+                        Core Concepts
+                    </a>
+                    <a
+                        href="modules.html"
+                        class="block px-3 py-2 text-blue-600 font-medium"
+                    >
+                        Modules
+                    </a>
+                    <a
+                        href="api-reference.html"
+                        class="block px-3 py-2 text-gray-900 hover:text-blue-600"
+                    >
+                        API Reference
+                    </a>
+                </div>
+            </div>
+        </nav>
+
+        <!-- Main Content -->
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+            <div class="flex flex-col lg:flex-row gap-8">
+                <!-- Sidebar Navigation -->
+                <div class="lg:w-1/4">
+                    <div class="bg-white rounded-lg shadow-sm p-6 sticky top-8">
+                        <h3 class="text-lg font-semibold text-gray-900 mb-4">
+                            ForgeWire
+                        </h3>
+                        <nav class="space-y-2">
+                            <a
+                                href="#overview"
+                                class="nav-link block px-3 py-2 text-sm text-gray-700 rounded-md hover:text-blue-600"
+                            >
+                                Overview
+                            </a>
+                            <a
+                                href="#features"
+                                class="nav-link block px-3 py-2 text-sm text-gray-700 rounded-md hover:text-blue-600"
+                            >
+                                Features
+                            </a>
+                            <a
+                                href="#installation"
+                                class="nav-link block px-3 py-2 text-sm text-gray-700 rounded-md hover:text-blue-600"
+                            >
+                                Installation
+                            </a>
+                            <a
+                                href="#configuration"
+                                class="nav-link block px-3 py-2 text-sm text-gray-700 rounded-md hover:text-blue-600"
+                            >
+                                Configuration
+                            </a>
+                            <a
+                                href="#usage"
+                                class="nav-link block px-3 py-2 text-sm text-gray-700 rounded-md hover:text-blue-600"
+                            >
+                                Usage
+                            </a>
+                            <a
+                                href="#components"
+                                class="nav-link block px-3 py-2 text-sm text-gray-700 rounded-md hover:text-blue-600"
+                            >
+                                Components
+                            </a>
+                            <a
+                                href="#actions"
+                                class="nav-link block px-3 py-2 text-sm text-gray-700 rounded-md hover:text-blue-600"
+                            >
+                                Actions
+                            </a>
+                            <a
+                                href="#attributes"
+                                class="nav-link block px-3 py-2 text-sm text-gray-700 rounded-md hover:text-blue-600"
+                            >
+                                Attributes
+                            </a>
+                            <a
+                                href="#helper-functions"
+                                class="nav-link block px-3 py-2 text-sm text-gray-700 rounded-md hover:text-blue-600"
+                            >
+                                Helper Functions
+                            </a>
+                            <a
+                                href="#best-practices"
+                                class="nav-link block px-3 py-2 text-sm text-gray-700 rounded-md hover:text-blue-600"
+                            >
+                                Best Practices
+                            </a>
+                        </nav>
+                    </div>
+                </div>
+
+                <!-- Main Content -->
+                <div class="lg:w-3/4">
+                    <div class="bg-white rounded-lg shadow-sm p-8">
+                        <h1 class="text-4xl font-bold text-gray-900 mb-6">
+                            ForgeWire
+                        </h1>
+                        <p class="text-xl text-gray-600 mb-8">
+                            A lightweight Livewire-like reactive component
+                            system for Forge Engine applications with
+                            server-side rendering and real-time updates.
+                        </p>
+
+                        <!-- Overview -->
+                        <section id="overview" class="section-anchor mb-12">
+                            <h2 class="text-2xl font-bold text-gray-900 mb-4">
+                                Overview
+                            </h2>
+                            <p class="text-gray-600 mb-6">
+                                ForgeWire provides reactive components for Forge
+                                applications with server-side rendering, state
+                                management, and real-time updates without
+                                requiring WebSockets. It uses HTTP requests to
+                                handle component interactions and state changes.
+                            </p>
+
+                            <div
+                                class="bg-blue-50 border border-blue-200 rounded-lg p-6 mb-6"
+                            >
+                                <h3 class="font-semibold text-lg mb-4">
+                                    Key Capabilities
+                                </h3>
+                                <div class="grid md:grid-cols-2 gap-4">
+                                    <div class="space-y-2">
+                                        <div class="flex items-center">
+                                            <span>Reactive components</span>
+                                        </div>
+                                        <div class="flex items-center">
+                                            <span>Server-side rendering</span>
+                                        </div>
+                                        <div class="flex items-center">
+                                            <span>State management</span>
+                                        </div>
+                                    </div>
+                                    <div class="space-y-2">
+                                        <div class="flex items-center">
+                                            <span>HTTP-based updates</span>
+                                        </div>
+                                        <div class="flex items-center">
+                                            <span>Component hydration</span>
+                                        </div>
+                                        <div class="flex items-center">
+                                            <span>Action handling</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </section>
+
+                        <!-- Features -->
+                        <section id="features" class="section-anchor mb-12">
+                            <h2 class="text-2xl font-bold text-gray-900 mb-6">
+                                Features
+                            </h2>
+
+                            <div class="grid md:grid-cols-2 gap-6">
+                                <div
+                                    class="bg-gray-50 border border-gray-200 rounded-lg p-6"
+                                >
+                                    <h3 class="font-semibold text-lg mb-3">
+                                        Component System
+                                    </h3>
+                                    <ul class="text-gray-600 space-y-2 text-sm">
+                                        <li>• Reactive component classes</li>
+                                        <li>• Server-side rendering</li>
+                                        <li>• Component lifecycle hooks</li>
+                                        <li>• View template integration</li>
+                                    </ul>
+                                </div>
+
+                                <div
+                                    class="bg-gray-50 border border-gray-200 rounded-lg p-6"
+                                >
+                                    <h3 class="font-semibold text-lg mb-3">
+                                        State Management
+                                    </h3>
+                                    <ul class="text-gray-600 space-y-2 text-sm">
+                                        <li>• Component state tracking</li>
+                                        <li>
+                                            • Automatic state synchronization
+                                        </li>
+                                        <li>• State validation</li>
+                                        <li>• Computed properties</li>
+                                    </ul>
+                                </div>
+
+                                <div
+                                    class="bg-gray-50 border border-gray-200 rounded-lg p-6"
+                                >
+                                    <h3 class="font-semibold text-lg mb-3">
+                                        Action Handling
+                                    </h3>
+                                    <ul class="text-gray-600 space-y-2 text-sm">
+                                        <li>• Method-based actions</li>
+                                        <li>• Automatic parameter binding</li>
+                                        <li>• Action validation</li>
+                                        <li>• Error handling</li>
+                                    </ul>
+                                </div>
+
+                                <div
+                                    class="bg-gray-50 border border-gray-200 rounded-lg p-6"
+                                >
+                                    <h3 class="font-semibold text-lg mb-3">
+                                        Integration
+                                    </h3>
+                                    <ul class="text-gray-600 space-y-2 text-sm">
+                                        <li>• Service container integration</li>
+                                        <li>• Route registration</li>
+                                        <li>• Session support</li>
+                                        <li>• CSRF protection</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </section>
+
+                        <!-- Installation -->
+                        <section id="installation" class="section-anchor mb-12">
+                            <h2 class="text-2xl font-bold text-gray-900 mb-4">
+                                Installation
+                            </h2>
+                            <p class="text-gray-600 mb-6">
+                                Use Forge Package Manager or manually download
+                                and install the module.
+                            </p>
+
+                            <h3 class="text-lg font-semibold mb-3">
+                                Using Forge Package Manager
+                            </h3>
+                            <div
+                                class="code-block p-6 text-white rounded-lg mb-6"
+                            >
+                                <pre><code class="language-bash"># Install the latest version
+php forge install:module ForgeWire
+
+# Install a specific version
+php forge install:module ForgeWire@1.0.5</code></pre>
+                            </div>
+
+                            <h3 class="text-lg font-semibold mb-3">
+                                Manual Installation
+                            </h3>
+                            <div
+                                class="code-block p-6 text-white rounded-lg mb-6"
+                            >
+                                <pre><code class="language-bash"># Clone the repository
+git clone https://github.com/forge-kernel/kernel-module-registry.git
+
+# Copy the ForgeWire module to your modules directory
+cp -r modules/ForgeWire /path/to/your/forge/modules/</code></pre>
+                            </div>
+
+                            <div
+                                class="bg-yellow-50 border-l-4 border-yellow-400 p-4"
+                            >
+                                <div class="ml-3">
+                                    <p class="text-sm text-yellow-700">
+                                        <strong>Dependencies:</strong> ForgeWire
+                                        requires proper session management and
+                                        CSRF protection for secure component
+                                        interactions.
+                                    </p>
+                                </div>
+                            </div>
+                        </section>
+
+                        <!-- Configuration -->
+                        <section
+                            id="configuration"
+                            class="section-anchor mb-12"
+                        >
+                            <h2 class="text-2xl font-bold text-gray-900 mb-4">
+                                Configuration
+                            </h2>
+                            <p class="text-gray-600 mb-6">
+                                Modify configuration file or use environment
+                                variables.
+                            </p>
+
+                            <h3 class="text-lg font-semibold mb-3">
+                                Basic Configuration
+                            </h3>
+                            <div
+                                class="code-block p-6 text-white rounded-lg mb-6"
+                            >
+                                <pre><code class="language-php">// config/forge_wire.php
+return [
+    "forge_wire" => [
+        "example" => "hi"
+    ]
+];</code></pre>
+                            </div>
+
+                            <h3 class="text-lg font-semibold mb-3">
+                                Environment Variables
+                            </h3>
+                            <div
+                                class="code-block p-6 text-white rounded-lg mb-6"
+                            >
+                                <pre><code class="language-bash"># Component settings
+FORGEWIRE_CACHE_ENABLED=true
+FORGEWIRE_DEBUG_MODE=false
+
+# Session configuration
+SESSION_LIFETIME=120
+SESSION_SECURE=true</code></pre>
+                            </div>
+                        </section>
+
+                        <!-- Usage -->
+                        <section id="usage" class="section-anchor mb-12">
+                            <h2 class="text-2xl font-bold text-gray-900 mb-4">
+                                Usage
+                            </h2>
+                            <p class="text-gray-600 mb-6">
+                                Create reactive components with ForgeWire for
+                                dynamic user interfaces.
+                            </p>
+
+                            <h3 class="text-lg font-semibold mb-3">
+                                Creating a Component
+                            </h3>
+                            <div
+                                class="code-block p-6 text-white rounded-lg mb-6"
+                            >
+                                <pre><code class="language-php">use App\Modules\ForgeWire\Core\WireComponent;
+use App\Modules\ForgeWire\Attributes\Action;
+use App\Modules\ForgeWire\Attributes\State;
+
+class Counter extends WireComponent
+{
+    #[State]
+    public int $count = 0;
+
+    #[Action]
+    public function increment(): void
+    {
+        $this->count++;
+    }
+
+    #[Action]
+    public function decrement(): void
+    {
+        $this->count--;
+    }
+
+    public function render(): string
+    {
+        return $this->view('counter', ['count' => $this->count]);
+    }
+}</code></pre>
+                            </div>
+
+                            <h3 class="text-lg font-semibold mb-3">
+                                Component Template
+                            </h3>
+                            <div
+                                class="code-block p-6 text-white rounded-lg mb-6"
+                            >
+                                <pre><code class="language-html">&lt;!-- views/counter.html --&gt;
+&lt;div class="counter"&gt;
+    &lt;h3&gt;Count: &lt;span&gt;{{ count }}&lt;/span&gt;&lt;/h3&gt;
+    &lt;button wire:click="increment"&gt;+&lt;/button&gt;
+    &lt;button wire:click="decrement"&gt;-&lt;/button&gt;
+&lt;/div&gt;</code></pre>
+                            </div>
+
+                            <h3 class="text-lg font-semibold mb-3">
+                                Using Components in Views
+                            </h3>
+                            <p class="text-gray-600 mb-4">
+                                ForgeWire provides several helper functions for
+                                rendering components in your views:
+                            </p>
+
+                            <h4 class="font-semibold text-gray-900 mb-2">
+                                1. Using the wire() helper function
+                            </h4>
+                            <div
+                                class="code-block p-6 text-white rounded-lg mb-6"
+                            >
+                                <pre><code class="language-php">// Basic usage
+&lt;?= wire(\App\Components\Counter::class) ?&gt;
+
+// With props
+&lt;?= wire(\App\Components\Counter::class, ['start' => 10]) ?&gt;
+
+// With component ID
+&lt;?= wire(\App\Components\Counter::class, 'counter-1') ?&gt;
+
+// With both ID and props
+&lt;?= wire(\App\Components\Counter::class, 'counter-1', ['start' => 10]) ?&gt;</code></pre>
+                            </div>
+
+                            <h4 class="font-semibold text-gray-900 mb-2">
+                                2. Using the w() alias
+                            </h4>
+                            <div
+                                class="code-block p-6 text-white rounded-lg mb-6"
+                            >
+                                <pre><code class="language-php">// Shorter syntax
+&lt;?= w(\App\Components\Counter::class, ['start' => 10], 'counter-1') ?&gt;</code></pre>
+                            </div>
+
+                            <h4 class="font-semibold text-gray-900 mb-2">
+                                3. Using the wire_name() helper
+                            </h4>
+                            <div
+                                class="code-block p-6 text-white rounded-lg mb-6"
+                            >
+                                <pre><code class="language-php">// Converts kebab-case to PascalCase automatically
+&lt;?= wire_name('counter', 'counter-1') ?&gt;
+&lt;?= wire_name('products-table', ['perPage' => 10], 'products-1') ?&gt;
+
+// These resolve to:
+// - 'counter' -> App\Components\Counter
+// - 'products-table' -> App\Components\ProductsTable</code></pre>
+                            </div>
+
+                            <h3 class="text-lg font-semibold mb-3">
+                                Layout Integration
+                            </h3>
+                            <p class="text-gray-600 mb-4">
+                                Make sure to include the ForgeWire JavaScript in
+                                your layout. Add the
+                                <code>forgewire()</code> helper to your layout
+                                file:
+                            </p>
+                            <div
+                                class="code-block p-6 text-white rounded-lg mb-6"
+                            >
+                                <pre><code class="language-php">&lt;!-- Real example from main.php --&gt;
+&lt;?php
+use Forge\Core\Helpers\ModuleResources;
+?&gt;
+&lt;!DOCTYPE html&gt;
+&lt;html lang="en"&gt;
+&lt;head&gt;
+    &lt;meta charset="UTF-8"&gt;
+    &lt;meta name="viewport" content="width=device-width, initial-scale=1.0"&gt;
+    &lt;title&gt;Forge Engine&lt;/title&gt;
+    &lt;?= ModuleResources::loadStyles("forge-ui") ?&gt;
+    &lt;?= raw(csrf_meta()) ?&gt;
+&lt;/head&gt;
+&lt;body&gt;
+    &lt;div&gt;
+        &lt;?= $content ?&gt;
+    &lt;/div&gt;
+
+    &lt;script&gt;
+        window.csrfToken = "&lt;?= window_csrf_token() ?&gt;";
+    &lt;/script&gt;
+    &lt;?= forgewire(); ?&gt;
+    &lt;script defer src="/assets/app/js/htmx.min.js"&gt;&lt;/script&gt;
+    &lt;?= ModuleResources::loadScripts("forge-ui") ?&gt;
+&lt;/body&gt;
+&lt;/html&gt;</code></pre>
+                            </div>
+
+                            <div
+                                class="bg-blue-50 border-l-4 border-blue-400 p-4 mb-4"
+                            >
+                                <div class="flex">
+                                    <div class="flex-shrink-0">
+                                        <svg
+                                            class="h-5 w-5 text-blue-400"
+                                            viewBox="0 0 20 20"
+                                            fill="currentColor"
+                                        >
+                                            <path
+                                                fill-rule="evenodd"
+                                                d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z"
+                                                clip-rule="evenodd"
+                                            />
+                                        </svg>
+                                    </div>
+                                    <div class="ml-3">
+                                        <p class="text-sm text-blue-700">
+                                            <strong>Important:</strong> The
+                                            <code>forgewire()</code> helper must
+                                            be placed before the closing
+                                            <code>&lt;/body&gt;</code> tag to
+                                            ensure proper loading of the
+                                            ForgeWire JavaScript.
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <h3 class="text-lg font-semibold mb-3">
+                                CSRF Protection
+                            </h3>
+                            <p class="text-gray-600 mb-4">
+                                ForgeWire integrates with Forge Engine's CSRF
+                                protection. Use these helpers in your forms and
+                                layouts:
+                            </p>
+
+                            <div
+                                class="code-block p-6 text-white rounded-lg mb-6"
+                            >
+                                <pre><code class="language-php">// In your layout head
+&lt;?= raw(csrf_meta()) ?&gt;
+
+// In your layout body
+&lt;script&gt;
+    window.csrfToken = "&lt;?= window_csrf_token() ?&gt;";
+&lt;/script&gt;
+
+// In your forms
+&lt;form method="POST"&gt;
+    &lt;?= csrf_input() ?&gt;
+    &lt;!-- Your form fields --&gt;
+&lt;/form&gt;</code></pre>
+                            </div>
+
+                            <div
+                                class="bg-green-50 border-l-4 border-green-400 p-4 mb-4"
+                            >
+                                <div class="flex">
+                                    <div class="flex-shrink-0">
+                                        <svg
+                                            class="h-5 w-5 text-green-400"
+                                            viewBox="0 0 20 20"
+                                            fill="currentColor"
+                                        >
+                                            <path
+                                                fill-rule="evenodd"
+                                                d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
+                                                clip-rule="evenodd"
+                                            />
+                                        </svg>
+                                    </div>
+                                    <div class="ml-3">
+                                        <p class="text-sm text-green-700">
+                                            <strong>Security:</strong> CSRF
+                                            protection is automatically applied
+                                            to all ForgeWire component actions
+                                            to prevent cross-site request
+                                            forgery attacks.
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <h3 class="text-lg font-semibold mb-3">
+                                Checking ForgeWire Availability
+                            </h3>
+                            <p class="text-gray-600 mb-4">
+                                Before using ForgeWire components, you can check
+                                if the module is available and properly
+                                configured:
+                            </p>
+
+                            <div
+                                class="code-block p-6 text-white rounded-lg mb-6"
+                            >
+                                <pre><code class="language-php">// Check if ForgeWire is available
+if (forgewire_is_available()) {
+    // Safe to use ForgeWire components
+    echo wire_name('counter');
+    echo wire_name('products-table');
+} else {
+    // Fallback or error handling
+    echo "ForgeWire is not available";
+}</code></pre>
+                            </div>
+
+                            <div
+                                class="bg-yellow-50 border-l-4 border-yellow-400 p-4 mb-4"
+                            >
+                                <div class="flex">
+                                    <div class="flex-shrink-0">
+                                        <svg
+                                            class="h-5 w-5 text-yellow-400"
+                                            viewBox="0 0 20 20"
+                                            fill="currentColor"
+                                        >
+                                            <path
+                                                fill-rule="evenodd"
+                                                d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z"
+                                                clip-rule="evenodd"
+                                            />
+                                        </svg>
+                                    </div>
+                                    <div class="ml-3">
+                                        <p class="text-sm text-yellow-700">
+                                            <strong>Best Practice:</strong>
+                                            Always check if ForgeWire is
+                                            available before using components,
+                                            especially in shared layouts or
+                                            conditional rendering scenarios.
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                        </section>
+
+                        <!-- Components -->
+                        <section id="components" class="section-anchor mb-12">
+                            <h2 class="text-2xl font-bold text-gray-900 mb-6">
+                                Components
+                            </h2>
+
+                            <div class="mb-8">
+                                <h3
+                                    class="text-xl font-semibold text-gray-900 mb-4"
+                                >
+                                    Base WireComponent
+                                </h3>
+                                <p class="text-gray-600 mb-4">
+                                    All ForgeWire components extend the base
+                                    WireComponent class which provides core
+                                    functionality.
+                                </p>
+
+                                <div
+                                    class="api-method bg-gray-50 p-4 rounded-lg mb-4"
+                                >
+                                    <h4 class="font-semibold text-lg mb-2">
+                                        mount(array $props = []): void
+                                    </h4>
+                                    <p class="text-gray-600 text-sm mb-3">
+                                        Initialize component with properties.
+                                    </p>
+                                    <div
+                                        class="code-block p-4 text-white rounded"
+                                    >
+                                        <pre><code class="language-php">public function mount(array $props = []): void
+{
+    if (isset($props['initialValue'])) {
+        $this->value = $props['initialValue'];
+    }
+}</code></pre>
+                                    </div>
+                                </div>
+
+                                <div
+                                    class="api-method bg-gray-50 p-4 rounded-lg mb-4"
+                                >
+                                    <h4 class="font-semibold text-lg mb-2">
+                                        render(): string
+                                    </h4>
+                                    <p class="text-gray-600 text-sm mb-3">
+                                        Render the component view.
+                                    </p>
+                                    <div
+                                        class="code-block p-4 text-white rounded"
+                                    >
+                                        <pre><code class="language-php">public function render(): string
+{
+    return $this->view('component-name', [
+        'data' => $this->data
+    ]);
+}</code></pre>
+                                    </div>
+                                </div>
+                            </div>
+                        </section>
+
+                        <!-- Actions -->
+                        <section id="actions" class="section-anchor mb-12">
+                            <h2 class="text-2xl font-bold text-gray-900 mb-6">
+                                Actions
+                            </h2>
+
+                            <div class="mb-8">
+                                <h3
+                                    class="text-xl font-semibold text-gray-900 mb-4"
+                                >
+                                    Action Methods
+                                </h3>
+                                <p class="text-gray-600 mb-4">
+                                    Actions are component methods that can be
+                                    called from the frontend. Use the #[Action]
+                                    attribute to mark methods as actions.
+                                </p>
+
+                                <div
+                                    class="api-method bg-gray-50 p-4 rounded-lg mb-4"
+                                >
+                                    <h4 class="font-semibold text-lg mb-2">
+                                        Basic Action
+                                    </h4>
+                                    <div
+                                        class="code-block p-4 text-white rounded"
+                                    >
+                                        <pre><code class="language-php">use App\Modules\ForgeWire\Attributes\Action;
+
+class TodoList extends WireComponent
+{
+    #[Action]
+    public function addTodo(string $title): void
+    {
+        $this->todos[] = [
+            'id' => uniqid(),
+            'title' => $title,
+            'completed' => false
+        ];
+    }
+
+    #[Action]
+    public function toggleTodo(string $id): void
+    {
+        foreach ($this->todos as &$todo) {
+            if ($todo['id'] === $id) {
+                $todo['completed'] = !$todo['completed'];
+                break;
+            }
+        }
+    }
+}</code></pre>
+                                    </div>
+                                </div>
+                            </div>
+                        </section>
+
+                        <!-- Attributes -->
+                        <section id="attributes" class="section-anchor mb-12">
+                            <h2 class="text-2xl font-bold text-gray-900 mb-6">
+                                Attributes
+                            </h2>
+
+                            <div class="grid md:grid-cols-2 gap-6">
+                                <div
+                                    class="bg-gray-50 border border-gray-200 rounded-lg p-6"
+                                >
+                                    <h3 class="font-semibold text-lg mb-3">
+                                        #[Action]
+                                    </h3>
+                                    <p class="text-gray-600 text-sm mb-3">
+                                        Marks a method as callable from the
+                                        frontend.
+                                    </p>
+                                    <div
+                                        class="code-block p-4 text-white rounded"
+                                    >
+                                        <pre><code class="language-php">#[Action]
+public function save(): void
+{
+    // Action logic
+}</code></pre>
+                                    </div>
+                                </div>
+
+                                <div
+                                    class="bg-gray-50 border border-gray-200 rounded-lg p-6"
+                                >
+                                    <h3 class="font-semibold text-lg mb-3">
+                                        #[State]
+                                    </h3>
+                                    <p class="text-gray-600 text-sm mb-3">
+                                        Marks a property as reactive state.
+                                    </p>
+                                    <div
+                                        class="code-block p-4 text-white rounded"
+                                    >
+                                        <pre><code class="language-php">#[State]
+public string $message = '';</code></pre>
+                                    </div>
+                                </div>
+
+                                <div
+                                    class="bg-gray-50 border border-gray-200 rounded-lg p-6"
+                                >
+                                    <h3 class="font-semibold text-lg mb-3">
+                                        #[Computed]
+                                    </h3>
+                                    <p class="text-gray-600 text-sm mb-3">
+                                        Marks a method as a computed property.
+                                    </p>
+                                    <div
+                                        class="code-block p-4 text-white rounded"
+                                    >
+                                        <pre><code class="language-php">#[Computed]
+public function getFullName(): string
+{
+    return $this->firstName . ' ' . $this->lastName;
+}</code></pre>
+                                    </div>
+                                </div>
+
+                                <div
+                                    class="bg-gray-50 border border-gray-200 rounded-lg p-6"
+                                >
+                                    <h3 class="font-semibold text-lg mb-3">
+                                        #[Validate]
+                                    </h3>
+                                    <p class="text-gray-600 text-sm mb-3">
+                                        Adds validation to component properties.
+                                    </p>
+                                    <div
+                                        class="code-block p-4 text-white rounded"
+                                    >
+                                        <pre><code class="language-php">#[Validate('required|email')]
+public string $email = '';</code></pre>
+                                    </div>
+                                </div>
+                            </div>
+                        </section>
+
+                        <!-- Helper Functions -->
+                        <section
+                            id="helper-functions"
+                            class="section-anchor mb-12"
+                        >
+                            <h2 class="text-2xl font-bold text-gray-900 mb-6">
+                                Helper Functions
+                            </h2>
+
+                            <div class="mb-8">
+                                <h3
+                                    class="text-xl font-semibold text-gray-900 mb-4"
+                                >
+                                    Available Helper Functions
+                                </h3>
+                                <p class="text-gray-600 mb-4">
+                                    ForgeWire provides several helper functions
+                                    to make working with components easier.
+                                    These functions are automatically available
+                                    in your views when the module is installed.
+                                </p>
+
+                                <div
+                                    class="api-method bg-gray-50 p-4 rounded-lg mb-4"
+                                >
+                                    <h4 class="font-semibold text-lg mb-2">
+                                        wire()
+                                    </h4>
+                                    <p class="text-gray-600 text-sm mb-3">
+                                        Main helper function for rendering
+                                        components.
+                                    </p>
+                                    <div
+                                        class="code-block p-4 text-white rounded"
+                                    >
+                                        <pre><code class="language-php">// Signature
+wire(string $componentClass, mixed $a = null, mixed $b = null): string
+
+// Examples
+wire(Counter::class);
+wire(Counter::class, ['start' => 10]);
+wire(Counter::class, 'counter-1');
+wire(Counter::class, 'counter-1', ['start' => 10]);</code></pre>
+                                    </div>
+                                </div>
+
+                                <div
+                                    class="api-method bg-gray-50 p-4 rounded-lg mb-4"
+                                >
+                                    <h4 class="font-semibold text-lg mb-2">
+                                        w()
+                                    </h4>
+                                    <p class="text-gray-600 text-sm mb-3">
+                                        Shorter alias for the wire() function.
+                                    </p>
+                                    <div
+                                        class="code-block p-4 text-white rounded"
+                                    >
+                                        <pre><code class="language-php">// Same as wire() but shorter
+w(Counter::class, ['start' => 10], 'counter-1');</code></pre>
+                                    </div>
+                                </div>
+
+                                <div
+                                    class="api-method bg-gray-50 p-4 rounded-lg mb-4"
+                                >
+                                    <h4 class="font-semibold text-lg mb-2">
+                                        wire_name()
+                                    </h4>
+                                    <p class="text-gray-600 text-sm mb-3">
+                                        Name-based component resolver that
+                                        converts kebab-case to PascalCase.
+                                    </p>
+                                    <div
+                                        class="code-block p-4 text-white rounded"
+                                    >
+                                        <pre><code class="language-php">// Converts kebab-case names to class names
+wire_name('counter'); // App\Components\Counter
+wire_name('products-table'); // App\Components\ProductsTable
+wire_name('user-profile', ['userId' => 1], 'profile-1');</code></pre>
+                                    </div>
+                                </div>
+
+                                <div
+                                    class="api-method bg-gray-50 p-4 rounded-lg mb-4"
+                                >
+                                    <h4 class="font-semibold text-lg mb-2">
+                                        forgewire()
+                                    </h4>
+                                    <p class="text-gray-600 text-sm mb-3">
+                                        Includes the ForgeWire JavaScript in
+                                        your layout.
+                                    </p>
+                                    <div
+                                        class="code-block p-4 text-white rounded"
+                                    >
+                                        <pre><code class="language-php">// Add to your layout footer
+&lt;?= forgewire(); ?&gt;
+// Outputs: &lt;script defer src="/assets/modules/forge-wire/js/forgewire.js" defer&gt;&lt;/script&gt;</code></pre>
+                                    </div>
+                                </div>
+
+                                <div
+                                    class="api-method bg-gray-50 p-4 rounded-lg mb-4"
+                                >
+                                    <h4 class="font-semibold text-lg mb-2">
+                                        forgewire_is_available()
+                                    </h4>
+                                    <p class="text-gray-600 text-sm mb-3">
+                                        Check if ForgeWire is available and
+                                        properly configured.
+                                    </p>
+                                    <div
+                                        class="code-block p-4 text-white rounded"
+                                    >
+                                        <pre><code class="language-php">if (forgewire_is_available()) {
+    // ForgeWire is ready to use
+    echo wire(Counter::class);
+}</code></pre>
+                                    </div>
+                                </div>
+                            </div>
+                        </section>
+
+                        <!-- Best Practices -->
+                        <section
+                            id="best-practices"
+                            class="section-anchor mb-12"
+                        >
+                            <h2 class="text-2xl font-bold text-gray-900 mb-6">
+                                Best Practices
+                            </h2>
+
+                            <div class="grid md:grid-cols-2 gap-6">
+                                <div
+                                    class="bg-white border border-gray-200 p-6 rounded-lg"
+                                >
+                                    <h4
+                                        class="font-semibold text-gray-900 mb-3"
+                                    >
+                                        <i
+                                            class="fas fa-check-circle text-green-600 mr-2"
+                                        ></i
+                                        >Do's
+                                    </h4>
+                                    <ul class="text-sm text-gray-600 space-y-2">
+                                        <li>
+                                            • Keep components focused and
+                                            single-purpose
+                                        </li>
+                                        <li>• Use proper state management</li>
+                                        <li>• Validate user inputs</li>
+                                        <li>• Handle errors gracefully</li>
+                                        <li>
+                                            • Use meaningful component names
+                                        </li>
+                                        <li>• Document component APIs</li>
+                                    </ul>
+                                </div>
+
+                                <div
+                                    class="bg-white border border-gray-200 p-6 rounded-lg"
+                                >
+                                    <h4
+                                        class="font-semibold text-gray-900 mb-3"
+                                    >
+                                        <i
+                                            class="fas fa-times-circle text-red-600 mr-2"
+                                        ></i
+                                        >Don'ts
+                                    </h4>
+                                    <ul class="text-sm text-gray-600 space-y-2">
+                                        <li>
+                                            • Don't create overly complex
+                                            components
+                                        </li>
+                                        <li>
+                                            • Don't expose sensitive data in
+                                            state
+                                        </li>
+                                        <li>
+                                            • Don't ignore validation errors
+                                        </li>
+                                        <li>
+                                            • Don't use direct DOM manipulation
+                                        </li>
+                                        <li>
+                                            • Don't bypass the component
+                                            lifecycle
+                                        </li>
+                                        <li>• Don't forget about security</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </section>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <footer class="bg-white border-t mt-16">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+                <div class="text-center text-gray-600">
+                    <p class="text-sm">
+                        Forge Engine Documentation - ForgeWire Module
+                    </p>
+                </div>
+            </div>
+        </footer>
+
+        <script>
+            // Mobile menu toggle
+            const mobileMenuBtn = document.getElementById("mobile-menu-button");
+            const mobileMenu = document.getElementById("mobile-menu");
+            const mobileMenuOverlay = document.getElementById(
+                "mobile-menu-overlay",
+            );
+
+            function toggleMobileMenu() {
+                mobileMenu.classList.toggle("hidden");
+                mobileMenuOverlay.classList.toggle("active");
+            }
+
+            if (mobileMenuBtn) {
+                mobileMenuBtn.addEventListener("click", toggleMobileMenu);
+            }
+
+            if (mobileMenuOverlay) {
+                mobileMenuOverlay.addEventListener("click", toggleMobileMenu);
+            }
+
+            // Close mobile menu when clicking on links
+            const mobileMenuLinks = mobileMenu.querySelectorAll("a");
+            mobileMenuLinks.forEach((link) => {
+                link.addEventListener("click", () => {
+                    mobileMenu.classList.add("hidden");
+                    mobileMenuOverlay.classList.remove("active");
+                });
+            });
+
+            // Active navigation highlighting
+            const currentPath = window.location.pathname.split("/").pop();
+            const navLinks = document.querySelectorAll(".nav-link");
+            navLinks.forEach((link) => {
+                if (link.getAttribute("href") === currentPath) {
+                    link.classList.add("active");
+                }
+            });
+
+            // Smooth scrolling for anchor links
+            document.querySelectorAll('a[href^="#"]').forEach((anchor) => {
+                anchor.addEventListener("click", function (e) {
+                    e.preventDefault();
+                    const target = document.querySelector(
+                        this.getAttribute("href"),
+                    );
+                    if (target) {
+                        target.scrollIntoView({
+                            behavior: "smooth",
+                            block: "start",
+                        });
+                    }
+                });
+            });
+        </script>
+    </body>
+</html>

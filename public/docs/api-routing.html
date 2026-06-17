@@ -1,0 +1,933 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Routing API - Forge Engine Documentation</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-core.min.js"></script>
+    <script
+        src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/autoloader/prism-autoloader.min.js"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        .code-block {
+            background: #2d3748;
+            border-radius: 0.5rem;
+        }
+
+        .nav-link.active {
+            background-color: #eef2ff;
+            color: #4f46e5;
+            font-weight: 500;
+        }
+
+        .nav-link.active:hover {
+            background-color: #e0e7ff;
+        }
+
+        .section-anchor {
+            scroll-margin-top: 120px;
+        }
+
+        /* Mobile menu styles */
+        @media (max-width: 640px) {
+            .lg\:w-1\/4 {
+                position: fixed;
+                top: 0;
+                left: -100%;
+                width: 80%;
+                max-width: 320px;
+                height: 100vh;
+                z-index: 50;
+                transition: transform 0.3s ease;
+                background: white;
+                overflow-y: auto;
+            }
+
+            .lg\:w-1\/4.mobile-menu-open {
+                transform: translateX(0);
+            }
+
+            .mobile-menu-overlay {
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                background: rgba(0, 0, 0, 0.5);
+                z-index: 40;
+                display: none;
+            }
+
+            .mobile-menu-overlay.active {
+                display: block;
+            }
+        }
+    </style>
+</head>
+
+<body class="bg-gray-50">
+    <!-- Navigation -->
+    <nav class="bg-white shadow-sm border-b">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-16">
+                <div class="flex items-center">
+                    <div class="flex-shrink-0">
+                        <h1 class="text-xl font-bold text-gray-900">
+                            Forge Engine
+                        </h1>
+                    </div>
+                    <div class="hidden sm:ml-6 sm:flex sm:space-x-8">
+                        <a href="index.html"
+                            class="text-gray-900 inline-flex items-center px-1 pt-1 text-sm font-medium hover:text-blue-600">
+                            Home
+                        </a>
+                        <a href="getting-started.html"
+                            class="text-gray-900 inline-flex items-center px-1 pt-1 text-sm font-medium hover:text-blue-600">
+                            Getting Started
+                        </a>
+                        <a href="core-concepts.html"
+                            class="text-gray-900 inline-flex items-center px-1 pt-1 text-sm font-medium hover:text-blue-600">
+                            Core Concepts
+                        </a>
+                        <a href="modules.html"
+                            class="text-gray-900 inline-flex items-center px-1 pt-1 text-sm font-medium hover:text-blue-600">
+                            Modules
+                        </a>
+                        <a href="api-reference.html"
+                            class="text-blue-600 inline-flex items-center px-1 pt-1 text-sm font-medium border-b-2 border-blue-600">
+                            API Reference
+                        </a>
+                    </div>
+                </div>
+                <div class="flex items-center sm:hidden">
+                    <button id="mobile-menu-btn" class="text-gray-700 hover:text-blue-600" data-mobile-menu-toggle>
+                        <i class="fas fa-bars text-xl"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+        <!-- Mobile menu -->
+        <div id="mobile-menu" class="hidden sm:hidden bg-white border-t">
+            <div class="px-2 pt-2 pb-3 space-y-1">
+                <a href="index.html" class="block px-3 py-2 text-gray-700 hover:text-blue-600">
+                    Home
+                </a>
+                <a href="getting-started.html" class="block px-3 py-2 text-gray-700 hover:text-blue-600">
+                    Getting Started
+                </a>
+                <a href="core-concepts.html" class="block px-3 py-2 text-gray-700 hover:text-blue-600">
+                    Core Concepts
+                </a>
+                <a href="modules.html" class="block px-3 py-2 text-gray-700 hover:text-blue-600">
+                    Modules
+                </a>
+                <a href="api-reference.html" class="block px-3 py-2 text-blue-600">
+                    API Reference
+                </a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Mobile Menu Overlay -->
+    <div id="mobile-menu-overlay" class="mobile-menu-overlay"></div>
+
+    <!-- Main Content -->
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <div class="flex flex-col lg:flex-row gap-8">
+            <!-- Sidebar Navigation -->
+            <div class="lg:w-1/4">
+                <div class="bg-white rounded-lg shadow-sm p-6 sticky top-8">
+                    <h3 class="text-lg font-semibold text-gray-900 mb-4">
+                        API Reference
+                    </h3>
+                    <nav class="space-y-2">
+                        <a href="api-core.html" class="nav-link block px-3 py-2 text-sm text-gray-700 rounded-md hover:text-blue-600">
+                            <i class="fas fa-cogs mr-2"></i>Core Engine
+                        </a>
+                        <a href="api-http.html" class="nav-link block px-3 py-2 text-sm text-gray-700 rounded-md hover:text-blue-600">
+                            <i class="fas fa-globe mr-2"></i>HTTP Layer
+                        </a>
+                        <a href="api-database.html" class="nav-link block px-3 py-2 text-sm text-gray-700 rounded-md hover:text-blue-600">
+                            <i class="fas fa-database mr-2"></i>Database & ORM
+                        </a>
+                        <a href="api-di.html" class="nav-link block px-3 py-2 text-sm text-gray-700 rounded-md hover:text-blue-600">
+                            <i class="fas fa-puzzle-piece mr-2"></i>DI Container
+                        </a>
+                        <a href="api-routing.html" class="nav-link block px-3 py-2 text-sm text-gray-700 rounded-md hover:text-blue-600 active">
+                            <i class="fas fa-route mr-2"></i>Routing
+                        </a>
+                        <a href="api-modules.html" class="nav-link block px-3 py-2 text-sm text-gray-700 rounded-md hover:text-blue-600">
+                            <i class="fas fa-plug mr-2"></i>Module System
+                        </a>
+                        <a href="api-cli.html" class="nav-link block px-3 py-2 text-sm text-gray-700 rounded-md hover:text-blue-600">
+                            <i class="fas fa-terminal mr-2"></i>CLI & Console
+                        </a>
+                        <a href="api-cache.html" class="nav-link block px-3 py-2 text-sm text-gray-700 rounded-md hover:text-blue-600">
+                            <i class="fas fa-memory mr-2"></i>Caching
+                        </a>
+                        <a href="api-validation.html" class="nav-link block px-3 py-2 text-sm text-gray-700 rounded-md hover:text-blue-600">
+                            <i class="fas fa-check-circle mr-2"></i>Validation
+                        </a>
+                        <a href="api-helpers.html" class="nav-link block px-3 py-2 text-sm text-gray-700 rounded-md hover:text-blue-600">
+                            <i class="fas fa-tools mr-2"></i>Helpers & Traits
+                        </a>
+                        <a href="api-events.html" class="nav-link block px-3 py-2 text-sm text-gray-700 rounded-md hover:text-blue-600">
+                            <i class="fas fa-broadcast-tower mr-2"></i>Events
+                        </a>
+                        <a href="api-security.html" class="nav-link block px-3 py-2 text-sm text-gray-700 rounded-md hover:text-blue-600">
+                            <i class="fas fa-shield-alt mr-2"></i>Security
+                        </a>
+                    </nav>
+                </div>
+            </div>
+
+            <!-- Main Content -->
+            <div class="lg:w-3/4">
+                <div class="bg-white rounded-lg shadow-sm p-8">
+                    <h1 class="text-4xl font-bold text-gray-900 mb-6">
+                        Routing API
+                    </h1>
+                    <p class="text-xl text-gray-600 mb-8">
+                        HTTP routing, route matching, middleware, and URL generation. 
+                        These classes provide comprehensive routing functionality including 
+                        parameter binding, middleware chains, and named routes for your Forge Engine applications.
+                    </p>
+
+                    <!-- Router Class -->
+                    <section id="router" class="section-anchor mb-12">
+                        <div class="bg-blue-50 border-l-4 border-blue-500 p-6 mb-8">
+                            <h2 class="text-2xl font-bold text-gray-900 mb-4">
+                                <i class="fas fa-route text-blue-600 mr-3"></i>Router
+                            </h2>
+                            <p class="text-gray-700">
+                                The main router class that manages route registration, matching, and dispatching. 
+                                The Router provides a fluent interface for defining routes with various HTTP methods, 
+                                middleware, and parameter constraints.
+                            </p>
+                        </div>
+
+                        <div class="mb-8">
+                            <h3 class="text-xl font-semibold text-gray-900 mb-4">Basic Route Registration</h3>
+                            
+                            <div class="api-method bg-gray-50 p-4 rounded-lg mb-4">
+                                <h4 class="font-semibold text-lg mb-2">get(string $uri, mixed $action): Route</h4>
+                                <p class="text-gray-600 text-sm mb-3">Register a GET route.</p>
+                                <div class="code-block p-4 text-white rounded">
+                                    <pre><code class="language-php">$router = new Router();
+
+// Simple closure route
+$router->get('/', function() {
+    return 'Welcome to Forge Engine!';
+});
+
+// Controller route
+$router->get('/users', [UserController::class, 'index']);
+
+// Named route
+$router->get('/users', [UserController::class, 'index'])->name('users.index');</code></pre>
+                                </div>
+                            </div>
+
+                            <div class="api-method bg-gray-50 p-4 rounded-lg mb-4">
+                                <h4 class="font-semibold text-lg mb-2">post(string $uri, mixed $action): Route</h4>
+                                <p class="text-gray-600 text-sm mb-3">Register a POST route.</p>
+                                <div class="code-block p-4 text-white rounded">
+                                    <pre><code class="language-php">$router->post('/users', [UserController::class, 'store']);
+$router->post('/login', [AuthController::class, 'login'])->name('auth.login');</code></pre>
+                                </div>
+                            </div>
+
+                            <div class="api-method bg-gray-50 p-4 rounded-lg mb-4">
+                                <h4 class="font-semibold text-lg mb-2">put(string $uri, mixed $action): Route</h4>
+                                <p class="text-gray-600 text-sm mb-3">Register a PUT route.</p>
+                                <div class="code-block p-4 text-white rounded">
+                                    <pre><code class="language-php">$router->put('/users/{id}', [UserController::class, 'update']);
+$router->put('/posts/{id}', [PostController::class, 'update'])->name('posts.update');</code></pre>
+                                </div>
+                            </div>
+
+                            <div class="api-method bg-gray-50 p-4 rounded-lg mb-4">
+                                <h4 class="font-semibold text-lg mb-2">delete(string $uri, mixed $action): Route</h4>
+                                <p class="text-gray-600 text-sm mb-3">Register a DELETE route.</p>
+                                <div class="code-block p-4 text-white rounded">
+                                    <pre><code class="language-php">$router->delete('/users/{id}', [UserController::class, 'destroy']);
+$router->delete('/posts/{id}', [PostController::class, 'destroy'])->name('posts.destroy');</code></pre>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="mb-8">
+                            <h3 class="text-xl font-semibold text-gray-900 mb-4">Route Parameters</h3>
+
+                            <div class="api-method bg-gray-50 p-4 rounded-lg mb-4">
+                                <h4 class="font-semibold text-lg mb-2">Basic Parameters</h4>
+                                <p class="text-gray-600 text-sm mb-3">Define routes with parameters.</p>
+                                <div class="code-block p-4 text-white rounded">
+                                    <pre><code class="language-php">// Required parameter
+$router->get('/users/{id}', function($id) {
+    return "User ID: {$id}";
+});
+
+// Optional parameter
+$router->get('/posts/{id?}', function($id = null) {
+    return $id ? "Post ID: {$id}" : "All posts";
+});
+
+// Multiple parameters
+$router->get('/users/{user}/posts/{post}', function($user, $post) {
+    return "User: {$user}, Post: {$post}";
+});</code></pre>
+                                </div>
+                            </div>
+
+                            <div class="api-method bg-gray-50 p-4 rounded-lg mb-4">
+                                <h4 class="font-semibold text-lg mb-2">Parameter Constraints</h4>
+                                <p class="text-gray-600 text-sm mb-3">Add constraints to route parameters.</p>
+                                <div class="code-block p-4 text-white rounded">
+                                    <pre><code class="language-php">// Numeric constraint
+$router->get('/users/{id}', function($id) {
+    return "User ID: {$id}";
+})->where('id', '[0-9]+');
+
+// Alpha constraint
+$router->get('/posts/{slug}', function($slug) {
+    return "Post slug: {$slug}";
+})->where('slug', '[a-z-]+');
+
+// Multiple constraints
+$router->get('/users/{id}/posts/{slug}', function($id, $slug) {
+    return "User: {$id}, Post: {$slug}";
+})->where([
+    'id' => '[0-9]+',
+    'slug' => '[a-z-]+'
+]);</code></pre>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="mb-8">
+                            <h3 class="text-xl font-semibold text-gray-900 mb-4">Route Groups</h3>
+
+                            <div class="api-method bg-gray-50 p-4 rounded-lg mb-4">
+                                <h4 class="font-semibold text-lg mb-2">group(array $attributes, callable $callback): void</h4>
+                                <p class="text-gray-600 text-sm mb-3">Create a group of routes with shared attributes.</p>
+                                <div class="code-block p-4 text-white rounded">
+                                    <pre><code class="language-php">// Prefix grouping
+$router->group(['prefix' => 'admin'], function($router) {
+    $router->get('/dashboard', [AdminController::class, 'dashboard']);
+    $router->get('/users', [AdminController::class, 'users']);
+    $router->post('/users', [AdminController::class, 'createUser']);
+});
+
+// Middleware grouping
+$router->group(['middleware' => 'auth'], function($router) {
+    $router->get('/profile', [ProfileController::class, 'show']);
+    $router->put('/profile', [ProfileController::class, 'update']);
+    $router->get('/settings', [SettingsController::class, 'index']);
+});
+
+// Namespace grouping
+$router->group(['namespace' => 'App\\Controllers\\Admin'], function($router) {
+    $router->get('/dashboard', 'DashboardController@index');
+    $router->get('/users', 'UserController@index');
+    $router->get('/posts', 'PostController@index');
+});
+
+// Combined grouping
+$router->group([
+    'prefix' => 'api/v1',
+    'middleware' => 'api',
+    'namespace' => 'App\\Controllers\\Api'
+], function($router) {
+    $router->get('/users', 'UserController@index');
+    $router->get('/posts', 'PostController@index');
+    $router->get('/comments', 'CommentController@index');
+});</code></pre>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- Route Class -->
+                    <section id="route" class="section-anchor mb-12">
+                        <div class="bg-green-50 border-l-4 border-green-500 p-6 mb-8">
+                            <h2 class="text-2xl font-bold text-gray-900 mb-4">
+                                <i class="fas fa-link text-green-600 mr-3"></i>Route
+                            </h2>
+                            <p class="text-gray-700">
+                                Represents a single route with its URI, HTTP methods, action, and middleware. 
+                                The Route class provides methods for configuring individual routes with names, 
+                                middleware, and parameter constraints.
+                            </p>
+                        </div>
+
+                        <div class="mb-8">
+                            <h3 class="text-xl font-semibold text-gray-900 mb-4">Route Configuration</h3>
+                            
+                            <div class="api-method bg-gray-50 p-4 rounded-lg mb-4">
+                                <h4 class="font-semibold text-lg mb-2">name(string $name): Route</h4>
+                                <p class="text-gray-600 text-sm mb-3">Give a name to the route for URL generation.</p>
+                                <div class="code-block p-4 text-white rounded">
+                                    <pre><code class="language-php">// Named route
+$router->get('/users/{id}', [UserController::class, 'show'])->name('users.show');
+$router->get('/posts/{slug}', [PostController::class, 'show'])->name('posts.show');
+$router->post('/login', [AuthController::class, 'login'])->name('auth.login');</code></pre>
+                                </div>
+                            </div>
+
+                            <div class="api-method bg-gray-50 p-4 rounded-lg mb-4">
+                                <h4 class="font-semibold text-lg mb-2">middleware(string|array $middleware): Route</h4>
+                                <p class="text-gray-600 text-sm mb-3">Add middleware to the route.</p>
+                                <div class="code-block p-4 text-white rounded">
+                                    <pre><code class="language-php">// Single middleware
+$router->get('/admin', [AdminController::class, 'index'])->middleware('auth');
+
+// Multiple middleware
+$router->get('/admin/users', [AdminController::class, 'users'])
+    ->middleware(['auth', 'admin']);
+
+// Middleware with parameters
+$router->get('/api/users', [ApiController::class, 'users'])
+    ->middleware('throttle:60,1'); // 60 requests per minute</code></pre>
+                                </div>
+                            </div>
+
+                            <div class="api-method bg-gray-50 p-4 rounded-lg mb-4">
+                                <h4 class="font-semibold text-lg mb-2">where(string $parameter, string $constraint): Route</h4>
+                                <p class="text-gray-600 text-sm mb-3">Add a constraint to a route parameter.</p>
+                                <div class="code-block p-4 text-white rounded">
+                                    <pre><code class="language-php">$router->get('/users/{id}', function($id) {
+    return "User ID: {$id}";
+})->where('id', '[0-9]+');
+
+$router->get('/posts/{slug}', function($slug) {
+    return "Post slug: {$slug}";
+})->where('slug', '[a-z0-9-]+');</code></pre>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="mb-8">
+                            <h3 class="text-xl font-semibold text-gray-900 mb-4">Route Information</h3>
+
+                            <div class="api-method bg-gray-50 p-4 rounded-lg mb-4">
+                                <h4 class="font-semibold text-lg mb-2">getName(): ?string</h4>
+                                <p class="text-gray-600 text-sm mb-3">Get the name of the route.</p>
+                                <div class="code-block p-4 text-white rounded">
+                                    <pre><code class="language-php">$route = $router->get('/users', [UserController::class, 'index'])->name('users.index');
+$name = $route->getName(); // "users.index"</code></pre>
+                                </div>
+                            </div>
+
+                            <div class="api-method bg-gray-50 p-4 rounded-lg mb-4">
+                                <h4 class="font-semibold text-lg mb-2">getUri(): string</h4>
+                                <p class="text-gray-600 text-sm mb-3">Get the URI pattern of the route.</p>
+                                <div class="code-block p-4 text-white rounded">
+                                    <pre><code class="language-php">$route = $router->get('/users/{id}', [UserController::class, 'show']);
+$uri = $route->getUri(); // "/users/{id}"</code></pre>
+                                </div>
+                            </div>
+
+                            <div class="api-method bg-gray-50 p-4 rounded-lg mb-4">
+                                <h4 class="font-semibold text-lg mb-2">getAction(): mixed</h4>
+                                <p class="text-gray-600 text-sm mb-3">Get the action of the route.</p>
+                                <div class="code-block p-4 text-white rounded">
+                                    <pre><code class="language-php">$route = $router->get('/users', [UserController::class, 'index']);
+$action = $route->getAction(); // [UserController::class, "index"]</code></pre>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- RouteCollection Class -->
+                    <section id="route-collection" class="section-anchor mb-12">
+                        <div class="bg-purple-50 border-l-4 border-purple-500 p-6 mb-8">
+                            <h2 class="text-2xl font-bold text-gray-900 mb-4">
+                                <i class="fas fa-list text-purple-600 mr-3"></i>RouteCollection
+                            </h2>
+                            <p class="text-gray-700">
+                                Manages a collection of routes and provides methods for matching requests 
+                                against registered routes. The RouteCollection handles route compilation, 
+                                parameter extraction, and route matching logic.
+                            </p>
+                        </div>
+
+                        <div class="mb-8">
+                            <h3 class="text-xl font-semibold text-gray-900 mb-4">Route Collection Management</h3>
+                            
+                            <div class="api-method bg-gray-50 p-4 rounded-lg mb-4">
+                                <h4 class="font-semibold text-lg mb-2">add(Route $route): void</h4>
+                                <p class="text-gray-600 text-sm mb-3">Add a route to the collection.</p>
+                                <div class="code-block p-4 text-white rounded">
+                                    <pre><code class="language-php">$collection = new RouteCollection();
+
+// Create and add route
+$route = new Route('GET', '/users', [UserController::class, 'index']);
+$collection->add($route);
+
+// Add named route
+$route = new Route('GET', '/users/{id}', [UserController::class, 'show']);
+$route->name('users.show');
+$collection->add($route);</code></pre>
+                                </div>
+                            </div>
+
+                            <div class="api-method bg-gray-50 p-4 rounded-lg mb-4">
+                                <h4 class="font-semibold text-lg mb-2">match(Request $request): ?Route</h4>
+                                <p class="text-gray-600 text-sm mb-3">Find a matching route for the given request.</p>
+                                <div class="code-block p-4 text-white rounded">
+                                    <pre><code class="language-php">$request = new Request('GET', '/users/123');
+$route = $collection->match($request);
+
+if ($route) {
+    // Route found
+    $parameters = $route->parameters();
+    $controller = $route->getAction();
+} else {
+    // No matching route
+    throw new NotFoundException();
+}</code></pre>
+                                </div>
+                            </div>
+
+                            <div class="api-method bg-gray-50 p-4 rounded-lg mb-4">
+                                <h4 class="font-semibold text-lg mb-2">getByName(string $name): ?Route</h4>
+                                <p class="text-gray-600 text-sm mb-3">Get a route by its name.</p>
+                                <div class="code-block p-4 text-white rounded">
+                                    <pre><code class="language-php">$route = $collection->getByName('users.show');
+if ($route) {
+    $url = $route->url(['id' => 123]);
+}</code></pre>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="mb-8">
+                            <h3 class="text-xl font-semibold text-gray-900 mb-4">Route Compilation</h3>
+
+                            <div class="api-method bg-gray-50 p-4 rounded-lg mb-4">
+                                <h4 class="font-semibold text-lg mb-2">compile(): void</h4>
+                                <p class="text-gray-600 text-sm mb-3">Compile all routes for faster matching.</p>
+                                <div class="code-block p-4 text-white rounded">
+                                    <pre><code class="language-php">// Add routes
+$collection->add($route1);
+$collection->add($route2);
+$collection->add($route3);
+
+// Compile for performance
+$collection->compile();
+
+// Now matching will be faster
+$route = $collection->match($request);</code></pre>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- URL Generation -->
+                    <section id="url-generation" class="section-anchor mb-12">
+                        <div class="bg-orange-50 border-l-4 border-orange-500 p-6 mb-8">
+                            <h2 class="text-2xl font-bold text-gray-900 mb-4">
+                                <i class="fas fa-link text-orange-600 mr-3"></i>URL Generation
+                            </h2>
+                            <p class="text-gray-700">
+                                Generate URLs for named routes with parameters. The routing system provides 
+                                methods for creating URLs to named routes, making it easy to generate 
+                                links in your application.
+                            </p>
+                        </div>
+
+                        <div class="mb-8">
+                            <h3 class="text-xl font-semibold text-gray-900 mb-4">Generating URLs</h3>
+                            
+                            <div class="api-method bg-gray-50 p-4 rounded-lg mb-4">
+                                <h4 class="font-semibold text-lg mb-2">url(string $name, array $parameters = []): string</h4>
+                                <p class="text-gray-600 text-sm mb-3">Generate a URL for a named route.</p>
+                                <div class="code-block p-4 text-white rounded">
+                                    <pre><code class="language-php">// Define named routes
+$router->get('/users/{id}', [UserController::class, 'show'])->name('users.show');
+$router->get('/posts/{slug}/comments/{id}', [CommentController::class, 'show'])
+    ->name('posts.comments.show');
+
+// Generate URLs
+$url = $router->url('users.show', ['id' => 123]); // "/users/123"
+$url = $router->url('posts.comments.show', ['slug' => 'hello-world', 'id' => 456]); // "/posts/hello-world/comments/456"</code></pre>
+                                </div>
+                            </div>
+
+                            <div class="api-method bg-gray-50 p-4 rounded-lg mb-4">
+                                <h4 class="font-semibold text-lg mb-2">route(string $name, array $parameters = []): string</h4>
+                                <p class="text-gray-600 text-sm mb-3">Alias for url() method.</p>
+                                <div class="code-block p-4 text-white rounded">
+                                    <pre><code class="language-php">$url = $router->route('users.show', ['id' => 123]); // "/users/123"
+$url = $router->route('users.index'); // "/users"</code></pre>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="mb-8">
+                            <h3 class="text-xl font-semibold text-gray-900 mb-4">Current Route Information</h3>
+
+                            <div class="api-method bg-gray-50 p-4 rounded-lg mb-4">
+                                <h4 class="font-semibold text-lg mb-2">current(): ?Route</h4>
+                                <p class="text-gray-600 text-sm mb-3">Get the current matched route.</p>
+                                <div class="code-block p-4 text-white rounded">
+                                    <pre><code class="language-php">$currentRoute = $router->current();
+if ($currentRoute) {
+    $name = $currentRoute->getName();
+    $uri = $currentRoute->getUri();
+    $parameters = $currentRoute->parameters();
+}</code></pre>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- Middleware Integration -->
+                    <section id="middleware" class="section-anchor mb-12">
+                        <div class="bg-red-50 border-l-4 border-red-500 p-6 mb-8">
+                            <h2 class="text-2xl font-bold text-gray-900 mb-4">
+                                <i class="fas fa-shield-alt text-red-600 mr-3"></i>Middleware Integration
+                            </h2>
+                            <p class="text-gray-700">
+                                Middleware provides a convenient mechanism for filtering HTTP requests entering 
+                                your application. Routes can be protected with middleware for authentication, 
+                                rate limiting, and other cross-cutting concerns.
+                            </p>
+                        </div>
+
+                        <div class="mb-8">
+                            <h3 class="text-xl font-semibold text-gray-900 mb-4">Middleware Definition</h3>
+                            
+                            <div class="api-method bg-gray-50 p-4 rounded-lg mb-4">
+                                <h4 class="font-semibold text-lg mb-2">Creating Middleware</h4>
+                                <p class="text-gray-600 text-sm mb-3">Define middleware classes that implement the middleware interface.</p>
+                                <div class="code-block p-4 text-white rounded">
+                                    <pre><code class="language-php">namespace App\Middleware;
+
+use Forge\Http\Request;
+use Forge\Http\Response;
+
+class AuthMiddleware
+{
+    public function handle(Request $request, callable $next): Response
+    {
+        if (!$request->user()) {
+            return new Response('Unauthorized', 401);
+        }
+        
+        return $next($request);
+    }
+}
+
+class RateLimitMiddleware
+{
+    private $maxAttempts = 60;
+    private $decayMinutes = 1;
+    
+    public function handle(Request $request, callable $next): Response
+    {
+        $key = $this->resolveRequestSignature($request);
+        
+        if ($this->tooManyAttempts($key, $this->maxAttempts)) {
+            return new Response('Too Many Attempts', 429);
+        }
+        
+        $this->hit($key, $this->decayMinutes * 60);
+        
+        $response = $next($request);
+        
+        return $this->addHeaders($response, $key, $this->maxAttempts);
+    }
+    
+    private function resolveRequestSignature(Request $request): string
+    {
+        return 'rate_limit:' . $request->ip();
+    }
+    
+    private function tooManyAttempts(string $key, int $maxAttempts): bool
+    {
+        return $this->attempts($key) >= $maxAttempts;
+    }
+    
+    private function hit(string $key, int $decaySeconds): void
+    {
+        // Implementation for rate limiting
+    }
+    
+    private function attempts(string $key): int
+    {
+        // Implementation to get current attempts
+        return 0;
+    }
+    
+    private function addHeaders(Response $response, string $key, int $maxAttempts): Response
+    {
+        $response->headers['X-RateLimit-Limit'] = $maxAttempts;
+        $response->headers['X-RateLimit-Remaining'] = $maxAttempts - $this->attempts($key);
+        
+        return $response;
+    }
+}</code></pre>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="mb-8">
+                            <h3 class="text-xl font-semibold text-gray-900 mb-4">Middleware Registration</h3>
+
+                            <div class="api-method bg-gray-50 p-4 rounded-lg mb-4">
+                                <h4 class="font-semibold text-lg mb-2">Registering Middleware</h4>
+                                <p class="text-gray-600 text-sm mb-3">Register middleware in the application.</p>
+                                <div class="code-block p-4 text-white rounded">
+                                    <pre><code class="language-php">// In service provider or bootstrap
+$container->bind('middleware.auth', AuthMiddleware::class);
+$container->bind('middleware.rate_limit', RateLimitMiddleware::class);
+$container->bind('middleware.cors', CorsMiddleware::class);
+
+// Register middleware groups
+$container->bind('middleware.web', [
+    'middleware.cors',
+    'middleware.csrf'
+]);
+
+$container->bind('middleware.api', [
+    'middleware.cors',
+    'middleware.rate_limit'
+]);</code></pre>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- Usage Examples -->
+                    <section id="examples" class="section-anchor mb-12">
+                        <div class="bg-gray-50 border-l-4 border-gray-500 p-6 mb-8">
+                            <h2 class="text-2xl font-bold text-gray-900 mb-4">
+                                <i class="fas fa-code text-gray-600 mr-3"></i>Usage Examples
+                            </h2>
+                            <p class="text-gray-700">
+                                Common patterns and examples for working with the Routing system.
+                            </p>
+                        </div>
+
+                        <div class="mb-8">
+                            <h3 class="text-xl font-semibold text-gray-900 mb-4">Basic Routing Setup</h3>
+                            <div class="code-block p-4 text-white rounded">
+                                <pre><code class="language-php">// routes.php
+use Forge\Routing\Router;
+use Forge\Routing\RouteCollection;
+
+$router = new Router();
+$collection = new RouteCollection();
+
+// Define routes
+$router->get('/', function() {
+    return view('home');
+})->name('home');
+
+$router->get('/about', function() {
+    return view('about');
+})->name('about');
+
+$router->get('/contact', function() {
+    return view('contact');
+})->name('contact');
+
+// User routes
+$router->get('/users', [UserController::class, 'index'])->name('users.index');
+$router->get('/users/{id}', [UserController::class, 'show'])->name('users.show');
+$router->get('/users/create', [UserController::class, 'create'])->name('users.create');
+$router->post('/users', [UserController::class, 'store'])->name('users.store');
+$router->get('/users/{id}/edit', [UserController::class, 'edit'])->name('users.edit');
+$router->put('/users/{id}', [UserController::class, 'update'])->name('users.update');
+$router->delete('/users/{id}', [UserController::class, 'destroy'])->name('users.destroy');
+
+// API routes
+$router->group([
+    'prefix' => 'api/v1',
+    'middleware' => 'api'
+], function($router) {
+    $router->get('/users', [ApiUserController::class, 'index']);
+    $router->get('/users/{id}', [ApiUserController::class, 'show']);
+    $router->post('/users', [ApiUserController::class, 'store']);
+    $router->put('/users/{id}', [ApiUserController::class, 'update']);
+    $router->delete('/users/{id}', [ApiUserController::class, 'destroy']);
+});</code></pre>
+                            </div>
+                        </div>
+
+                        <div class="mb-8">
+                            <h3 class="text-xl font-semibold text-gray-900 mb-4">Advanced Route Configuration</h3>
+                            <div class="code-block p-4 text-white rounded">
+                                <pre><code class="language-php">// Advanced routing with constraints and middleware
+$router->get('/posts/{year}/{month}/{slug}', [PostController::class, 'show'])
+    ->name('posts.archive')
+    ->where([
+        'year' => '[0-9]{4}',
+        'month' => '[0-9]{2}',
+        'slug' => '[a-z0-9-]+'
+    ]);
+
+// Protected routes with multiple middleware
+$router->group(['middleware' => ['auth', 'verified']], function($router) {
+    $router->get('/dashboard', [DashboardController::class, 'index']);
+    $router->get('/profile', [ProfileController::class, 'show']);
+    $router->put('/profile', [ProfileController::class, 'update']);
+    
+    $router->group(['prefix' => 'settings'], function($router) {
+        $router->get('/', [SettingsController::class, 'index']);
+        $router->put('/general', [SettingsController::class, 'updateGeneral']);
+        $router->put('/security', [SettingsController::class, 'updateSecurity']);
+        $router->put('/notifications', [SettingsController::class, 'updateNotifications']);
+    });
+});
+
+// Admin routes with role-based middleware
+$router->group([
+    'prefix' => 'admin',
+    'middleware' => ['auth', 'role:admin']
+], function($router) {
+    $router->get('/dashboard', [AdminDashboardController::class, 'index']);
+    $router->resource('users', AdminUserController::class);
+    $router->resource('posts', AdminPostController::class);
+    $router->get('/analytics', [AnalyticsController::class, 'index']);
+});
+
+// Resource routes (RESTful)
+$router->resource('posts', PostController::class);
+$router->resource('comments', CommentController::class)->only(['index', 'show', 'store', 'destroy']);
+$router->resource('tags', TagController::class)->except(['create', 'edit']);</code></pre>
+                            </div>
+                        </div>
+
+                        <div class="mb-8">
+                            <h3 class="text-xl font-semibold text-gray-900 mb-4">URL Generation in Views</h3>
+                            <div class="code-block p-4 text-white rounded">
+                                <pre><code class="language-php">// In PHP views
+<a href="<?= $router->url('home') ?>">Home</a>
+<a href="<?= $router->url('users.show', ['id' => $user->id]) ?>">View User</a>
+<a href="<?= $router->url('posts.show', ['slug' => $post->slug]) ?>">Read Post</a>
+
+// In templates with helper function
+<a href="{{ url('home') }}">Home</a>
+<a href="{{ url('users.show', ['id' => $user->id]) }}">View User</a>
+<a href="{{ url('posts.archive', ['year' => 2023, 'month' => '12', 'slug' => 'hello-world']) }}">Post</a>
+
+// With route helper
+<a href="{{ route('users.index') }}">All Users</a>
+<a href="{{ route('users.create') }}">Create User</a>
+<a href="{{ route('users.edit', ['id' => $user->id]) }}">Edit User</a>
+
+// Conditional URLs
+<?php if ($router->has('admin.dashboard')): ?>
+    <a href="{{ url('admin.dashboard') }}">Admin Dashboard</a>
+<?php endif; ?></code></pre>
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- Best Practices -->
+                    <section id="best-practices" class="section-anchor mb-12">
+                        <div class="bg-yellow-50 border-l-4 border-yellow-500 p-6 mb-8">
+                            <h2 class="text-2xl font-bold text-gray-900 mb-4">
+                                <i class="fas fa-lightbulb text-yellow-600 mr-3"></i>Best Practices
+                            </h2>
+                            <p class="text-gray-700">
+                                Recommended patterns and guidelines for working with the Routing system.
+                            </p>
+                        </div>
+
+                        <div class="grid md:grid-cols-2 gap-6">
+                            <div class="bg-white border border-gray-200 p-6 rounded-lg">
+                                <h4 class="font-semibold text-gray-900 mb-3">
+                                    <i class="fas fa-check-circle text-green-600 mr-2"></i>Do's
+                                </h4>
+                                <ul class="text-sm text-gray-600 space-y-2">
+                                    <li>• Use named routes for URL generation</li>
+                                    <li>• Group related routes with prefixes</li>
+                                    <li>• Use parameter constraints for validation</li>
+                                    <li>• Keep routes RESTful when possible</li>
+                                    <li>• Use middleware for cross-cutting concerns</li>
+                                    <li>• Document complex route patterns</li>
+                                    <li>• Use route caching in production</li>
+                                    <li>• Keep route files organized and modular</li>
+                                </ul>
+                            </div>
+
+                            <div class="bg-white border border-gray-200 p-6 rounded-lg">
+                                <h4 class="font-semibold text-gray-900 mb-3">
+                                    <i class="fas fa-times-circle text-red-600 mr-2"></i>Don'ts
+                                </h4>
+                                <ul class="text-sm text-gray-600 space-y-2">
+                                    <li>• Don't put business logic in routes</li>
+                                    <li>• Don't use too many nested parameters</li>
+                                    <li>• Don't ignore HTTP method conventions</li>
+                                    <li>• Don't create overly complex patterns</li>
+                                    <li>• Don't forget to handle 404 errors</li>
+                                    <li>• Don't use magic strings for route names</li>
+                                    <li>• Don't ignore route performance</li>
+                                    <li>• Don't create circular route dependencies</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </section>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="bg-white border-t mt-16">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+            <div class="text-center text-gray-600">
+                <p class="text-sm">
+                    Forge Engine Documentation - Routing API
+                </p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Mobile menu toggle
+        const mobileMenuBtn = document.getElementById('mobile-menu-btn');
+        const mobileMenu = document.getElementById('mobile-menu');
+        const mobileMenuOverlay = document.getElementById('mobile-menu-overlay');
+
+        function toggleMobileMenu() {
+            mobileMenu.classList.toggle('hidden');
+            mobileMenuOverlay.classList.toggle('active');
+        }
+
+        if (mobileMenuBtn) {
+            mobileMenuBtn.addEventListener('click', toggleMobileMenu);
+        }
+
+        if (mobileMenuOverlay) {
+            mobileMenuOverlay.addEventListener('click', toggleMobileMenu);
+        }
+
+        // Close mobile menu when clicking on links
+        const mobileMenuLinks = mobileMenu.querySelectorAll('a');
+        mobileMenuLinks.forEach(link => {
+            link.addEventListener('click', () => {
+                mobileMenu.classList.add('hidden');
+                mobileMenuOverlay.classList.remove('active');
+            });
+        });
+
+        // Active navigation highlighting
+        const currentPath = window.location.pathname.split('/').pop();
+        const navLinks = document.querySelectorAll('.nav-link');
+        navLinks.forEach(link => {
+            if (link.getAttribute('href') === currentPath) {
+                link.classList.add('active');
+            }
+        });
+    </script>
+</body>
+
+</html>

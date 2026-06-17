@@ -1,0 +1,1849 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Helpers & Traits API - Forge Engine Documentation</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-core.min.js"></script>
+    <script
+        src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/autoloader/prism-autoloader.min.js"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        .code-block {
+            background: #2d3748;
+            border-radius: 0.5rem;
+        }
+
+        .nav-link.active {
+            background-color: #eef2ff;
+            color: #4f46e5;
+            font-weight: 500;
+        }
+
+        .nav-link.active:hover {
+            background-color: #e0e7ff;
+        }
+
+        .section-anchor {
+            scroll-margin-top: 120px;
+        }
+
+        /* Mobile menu styles */
+        @media (max-width: 640px) {
+            .lg\:w-1\/4 {
+                position: fixed;
+                top: 0;
+                left: -100%;
+                width: 80%;
+                max-width: 320px;
+                height: 100vh;
+                z-index: 50;
+                transition: transform 0.3s ease;
+                background: white;
+                overflow-y: auto;
+            }
+
+            .lg\:w-1\/4.mobile-menu-open {
+                transform: translateX(0);
+            }
+
+            .mobile-menu-overlay {
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                background: rgba(0, 0, 0, 0.5);
+                z-index: 40;
+                display: none;
+            }
+
+            .mobile-menu-overlay.active {
+                display: block;
+            }
+        }
+    </style>
+</head>
+
+<body class="bg-gray-50">
+    <!-- Navigation -->
+    <nav class="bg-white shadow-sm border-b">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-16">
+                <div class="flex items-center">
+                    <div class="flex-shrink-0">
+                        <h1 class="text-xl font-bold text-gray-900">
+                            Forge Engine
+                        </h1>
+                    </div>
+                    <div class="hidden sm:ml-6 sm:flex sm:space-x-8">
+                        <a href="index.html"
+                            class="text-gray-900 inline-flex items-center px-1 pt-1 text-sm font-medium hover:text-blue-600">
+                            Home
+                        </a>
+                        <a href="getting-started.html"
+                            class="text-gray-900 inline-flex items-center px-1 pt-1 text-sm font-medium hover:text-blue-600">
+                            Getting Started
+                        </a>
+                        <a href="core-concepts.html"
+                            class="text-gray-900 inline-flex items-center px-1 pt-1 text-sm font-medium hover:text-blue-600">
+                            Core Concepts
+                        </a>
+                        <a href="modules.html"
+                            class="text-gray-900 inline-flex items-center px-1 pt-1 text-sm font-medium hover:text-blue-600">
+                            Modules
+                        </a>
+                        <a href="api-reference.html"
+                            class="text-blue-600 inline-flex items-center px-1 pt-1 text-sm font-medium border-b-2 border-blue-600">
+                            API Reference
+                        </a>
+                    </div>
+                </div>
+                <div class="flex items-center sm:hidden">
+                    <button id="mobile-menu-btn" class="text-gray-700 hover:text-blue-600" data-mobile-menu-toggle>
+                        <i class="fas fa-bars text-xl"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+        <!-- Mobile menu -->
+        <div id="mobile-menu" class="hidden sm:hidden bg-white border-t">
+            <div class="px-2 pt-2 pb-3 space-y-1">
+                <a href="index.html" class="block px-3 py-2 text-gray-700 hover:text-blue-600">
+                    Home
+                </a>
+                <a href="getting-started.html" class="block px-3 py-2 text-gray-700 hover:text-blue-600">
+                    Getting Started
+                </a>
+                <a href="core-concepts.html" class="block px-3 py-2 text-gray-700 hover:text-blue-600">
+                    Core Concepts
+                </a>
+                <a href="modules.html" class="block px-3 py-2 text-gray-700 hover:text-blue-600">
+                    Modules
+                </a>
+                <a href="api-reference.html" class="block px-3 py-2 text-blue-600">
+                    API Reference
+                </a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Mobile Menu Overlay -->
+    <div id="mobile-menu-overlay" class="mobile-menu-overlay"></div>
+
+    <!-- Main Content -->
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <div class="flex flex-col lg:flex-row gap-8">
+            <!-- Sidebar Navigation -->
+            <div class="lg:w-1/4">
+                <div class="bg-white rounded-lg shadow-sm p-6 sticky top-8">
+                    <h3 class="text-lg font-semibold text-gray-900 mb-4">
+                        API Reference
+                    </h3>
+                    <nav class="space-y-2">
+                        <a href="api-core.html"
+                            class="nav-link block px-3 py-2 text-sm text-gray-700 rounded-md hover:text-blue-600">
+                            <i class="fas fa-cogs mr-2"></i>Core Engine
+                        </a>
+                        <a href="api-http.html"
+                            class="nav-link block px-3 py-2 text-sm text-gray-700 rounded-md hover:text-blue-600">
+                            <i class="fas fa-globe mr-2"></i>HTTP Layer
+                        </a>
+                        <a href="api-database.html"
+                            class="nav-link block px-3 py-2 text-sm text-gray-700 rounded-md hover:text-blue-600">
+                            <i class="fas fa-database mr-2"></i>Database & ORM
+                        </a>
+                        <a href="api-di.html"
+                            class="nav-link block px-3 py-2 text-sm text-gray-700 rounded-md hover:text-blue-600">
+                            <i class="fas fa-puzzle-piece mr-2"></i>DI Container
+                        </a>
+                        <a href="api-routing.html"
+                            class="nav-link block px-3 py-2 text-sm text-gray-700 rounded-md hover:text-blue-600">
+                            <i class="fas fa-route mr-2"></i>Routing
+                        </a>
+                        <a href="api-modules.html"
+                            class="nav-link block px-3 py-2 text-sm text-gray-700 rounded-md hover:text-blue-600">
+                            <i class="fas fa-plug mr-2"></i>Module System
+                        </a>
+                        <a href="api-cli.html"
+                            class="nav-link block px-3 py-2 text-sm text-gray-700 rounded-md hover:text-blue-600">
+                            <i class="fas fa-terminal mr-2"></i>CLI & Console
+                        </a>
+                        <a href="api-cache.html"
+                            class="nav-link block px-3 py-2 text-sm text-gray-700 rounded-md hover:text-blue-600">
+                            <i class="fas fa-memory mr-2"></i>Caching
+                        </a>
+                        <a href="api-validation.html"
+                            class="nav-link block px-3 py-2 text-sm text-gray-700 rounded-md hover:text-blue-600">
+                            <i class="fas fa-check-circle mr-2"></i>Validation
+                        </a>
+                        <a href="api-helpers.html"
+                            class="nav-link block px-3 py-2 text-sm text-gray-700 rounded-md hover:text-blue-600 active">
+                            <i class="fas fa-tools mr-2"></i>Helpers & Traits
+                        </a>
+                        <a href="api-events.html"
+                            class="nav-link block px-3 py-2 text-sm text-gray-700 rounded-md hover:text-blue-600">
+                            <i class="fas fa-broadcast-tower mr-2"></i>Events
+                        </a>
+                        <a href="api-security.html"
+                            class="nav-link block px-3 py-2 text-sm text-gray-700 rounded-md hover:text-blue-600">
+                            <i class="fas fa-shield-alt mr-2"></i>Security
+                        </a>
+                    </nav>
+                </div>
+            </div>
+
+            <!-- Main Content -->
+            <div class="lg:w-3/4">
+                <div class="bg-white rounded-lg shadow-sm p-8">
+                    <h1 class="text-4xl font-bold text-gray-900 mb-6">
+                        Helpers & Traits API
+                    </h1>
+                    <p class="text-xl text-gray-600 mb-8">
+                        Utility functions, helper classes, and reusable traits that provide common functionality across
+                        the framework.
+                        These tools simplify development by offering ready-to-use implementations for string
+                        manipulation, array operations,
+                        file handling, and more.
+                    </p>
+
+                    <!-- String Helpers -->
+                    <section id="string-helpers" class="section-anchor mb-12">
+                        <div class="bg-blue-50 border-l-4 border-blue-500 p-6 mb-8">
+                            <h2 class="text-2xl font-bold text-gray-900 mb-4">
+                                <i class="fas fa-font text-blue-600 mr-3"></i>String Helpers
+                            </h2>
+                            <p class="text-gray-700">
+                                Comprehensive string manipulation utilities including case conversion, slug generation,
+                                text truncation, and advanced string operations with support for multibyte characters
+                                and internationalization.
+                            </p>
+                        </div>
+
+                        <div class="mb-8">
+                            <h3 class="text-xl font-semibold text-gray-900 mb-4">String Manipulation</h3>
+
+                            <div class="api-method bg-gray-50 p-4 rounded-lg mb-4">
+                                <h4 class="font-semibold text-lg mb-2">Basic String Operations</h4>
+                                <p class="text-gray-600 text-sm mb-3">Common string manipulation functions with
+                                    multibyte support.</p>
+                                <div class="code-block p-4 text-white rounded">
+                                    <pre><code class="language-php">use Forge\Support\Str;
+
+// String creation and conversion
+Str::camel('foo_bar');                    // fooBar
+Str::snake('fooBar');                      // foo_bar
+Str::kebab('fooBar');                      // foo-bar
+Str::studly('foo_bar');                   // FooBar
+Str::title('hello world');                // Hello World
+Str::headline('forge_engine_is_awesome'); // Forge Engine Is Awesome
+
+// Case conversion
+Str::upper('hello world');                // HELLO WORLD
+Str::lower('HELLO WORLD');                // hello world
+Str::ucfirst('hello world');               // Hello world
+Str::lcfirst('Hello World');               // hello World
+Str::ucwords('hello world');               // Hello World
+
+// String information
+Str::length('Hello World');                // 11
+Str::length('こんにちは');                  // 5 (multibyte support)
+Str::contains('Hello World', 'World');    // true
+Str::contains('Hello World', ['foo', 'World']); // true
+Str::startsWith('Hello World', 'Hello');  // true
+Str::endsWith('Hello World', 'World');    // true
+
+// String modification
+Str::replace('Hello World', 'World', 'Forge'); // Hello Forge
+Str::replaceArray('Hello World', ['World' => 'Forge']); // Hello Forge
+Str::remove('Hello World', ' ');           // HelloWorld
+Str::before('hello@forge.com', '@');      // hello
+Str::after('hello@forge.com', '@');       // forge.com
+Str::between('hello@forge.com', '@', '.'); // forge
+
+// Advanced string operations
+Str::padLeft('5', 3, '0');               // 005
+Str::padRight('5', 3, '0');              // 500
+Str::padBoth('5', 3, '0');               // 050
+Str::repeat('Hello', 3);                  // HelloHelloHello
+Str::reverse('Hello World');              // dlroW olleH
+Str::shuffle('Hello World');              // random permutation
+
+// Multibyte string operations
+Str::mbLength('こんにちは世界');           // 7
+Str::mbSubstr('こんにちは世界', 0, 5);     // こんにちは
+Str::mbStrpos('こんにちは世界', '世界');   // 5
+Str::mbStrrpos('こんにちは世界', 'に');    // 2
+
+// Encoding and decoding
+Str::base64Encode('Hello World');         // SGVsbG8gV29ybGQ=
+Str::base64Decode('SGVsbG8gV29ybGQ=');   // Hello World
+Str::urlEncode('hello world@forge');     // hello+world%40forge
+Str::urlDecode('hello+world%40forge');   // hello world@forge
+Str::htmlEncode('<script></script>'); // &lt;script&gt;alert(&quot;XSS&quot;)&lt;/script&gt;
+Str::htmlDecode('&lt;script&gt;alert(&quot;XSS&quot;)&lt;/script&gt;'); // <script></script>
+
+// String validation
+Str::is('Hello World', 'Hello*');        // true (wildcard pattern)
+Str::is('user@example.com', '*.com');     // true
+Str::isUuid('550e8400-e29b-41d4-a716-446655440000'); // true
+Str::isJson('{"key": "value"}');          // true
+Str::isBase64('SGVsbG8gV29ybGQ=');       // true
+Str::isEmail('user@example.com');        // true
+Str::isUrl('https://example.com');        // true
+Str::isIp('192.168.1.1');                // true
+Str::isIpv4('192.168.1.1');              // true
+Str::isIpv6('2001:0db8:85a3:0000:0000:8a2e:0370:7334'); // true</code></pre>
+                                </div>
+                            </div>
+
+                            <div class="api-method bg-gray-50 p-4 rounded-lg mb-4">
+                                <h4 class="font-semibold text-lg mb-2">Slug Generation and SEO</h4>
+                                <p class="text-gray-600 text-sm mb-3">Generate URL-friendly slugs and handle SEO-related
+                                    string operations.</p>
+                                <div class="code-block p-4 text-white rounded">
+                                    <pre><code class="language-php">// Slug generation
+Str::slug('Hello World!');                // hello-world
+Str::slug('Café & Restaurant');           // cafe-restaurant
+Str::slug('日本語のタイトル');             // (transliterated)
+Str::slug('Hello World!', '_');          // hello_world
+Str::slug('Hello World!', '');            // helloworld
+
+// Advanced slug with options
+Str::slug('Hello World!', '-', [
+    'locale' => 'en',
+    'transliterate' => true,
+    'maxLength' => 50,
+    'unique' => true
+]);
+
+// Generate unique slug
+Str::uniqueSlug('Hello World', 'posts', 'slug'); // hello-world-2
+Str::uniqueSlug('Hello World', 'posts', 'slug', 'id', 123); // exclude current record
+
+// SEO-friendly title generation
+Str::seoTitle('hello_world_this_is_a_test'); // Hello World This Is A Test
+Str::seoDescription('This is a long text that will be truncated for meta description...', 160);
+
+// Keyword extraction
+Str::keywords('PHP is a popular programming language for web development', 5);
+// ['php', 'popular', 'programming', 'language', 'web']
+
+// Meta tag generation
+Str::metaTitle('Hello World', ' | My Website'); // Hello World | My Website
+Str::metaDescription('This is a long text that should be truncated to fit meta description requirements...', 160);
+
+// URL-friendly string conversion
+Str::urlFriendly('Hello World! How are you?'); // hello-world-how-are-you
+Str::filename('My Document v1.2.3.pdf');     // my-document-v1-2-3-pdf
+
+// Generate excerpt
+Str::excerpt('This is a long text that will be truncated to create an excerpt...', 50);
+// This is a long text that will be truncated...
+
+// Word count and reading time
+Str::wordCount('Hello world, this is a test.'); // 6
+Str::readingTime('Long article text here...');  // 5 (minutes)
+Str::readingTime('Short text', 'seconds');      // 30 (seconds)
+
+// Generate hashtags
+Str::hashtags('PHP Laravel Framework Web Development'); // #PHP #Laravel #Framework #Web #Development
+Str::hashtags('PHP Laravel Framework', '#'); // #PHP#Laravel#Framework</code></pre>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="mb-8">
+                            <h3 class="text-xl font-semibold text-gray-900 mb-4">Advanced String Operations</h3>
+
+                            <div class="api-method bg-gray-50 p-4 rounded-lg mb-4">
+                                <h4 class="font-semibold text-lg mb-2">Text Processing and Analysis</h4>
+                                <p class="text-gray-600 text-sm mb-3">Advanced text processing, analysis, and
+                                    transformation functions.</p>
+                                <div class="code-block p-4 text-white rounded">
+                                    <pre><code class="language-php">// Text truncation
+Str::limit('Hello World', 5);             // Hello...
+Str::limit('Hello World', 5, '***');     // Hello***
+Str::words('Hello beautiful world', 2);   // Hello beautiful...
+Str::words('Hello beautiful world', 2, ' [...]'); // Hello beautiful [...]
+
+// Smart truncation (preserves words)
+Str::truncate('Hello beautiful world', 15); // Hello beautiful...
+Str::truncate('Hello beautiful world', 15, ' [...]'); // Hello beautiful [...]
+
+// Text wrapping
+Str::wrap('Long text without spaces', 10); // Long text\nwithout\nspaces
+Str::wrap('Long text', 5, '<br>');        // Long<br>text
+
+// Text alignment
+Str::alignLeft('Hello', 10, '.');         // Hello.....
+Str::alignCenter('Hello', 10, '.');       // ..Hello...
+Str::alignRight('Hello', 10, '.');        // .....Hello
+
+// Case-insensitive operations
+Str::containsIgnoreCase('Hello World', 'WORLD'); // true
+Str::startsWithIgnoreCase('Hello World', 'HELLO'); // true
+Str::endsWithIgnoreCase('Hello World', 'WORLD'); // true
+
+// Levenshtein distance and similarity
+Str::levenshtein('kitten', 'sitting');    // 3
+Str::similarity('hello', 'hallo');        // 0.8
+Str::soundex('Robert');                   // R163
+Str::metaphone('Robert');                 // RBRT
+
+// String metrics
+Str::jaroWinkler('MARTHA', 'MARHTA');     // 0.961
+Str::hammingDistance('karolin', 'kathrin'); // 3
+
+// Pattern matching
+Str::match('Hello World', '/Hello\s+(\w+)/'); // ['Hello World', 'World']
+Str::matchAll('Hello World, Hello Universe', '/Hello\s+(\w+)/'); 
+// [['Hello World', 'World'], ['Hello Universe', 'Universe']]
+
+// Template processing
+Str::template('Hello {name}, welcome to {place}!', ['name' => 'John', 'place' => 'Forge']);
+// Hello John, welcome to Forge!
+
+// Pluralization and singularization
+Str::plural('user');                      // users
+Str::singular('users');                   // user
+Str::plural('child');                     // children
+Str::singular('children');                // child
+
+// Inflection
+Str::camelCase('user_name');              // userName
+Str::pascalCase('user_name');             // UserName
+Str::snakeCase('userName');               // user_name
+Str::kebabCase('userName');               // user-name
+Str::studlyCase('user_name');             // UserName
+
+// Generate random strings
+Str::random(16);                          // aB3dE9fG2hJ5kL1m
+Str::random(16, 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'); // ABCDEFGHIJKLMNOP
+Str::alnum(10);                           // aB3dE9fG2h
+Str::alpha(10);                           // aBcDeFgHiJ
+Str::numeric(10);                         // 1234567890
+Str::hex(10);                             // aF3e9B2c1D
+Str::uuid();                              // 550e8400-e29b-41d4-a716-446655440000
+
+// Generate memorable passwords
+Str::password(12);                        // correct-horse-battery-staple
+Str::password(12, true);                  // Correct-Horse-Battery-Staple-123
+
+// Generate pronounceable strings
+Str::pronounceable(8);                    // fobaredu
+Str::pronounceable(8, true);              // Fobaredu (with capital)
+
+// Generate tokens
+Str::token(32);                           // aB3dE9fG2hJ5kL1mN6pQ8rS2tU4vW6xY
+Str::secureToken(32);                     // cryptographically secure token
+Str::apiKey();                            // forge_api_key_1234567890abcdef
+
+// Generate slugs with transliteration
+Str::ascii('Café');                       // Cafe
+Str::ascii('日本語');                     // nihongo (with transliteration)
+Str::transliterate('Café');               // Cafe
+Str::slugify('Hello World!');             // hello-world (alias for slug)
+
+// Text analysis
+Str::countWords('Hello beautiful world'); // 3
+Str::countSentences('Hello world! How are you? I am fine.'); // 3
+Str::countParagraphs("Line 1\n\nLine 2\n\nLine 3"); // 3
+
+// Text cleaning
+Str::removeExtraSpaces('Hello    World'); // Hello World
+Str::removeExtraLines("Line 1\n\n\nLine 2"); // Line 1\n\nLine 2
+Str::normalizeWhitespace('Hello   \t\n   World'); // Hello World
+
+// Generate summary
+Str::summarize('Long text about PHP programming and web development...', 50);
+// Short summary of the text...
+
+// Extract entities
+Str::extractEmails('Contact us at info@example.com or support@domain.org');
+// ['info@example.com', 'support@domain.org']
+Str::extractUrls('Visit https://example.com and http://test.org');
+// ['https://example.com', 'http://test.org']
+Str::extractHashtags('Love #PHP and #Laravel framework');
+// ['PHP', 'Laravel']</code></pre>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- Array Helpers -->
+                    <section id="array-helpers" class="section-anchor mb-12">
+                        <div class="bg-green-50 border-l-4 border-green-500 p-6 mb-8">
+                            <h2 class="text-2xl font-bold text-gray-900 mb-4">
+                                <i class="fas fa-list text-green-600 mr-3"></i>Array Helpers
+                            </h2>
+                            <p class="text-gray-700">
+                                Comprehensive array manipulation utilities including dot notation access, array
+                                flattening,
+                                recursive operations, and advanced filtering with support for multidimensional arrays
+                                and complex data structures.
+                            </p>
+                        </div>
+
+                        <div class="mb-8">
+                            <h3 class="text-xl font-semibold text-gray-900 mb-4">Array Access and Manipulation</h3>
+
+                            <div class="api-method bg-gray-50 p-4 rounded-lg mb-4">
+                                <h4 class="font-semibold text-lg mb-2">Dot Notation and Path Access</h4>
+                                <p class="text-gray-600 text-sm mb-3">Access nested array data using dot notation
+                                    syntax.</p>
+                                <div class="code-block p-4 text-white rounded">
+                                    <pre><code class="language-php">use Forge\Support\Arr;
+
+// Dot notation access
+$data = [
+    'user' => [
+        'profile' => [
+            'name' => 'John Doe',
+            'email' => 'john@example.com'
+        ]
+    ]
+];
+
+Arr::get($data, 'user.profile.name');     // John Doe
+Arr::get($data, 'user.profile.email');    // john@example.com
+Arr::get($data, 'user.profile.phone');    // null (default)
+Arr::get($data, 'user.profile.phone', 'N/A'); // N/A (custom default)
+
+// Set values using dot notation
+Arr::set($data, 'user.profile.phone', '+1234567890');
+Arr::set($data, 'user.settings.theme', 'dark');
+
+// Check if path exists
+Arr::has($data, 'user.profile.name');     // true
+Arr::has($data, 'user.profile.phone');    // true (after set)
+Arr::has($data, 'user.profile.address');  // false
+
+// Forget/remove values
+Arr::forget($data, 'user.profile.phone');
+Arr::forget($data, 'user.settings');
+
+// Pull value (get and remove)
+$name = Arr::pull($data, 'user.profile.name'); // John Doe
+// $data no longer contains user.profile.name
+
+// Dot notation with wildcards
+$products = [
+    'products' => [
+        ['name' => 'iPhone', 'price' => 999],
+        ['name' => 'Samsung', 'price' => 899],
+        ['name' => 'Google', 'price' => 799]
+    ]
+];
+
+Arr::get($products, 'products.*.name');   // ['iPhone', 'Samsung', 'Google']
+Arr::get($products, 'products.*.price');  // [999, 899, 799]
+
+// Advanced dot notation
+$complex = [
+    'users' => [
+        'admins' => [
+            ['id' => 1, 'name' => 'John'],
+            ['id' => 2, 'name' => 'Jane']
+        ],
+        'members' => [
+            ['id' => 3, 'name' => 'Bob'],
+            ['id' => 4, 'name' => 'Alice']
+        ]
+    ]
+];
+
+Arr::get($complex, 'users.*.*.name');     // ['John', 'Jane', 'Bob', 'Alice']
+Arr::get($complex, 'users.admins.*.name'); // ['John', 'Jane']
+
+// Path manipulation
+Arr::prepend($data, 'user.profile', 'prefix_');
+Arr::append($data, 'user.profile', '_suffix');
+
+// Get all keys with dot notation
+Arr::dot($data);
+// [
+//     'user.profile.name' => 'John Doe',
+//     'user.profile.email' => 'john@example.com'
+// ]
+
+// Undot (convert flat array back to nested)
+$flat = ['user.name' => 'John', 'user.email' => 'john@example.com'];
+Arr::undot($flat);
+// [
+//     'user' => ['name' => 'John', 'email' => 'john@example.com']
+// ]
+
+// Path-based operations
+Arr::path($data, 'user.profile', function($profile) {
+    return strtoupper($profile['name']);
+}); // JOHN DOE</code></pre>
+                                </div>
+                            </div>
+
+                            <div class="api-method bg-gray-50 p-4 rounded-lg mb-4">
+                                <h4 class="font-semibold text-lg mb-2">Array Transformation</h4>
+                                <p class="text-gray-600 text-sm mb-3">Transform arrays with various utility functions.
+                                </p>
+                                <div class="code-block p-4 text-white rounded">
+                                    <pre><code class="language-php">// Array flattening
+$nested = ['a' => 1, 'b' => ['c' => 2, 'd' => ['e' => 3]]];
+Arr::flatten($nested);                    // [1, 2, 3]
+Arr::flatten($nested, 1);                 // Only flatten one level: [1, ['c' => 2, 'd' => ['e' => 3]]]
+
+// Flatten with keys
+Arr::dot($nested);                        // ['a' => 1, 'b.c' => 2, 'b.d.e' => 3]
+
+// Array expansion (opposite of flatten)
+$flat = ['user.name' => 'John', 'user.email' => 'john@example.com'];
+Arr::expand($flat);                       // ['user' => ['name' => 'John', 'email' => 'john@example.com']]
+
+// Array wrapping
+Arr::wrap('value');                       // ['value']
+Arr::wrap(['value']);                     // ['value'] (no change)
+Arr::wrap(null);                          // []
+
+// Array unwrap
+Arr::unwrap(['value']);                   // 'value'
+Arr::unwrap('value');                     // 'value' (no change)
+
+// Array prepend and append
+$array = ['b' => 2, 'c' => 3];
+Arr::prepend($array, 'a', 1);             // ['a' => 1, 'b' => 2, 'c' => 3]
+Arr::append($array, 'd', 4);              // ['b' => 2, 'c' => 3, 'd' => 4]
+
+// Array merge with dot notation
+$array1 = ['user' => ['name' => 'John']];
+$array2 = ['user' => ['email' => 'john@example.com']];
+Arr::merge($array1, $array2);             // ['user' => ['name' => 'John', 'email' => 'john@example.com']]
+
+// Array merge recursive
+$array1 = ['user' => ['roles' => ['admin']]];
+$array2 = ['user' => ['roles' => ['user']]];
+Arr::mergeRecursive($array1, $array2);    // ['user' => ['roles' => ['admin', 'user']]]
+
+// Array replace
+$array = ['a' => 1, 'b' => 2];
+Arr::replace($array, ['b' => 3, 'c' => 4]); // ['a' => 1, 'b' => 3, 'c' => 4]
+
+// Array replace recursive
+$array = ['user' => ['name' => 'John', 'age' => 30]];
+$replacement = ['user' => ['name' => 'Jane']];
+Arr::replaceRecursive($array, $replacement); // ['user' => ['name' => 'Jane', 'age' => 30]]
+
+// Array cross join
+$array = [[1, 2], ['a', 'b'], ['x', 'y']];
+Arr::crossJoin($array);                   // All possible combinations
+
+// Array transpose
+$array = [
+    ['name' => 'John', 'age' => 30],
+    ['name' => 'Jane', 'age' => 25]
+];
+Arr::transpose($array);                   // ['name' => ['John', 'Jane'], 'age' => [30, 25]]
+
+// Array chunk
+$array = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
+Arr::chunk($array, 3);                    // [[1, 2, 3], [4, 5, 6], [7, 8, 9], [10]]
+
+// Array split
+$array = [1, 2, 3, 4, 5];
+Arr::split($array, 2);                    // [[1, 2], [3, 4, 5]]
+
+// Array partition
+$array = [1, 2, 3, 4, 5, 6];
+Arr::partition($array, function($value) {
+    return $value % 2 === 0;
+});                                       // [[2, 4, 6], [1, 3, 5]]
+
+// Array group by
+$users = [
+    ['name' => 'John', 'role' => 'admin'],
+    ['name' => 'Jane', 'role' => 'user'],
+    ['name' => 'Bob', 'role' => 'admin']
+];
+Arr::groupBy($users, 'role');             // ['admin' => [...], 'user' => [...]]
+Arr::groupBy($users, function($user) {
+    return $user['role'];
+});
+
+// Array key by
+Arr::keyBy($users, 'name');               // ['John' => [...], 'Jane' => [...], 'Bob' => [...]]
+
+// Array pluck
+Arr::pluck($users, 'name');               // ['John', 'Jane', 'Bob']
+Arr::pluck($users, 'name', 'role');       // ['admin' => 'John', 'user' => 'Jane', 'admin' => 'Bob']
+
+// Array map with dot notation
+$array = ['users' => [['name' => 'John'], ['name' => 'Jane']]];
+Arr::map($array, 'users.*.name', function($name) {
+    return strtoupper($name);
+});                                       // ['users' => [['name' => 'JOHN'], ['name' => 'JANE']]]
+
+// Array filter with dot notation
+$array = ['numbers' => [1, 2, 3, 4, 5, 6]];
+Arr::filter($array, 'numbers.*', function($number) {
+    return $number % 2 === 0;
+});                                       // ['numbers' => [2, 4, 6]]</code></pre>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="mb-8">
+                            <h3 class="text-xl font-semibold text-gray-900 mb-4">Advanced Array Operations</h3>
+
+                            <div class="api-method bg-gray-50 p-4 rounded-lg mb-4">
+                                <h4 class="font-semibold text-lg mb-2">Array Filtering and Searching</h4>
+                                <p class="text-gray-600 text-sm mb-3">Advanced filtering and searching capabilities for
+                                    complex data structures.</p>
+                                <div class="code-block p-4 text-white rounded">
+                                    <pre><code class="language-php">// Advanced filtering
+$array = [
+    ['name' => 'John', 'age' => 30, 'active' => true],
+    ['name' => 'Jane', 'age' => 25, 'active' => false],
+    ['name' => 'Bob', 'age' => 35, 'active' => true]
+];
+
+// Filter by conditions
+Arr::where($array, function($item) {
+    return $item['age'] > 25 && $item['active'];
+});                                       // Only John and Bob
+
+// Filter by key-value pairs
+Arr::filterBy($array, ['active' => true, 'age' => 30]); // Only John
+
+// Filter by nested conditions
+Arr::where($array, function($item) {
+    return $item['age'] >= 30;
+}, 'age');                                // Filter by age key
+
+// Search functions
+Arr::first($array, function($item) {
+    return $item['name'] === 'Jane';
+});                                       // Jane's record
+
+Arr::last($array, function($item) {
+    return $item['active'];
+});                                       // Last active user (Bob)
+
+Arr::find($array, function($item) {
+    return $item['age'] > 30;
+});                                       // Bob's record
+
+// Search by value
+Arr::search($array, 'Jane', 'name');      // Key of Jane's record
+Arr::searchAll($array, true, 'active');   // All keys of active users
+
+// Deep search
+$nested = [
+    'users' => [
+        'admins' => [
+            ['id' => 1, 'name' => 'John'],
+            ['id' => 2, 'name' => 'Jane']
+        ]
+    ]
+];
+
+Arr::deepSearch($nested, 'Jane', 'name'); // Path to Jane's record
+
+// Recursive filtering
+$tree = [
+    'name' => 'Root',
+    'children' => [
+        ['name' => 'Branch1', 'active' => true],
+        ['name' => 'Branch2', 'active' => false],
+        ['name' => 'Branch3', 'active' => true]
+    ]
+];
+
+Arr::recursiveFilter($tree, function($item) {
+    return $item['active'] ?? true;
+});
+
+// Filter by multiple conditions (AND logic)
+Arr::filterByConditions($array, [
+    ['field' => 'age', 'operator' => '>', 'value' => 25],
+    ['field' => 'active', 'operator' => '=', 'value' => true]
+]);
+
+// Filter by multiple conditions (OR logic)
+Arr::filterByConditions($array, [
+    ['field' => 'name', 'operator' => '=', 'value' => 'John'],
+    ['field' => 'name', 'operator' => '=', 'value' => 'Jane']
+], 'OR');
+
+// Filter by range
+Arr::filterByRange($array, 'age', 25, 35); // Ages between 25 and 35
+
+// Filter by date range
+$datedArray = [
+    ['created_at' => '2024-01-15', 'title' => 'Post 1'],
+    ['created_at' => '2024-02-20', 'title' => 'Post 2'],
+    ['created_at' => '2024-03-10', 'title' => 'Post 3']
+];
+
+Arr::filterByDateRange($datedArray, 'created_at', '2024-01-01', '2024-02-01');
+
+// Filter unique values
+$duplicates = [1, 2, 2, 3, 3, 3, 4, 4, 5];
+Arr::unique($duplicates);                 // [1, 2, 3, 4, 5]
+
+// Filter unique by key
+$users = [
+    ['id' => 1, 'name' => 'John'],
+    ['id' => 2, 'name' => 'Jane'],
+    ['id' => 1, 'name' => 'Johnny'] // Duplicate ID
+];
+Arr::uniqueBy($users, 'id');              // Keep first occurrence of each ID
+
+// Advanced search with scoring
+Arr::fuzzySearch($array, 'Jon', 'name');  // Find similar names to 'Jon'
+Arr::searchSimilar($array, 'Jane', 'name', 0.8); // Find names similar to 'Jane' with 80% threshold
+
+// Regular expression search
+Arr::searchRegex($array, '/^J/', 'name'); // Names starting with 'J'
+Arr::searchRegex($array, '/^[A-Z][a-z]+$/', 'name'); // Names with proper capitalization</code></pre>
+                                </div>
+                            </div>
+
+                            <div class="api-method bg-gray-50 p-4 rounded-lg mb-4">
+                                <h4 class="font-semibold text-lg mb-2">Array Statistics and Analysis</h4>
+                                <p class="text-gray-600 text-sm mb-3">Calculate statistics and analyze array data.</p>
+                                <div class="code-block p-4 text-white rounded">
+                                    <pre><code class="language-php">// Basic statistics
+$numbers = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
+
+Arr::sum($numbers);                       // 55
+Arr::avg($numbers);                       // 5.5
+Arr::median($numbers);                    // 5.5
+Arr::mode($numbers);                      // [] (no mode)
+Arr::min($numbers);                       // 1
+Arr::max($numbers);                       // 10
+Arr::range($numbers);                     // 9 (max - min)
+
+// Statistics on object properties
+$products = [
+    ['name' => 'Product 1', 'price' => 100, 'quantity' => 5],
+    ['name' => 'Product 2', 'price' => 200, 'quantity' => 3],
+    ['name' => 'Product 3', 'price' => 150, 'quantity' => 8]
+];
+
+Arr::sumBy($products, 'price');           // 450
+Arr::avgBy($products, 'price');           // 150
+Arr::minBy($products, 'price');           // 100
+Arr::maxBy($products, 'price');           // 200
+Arr::medianBy($products, 'price');        // 150
+
+// Weighted average
+Arr::weightedAvg($products, 'price', 'quantity'); // Weighted average price
+
+// Percentile calculation
+Arr::percentile($numbers, 75);            // 7.75 (75th percentile)
+Arr::quartiles($numbers);                 // [3, 5.5, 8] (Q1, Q2, Q3)
+
+// Standard deviation and variance
+Arr::variance($numbers);                  // 8.25
+Arr::stdDev($numbers);                    // 2.87 (standard deviation)
+Arr::populationVariance($numbers);        // 9.17
+Arr::populationStdDev($numbers);          // 3.03
+
+// Correlation
+$prices = [100, 200, 150, 300, 250];
+$quantities = [5, 3, 8, 2, 4];
+Arr::correlation($prices, $quantities);  // Correlation coefficient
+
+// Distribution analysis
+Arr::frequency($numbers);                 // Frequency distribution
+Arr::histogram($numbers, 5);              // Histogram with 5 bins
+Arr::normalize($numbers);                 // Normalize to 0-1 range
+Arr::standardize($numbers);               // Standardize (z-score)
+
+// Outlier detection
+Arr::outliers($numbers);                  // Detect outliers using IQR method
+Arr::outliers($numbers, 'zscore');        // Detect outliers using z-score
+Arr::outliers($numbers, 'modified_zscore'); // Detect outliers using modified z-score
+
+// Array distribution
+$grades = ['A' => 10, 'B' => 15, 'C' => 20, 'D' => 5, 'F' => 2];
+Arr::distribution($grades);               // Percentage distribution
+
+// Confidence intervals
+Arr::confidenceInterval($numbers, 0.95);  // 95% confidence interval
+
+// Statistical tests
+Arr::isNormalDistribution($numbers);      // Test for normal distribution
+Arr::shapiroWilkTest($numbers);           // Shapiro-Wilk normality test
+
+// Array sampling
+Arr::sample($numbers, 3);                 // Random sample of 3 elements
+Arr::sampleWithoutReplacement($numbers, 3); // Sample without replacement
+Arr::bootstrap($numbers, 1000);         // Bootstrap sampling
+
+// Cross-tabulation
+$categorical = [
+    ['gender' => 'M', 'department' => 'IT', 'satisfied' => 'Yes'],
+    ['gender' => 'F', 'department' => 'HR', 'satisfied' => 'No'],
+    ['gender' => 'M', 'department' => 'IT', 'satisfied' => 'Yes']
+];
+Arr::crossTab($categorical, 'gender', 'satisfied');
+
+// Chi-square test
+Arr::chiSquareTest($categorical, 'gender', 'department');
+
+// Time series analysis
+$timeSeries = [
+    ['date' => '2024-01-01', 'value' => 100],
+    ['date' => '2024-01-02', 'value' => 105],
+    ['date' => '2024-01-03', 'value' => 103]
+];
+Arr::movingAverage($timeSeries, 'value', 3); // 3-period moving average
+Arr::exponentialSmoothing($timeSeries, 'value', 0.3); // Exponential smoothing
+Arr::trend($timeSeries, 'value');         // Linear trend analysis
+
+// Machine learning utilities
+Arr::trainTestSplit($numbers, 0.8);       // 80-20 train-test split
+Arr::kFoldSplit($numbers, 5);           // 5-fold cross-validation split
+Arr::stratifiedSplit($categorical, 'department', 0.8); // Stratified split</code></pre>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- File Helpers -->
+                    <section id="file-helpers" class="section-anchor mb-12">
+                        <div class="bg-yellow-50 border-l-4 border-yellow-500 p-6 mb-8">
+                            <h2 class="text-2xl font-bold text-gray-900 mb-4">
+                                <i class="fas fa-file text-yellow-600 mr-3"></i>File Helpers
+                            </h2>
+                            <p class="text-gray-700">
+                                File system utilities for path manipulation, file operations, MIME type detection,
+                                and advanced file handling with support for various file formats and encoding detection.
+                            </p>
+                        </div>
+
+                        <div class="mb-8">
+                            <h3 class="text-xl font-semibold text-gray-900 mb-4">Path and File Operations</h3>
+
+                            <div class="api-method bg-gray-50 p-4 rounded-lg mb-4">
+                                <h4 class="font-semibold text-lg mb-2">Path Manipulation</h4>
+                                <p class="text-gray-600 text-sm mb-3">Cross-platform path manipulation and
+                                    normalization.</p>
+                                <div class="code-block p-4 text-white rounded">
+                                    <pre><code class="language-php">use Forge\Support\File;
+use Forge\Support\Path;
+
+// Path construction and normalization
+Path::join('/var/www', 'html', 'index.html'); // /var/www/html/index.html
+Path::join('C:\\', 'Users', 'Documents');    // C:\Users\Documents
+Path::normalize('/var//www/../html/index.html'); // /var/html/index.html
+Path::normalize('C:\\Users\\..\\Documents'); // C:\Documents
+
+// Path components
+Path::basename('/var/www/html/index.html'); // index.html
+Path::dirname('/var/www/html/index.html');  // /var/www/html
+Path::extension('/var/www/html/index.html'); // html
+Path::filename('/var/www/html/index.html'); // index
+Path::filename('/var/www/html/index.html', true); // index.html (with extension)
+
+// Path information
+Path::isAbsolute('/var/www');             // true
+Path::isAbsolute('var/www');               // false
+Path::isRelative('var/www');               // true
+Path::isRoot('/');                         // true
+Path::isRoot('C:\\');                      // true
+
+// Path resolution
+Path::resolve('/var/www', '../html');      // /var/html
+Path::resolve('C:\\Users', '..\\Documents'); // C:\Documents
+Path::absolute('index.html', '/var/www');  // /var/www/index.html
+Path::relative('/var/www/html/index.html', '/var/www'); // html/index.html
+
+// Path comparison
+Path::equals('/var/www/html', '/var/www/html'); // true
+Path::equals('/var/www/html', '/var//www/html'); // true (after normalization)
+Path::isSubpath('/var/www/html', '/var/www'); // true
+Path::isSubpath('/var/www', '/var/www/html'); // false
+
+// Path validation
+Path::isValid('/var/www/html');            // true
+Path::isValid('C:\\Users\\Documents');     // true
+Path::isSafe('/etc/passwd');               // false (potentially unsafe)
+Path::isSafe('/var/www/html/index.php');   // true
+
+// Directory operations
+Path::makeDirectory('/var/www/newdir');    // Create directory
+Path::ensureDirectory('/var/www/newdir');  // Create if not exists
+Path::removeDirectory('/var/www/olddir');  // Remove directory
+Path::copyDirectory('/source', '/dest');   // Copy directory recursively
+Path::moveDirectory('/source', '/dest');     // Move directory
+
+// Path globbing
+Path::glob('/var/www/*.php');              // Get all PHP files
+Path::glob('/var/www/**/*.{php,js}');      // Recursive glob with multiple extensions
+Path::match('/var/www/*.php', '/var/www/index.php'); // true
+
+// Temporary paths
+Path::temp();                              // /tmp or C:\Users\AppData\Local\Temp
+Path::temp('prefix');                      // /tmp/prefix_random
+Path::tempFile('test');                    // /tmp/test_random.tmp
+Path::tempDirectory('project');            // /tmp/project_random/
+
+// Home and user directories
+Path::home();                              // /home/username or C:\Users\username
+Path::desktop();                           // /home/username/Desktop or C:\Users\username\Desktop
+Path::documents();                         // /home/username/Documents or C:\Users\username\Documents
+Path::downloads();                         // /home/username/Downloads or C:\Users\username\Downloads
+
+// Application paths
+Path::app();                               // Application root directory
+Path::app('storage');                      // Application storage directory
+Path::app('public');                       // Application public directory
+Path::config();                            // Configuration directory
+Path::storage();                           // Storage directory
+Path::public();                            // Public directory
+Path::resources();                         // Resources directory
+
+// Path utilities
+Path::split('/var/www/html/index.html');   // ['/', 'var', 'www', 'html', 'index.html']
+Path::common(['/var/www/html', '/var/www/css']); // /var/www
+Path::diff('/var/www/html/index.php', '/var/www/css/style.css'); // ['html', 'index.php'] vs ['css', 'style.css']
+
+// Path encoding and decoding
+Path::encode('/var/www/my file.html');     // /var/www/my%20file.html
+Path::decode('/var/www/my%20file.html'); // /var/www/my file.html
+
+// Path sanitization
+Path::sanitize('/var/www/../../../etc/passwd'); // /var/www/etc/passwd
+Path::sanitize('C:\\Users\\..\\..\\Windows\\System32'); // C:\Windows\System32
+
+// Path permissions
+Path::isReadable('/var/www/html');         // true
+Path::isWritable('/var/www/html');         // true
+Path::isExecutable('/var/www/html');       // false (directory)
+Path::permissions('/var/www/html');          // 0755
+Path::owner('/var/www/html');              // username
+Path::group('/var/www/html');              // groupname
+
+// Path statistics
+Path::size('/var/www/html');               // Total size in bytes
+Path::size('/var/www/html', true);         // Human readable size
+Path::count('/var/www/html');              // Number of files
+Path::count('/var/www/html', '*.php');    // Number of PHP files
+Path::depth('/var/www/html/index.php');    // Directory depth
+
+// Path caching
+Path::cache('/var/www/html');              // Cache path information
+Path::clearCache();                        // Clear path cache
+Path::isCached('/var/www/html');           // Check if path is cached</code></pre>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="mb-8">
+                            <h3 class="text-xl font-semibold text-gray-900 mb-4">File Operations and Analysis</h3>
+
+                            <div class="api-method bg-gray-50 p-4 rounded-lg mb-4">
+                                <h4 class="font-semibold text-lg mb-2">File Information and Analysis</h4>
+                                <p class="text-gray-600 text-sm mb-3">Get detailed file information and perform file
+                                    analysis.</p>
+                                <div class="code-block p-4 text-white rounded">
+                                    <pre><code class="language-php">// Basic file information
+File::size('/path/to/file.txt');           // File size in bytes
+File::size('/path/to/file.txt', true);     // Human readable size
+File::modified('/path/to/file.txt');       // Last modified timestamp
+File::created('/path/to/file.txt');      // Creation timestamp
+File::accessed('/path/to/file.txt');     // Last access timestamp
+
+// File type detection
+File::type('/path/to/file.txt');           // file, directory, link
+File::mime('/path/to/file.txt');           // text/plain
+File::extension('/path/to/file.txt');      // txt
+File::encoding('/path/to/file.txt');      // UTF-8, ISO-8859-1, etc.
+File::charset('/path/to/file.txt');       // Character set detection
+
+// Advanced MIME type detection
+File::mime('/path/to/unknown');            // Uses file content analysis
+File::mime('/path/to/image.jpg');          // image/jpeg
+File::mime('/path/to/document.pdf');     // application/pdf
+File::mime('/path/to/archive.zip');        // application/zip
+
+// File content analysis
+File::hash('/path/to/file.txt');           // MD5 hash
+File::hash('/path/to/file.txt', 'sha256'); // SHA256 hash
+File::checksum('/path/to/file.txt');       // File checksum
+File::fingerprint('/path/to/file.txt');    // Unique file fingerprint
+
+// Text file analysis
+File::lines('/path/to/file.txt');          // Number of lines
+File::words('/path/to/file.txt');          // Number of words
+File::chars('/path/to/file.txt');          // Number of characters
+File::bytes('/path/to/file.txt');          // Number of bytes
+
+// Binary file analysis
+File::isBinary('/path/to/file.txt');       // false
+File::isText('/path/to/file.txt');         // true
+File::isImage('/path/to/image.jpg');       // true
+File::isVideo('/path/to/video.mp4');       // true
+File::isAudio('/path/to/audio.mp3');       // true
+File::isArchive('/path/to/archive.zip');   // true
+
+// Image file analysis
+File::imageSize('/path/to/image.jpg');     // [width, height]
+File::imageType('/path/to/image.jpg');     // JPEG, PNG, GIF, etc.
+File::imageInfo('/path/to/image.jpg');     // Detailed image information
+
+// Document analysis
+File::isDocument('/path/to/document.pdf'); // true
+File::documentType('/path/to/document.pdf'); // PDF
+File::documentInfo('/path/to/document.pdf'); // PDF metadata
+
+// Code file analysis
+File::isCode('/path/to/script.php');       // true
+File::language('/path/to/script.php');     // PHP
+File::syntax('/path/to/script.php');       // Syntax validation
+
+// Archive analysis
+File::isArchive('/path/to/archive.zip');   // true
+File::archiveType('/path/to/archive.zip'); // ZIP
+File::archiveInfo('/path/to/archive.zip'); // Archive contents info
+
+// File validation
+File::isValid('/path/to/file.txt');        // Basic validation
+File::isCorrupted('/path/to/file.txt');    // Corruption detection
+File::isComplete('/path/to/file.txt');     // Completeness check
+File::integrity('/path/to/file.txt');      // Integrity verification
+
+// Encoding detection and conversion
+File::detectEncoding('/path/to/file.txt'); // Auto-detect encoding
+File::convertEncoding('/path/to/file.txt', 'UTF-8'); // Convert to UTF-8
+File::normalizeLineEndings('/path/to/file.txt'); // Normalize \r\n to \n
+
+// File comparison
+File::compare('/path/to/file1.txt', '/path/to/file2.txt'); // true if identical
+File::diff('/path/to/file1.txt', '/path/to/file2.txt');   // Array of differences
+File::similarity('/path/to/file1.txt', '/path/to/file2.txt'); // Similarity percentage
+
+// Duplicate detection
+File::findDuplicates('/path/to/directory'); // Find duplicate files
+File::isDuplicate('/path/to/file.txt');    // Check if file has duplicates
+
+// File metadata
+File::metadata('/path/to/image.jpg');      // EXIF data for images
+File::metadata('/path/to/document.pdf');   // PDF metadata
+File::metadata('/path/to/audio.mp3');     // ID3 tags for audio
+
+// File permissions and security
+File::isReadable('/path/to/file.txt');     // true
+File::isWritable('/path/to/file.txt');     // true
+File::isExecutable('/path/to/file.txt');   // false
+File::permissions('/path/to/file.txt');    // 0644
+File::owner('/path/to/file.txt');          // File owner
+File::group('/path/to/file.txt');          // File group
+
+// File security analysis
+File::scan('/path/to/file.txt');           // Security scan
+File::isSafe('/path/to/file.txt');         // Security check
+File::containsMalware('/path/to/file.txt'); // Malware detection
+File::virusScan('/path/to/file.txt');      // Virus scan (if available)
+
+// File compression analysis
+File::compressionRatio('/path/to/archive.zip'); // Compression ratio
+File::isCompressed('/path/to/file.txt');   // false
+File::compressionType('/path/to/archive.zip'); // ZIP compression</code></pre>
+                                </div>
+                            </div>
+
+                            <div class="api-method bg-gray-50 p-4 rounded-lg mb-4">
+                                <h4 class="font-semibold text-lg mb-2">File Operations and Management</h4>
+                                <p class="text-gray-600 text-sm mb-3">Perform file operations with advanced features and
+                                    error handling.</p>
+                                <div class="code-block p-4 text-white rounded">
+                                    <pre><code class="language-php">// File reading operations
+File::get('/path/to/file.txt');            // Read entire file
+File::lines('/path/to/file.txt');          // Read as array of lines
+File::lines('/path/to/file.txt', 10);      // Read first 10 lines
+File::tail('/path/to/file.txt', 20);     // Read last 20 lines
+File::chunk('/path/to/file.txt', 1024);  // Read in chunks
+
+// Streaming file operations
+File::stream('/path/to/file.txt', function($handle) {
+    while (!feof($handle)) {
+        $line = fgets($handle);
+        // Process line
+    }
+});
+
+// Memory-efficient reading
+File::readLines('/path/to/file.txt', function($line, $lineNumber) {
+    // Process each line
+    echo "Line $lineNumber: $line\n";
+});
+
+// Writing operations
+File::put('/path/to/file.txt', 'Content'); // Write content to file
+File::append('/path/to/file.txt', 'Additional content'); // Append content
+File::prepend('/path/to/file.txt', 'Header content'); // Prepend content
+
+// Atomic file operations
+File::atomicPut('/path/to/file.txt', 'Content'); // Atomic write
+File::safePut('/path/to/file.txt', 'Content');   // Safe write with backup
+File::backup('/path/to/file.txt');               // Create backup
+
+// File copying and moving
+File::copy('/source/file.txt', '/dest/file.txt'); // Copy file
+File::move('/source/file.txt', '/dest/file.txt'); // Move file
+File::rename('/old/path/file.txt', '/new/path/file.txt'); // Rename file
+
+// Bulk operations
+File::copyDirectory('/source', '/dest');   // Copy directory recursively
+File::moveDirectory('/source', '/dest');   // Move directory
+File::mirror('/source', '/dest');          // Mirror directory
+
+// File deletion
+File::delete('/path/to/file.txt');         // Delete single file
+File::delete(['/path/to/file1.txt', '/path/to/file2.txt']); // Delete multiple
+File::deletePattern('/path/to/*.tmp');     // Delete by pattern
+File::deleteOlderThan('/path/to/', 3600);  // Delete files older than 1 hour
+
+// Temporary file operations
+File::temp();                              // Create temporary file
+File::temp('prefix');                      // Temporary file with prefix
+File::tempPut('content');                  // Create temp file with content
+File::tempDirectory();                     // Create temporary directory
+
+// File locking
+File::lock('/path/to/file.txt');           // Acquire lock
+File::unlock('/path/to/file.txt');         // Release lock
+File::withLock('/path/to/file.txt', function() {
+    // Critical section
+    File::put('/path/to/file.txt', 'Locked content');
+});
+
+// File watching
+File::watch('/path/to/file.txt', function($event, $path) {
+    echo "File $path was $event\n";
+});
+
+// File monitoring
+File::monitor('/path/to/directory', function($event, $path) {
+    echo "Directory $path changed: $event\n";
+});
+
+// File upload handling
+File::upload($uploadedFile, '/path/to/destination'); // Handle file upload
+File::validateUpload($uploadedFile);       // Validate uploaded file
+File::sanitizeFilename('dangerous\0file.txt'); // Sanitize filename
+
+// File download
+File::download('/path/to/file.txt');       // Force download
+File::download('/path/to/file.txt', 'custom-name.txt'); // Custom filename
+File::streamDownload('/path/to/file.txt'); // Stream download
+
+// File compression
+File::compress('/path/to/file.txt');       // Compress file
+File::compress('/path/to/file.txt', 'gzip'); // Gzip compression
+File::decompress('/path/to/file.txt.gz');  // Decompress file
+
+// File encryption
+File::encrypt('/path/to/file.txt', 'password'); // Encrypt file
+File::decrypt('/path/to/file.txt.enc', 'password'); // Decrypt file
+
+// File splitting and joining
+File::split('/path/to/large-file.txt', '1MB'); // Split into 1MB chunks
+File::join(['/path/to/file.part1', '/path/to/file.part2'], '/path/to/complete.txt');
+
+// File comparison and synchronization
+File::sync('/source/', '/dest/');          // Synchronize directories
+File::diffFiles('/path/to/file1.txt', '/path/to/file2.txt'); // Detailed diff
+File::merge('/path/to/base.txt', '/path/to/modified.txt', '/path/to/result.txt');
+
+// Batch processing
+File::batch('/path/to/directory', function($file) {
+    // Process each file
+    echo "Processing: $file\n";
+});
+
+File::batch('/path/to/directory', '*.php', function($file) {
+    // Process only PHP files
+    echo "Processing PHP: $file\n";
+});
+
+// File validation
+File::validate('/path/to/file.txt');       // Basic validation
+File::validateSize('/path/to/file.txt', 1024, 1048576); // Size between 1KB and 1MB
+File::validateExtension('/path/to/file.txt', ['txt', 'md']); // Validate extension
+File::validateMime('/path/to/file.txt', ['text/plain']); // Validate MIME type
+
+// File cleanup
+File::cleanup('/path/to/directory', 3600); // Remove old files
+File::cleanup('/path/to/directory', 3600, '*.tmp'); // Remove old temp files
+File::cleanupEmptyDirectories('/path/to/directory'); // Remove empty dirs
+
+// File caching
+File::cache('/path/to/file.txt');          // Cache file content
+File::cached('/path/to/file.txt');         // Get cached content
+File::clearCache();                        // Clear file cache
+
+// File logging
+File::log('/path/to/log.txt', 'Log message'); // Append to log file
+File::logError('/path/to/error.log', 'Error message'); // Log error
+File::rotate('/path/to/log.txt');          // Rotate log file</code></pre>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- Traits -->
+                    <section id="traits" class="section-anchor mb-12">
+                        <div class="bg-purple-50 border-l-4 border-purple-500 p-6 mb-8">
+                            <h2 class="text-2xl font-bold text-gray-900 mb-4">
+                                <i class="fas fa-layer-group text-purple-600 mr-3"></i>Reusable Traits
+                            </h2>
+                            <p class="text-gray-700">
+                                Reusable traits that provide common functionality for models, controllers, and other
+                                classes.
+                                These traits implement patterns like soft deletes, timestamps, sluggable behavior, and
+                                more.
+                            </p>
+                        </div>
+
+                        <div class="mb-8">
+                            <h3 class="text-xl font-semibold text-gray-900 mb-4">Model Traits</h3>
+
+                            <div class="api-method bg-gray-50 p-4 rounded-lg mb-4">
+                                <h4 class="font-semibold text-lg mb-2">Sluggable Trait</h4>
+                                <p class="text-gray-600 text-sm mb-3">Automatically generate and manage URL-friendly
+                                    slugs.</p>
+                                <div class="code-block p-4 text-white rounded">
+                                    <pre><code class="language-php">use Forge\Database\Traits\SluggableTrait;
+
+class Post extends Model
+{
+    use SluggableTrait;
+    
+    /**
+     * Configure slug generation
+     */
+    protected $sluggable = [
+        'source' => 'title',              // Field to generate slug from
+        'target' => 'slug',               // Field to store slug
+        'separator' => '-',               // Separator character
+        'unique' => true,                 // Ensure uniqueness
+        'onUpdate' => true,               // Regenerate on title change
+        'maxLength' => 255,               // Maximum slug length
+        'method' => null,                 // Custom slug method
+        'reserved' => ['admin', 'api'],   // Reserved slugs
+        'scope' => null,                  // Scope for uniqueness
+    ];
+    
+    /**
+     * Custom slug generation method
+     */
+    public function generateSlug($value)
+    {
+        return Str::slug($value, $this->sluggable['separator']);
+    }
+    
+    /**
+     * Check if slug should be unique
+     */
+    public function scopeForUniqueSlug($query, $slug, $separator)
+    {
+        return $query->where('category_id', $this->category_id);
+    }
+    
+    /**
+     * Get the route key name for slugs
+     */
+    public function getRouteKeyName()
+    {
+        return 'slug';
+    }
+}
+
+// Usage
+$post = new Post();
+$post->title = 'My Awesome Post';
+$post->save();                            // Automatically generates slug: my-awesome-post
+
+// Find by slug
+$post = Post::allSlugs();                         // Get all slugs
+Post::slugExists('my-awesome-post');      // Check if slug exists
+
+// Slug with scope
+$post = Post::findBySlugAndScope('my-post', ['category_id' => 1]);
+
+// Custom slug scope
+class CategoryPost extends Post
+{
+    protected $sluggable = [
+        'source' => 'title',
+        'target' => 'slug',
+        'scope' => 'category_id'         // Slug unique per category
+    ];
+}
+
+// Slug with multiple sources
+class Product extends Model
+{
+    use SluggableTrait;
+    
+    protected $sluggable = [
+        'source' => ['brand', 'model'],  // Combine multiple fields
+        'target' => 'slug',
+        'separator' => '-',
+        'unique' => true
+    ];
+}
+
+// Usage with multiple sources
+$product = new Product();
+$product->brand = 'Apple';
+$product->model = 'iPhone 15';
+$product->save();                         // Generates: apple-iphone-15
+
+// Slug with custom method
+class Article extends Model
+{
+    use SluggableTrait;
+    
+    protected $sluggable = [
+        'source' => 'title',
+        'target' => 'slug',
+        'method' => 'generateCustomSlug'
+    ];
+    
+    public function generateCustomSlug($value)
+    {
+        // Custom slug generation logic
+        return Str::slug($value . '-' . date('Y'));
+    }
+}
+
+// Slug validation and constraints
+class Page extends Model
+{
+    use SluggableTrait;
+    
+    protected $sluggable = [
+        'source' => 'title',
+        'target' => 'slug',
+        'reserved' => ['home', 'about', 'contact', 'admin'],
+        'maxLength' => 100,
+        'pattern' => '/^[a-z0-9-]+$/',       // Regex pattern validation
+        'blacklist' => ['bad-word', 'spam'] // Forbidden words
+    ];
+}
+
+// Handle slug conflicts
+$post = new Post();
+$post->title = 'My Post';
+$post->save();                            // Generates: my-post
+
+$post2 = new Post();
+$post2->title = 'My Post';
+$post2->save();                           // Generates: my-post-2 (conflict resolution)
+
+// Slug history and redirects
+class BlogPost extends Model
+{
+    use SluggableTrait;
+    
+    protected $sluggable = [
+        'source' => 'title',
+        'target' => 'slug',
+        'history' => true                  // Track slug changes
+    ];
+}
+
+// Get slug history
+$post = BlogPost::find(1);
+$post->slugHistory();                     // Get all previous slugs
+$post->hasSlugHistory();                  // Check if has slug history
+$post->redirectFromSlug('old-slug');     // Set up redirect from old slug</code></pre>
+                                </div>
+                            </div>
+
+                            <div class="api-method bg-gray-50 p-4 rounded-lg mb-4">
+                                <h4 class="font-semibold text-lg mb-2">Timestampable Trait</h4>
+                                <p class="text-gray-600 text-sm mb-3">Automatically manage created and updated
+                                    timestamps.</p>
+                                <div class="code-block p-4 text-white rounded">
+                                    <pre><code class="language-php">use Forge\Database\Traits\TimestampableTrait;
+
+class User extends Model
+{
+    use TimestampableTrait;
+    
+    /**
+     * Configure timestamp behavior
+     */
+    protected $timestampable = [
+        'created' => 'created_at',        // Created timestamp field
+        'updated' => 'updated_at',        // Updated timestamp field
+        'deleted' => 'deleted_at',        // Soft delete timestamp field
+        'autoCreate' => true,             // Auto-set on create
+        'autoUpdate' => true,             // Auto-set on update
+        'format' => 'Y-m-d H:i:s',        // Timestamp format
+        'timezone' => 'UTC',              // Timezone
+        'touchOnRelated' => ['posts']     // Touch related models
+    ];
+    
+    /**
+     * Custom timestamp formatting
+     */
+    public function formatTimestamp($timestamp)
+    {
+        return Carbon::parse($timestamp)->format('m/d/Y g:i A');
+    }
+}
+
+// Usage
+$user = new User();
+$user->name = 'John Doe';
+$user->save();                            // Automatically sets created_at and updated_at
+
+// Update timestamps manually
+$user->touch();                           // Update updated_at
+$user->touch('created_at');              // Update specific timestamp
+$user->touch(['created_at', 'updated_at']); // Update multiple timestamps
+
+// Check timestamp status
+$user->isRecentlyCreated();               // Created within last hour
+$user->isRecentlyUpdated();               // Updated within last hour
+$user->isOlderThan('1 week');            // Created more than 1 week ago
+$user->isNewerThan('1 day');              // Created within last day
+
+// Timestamp queries
+$recentUsers = User::recentlyCreated()->get();
+$updatedUsers = User::recentlyUpdated()->get();
+$oldUsers = User::olderThan('1 month')->get();
+$newUsers = User::newerThan('1 week')->get();
+
+// Touch related models
+$user->touchRelations(['posts', 'comments']); // Update timestamps on related models
+
+// Disable automatic timestamps temporarily
+$user->disableTimestamps();
+$user->save();                            // Won't update timestamps
+$user->enableTimestamps();
+
+// Custom timestamp fields
+class Article extends Model
+{
+    use TimestampableTrait;
+    
+    protected $timestampable = [
+        'created' => 'published_at',      // Custom created field
+        'updated' => 'modified_at',       // Custom updated field
+        'autoCreate' => true,
+        'autoUpdate' => true
+    ];
+}
+
+// Timestamp formatting
+class Event extends Model
+{
+    use TimestampableTrait;
+    
+    protected $timestampable = [
+        'format' => 'c',                  // ISO 8601 format
+        'timezone' => 'America/New_York'  // Custom timezone
+    ];
+    
+    public function getCreatedAtAttribute($value)
+    {
+        return Carbon::parse($value)->setTimezone('America/New_York');
+    }
+}
+
+// Timestamp validation
+class Order extends Model
+{
+    use TimestampableTrait;
+    
+    protected $timestampable = [
+        'created' => 'order_date',
+        'updated' => 'last_modified',
+        'validate' => true,               // Validate timestamps
+        'minAge' => '1 hour',             // Minimum age validation
+        'maxAge' => '1 year'              // Maximum age validation
+    ];
+}
+
+// Bulk timestamp operations
+User::touchAll();                         // Update all records' timestamps
+User::touchByIds([1, 2, 3]);              // Update specific records
+Article::updateAllTimestamps();           // Update all articles' timestamps
+
+// Timestamp comparison
+$user1 = User::find(1);
+$user2 = User::find(2);
+
+$user1->isOlderThan($user2);              // Is user1 older than user2?
+$user1->isNewerThan($user2);              // Is user1 newer than user2?
+$user1->timeSinceCreated();               // Time since creation
+$user1->timeSinceUpdated();               // Time since last update
+
+// Timestamp ranges
+$users = User::createdBetween('2024-01-01', '2024-12-31')->get();
+$users = User::updatedBetween('-1 month', 'now')->get();
+$users = User::createdInLast('7 days')->get();
+$users = User::updatedInLast('24 hours')->get();</code></pre>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- Best Practices -->
+                    <section id="best-practices" class="section-anchor mb-12">
+                        <div class="bg-indigo-50 border-l-4 border-indigo-500 p-6 mb-8">
+                            <h2 class="text-2xl font-bold text-gray-900 mb-4">
+                                <i class="fas fa-lightbulb text-indigo-600 mr-3"></i>Best Practices
+                            </h2>
+                            <p class="text-gray-700">
+                                Guidelines and recommendations for effectively using helpers and traits in your Forge
+                                Engine applications.
+                            </p>
+                        </div>
+
+                        <div class="mb-8">
+                            <h3 class="text-xl font-semibold text-gray-900 mb-4">String Helper Best Practices</h3>
+
+                            <div class="bg-green-50 border border-green-200 rounded-lg p-6 mb-6">
+                                <h4 class="font-semibold text-green-800 mb-3">
+                                    <i class="fas fa-check-circle mr-2"></i>Do's
+                                </h4>
+                                <ul class="text-green-700 space-y-2">
+                                    <li><strong>Use multibyte-safe functions:</strong> Always use <code>Str::mb*</code>
+                                        functions for international text</li>
+                                    <li><strong>Validate input:</strong> Always validate and sanitize user input before
+                                        processing</li>
+                                    <li><strong>Use appropriate encoding:</strong> Ensure consistent UTF-8 encoding
+                                        throughout your application</li>
+                                    <li><strong>Cache expensive operations:</strong> Cache results of complex string
+                                        operations</li>
+                                    <li><strong>Use semantic naming:</strong> Choose meaningful variable and function
+                                        names</li>
+                                </ul>
+                            </div>
+
+                            <div class="bg-red-50 border border-red-200 rounded-lg p-6 mb-6">
+                                <h4 class="font-semibold text-red-800 mb-3">
+                                    <i class="fas fa-times-circle mr-2"></i>Don'ts
+                                </h4>
+                                <ul class="text-red-700 space-y-2">
+                                    <li><strong>Don't use regular expressions for simple operations:</strong> Use
+                                        dedicated functions when available</li>
+                                    <li><strong>Don't ignore encoding issues:</strong> Always handle encoding properly
+                                        to avoid data corruption</li>
+                                    <li><strong>Don't concatenate user input directly:</strong> Always sanitize and
+                                        validate before string operations</li>
+                                    <li><strong>Don't use deprecated functions:</strong> Keep up with framework updates
+                                    </li>
+                                    <li><strong>Don't perform case-insensitive operations on large datasets:</strong>
+                                        Consider performance implications</li>
+                                </ul>
+                            </div>
+
+                            <div class="bg-blue-50 border border-blue-200 rounded-lg p-6">
+                                <h4 class="font-semibold text-blue-800 mb-3">
+                                    <i class="fas fa-tachometer-alt mr-2"></i>Performance Tips
+                                </h4>
+                                <ul class="text-blue-700 space-y-2">
+                                    <li><strong>Precompile regular expressions:</strong> Use compiled regex patterns for
+                                        repeated operations</li>
+                                    <li><strong>Use string builders for concatenation:</strong> Use array join for large
+                                        string concatenations</li>
+                                    <li><strong>Leverage caching:</strong> Cache frequently used string transformations
+                                    </li>
+                                    <li><strong>Profile string operations:</strong> Use profiling tools to identify
+                                        bottlenecks</li>
+                                    <li><strong>Consider alternatives:</strong> Use database operations for large-scale
+                                        text processing</li>
+                                </ul>
+                            </div>
+                        </div>
+
+                        <div class="mb-8">
+                            <h3 class="text-xl font-semibold text-gray-900 mb-4">Array Helper Best Practices</h3>
+
+                            <div class="bg-green-50 border border-green-200 rounded-lg p-6 mb-6">
+                                <h4 class="font-semibold text-green-800 mb-3">
+                                    <i class="fas fa-check-circle mr-2"></i>Do's
+                                </h4>
+                                <ul class="text-green-700 space-y-2">
+                                    <li><strong>Use dot notation for nested access:</strong> Simplifies working with
+                                        complex data structures</li>
+                                    <li><strong>Validate array structure:</strong> Always check array structure before
+                                        operations</li>
+                                    <li><strong>Use appropriate data types:</strong> Choose the right data structure for
+                                        your use case</li>
+                                    <li><strong>Handle edge cases:</strong> Consider empty arrays, null values, and
+                                        missing keys</li>
+                                    <li><strong>Use lazy evaluation:</strong> Use generators for large datasets</li>
+                                </ul>
+                            </div>
+
+                            <div class="bg-red-50 border border-red-200 rounded-lg p-6 mb-6">
+                                <h4 class="font-semibold text-red-800 mb-3">
+                                    <i class="fas fa-times-circle mr-2"></i>Don'ts
+                                </h4>
+                                <ul class="text-red-700 space-y-2">
+                                    <li><strong>Don't modify arrays during iteration:</strong> Create new arrays instead
+                                    </li>
+                                    <li><strong>Don't ignore memory usage:</strong> Be mindful of memory consumption
+                                        with large arrays</li>
+                                    <li><strong>Don't use recursive functions without limits:</strong> Prevent stack
+                                        overflow</li>
+                                    <li><strong>Don't assume array structure:</strong> Always validate before accessing
+                                        nested data</li>
+                                    <li><strong>Don't use array functions on objects:</strong> Convert to arrays first
+                                        if needed</li>
+                                </ul>
+                            </div>
+                        </div>
+
+                        <div class="mb-8">
+                            <h3 class="text-xl font-semibold text-gray-900 mb-4">Trait Usage Best Practices</h3>
+
+                            <div class="bg-green-50 border border-green-200 rounded-lg p-6 mb-6">
+                                <h4 class="font-semibold text-green-800 mb-3">
+                                    <i class="fas fa-check-circle mr-2"></i>Do's
+                                </h4>
+                                <ul class="text-green-700 space-y-2">
+                                    <li><strong>Use traits for cross-cutting concerns:</strong> Apply to multiple
+                                        unrelated classes</li>
+                                    <li><strong>Document trait requirements:</strong> Clearly specify required methods
+                                        and properties</li>
+                                    <li><strong>Use conflict resolution:</strong> Handle method name conflicts
+                                        explicitly</li>
+                                    <li><strong>Keep traits focused:</strong> Single responsibility principle applies to
+                                        traits</li>
+                                    <li><strong>Test trait behavior:</strong> Test traits in isolation and in
+                                        combination</li>
+                                </ul>
+                            </div>
+
+                            <div class="bg-red-50 border border-red-200 rounded-lg p-6">
+                                <h4 class="font-semibold text-red-800 mb-3">
+                                    <i class="fas fa-times-circle mr-2"></i>Don'ts
+                                </h4>
+                                <ul class="text-red-700 space-y-2">
+                                    <li><strong>Don't use traits as interfaces:</strong> Traits provide implementation,
+                                        not contracts</li>
+                                    <li><strong>Don't create trait hierarchies:</strong> Keep trait composition simple
+                                    </li>
+                                    <li><strong>Don't ignore naming conflicts:</strong> Always resolve method name
+                                        conflicts</li>
+                                    <li><strong>Don't use traits for code reuse only:</strong> Use composition or
+                                        inheritance when appropriate</li>
+                                    <li><strong>Don't make traits dependent on specific classes:</strong> Keep them
+                                        generic and reusable</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- Navigation -->
+                    <div class="flex justify-between items-center mt-12 pt-8 border-t border-gray-200">
+                        <a href="api-validation.html" class="flex items-center text-blue-600 hover:text-blue-800">
+                            <i class="fas fa-arrow-left mr-2"></i>
+                            Validation API
+                        </a>
+                        <a href="api-reference.html" class="text-gray-600 hover:text-gray-800">
+                            API Reference Home
+                        </a>
+                        <a href="api-events.html" class="flex items-center text-blue-600 hover:text-blue-800">
+                            Events API
+                            <i class="fas fa-arrow-right ml-2"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="bg-gray-800 text-white py-8 mt-16">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center">
+                <p class="text-gray-400">
+                    &copy; 2024 Forge Engine. All rights reserved.
+                </p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Mobile menu functionality
+        const mobileMenuBtn = document.getElementById('mobile-menu-btn');
+        const mobileMenu = document.getElementById('mobile-menu');
+        const mobileMenuOverlay = document.getElementById('mobile-menu-overlay');
+
+        function toggleMobileMenu() {
+            mobileMenu.classList.toggle('hidden');
+            mobileMenuOverlay.classList.toggle('active');
+        }
+
+        mobileMenuBtn.addEventListener('click', toggleMobileMenu);
+        mobileMenuOverlay.addEventListener('click', toggleMobileMenu);
+
+        // Close mobile menu when clicking on links
+        const mobileMenuLinks = mobileMenu.querySelectorAll('a');
+        mobileMenuLinks.forEach(link => {
+            link.addEventListener('click', toggleMobileMenu);
+        });
+
+        // Active navigation highlighting
+        const currentPath = window.location.pathname;
+        const navLinks = document.querySelectorAll('.nav-link');
+
+        navLinks.forEach(link => {
+            if (link.getAttribute('href') && currentPath.includes(link.getAttribute('href'))) {
+                link.classList.add('active');
+            }
+        });
+
+        // Smooth scrolling for anchor links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+
+        // Copy code functionality
+        document.querySelectorAll('.code-block').forEach(block => {
+            const button = document.createElement('button');
+            button.className = 'absolute top-2 right-2 bg-gray-700 hover:bg-gray-600 text-white px-2 py-1 rounded text-xs';
+            button.textContent = 'Copy';
+            button.style.position = 'absolute';
+
+            const container = block.parentElement;
+            container.style.position = 'relative';
+            container.appendChild(button);
+
+            button.addEventListener('click', () => {
+                const code = block.textContent;
+                navigator.clipboard.writeText(code).then(() => {
+                    button.textContent = 'Copied!';
+                    setTimeout(() => {
+                        button.textContent = 'Copy';
+                    }, 2000);
+                });
+            });
+        });
+    </script>
+</body>
+
+</html>

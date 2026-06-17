@@ -1,0 +1,962 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Query Builder - Forge Engine Documentation</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-core.min.js"></script>
+    <script
+        src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/autoloader/prism-autoloader.min.js"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        .code-block {
+            background: #2d3748;
+            border-radius: 0.5rem;
+        }
+
+        .nav-link.active {
+            background-color: #eef2ff;
+            color: #4f46e5;
+            font-weight: 500;
+        }
+
+        .nav-link.active:hover {
+            background-color: #e0e7ff;
+        }
+
+        .section-anchor {
+            scroll-margin-top: 120px;
+        }
+
+        /* Mobile menu styles */
+        @media (max-width: 640px) {
+            .lg\:w-1\/4 {
+                position: fixed;
+                top: 0;
+                left: -100%;
+                width: 80%;
+                max-width: 320px;
+                height: 100vh;
+                z-index: 50;
+                transition: transform 0.3s ease;
+                background: white;
+                overflow-y: auto;
+            }
+
+            .lg\:w-1\/4.mobile-menu-open {
+                transform: translateX(0);
+            }
+
+            .mobile-menu-overlay {
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                background: rgba(0, 0, 0, 0.5);
+                z-index: 40;
+                display: none;
+            }
+
+            .mobile-menu-overlay.active {
+                display: block;
+            }
+        }
+    </style>
+</head>
+
+<body class="bg-gray-50 font-sans text-gray-900">
+    <!-- Navigation -->
+    <nav class="bg-white shadow-sm border-b">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-16">
+                <div class="flex items-center">
+                    <div class="flex-shrink-0">
+                        <h1 class="text-xl font-bold text-gray-900">
+                            Forge Engine
+                        </h1>
+                    </div>
+                    <div class="hidden sm:ml-6 sm:flex sm:space-x-8">
+                        <a href="index.html"
+                            class="text-gray-900 inline-flex items-center px-1 pt-1 text-sm font-medium hover:text-blue-600">
+                            Home
+                        </a>
+                        <a href="getting-started.html"
+                            class="text-gray-900 inline-flex items-center px-1 pt-1 text-sm font-medium hover:text-blue-600">
+                            Getting Started
+                        </a>
+                        <a href="core-concepts.html"
+                            class="text-gray-900 inline-flex items-center px-1 pt-1 text-sm font-medium hover:text-blue-600">
+                            Core Concepts
+                        </a>
+                        <a href="modules.html"
+                            class="text-gray-900 inline-flex items-center px-1 pt-1 text-sm font-medium hover:text-blue-600">
+                            Modules
+                        </a>
+                        <a href="api-reference.html"
+                            class="text-blue-600 inline-flex items-center px-1 pt-1 text-sm font-medium border-b-2 border-blue-600">
+                            API Reference
+                        </a>
+                    </div>
+                </div>
+                <div class="flex items-center sm:hidden">
+                    <button id="mobile-menu-button" class="text-gray-700 hover:text-blue-600 px-3 py-2">
+                        <i class="fas fa-bars text-xl"></i>
+                    </button>
+
+                </div>
+            </div>
+        </div>
+        <!-- Mobile menu -->
+        <div id="mobile-menu" class="sm:hidden hidden bg-white border-t border-gray-200">
+            <div class="px-2 pt-2 pb-3 space-y-1">
+                <a href="index.html"
+                    class="block px-3 py-2 text-base font-medium text-gray-700 hover:text-blue-600 hover:bg-gray-50 rounded-md">
+                    Home
+                </a>
+                <a href="getting-started.html"
+                    class="block px-3 py-2 text-base font-medium text-gray-700 hover:text-blue-600 hover:bg-gray-50 rounded-md">
+                    Getting Started
+                </a>
+                <a href="core-concepts.html"
+                    class="block px-3 py-2 text-base font-medium text-gray-700 hover:text-blue-600 hover:bg-gray-50 rounded-md">
+                    Core Concepts
+                </a>
+                <a href="modules.html"
+                    class="block px-3 py-2 text-base font-medium text-gray-700 hover:text-blue-600 hover:bg-gray-50 rounded-md">
+                    Modules
+                </a>
+                <a href="api-reference.html"
+                    class="block px-3 py-2 text-base font-medium text-blue-600 hover:bg-gray-50 rounded-md">
+                    API Reference
+                </a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Mobile menu overlay -->
+    <div id="mobile-menu-overlay" class="mobile-menu-overlay"></div>
+
+    <!-- Main Content -->
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <div class="flex flex-col lg:flex-row gap-8">
+            <!-- Sidebar Navigation -->
+            <div class="lg:w-1/4">
+                <div class="bg-white rounded-lg shadow-sm p-6 sticky top-8">
+                    <h3 class="text-lg font-semibold text-gray-900 mb-4">
+                        Query Builder
+                    </h3>
+                    <nav class="space-y-2">
+                        <a href="#overview"
+                            class="nav-link block px-3 py-2 text-sm text-gray-700 rounded-md hover:text-blue-600">
+                            Overview
+                        </a>
+                        <a href="#basic-operations"
+                            class="nav-link block px-3 py-2 text-sm text-gray-700 rounded-md hover:text-blue-600">
+                            Basic Operations
+                        </a>
+                        <a href="#query-building"
+                            class="nav-link block px-3 py-2 text-sm text-gray-700 rounded-md hover:text-blue-600">
+                            Query Building
+                        </a>
+                        <a href="#joins"
+                            class="nav-link block px-3 py-2 text-sm text-gray-700 rounded-md hover:text-blue-600">
+                            Joins
+                        </a>
+                        <a href="#aggregates"
+                            class="nav-link block px-3 py-2 text-sm text-gray-700 rounded-md hover:text-blue-600">
+                            Aggregates
+                        </a>
+                        <a href="#transactions"
+                            class="nav-link block px-3 py-2 text-sm text-gray-700 rounded-md hover:text-blue-600">
+                            Transactions
+                        </a>
+                        <a href="#schema-builder"
+                            class="nav-link block px-3 py-2 text-sm text-gray-700 rounded-md hover:text-blue-600">
+                            Schema Builder
+                        </a>
+                        <a href="#advanced-features"
+                            class="nav-link block px-3 py-2 text-sm text-gray-700 rounded-md hover:text-blue-600">
+                            Advanced Features
+                        </a>
+                        <a href="#examples"
+                            class="nav-link block px-3 py-2 text-sm text-gray-700 rounded-md hover:text-blue-600">
+                            Examples
+                        </a>
+                    </nav>
+                </div>
+            </div>
+
+            <!-- Main Content -->
+            <div class="lg:w-3/4">
+                <div class="bg-white rounded-lg shadow-sm p-8">
+                    <h1 class="text-4xl font-bold text-gray-900 mb-6">
+                        Query Builder
+                    </h1>
+                    <p class="text-xl text-gray-600 mb-8">
+                        Fluent SQL query builder with chainable methods, parameter binding, and schema management.
+                    </p>
+
+                    <!-- Overview -->
+                    <section id="overview" class="mb-12">
+                        <h2 class="text-2xl font-bold text-gray-900 mb-4">
+                            Overview
+                        </h2>
+                        <p class="text-gray-600 mb-6">
+                            The QueryBuilder provides a fluent interface for building SQL queries with automatic parameter binding, 
+                            preventing SQL injection while maintaining readability. It supports all major SQL operations including 
+                            SELECT, INSERT, UPDATE, DELETE, JOINs, aggregates, and schema management.
+                        </p>
+
+                        <div class="bg-blue-50 border border-blue-200 rounded-lg p-6 mb-6">
+                            <h3 class="font-semibold text-lg mb-4">Key Features</h3>
+                            <div class="grid md:grid-cols-2 gap-4">
+                                <div class="space-y-2">
+                                    <div class="flex items-center">
+                                        <i class="fas fa-check-circle text-blue-600 mr-2"></i>
+                                        <span class="font-medium">Automatic Parameter Binding</span>
+                                    </div>
+                                    <div class="flex items-center">
+                                        <i class="fas fa-check-circle text-blue-600 mr-2"></i>
+                                        <span class="font-medium">Chainable Method Interface</span>
+                                    </div>
+                                    <div class="flex items-center">
+                                        <i class="fas fa-check-circle text-blue-600 mr-2"></i>
+                                        <span class="font-medium">SQL Injection Protection</span>
+                                    </div>
+                                    <div class="flex items-center">
+                                        <i class="fas fa-check-circle text-blue-600 mr-2"></i>
+                                        <span class="font-medium">Transaction Support</span>
+                                    </div>
+                                </div>
+                                <div class="space-y-2">
+                                    <div class="flex items-center">
+                                        <i class="fas fa-check-circle text-blue-600 mr-2"></i>
+                                        <span class="font-medium">JOIN Operations</span>
+                                    </div>
+                                    <div class="flex items-center">
+                                        <i class="fas fa-check-circle text-blue-600 mr-2"></i>
+                                        <span class="font-medium">Aggregate Functions</span>
+                                    </div>
+                                    <div class="flex items-center">
+                                        <i class="fas fa-check-circle text-blue-600 mr-2"></i>
+                                        <span class="font-medium">Schema Management</span>
+                                    </div>
+                                    <div class="flex items-center">
+                                        <i class="fas fa-check-circle text-blue-600 mr-2"></i>
+                                        <span class="font-medium">Locking Support</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- Basic Operations -->
+                    <section id="basic-operations" class="mb-12">
+                        <h2 class="text-2xl font-bold text-gray-900 mb-4">
+                            Basic Operations
+                        </h2>
+                        <p class="text-gray-600 mb-6">
+                            The QueryBuilder supports all fundamental database operations with a clean, fluent interface.
+                        </p>
+
+                        <h3 class="text-lg font-semibold mb-3">SELECT Queries</h3>
+                        <div class="code-block p-6 text-white rounded-lg mb-6">
+                            <pre><code>&lt;?php
+
+use Forge\Core\Database\QueryBuilder;
+
+// Basic select
+$users = $queryBuilder
+    ->select('id', 'name', 'email')
+    ->where('status', '=', 'active')
+    ->orderBy('created_at', 'DESC')
+    ->limit(10)
+    ->get();
+
+// Get single record
+$user = $queryBuilder
+    ->select('*')
+    ->where('id', '=', 1)
+    ->first();
+
+// Find by primary key
+$user = $queryBuilder->find(1);
+
+// Count records
+$count = $queryBuilder
+    ->where('status', '=', 'active')
+    ->count();</code></pre>
+                        </div>
+
+                        <h3 class="text-lg font-semibold mb-3">INSERT Operations</h3>
+                        <div class="code-block p-6 text-white rounded-lg mb-6">
+                            <pre><code>&lt;?php
+
+// Insert single record
+$userId = $queryBuilder
+    ->setTable('users')
+    ->insert([
+        'name' => 'John Doe',
+        'email' => 'john@example.com',
+        'created_at' => date('Y-m-d H:i:s')
+    ]);
+
+// Returns the inserted ID</code></pre>
+                        </div>
+
+                        <h3 class="text-lg font-semibold mb-3">UPDATE Operations</h3>
+                        <div class="code-block p-6 text-white rounded-lg mb-6">
+                            <pre><code>&lt;?php
+
+// Update records
+$affectedRows = $queryBuilder
+    ->setTable('users')
+    ->where('id', '=', 1)
+    ->update([
+        'name' => 'Jane Doe',
+        'updated_at' => date('Y-m-d H:i:s')
+    ]);
+
+// Returns number of affected rows</code></pre>
+                        </div>
+
+                        <h3 class="text-lg font-semibold mb-3">DELETE Operations</h3>
+                        <div class="code-block p-6 text-white rounded-lg mb-6">
+                            <pre><code>&lt;?php
+
+// Delete records
+$deletedRows = $queryBuilder
+    ->setTable('users')
+    ->where('status', '=', 'inactive')
+    ->where('last_login', '<', date('Y-m-d', strtotime('-1 year')))
+    ->delete();
+
+// Returns number of deleted rows</code></pre>
+                        </div>
+                    </section>
+
+                    <!-- Query Building -->
+                    <section id="query-building" class="mb-12">
+                        <h2 class="text-2xl font-bold text-gray-900 mb-4">
+                            Query Building
+                        </h2>
+                        <p class="text-gray-600 mb-6">
+                            Build complex queries with WHERE clauses, ORDER BY, LIMIT, and more.
+                        </p>
+
+                        <h3 class="text-lg font-semibold mb-3">WHERE Clauses</h3>
+                        <div class="code-block p-6 text-white rounded-lg mb-6">
+                            <pre><code>&lt;?php
+
+// Basic where clause
+$users = $queryBuilder
+    ->where('status', '=', 'active')
+    ->where('role', '!=', 'admin')
+    ->get();
+
+// Multiple conditions (AND)
+$users = $queryBuilder
+    ->where('status', '=', 'active')
+    ->where('created_at', '>', '2023-01-01')
+    ->where('email', 'LIKE', '%@example.com')
+    ->get();
+
+// NULL checks
+$users = $queryBuilder
+    ->whereNull('deleted_at')
+    ->whereNotNull('email_verified_at')
+    ->get();
+
+// Raw SQL conditions
+$users = $queryBuilder
+    ->whereRaw('age >= ? AND age <= ?', [18, 65])
+    ->get();</code></pre>
+                        </div>
+
+                        <h3 class="text-lg font-semibold mb-3">Ordering and Limiting</h3>
+                        <div class="code-block p-6 text-white rounded-lg mb-6">
+                            <pre><code>&lt;?php
+
+// Order by single column
+$users = $queryBuilder
+    ->orderBy('created_at', 'DESC')
+    ->get();
+
+// Order by multiple columns
+$users = $queryBuilder
+    ->orderBy('status', 'ASC')
+    ->orderBy('created_at', 'DESC')
+    ->get();
+
+// Limit and offset (pagination)
+$users = $queryBuilder
+    ->limit(20)
+    ->offset(40)
+    ->get();
+
+// Group by and having
+$results = $queryBuilder
+    ->select('status', 'COUNT(*) as count')
+    ->groupBy('status')
+    ->having('count', '>', 10)
+    ->get();</code></pre>
+                        </div>
+                    </section>
+
+                    <!-- Joins -->
+                    <section id="joins" class="mb-12">
+                        <h2 class="text-2xl font-bold text-gray-900 mb-4">
+                            Joins
+                        </h2>
+                        <p class="text-gray-600 mb-6">
+                            Perform JOIN operations to combine data from multiple tables.
+                        </p>
+
+                        <h3 class="text-lg font-semibold mb-3">INNER JOIN</h3>
+                        <div class="code-block p-6 text-white rounded-lg mb-6">
+                            <pre><code>&lt;?php
+
+// Basic inner join
+$results = $queryBuilder
+    ->select('users.name', 'users.email', 'profiles.bio')
+    ->setTable('users')
+    ->join('profiles', 'users.id', '=', 'profiles.user_id')
+    ->get();
+
+// Multiple joins
+$results = $queryBuilder
+    ->select('users.name', 'orders.total', 'products.name as product_name')
+    ->setTable('users')
+    ->join('orders', 'users.id', '=', 'orders.user_id')
+    ->join('order_items', 'orders.id', '=', 'order_items.order_id')
+    ->join('products', 'order_items.product_id', '=', 'products.id')
+    ->where('users.status', '=', 'active')
+    ->get();</code></pre>
+                        </div>
+
+                        <h3 class="text-lg font-semibold mb-3">LEFT and RIGHT JOINs</h3>
+                        <div class="code-block p-6 text-white rounded-lg mb-6">
+                            <pre><code>&lt;?php
+
+// Left join (includes users without profiles)
+$users = $queryBuilder
+    ->select('users.name', 'profiles.bio')
+    ->setTable('users')
+    ->leftJoin('profiles', 'users.id', '=', 'profiles.user_id')
+    ->get();
+
+// Right join
+$results = $queryBuilder
+    ->select('orders.total', 'users.name')
+    ->setTable('orders')
+    ->rightJoin('users', 'orders.user_id', '=', 'users.id')
+    ->get();</code></pre>
+                        </div>
+                    </section>
+
+                    <!-- Aggregates -->
+                    <section id="aggregates" class="mb-12">
+                        <h2 class="text-2xl font-bold text-gray-900 mb-4">
+                            Aggregates
+                        </h2>
+                        <p class="text-gray-600 mb-6">
+                            Perform aggregate functions like COUNT, SUM, AVG, MIN, and MAX.
+                        </p>
+
+                        <h3 class="text-lg font-semibold mb-3">Count Records</h3>
+                        <div class="code-block p-6 text-white rounded-lg mb-6">
+                            <pre><code>&lt;?php
+
+// Count all records
+$totalUsers = $queryBuilder->count();
+
+// Count with conditions
+$activeUsers = $queryBuilder
+    ->where('status', '=', 'active')
+    ->count();
+
+// Count specific column
+$usersWithEmail = $queryBuilder
+    ->whereNotNull('email')
+    ->count('email');</code></pre>
+                        </div>
+
+                        <h3 class="text-lg font-semibold mb-3">Mathematical Aggregates</h3>
+                        <div class="code-block p-6 text-white rounded-lg mb-6">
+                            <pre><code>&lt;?php
+
+// Sum
+$totalSales = $queryBuilder
+    ->where('status', '=', 'completed')
+    ->sum('amount');
+
+// Average
+$averageAge = $queryBuilder->avg('age');
+
+// Minimum and Maximum
+$minPrice = $queryBuilder->min('price');
+$maxPrice = $queryBuilder->max('price');
+
+// Combined with grouping
+$results = $queryBuilder
+    ->select('category_id', 'COUNT(*) as count', 'SUM(price) as total_price')
+    ->groupBy('category_id')
+    ->having('count', '>', 5)
+    ->get();</code></pre>
+                        </div>
+                    </section>
+
+                    <!-- Transactions -->
+                    <section id="transactions" class="mb-12">
+                        <h2 class="text-2xl font-bold text-gray-900 mb-4">
+                            Transactions
+                        </h2>
+                        <p class="text-gray-600 mb-6">
+                            Ensure data consistency with database transactions.
+                        </p>
+
+                        <h3 class="text-lg font-semibold mb-3">Manual Transaction Control</h3>
+                        <div class="code-block p-6 text-white rounded-lg mb-6">
+                            <pre><code>&lt;?php
+
+// Manual transaction control
+$queryBuilder->beginTransaction();
+
+try {
+    // Perform multiple operations
+    $userId = $queryBuilder
+        ->setTable('users')
+        ->insert(['name' => 'John Doe', 'email' => 'john@example.com']);
+    
+    $queryBuilder
+        ->setTable('user_profiles')
+        ->insert(['user_id' => $userId, 'bio' => 'Software developer']);
+    
+    // Commit if all operations succeed
+    $queryBuilder->commit();
+} catch (\Exception $e) {
+    // Rollback on error
+    $queryBuilder->rollback();
+    throw $e;
+}</code></pre>
+                        </div>
+
+                        <h3 class="text-lg font-semibold mb-3">Transaction Callbacks</h3>
+                        <div class="code-block p-6 text-white rounded-lg mb-6">
+                            <pre><code>&lt;?php
+
+// Using transaction callback (recommended)
+$result = $queryBuilder->transaction(function ($queryBuilder) {
+    // All operations within this callback are automatically transactional
+    $userId = $queryBuilder
+        ->setTable('users')
+        ->insert(['name' => 'Jane Doe', 'email' => 'jane@example.com']);
+    
+    $queryBuilder
+        ->setTable('user_settings')
+        ->insert(['user_id' => $userId, 'theme' => 'dark']);
+    
+    return $userId;
+});
+
+// Transaction automatically commits on success, rolls back on exception</code></pre>
+                        </div>
+                    </section>
+
+                    <!-- Schema Builder -->
+                    <section id="schema-builder" class="mb-12">
+                        <h2 class="text-2xl font-bold text-gray-900 mb-4">
+                            Schema Builder
+                        </h2>
+                        <p class="text-gray-600 mb-6">
+                            Create and manage database schema with programmatic table creation and indexing.
+                        </p>
+
+                        <h3 class="text-lg font-semibold mb-3">Table Creation</h3>
+                        <div class="code-block p-6 text-white rounded-lg mb-6">
+                            <pre><code>&lt;?php
+
+// Create table with column definitions
+$createTableSql = $queryBuilder->createTable('users', [
+    'id' => 'INT AUTO_INCREMENT PRIMARY KEY',
+    'name' => 'VARCHAR(255) NOT NULL',
+    'email' => 'VARCHAR(255) NOT NULL UNIQUE',
+    'age' => 'INT NULL',
+    'is_active' => 'BOOLEAN DEFAULT TRUE',
+    'created_at' => 'TIMESTAMP DEFAULT CURRENT_TIMESTAMP',
+    'updated_at' => 'TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP'
+]);
+
+// Execute the SQL
+$queryBuilder->execute($createTableSql);</code></pre>
+                        </div>
+
+                        <h3 class="text-lg font-semibold mb-3">Advanced Table Creation</h3>
+                        <div class="code-block p-6 text-white rounded-lg mb-6">
+                            <pre><code>&lt;?php
+
+// Create table from attributes array
+$createTableSql = $queryBuilder->createTableFromAttributes('products', [
+    'id' => [
+        'type' => 'INT AUTO_INCREMENT',
+        'primary' => true,
+        'nullable' => false
+    ],
+    'name' => [
+        'type' => 'VARCHAR(255)',
+        'nullable' => false
+    ],
+    'price' => [
+        'type' => 'DECIMAL(10,2)',
+        'nullable' => false,
+        'default' => 0.00
+    ],
+    'description' => [
+        'type' => 'TEXT',
+        'nullable' => true
+    ],
+    'is_featured' => [
+        'type' => 'BOOLEAN',
+        'nullable' => false,
+        'default' => false
+    ]
+], [
+    [
+        'name' => 'idx_products_name',
+        'table' => 'products',
+        'columns' => ['name'],
+        'unique' => false
+    ],
+    [
+        'name' => 'idx_products_price',
+        'table' => 'products',
+        'columns' => ['price'],
+        'unique' => false
+    ]
+]);</code></pre>
+                        </div>
+
+                        <h3 class="text-lg font-semibold mb-3">Index Management</h3>
+                        <div class="code-block p-6 text-white rounded-lg mb-6">
+                            <pre><code>&lt;?php
+
+// Create regular index
+$indexSql = $queryBuilder->createIndex('idx_users_email', ['email']);
+$queryBuilder->execute($indexSql);
+
+// Create unique index
+$uniqueIndexSql = $queryBuilder->createIndex('idx_users_username', ['username'], true);
+$queryBuilder->execute($uniqueIndexSql);
+
+// Drop table
+$dropTableSql = $queryBuilder->dropTable('old_table_name');
+$queryBuilder->execute($dropTableSql);</code></pre>
+                        </div>
+                    </section>
+
+                    <!-- Advanced Features -->
+                    <section id="advanced-features" class="mb-12">
+                        <h2 class="text-2xl font-bold text-gray-900 mb-4">
+                            Advanced Features
+                        </h2>
+                        <p class="text-gray-600 mb-6">
+                            Advanced query building features for complex scenarios.
+                        </p>
+
+                        <h3 class="text-lg font-semibold mb-3">Locking</h3>
+                        <div class="code-block p-6 text-white rounded-lg mb-6">
+                            <pre><code>&lt;?php
+
+// Lock for update (prevents concurrent modifications)
+$user = $queryBuilder
+    ->where('id', '=', 1)
+    ->lockForUpdate()
+    ->first();
+
+// This adds FOR UPDATE clause for MySQL/PostgreSQL
+// Useful for preventing race conditions in concurrent environments</code></pre>
+                        </div>
+
+                        <h3 class="text-lg font-semibold mb-3">Query Reset</h3>
+                        <div class="code-block p-6 text-white rounded-lg mb-6">
+                            <pre><code>&lt;?php
+
+// Reset query builder state
+$queryBuilder
+    ->setTable('users')
+    ->where('status', '=', 'active')
+    ->get();
+
+// Reset for new query
+$queryBuilder->reset();
+
+// Now build a completely different query
+$products = $queryBuilder
+    ->setTable('products')
+    ->where('price', '<', 100)
+    ->get();</code></pre>
+                        </div>
+
+                        <h3 class="text-lg font-semibold mb-3">Existence Checks</h3>
+                        <div class="code-block p-6 text-white rounded-lg mb-6">
+                            <pre><code>&lt;?php
+
+// Check if records exist
+$hasActiveUsers = $queryBuilder
+    ->where('status', '=', 'active')
+    ->exists();
+
+if ($hasActiveUsers) {
+    // Process active users
+}</code></pre>
+                        </div>
+                    </section>
+
+                    <!-- Examples -->
+                    <section id="examples" class="mb-12">
+                        <h2 class="text-2xl font-bold text-gray-900 mb-4">
+                            Examples
+                        </h2>
+                        <p class="text-gray-600 mb-6">
+                            Real-world examples demonstrating QueryBuilder capabilities.
+                        </p>
+
+                        <h3 class="text-lg font-semibold mb-3">User Management System</h3>
+                        <div class="code-block p-6 text-white rounded-lg mb-6">
+                            <pre><code>&lt;?php
+
+class UserRepository
+{
+    private QueryBuilder $queryBuilder;
+    
+    public function __construct(QueryBuilder $queryBuilder)
+    {
+        $this->queryBuilder = $queryBuilder;
+    }
+    
+    public function getActiveUsersWithProfiles(int $limit = 20): array
+    {
+        return $this->queryBuilder
+            ->select('users.id', 'users.name', 'users.email', 'profiles.bio', 'profiles.avatar')
+            ->setTable('users')
+            ->leftJoin('profiles', 'users.id', '=', 'profiles.user_id')
+            ->where('users.status', '=', 'active')
+            ->whereNull('users.deleted_at')
+            ->orderBy('users.created_at', 'DESC')
+            ->limit($limit)
+            ->get();
+    }
+    
+    public function getUserStatistics(): array
+    {
+        return $this->queryBuilder
+            ->select(
+                'status',
+                'COUNT(*) as total_users',
+                'AVG(age) as average_age',
+                'MAX(created_at) as latest_user'
+            )
+            ->setTable('users')
+            ->groupBy('status')
+            ->having('total_users', '>', 0)
+            ->get();
+    }
+    
+    public function createUserWithProfile(array $userData, array $profileData): int
+    {
+        return $this->queryBuilder->transaction(function ($queryBuilder) use ($userData, $profileData) {
+            $userId = $queryBuilder
+                ->setTable('users')
+                ->insert($userData);
+            
+            $queryBuilder
+                ->setTable('profiles')
+                ->insert(array_merge($profileData, ['user_id' => $userId]));
+            
+            return $userId;
+        });
+    }
+}</code></pre>
+                        </div>
+
+                        <h3 class="text-lg font-semibold mb-3">E-commerce Product Catalog</h3>
+                        <div class="code-block p-6 text-white rounded-lg mb-6">
+                            <pre><code>&lt;?php
+
+class ProductRepository
+{
+    private QueryBuilder $queryBuilder;
+    
+    public function getProductsWithCategoryAndReviews(): array
+    {
+        return $this->queryBuilder
+            ->select(
+                'products.id',
+                'products.name',
+                'products.price',
+                'categories.name as category',
+                'AVG(reviews.rating) as average_rating',
+                'COUNT(reviews.id) as review_count'
+            )
+            ->setTable('products')
+            ->join('categories', 'products.category_id', '=', 'categories.id')
+            ->leftJoin('reviews', 'products.id', '=', 'reviews.product_id')
+            ->where('products.is_active', '=', true)
+            ->groupBy('products.id', 'products.name', 'products.price', 'categories.name')
+            ->having('average_rating', '>=', 4.0)
+            ->orderBy('average_rating', 'DESC')
+            ->limit(50)
+            ->get();
+    }
+    
+    public function getPriceRangeByCategory(int $categoryId): array
+    {
+        return $this->queryBuilder
+            ->select(
+                'MIN(price) as min_price',
+                'MAX(price) as max_price',
+                'AVG(price) as avg_price'
+            )
+            ->setTable('products')
+            ->where('category_id', '=', $categoryId)
+            ->where('is_active', '=', true)
+            ->first();
+    }
+    
+    public function searchProducts(string $searchTerm, array $filters = []): array
+    {
+        $query = $this->queryBuilder
+            ->select('products.*', 'categories.name as category_name')
+            ->setTable('products')
+            ->join('categories', 'products.category_id', '=', 'categories.id')
+            ->where('products.is_active', '=', true);
+        
+        // Search term
+        if (!empty($searchTerm)) {
+            $query->whereRaw('(products.name LIKE ? OR products.description LIKE ?)', 
+                ["%$searchTerm%", "%$searchTerm%"]);
+        }
+        
+        // Price range filter
+        if (isset($filters['min_price'])) {
+            $query->where('products.price', '>=', $filters['min_price']);
+        }
+        if (isset($filters['max_price'])) {
+            $query->where('products.price', '<=', $filters['max_price']);
+        }
+        
+        // Category filter
+        if (isset($filters['category_id'])) {
+            $query->where('products.category_id', '=', $filters['category_id']);
+        }
+        
+        return $query
+            ->orderBy('products.created_at', 'DESC')
+            ->limit(100)
+            ->get();
+    }
+}</code></pre>
+                        </div>
+                    </section>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="bg-gray-900 text-white py-12 mt-16">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid md:grid-cols-3 gap-8">
+                <div>
+                    <h3 class="text-lg font-semibold mb-4">Forge Engine</h3>
+                    <p class="text-gray-400">
+                        A modern PHP framework built for simplicity and performance.
+                    </p>
+                </div>
+                <div>
+                    <h3 class="text-lg font-semibold mb-4">Quick Links</h3>
+                    <ul class="space-y-2 text-gray-400">
+                        <li><a href="getting-started.html" class="hover:text-white">Getting Started</a></li>
+                        <li><a href="core-concepts.html" class="hover:text-white">Core Concepts</a></li>
+                        <li><a href="modules.html" class="hover:text-white">Modules</a></li>
+                        <li><a href="api-reference.html" class="hover:text-white">API Reference</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h3 class="text-lg font-semibold mb-4">Community</h3>
+                    <ul class="space-y-2 text-gray-400">
+                        <li><a href="#" class="hover:text-white">GitHub</a></li>
+                        <li><a href="#" class="hover:text-white">Documentation</a></li>
+                        <li><a href="#" class="hover:text-white">Issues</a></li>
+                        <li><a href="#" class="hover:text-white">Discussions</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="border-t border-gray-800 mt-8 pt-8 text-center text-gray-400">
+                <p>&copy; 2024 Forge Engine. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Mobile menu toggle
+        const mobileMenuButton = document.getElementById('mobile-menu-button');
+        const mobileMenu = document.getElementById('mobile-menu');
+        const mobileMenuOverlay = document.getElementById('mobile-menu-overlay');
+
+        mobileMenuButton.addEventListener('click', () => {
+            mobileMenu.classList.toggle('hidden');
+            mobileMenuOverlay.classList.toggle('active');
+        });
+
+        mobileMenuOverlay.addEventListener('click', () => {
+            mobileMenu.classList.add('hidden');
+            mobileMenuOverlay.classList.remove('active');
+        });
+
+        // Navigation highlighting
+        const navLinks = document.querySelectorAll('.nav-link');
+        const sections = document.querySelectorAll('.section-anchor');
+
+        function updateActiveNav() {
+            let current = '';
+            sections.forEach(section => {
+                const sectionTop = section.offsetTop;
+                const sectionHeight = section.clientHeight;
+                if (pageYOffset >= sectionTop - 200) {
+                    current = section.getAttribute('id');
+                }
+            });
+
+            navLinks.forEach(link => {
+                link.classList.remove('active');
+                if (link.getAttribute('href') === '#' + current) {
+                    link.classList.add('active');
+                }
+            });
+        }
+
+        window.addEventListener('scroll', updateActiveNav);
+        updateActiveNav(); // Initial call
+
+        // Smooth scrolling for navigation links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+    </script>
+</body>
+
+</html>

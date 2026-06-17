@@ -1,0 +1,860 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Database & ORM API - Forge Engine Documentation</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-core.min.js"></script>
+    <script
+        src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/autoloader/prism-autoloader.min.js"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        .code-block {
+            background: #2d3748;
+            border-radius: 0.5rem;
+        }
+
+        .nav-link.active {
+            background-color: #eef2ff;
+            color: #4f46e5;
+            font-weight: 500;
+        }
+
+        .nav-link.active:hover {
+            background-color: #e0e7ff;
+        }
+
+        .section-anchor {
+            scroll-margin-top: 120px;
+        }
+
+        /* Mobile menu styles */
+        @media (max-width: 640px) {
+            .lg\:w-1\/4 {
+                position: fixed;
+                top: 0;
+                left: -100%;
+                width: 80%;
+                max-width: 320px;
+                height: 100vh;
+                z-index: 50;
+                transition: transform 0.3s ease;
+                background: white;
+                overflow-y: auto;
+            }
+
+            .lg\:w-1\/4.mobile-menu-open {
+                transform: translateX(0);
+            }
+
+            .mobile-menu-overlay {
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                background: rgba(0, 0, 0, 0.5);
+                z-index: 40;
+                display: none;
+            }
+
+            .mobile-menu-overlay.active {
+                display: block;
+            }
+        }
+    </style>
+</head>
+
+<body class="bg-gray-50">
+    <!-- Navigation -->
+    <nav class="bg-white shadow-sm border-b">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-16">
+                <div class="flex items-center">
+                    <div class="flex-shrink-0">
+                        <h1 class="text-xl font-bold text-gray-900">
+                            Forge Engine
+                        </h1>
+                    </div>
+                    <div class="hidden sm:ml-6 sm:flex sm:space-x-8">
+                        <a href="index.html"
+                            class="text-gray-900 inline-flex items-center px-1 pt-1 text-sm font-medium hover:text-blue-600">
+                            Home
+                        </a>
+                        <a href="getting-started.html"
+                            class="text-gray-900 inline-flex items-center px-1 pt-1 text-sm font-medium hover:text-blue-600">
+                            Getting Started
+                        </a>
+                        <a href="core-concepts.html"
+                            class="text-gray-900 inline-flex items-center px-1 pt-1 text-sm font-medium hover:text-blue-600">
+                            Core Concepts
+                        </a>
+                        <a href="modules.html"
+                            class="text-gray-900 inline-flex items-center px-1 pt-1 text-sm font-medium hover:text-blue-600">
+                            Modules
+                        </a>
+                        <a href="api-reference.html"
+                            class="text-blue-600 inline-flex items-center px-1 pt-1 text-sm font-medium border-b-2 border-blue-600">
+                            API Reference
+                        </a>
+                    </div>
+                </div>
+                <div class="flex items-center sm:hidden">
+                    <button id="mobile-menu-btn" class="text-gray-700 hover:text-blue-600" data-mobile-menu-toggle>
+                        <i class="fas fa-bars text-xl"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+        <!-- Mobile menu -->
+        <div id="mobile-menu" class="hidden sm:hidden bg-white border-t">
+            <div class="px-2 pt-2 pb-3 space-y-1">
+                <a href="index.html" class="block px-3 py-2 text-gray-700 hover:text-blue-600">
+                    Home
+                </a>
+                <a href="getting-started.html" class="block px-3 py-2 text-gray-700 hover:text-blue-600">
+                    Getting Started
+                </a>
+                <a href="core-concepts.html" class="block px-3 py-2 text-gray-700 hover:text-blue-600">
+                    Core Concepts
+                </a>
+                <a href="modules.html" class="block px-3 py-2 text-gray-700 hover:text-blue-600">
+                    Modules
+                </a>
+                <a href="api-reference.html" class="block px-3 py-2 text-blue-600">
+                    API Reference
+                </a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Mobile Menu Overlay -->
+    <div id="mobile-menu-overlay" class="mobile-menu-overlay"></div>
+
+    <!-- Main Content -->
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <div class="flex flex-col lg:flex-row gap-8">
+            <!-- Sidebar Navigation -->
+            <div class="lg:w-1/4">
+                <div class="bg-white rounded-lg shadow-sm p-6 sticky top-8">
+                    <h3 class="text-lg font-semibold text-gray-900 mb-4">
+                        API Reference
+                    </h3>
+                    <nav class="space-y-2">
+                        <a href="api-core.html" class="nav-link block px-3 py-2 text-sm text-gray-700 rounded-md hover:text-blue-600">
+                            <i class="fas fa-cogs mr-2"></i>Core Engine
+                        </a>
+                        <a href="api-http.html" class="nav-link block px-3 py-2 text-sm text-gray-700 rounded-md hover:text-blue-600">
+                            <i class="fas fa-globe mr-2"></i>HTTP Layer
+                        </a>
+                        <a href="api-database.html" class="nav-link block px-3 py-2 text-sm text-gray-700 rounded-md hover:text-blue-600 active">
+                            <i class="fas fa-database mr-2"></i>Database & ORM
+                        </a>
+                        <a href="api-di.html" class="nav-link block px-3 py-2 text-sm text-gray-700 rounded-md hover:text-blue-600">
+                            <i class="fas fa-puzzle-piece mr-2"></i>DI Container
+                        </a>
+                        <a href="api-routing.html" class="nav-link block px-3 py-2 text-sm text-gray-700 rounded-md hover:text-blue-600">
+                            <i class="fas fa-route mr-2"></i>Routing
+                        </a>
+                        <a href="api-modules.html" class="nav-link block px-3 py-2 text-sm text-gray-700 rounded-md hover:text-blue-600">
+                            <i class="fas fa-plug mr-2"></i>Module System
+                        </a>
+                        <a href="api-cli.html" class="nav-link block px-3 py-2 text-sm text-gray-700 rounded-md hover:text-blue-600">
+                            <i class="fas fa-terminal mr-2"></i>CLI & Console
+                        </a>
+                        <a href="api-cache.html" class="nav-link block px-3 py-2 text-sm text-gray-700 rounded-md hover:text-blue-600">
+                            <i class="fas fa-memory mr-2"></i>Caching
+                        </a>
+                        <a href="api-validation.html" class="nav-link block px-3 py-2 text-sm text-gray-700 rounded-md hover:text-blue-600">
+                            <i class="fas fa-check-circle mr-2"></i>Validation
+                        </a>
+                        <a href="api-helpers.html" class="nav-link block px-3 py-2 text-sm text-gray-700 rounded-md hover:text-blue-600">
+                            <i class="fas fa-tools mr-2"></i>Helpers & Traits
+                        </a>
+                        <a href="api-events.html" class="nav-link block px-3 py-2 text-sm text-gray-700 rounded-md hover:text-blue-600">
+                            <i class="fas fa-broadcast-tower mr-2"></i>Events
+                        </a>
+                        <a href="api-security.html" class="nav-link block px-3 py-2 text-sm text-gray-700 rounded-md hover:text-blue-600">
+                            <i class="fas fa-shield-alt mr-2"></i>Security
+                        </a>
+                    </nav>
+                </div>
+            </div>
+
+            <!-- Main Content -->
+            <div class="lg:w-3/4">
+                <div class="bg-white rounded-lg shadow-sm p-8">
+                    <h1 class="text-4xl font-bold text-gray-900 mb-6">
+                        Database & ORM API
+                    </h1>
+                    <p class="text-xl text-gray-600 mb-8">
+                        Database connectivity, ORM functionality, query building, and model management. 
+                        These classes provide comprehensive database operations including connections, 
+                        migrations, relationships, and query optimization for your Forge Engine applications.
+                    </p>
+
+                    <!-- DatabaseConnection Class -->
+                    <section id="database-connection" class="section-anchor mb-12">
+                        <div class="bg-blue-50 border-l-4 border-blue-500 p-6 mb-8">
+                            <h2 class="text-2xl font-bold text-gray-900 mb-4">
+                                <i class="fas fa-plug text-blue-600 mr-3"></i>DatabaseConnection
+                            </h2>
+                            <p class="text-gray-700">
+                                Manages database connections and provides low-level database operations. 
+                                The DatabaseConnection class handles connection pooling, query execution, 
+                                and transaction management for multiple database types.
+                            </p>
+                        </div>
+
+                        <div class="mb-8">
+                            <h3 class="text-xl font-semibold text-gray-900 mb-4">Constructor & Configuration</h3>
+                            
+                            <div class="api-method bg-gray-50 p-4 rounded-lg mb-4">
+                                <h4 class="font-semibold text-lg mb-2">__construct(array $config)</h4>
+                                <p class="text-gray-600 text-sm mb-3">Create a new database connection with configuration.</p>
+                                <div class="code-block p-4 text-white rounded">
+                                    <pre><code class="language-php">$connection = new DatabaseConnection([
+    'driver' => 'mysql',
+    'host' => 'localhost',
+    'port' => 3306,
+    'database' => 'myapp',
+    'username' => 'root',
+    'password' => 'password',
+    'charset' => 'utf8mb4',
+    'collation' => 'utf8mb4_unicode_ci',
+    'prefix' => '',
+    'strict' => true,
+    'engine' => null
+]);</code></pre>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="mb-8">
+                            <h3 class="text-xl font-semibold text-gray-900 mb-4">Query Execution Methods</h3>
+
+                            <div class="api-method bg-gray-50 p-4 rounded-lg mb-4">
+                                <h4 class="font-semibold text-lg mb-2">query(string $sql, array $bindings = []): array</h4>
+                                <p class="text-gray-600 text-sm mb-3">Execute a raw SQL query and return results.</p>
+                                <div class="code-block p-4 text-white rounded">
+                                    <pre><code class="language-php">$results = $connection->query('SELECT * FROM users WHERE active = ?', [true]);
+$user = $connection->query('SELECT * FROM users WHERE id = ?', [$id])[0] ?? null;</code></pre>
+                                </div>
+                            </div>
+
+                            <div class="api-method bg-gray-50 p-4 rounded-lg mb-4">
+                                <h4 class="font-semibold text-lg mb-2">execute(string $sql, array $bindings = []): int</h4>
+                                <p class="text-gray-600 text-sm mb-3">Execute a raw SQL statement and return affected rows.</p>
+                                <div class="code-block p-4 text-white rounded">
+                                    <pre><code class="language-php">$affected = $connection->execute('UPDATE users SET active = ? WHERE id = ?', [false, $id]);
+$connection->execute('DELETE FROM sessions WHERE expired_at < ?', [now()]);</code></pre>
+                                </div>
+                            </div>
+
+                            <div class="api-method bg-gray-50 p-4 rounded-lg mb-4">
+                                <h4 class="font-semibold text-lg mb-2">select(string $query, array $bindings = []): array</h4>
+                                <p class="text-gray-600 text-sm mb-3">Execute a SELECT query and return results.</p>
+                                <div class="code-block p-4 text-white rounded">
+                                    <pre><code class="language-php">$users = $connection->select('SELECT * FROM users WHERE created_at > ?', ['2023-01-01']);
+$count = $connection->select('SELECT COUNT(*) as total FROM users')[0]['total'];</code></pre>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="mb-8">
+                            <h3 class="text-xl font-semibold text-gray-900 mb-4">Transaction Methods</h3>
+
+                            <div class="api-method bg-gray-50 p-4 rounded-lg mb-4">
+                                <h4 class="font-semibold text-lg mb-2">beginTransaction(): void</h4>
+                                <p class="text-gray-600 text-sm mb-3">Start a new database transaction.</p>
+                                <div class="code-block p-4 text-white rounded">
+                                    <pre><code class="language-php">$connection->beginTransaction();</code></pre>
+                                </div>
+                            </div>
+
+                            <div class="api-method bg-gray-50 p-4 rounded-lg mb-4">
+                                <h4 class="font-semibold text-lg mb-2">commit(): void</h4>
+                                <p class="text-gray-600 text-sm mb-3">Commit the current transaction.</p>
+                                <div class="code-block p-4 text-white rounded">
+                                    <pre><code class="language-php">$connection->commit();</code></pre>
+                                </div>
+                            </div>
+
+                            <div class="api-method bg-gray-50 p-4 rounded-lg mb-4">
+                                <h4 class="font-semibold text-lg mb-2">rollBack(): void</h4>
+                                <p class="text-gray-600 text-sm mb-3">Rollback the current transaction.</p>
+                                <div class="code-block p-4 text-white rounded">
+                                    <pre><code class="language-php">$connection->rollBack();</code></pre>
+                                </div>
+                            </div>
+
+                            <div class="api-method bg-gray-50 p-4 rounded-lg mb-4">
+                                <h4 class="font-semibold text-lg mb-2">transaction(callable $callback): mixed</h4>
+                                <p class="text-gray-600 text-sm mb-3">Execute a callback within a transaction.</p>
+                                <div class="code-block p-4 text-white rounded">
+                                    <pre><code class="language-php">$result = $connection->transaction(function() use ($connection) {
+    $userId = $connection->execute('INSERT INTO users (name, email) VALUES (?, ?)', ['John', 'john@example.com']);
+    $connection->execute('INSERT INTO profiles (user_id, bio) VALUES (?, ?)', [$userId, 'Developer']);
+    return $userId;
+});</code></pre>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- Model Class -->
+                    <section id="model" class="section-anchor mb-12">
+                        <div class="bg-green-50 border-l-4 border-green-500 p-6 mb-8">
+                            <h2 class="text-2xl font-bold text-gray-900 mb-4">
+                                <i class="fas fa-cube text-green-600 mr-3"></i>Model
+                            </h2>
+                            <p class="text-gray-700">
+                                Base ORM model class providing database table mapping, relationships, 
+                                and query building capabilities. Models represent database tables and 
+                                provide an intuitive way to interact with your data.
+                            </p>
+                        </div>
+
+                        <div class="mb-8">
+                            <h3 class="text-xl font-semibold text-gray-900 mb-4">Basic Model Definition</h3>
+                            
+                            <div class="api-method bg-gray-50 p-4 rounded-lg mb-4">
+                                <h4 class="font-semibold text-lg mb-2">Creating a Model</h4>
+                                <p class="text-gray-600 text-sm mb-3">Extend the base Model class to create your own models.</p>
+                                <div class="code-block p-4 text-white rounded">
+                                    <pre><code class="language-php">class User extends Model
+{
+    protected string $table = 'users';
+    protected string $primaryKey = 'id';
+    protected array $fillable = ['name', 'email', 'password'];
+    protected array $hidden = ['password', 'remember_token'];
+    protected array $casts = [
+        'email_verified_at' => 'datetime',
+        'is_active' => 'boolean'
+    ];
+    
+    // Define relationships
+    public function posts()
+    {
+        return $this->hasMany(Post::class);
+    }
+    
+    public function profile()
+    {
+        return $this->hasOne(Profile::class);
+    }
+    
+    public function roles()
+    {
+        return $this->belongsToMany(Role::class);
+    }
+}</code></pre>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="mb-8">
+                            <h3 class="text-xl font-semibold text-gray-900 mb-4">Query Methods</h3>
+
+                            <div class="api-method bg-gray-50 p-4 rounded-lg mb-4">
+                                <h4 class="font-semibold text-lg mb-2">find(mixed $id): ?Model</h4>
+                                <p class="text-gray-600 text-sm mb-3">Find a model by its primary key.</p>
+                                <div class="code-block p-4 text-white rounded">
+                                    <pre><code class="language-php">$user = User::find(1);
+$user = User::find('550e8400-e29b-41d4-a716-446655440000');</code></pre>
+                                </div>
+                            </div>
+
+                            <div class="api-method bg-gray-50 p-4 rounded-lg mb-4">
+                                <h4 class="font-semibold text-lg mb-2">where(string $column, mixed $operator = null, mixed $value = null): Builder</h4>
+                                <p class="text-gray-600 text-sm mb-3">Add a where clause to the query.</p>
+                                <div class="code-block p-4 text-white rounded">
+                                    <pre><code class="language-php">$users = User::where('active', true)->get();
+$users = User::where('age', '>', 18)->get();
+$users = User::where('email', 'like', '%@example.com')->get();</code></pre>
+                                </div>
+                            </div>
+
+                            <div class="api-method bg-gray-50 p-4 rounded-lg mb-4">
+                                <h4 class="font-semibold text-lg mb-2">get(): Collection</h4>
+                                <p class="text-gray-600 text-sm mb-3">Execute the query and get the results.</p>
+                                <div class="code-block p-4 text-white rounded">
+                                    <pre><code class="language-php">$users = User::where('active', true)->get();
+$users = User::where('role', 'admin')->limit(10)->get();</code></pre>
+                                </div>
+                            </div>
+
+                            <div class="api-method bg-gray-50 p-4 rounded-lg mb-4">
+                                <h4 class="font-semibold text-lg mb-2">first(): ?Model</h4>
+                                <p class="text-gray-600 text-sm mb-3">Get the first result of the query.</p>
+                                <div class="code-block p-4 text-white rounded">
+                                    <pre><code class="language-php">$user = User::where('email', 'john@example.com')->first();
+$admin = User::where('role', 'admin')->first();</code></pre>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="mb-8">
+                            <h3 class="text-xl font-semibold text-gray-900 mb-4">CRUD Operations</h3>
+
+                            <div class="api-method bg-gray-50 p-4 rounded-lg mb-4">
+                                <h4 class="font-semibold text-lg mb-2">create(array $attributes): Model</h4>
+                                <p class="text-gray-600 text-sm mb-3">Create a new model instance and save it to the database.</p>
+                                <div class="code-block p-4 text-white rounded">
+                                    <pre><code class="language-php">$user = User::create([
+    'name' => 'John Doe',
+    'email' => 'john@example.com',
+    'password' => password_hash('secret', PASSWORD_DEFAULT)
+]);</code></pre>
+                                </div>
+                            </div>
+
+                            <div class="api-method bg-gray-50 p-4 rounded-lg mb-4">
+                                <h4 class="font-semibold text-lg mb-2">save(): bool</h4>
+                                <p class="text-gray-600 text-sm mb-3">Save the model to the database.</p>
+                                <div class="code-block p-4 text-white rounded">
+                                    <pre><code class="language-php">$user = new User();
+$user->name = 'Jane Doe';
+$user->email = 'jane@example.com';
+$user->save();</code></pre>
+                                </div>
+                            </div>
+
+                            <div class="api-method bg-gray-50 p-4 rounded-lg mb-4">
+                                <h4 class="font-semibold text-lg mb-2">update(array $attributes): bool</h4>
+                                <p class="text-gray-600 text-sm mb-3">Update the model in the database.</p>
+                                <div class="code-block p-4 text-white rounded">
+                                    <pre><code class="language-php">$user->update(['name' => 'John Smith']);
+User::where('role', 'user')->update(['active' => false]);</code></pre>
+                                </div>
+                            </div>
+
+                            <div class="api-method bg-gray-50 p-4 rounded-lg mb-4">
+                                <h4 class="font-semibold text-lg mb-2">delete(): bool</h4>
+                                <p class="text-gray-600 text-sm mb-3">Delete the model from the database.</p>
+                                <div class="code-block p-4 text-white rounded">
+                                    <pre><code class="language-php">$user->delete();
+User::where('last_login', '<', '2023-01-01')->delete();</code></pre>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- QueryBuilder Class -->
+                    <section id="query-builder" class="section-anchor mb-12">
+                        <div class="bg-purple-50 border-l-4 border-purple-500 p-6 mb-8">
+                            <h2 class="text-2xl font-bold text-gray-900 mb-4">
+                                <i class="fas fa-hammer text-purple-600 mr-3"></i>QueryBuilder
+                            </h2>
+                            <p class="text-gray-700">
+                                Provides a fluent interface for building database queries. The QueryBuilder 
+                                allows you to construct complex SQL queries programmatically with method chaining 
+                                and parameter binding.
+                            </p>
+                        </div>
+
+                        <div class="mb-8">
+                            <h3 class="text-xl font-semibold text-gray-900 mb-4">Query Construction</h3>
+                            
+                            <div class="api-method bg-gray-50 p-4 rounded-lg mb-4">
+                                <h4 class="font-semibold text-lg mb-2">table(string $table): QueryBuilder</h4>
+                                <p class="text-gray-600 text-sm mb-3">Start a new query on the given table.</p>
+                                <div class="code-block p-4 text-white rounded">
+                                    <pre><code class="language-php">$users = QueryBuilder::table('users')->get();
+$posts = QueryBuilder::table('posts')->where('published', true)->get();</code></pre>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="mb-8">
+                            <h3 class="text-xl font-semibold text-gray-900 mb-4">WHERE Clauses</h3>
+
+                            <div class="api-method bg-gray-50 p-4 rounded-lg mb-4">
+                                <h4 class="font-semibold text-lg mb-2">where(string $column, mixed $operator = null, mixed $value = null): QueryBuilder</h4>
+                                <p class="text-gray-600 text-sm mb-3">Add a basic where clause to the query.</p>
+                                <div class="code-block p-4 text-white rounded">
+                                    <pre><code class="language-php">$users = QueryBuilder::table('users')
+    ->where('active', true)
+    ->where('age', '>', 18)
+    ->where('email', 'like', '%@example.com')
+    ->get();</code></pre>
+                                </div>
+                            </div>
+
+                            <div class="api-method bg-gray-50 p-4 rounded-lg mb-4">
+                                <h4 class="font-semibold text-lg mb-2">whereIn(string $column, array $values): QueryBuilder</h4>
+                                <p class="text-gray-600 text-sm mb-3">Add a where in clause to the query.</p>
+                                <div class="code-block p-4 text-white rounded">
+                                    <pre><code class="language-php">$users = QueryBuilder::table('users')
+    ->whereIn('role', ['admin', 'moderator'])
+    ->get();</code></pre>
+                                </div>
+                            </div>
+
+                            <div class="api-method bg-gray-50 p-4 rounded-lg mb-4">
+                                <h4 class="font-semibold text-lg mb-2">whereBetween(string $column, array $values): QueryBuilder</h4>
+                                <p class="text-gray-600 text-sm mb-3">Add a where between clause to the query.</p>
+                                <div class="code-block p-4 text-white rounded">
+                                    <pre><code class="language-php">$users = QueryBuilder::table('users')
+    ->whereBetween('created_at', ['2023-01-01', '2023-12-31'])
+    ->get();</code></pre>
+                                </div>
+                            </div>
+
+                            <div class="api-method bg-gray-50 p-4 rounded-lg mb-4">
+                                <h4 class="font-semibold text-lg mb-2">whereNull(string $column): QueryBuilder</h4>
+                                <p class="text-gray-600 text-sm mb-3">Add a where null clause to the query.</p>
+                                <div class="code-block p-4 text-white rounded">
+                                    <pre><code class="language-php">$users = QueryBuilder::table('users')
+    ->whereNull('deleted_at')
+    ->get();</code></pre>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="mb-8">
+                            <h3 class="text-xl font-semibold text-gray-900 mb-4">JOIN Operations</h3>
+
+                            <div class="api-method bg-gray-50 p-4 rounded-lg mb-4">
+                                <h4 class="font-semibold text-lg mb-2">join(string $table, string $first, string $operator = null, string $second = null): QueryBuilder</h4>
+                                <p class="text-gray-600 text-sm mb-3">Add a join clause to the query.</p>
+                                <div class="code-block p-4 text-white rounded">
+                                    <pre><code class="language-php">$users = QueryBuilder::table('users')
+    ->join('profiles', 'users.id', '=', 'profiles.user_id')
+    ->select('users.*', 'profiles.bio')
+    ->get();</code></pre>
+                                </div>
+                            </div>
+
+                            <div class="api-method bg-gray-50 p-4 rounded-lg mb-4">
+                                <h4 class="font-semibold text-lg mb-2">leftJoin(string $table, string $first, string $operator = null, string $second = null): QueryBuilder</h4>
+                                <p class="text-gray-600 text-sm mb-3">Add a left join clause to the query.</p>
+                                <div class="code-block p-4 text-white rounded">
+                                    <pre><code class="language-php">$users = QueryBuilder::table('users')
+    ->leftJoin('orders', 'users.id', '=', 'orders.user_id')
+    ->select('users.name', QueryBuilder::raw('COUNT(orders.id) as order_count'))
+    ->groupBy('users.id')
+    ->get();</code></pre>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="mb-8">
+                            <h3 class="text-xl font-semibold text-gray-900 mb-4">Aggregation Methods</h3>
+
+                            <div class="api-method bg-gray-50 p-4 rounded-lg mb-4">
+                                <h4 class="font-semibold text-lg mb-2">count(string $column = '*'): int</h4>
+                                <p class="text-gray-600 text-sm mb-3">Get the count of records for the query.</p>
+                                <div class="code-block p-4 text-white rounded">
+                                    <pre><code class="language-php">$count = QueryBuilder::table('users')->count();
+$activeCount = QueryBuilder::table('users')->where('active', true)->count();</code></pre>
+                                </div>
+                            </div>
+
+                            <div class="api-method bg-gray-50 p-4 rounded-lg mb-4">
+                                <h4 class="font-semibold text-lg mb-2">max(string $column): mixed</h4>
+                                <p class="text-gray-600 text-sm mb-3">Get the maximum value for the given column.</p>
+                                <div class="code-block p-4 text-white rounded">
+                                    <pre><code class="language-php">$maxPrice = QueryBuilder::table('products')->max('price');
+$latestLogin = QueryBuilder::table('users')->max('last_login');</code></pre>
+                                </div>
+                            </div>
+
+                            <div class="api-method bg-gray-50 p-4 rounded-lg mb-4">
+                                <h4 class="font-semibold text-lg mb-2">sum(string $column): float</h4>
+                                <p class="text-gray-600 text-sm mb-3">Get the sum of values for the given column.</p>
+                                <div class="code-block p-4 text-white rounded">
+                                    <pre><code class="language-php">$totalSales = QueryBuilder::table('orders')->sum('amount');
+$totalRevenue = QueryBuilder::table('orders')->where('status', 'completed')->sum('amount');</code></pre>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- DatabaseConfig Class -->
+                    <section id="database-config" class="section-anchor mb-12">
+                        <div class="bg-orange-50 border-l-4 border-orange-500 p-6 mb-8">
+                            <h2 class="text-2xl font-bold text-gray-900 mb-4">
+                                <i class="fas fa-cog text-orange-600 mr-3"></i>DatabaseConfig
+                            </h2>
+                            <p class="text-gray-700">
+                                Manages database configuration and connection settings. Provides a centralized 
+                                way to configure database connections, manage multiple database environments, 
+                                and handle connection pooling settings.
+                            </p>
+                        </div>
+
+                        <div class="mb-8">
+                            <h3 class="text-xl font-semibold text-gray-900 mb-4">Configuration Methods</h3>
+                            
+                            <div class="api-method bg-gray-50 p-4 rounded-lg mb-4">
+                                <h4 class="font-semibold text-lg mb-2">setConnection(string $name, array $config): void</h4>
+                                <p class="text-gray-600 text-sm mb-3">Set configuration for a named connection.</p>
+                                <div class="code-block p-4 text-white rounded">
+                                    <pre><code class="language-php">$config = new DatabaseConfig();
+$config->setConnection('mysql', [
+    'driver' => 'mysql',
+    'host' => 'localhost',
+    'database' => 'myapp',
+    'username' => 'root',
+    'password' => 'password'
+]);
+
+$config->setConnection('redis', [
+    'driver' => 'redis',
+    'host' => 'localhost',
+    'port' => 6379
+]);</code></pre>
+                                </div>
+                            </div>
+
+                            <div class="api-method bg-gray-50 p-4 rounded-lg mb-4">
+                                <h4 class="font-semibold text-lg mb-2">getConnection(string $name = null): array</h4>
+                                <p class="text-gray-600 text-sm mb-3">Get configuration for a connection.</p>
+                                <div class="code-block p-4 text-white rounded">
+                                    <pre><code class="language-php">$mysqlConfig = $config->getConnection('mysql');
+$defaultConfig = $config->getConnection(); // Gets default connection</code></pre>
+                                </div>
+                            </div>
+
+                            <div class="api-method bg-gray-50 p-4 rounded-lg mb-4">
+                                <h4 class="font-semibold text-lg mb-2">setDefaultConnection(string $name): void</h4>
+                                <p class="text-gray-600 text-sm mb-3">Set the default connection name.</p>
+                                <div class="code-block p-4 text-white rounded">
+                                    <pre><code class="language-php">$config->setDefaultConnection('mysql');</code></pre>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- Usage Examples -->
+                    <section id="examples" class="section-anchor mb-12">
+                        <div class="bg-gray-50 border-l-4 border-gray-500 p-6 mb-8">
+                            <h2 class="text-2xl font-bold text-gray-900 mb-4">
+                                <i class="fas fa-code text-gray-600 mr-3"></i>Usage Examples
+                            </h2>
+                            <p class="text-gray-700">
+                                Common patterns and examples for working with the Database & ORM classes.
+                            </p>
+                        </div>
+
+                        <div class="mb-8">
+                            <h3 class="text-xl font-semibold text-gray-900 mb-4">Basic CRUD Operations</h3>
+                            <div class="code-block p-4 text-white rounded">
+                                <pre><code class="language-php">// Create
+$user = User::create([
+    'name' => 'John Doe',
+    'email' => 'john@example.com',
+    'password' => password_hash('secret', PASSWORD_DEFAULT)
+]);
+
+// Read
+$user = User::find(1);
+$users = User::where('active', true)->get();
+$admin = User::where('role', 'admin')->first();
+
+// Update
+$user->name = 'John Smith';
+$user->save();
+User::where('role', 'user')->update(['active' => false]);
+
+// Delete
+$user->delete();
+User::where('last_login', '<', '2023-01-01')->delete();</code></pre>
+                            </div>
+                        </div>
+
+                        <div class="mb-8">
+                            <h3 class="text-xl font-semibold text-gray-900 mb-4">Complex Queries with Relationships</h3>
+                            <div class="code-block p-4 text-white rounded">
+                                <pre><code class="language-php">// Get users with their posts
+$users = User::with('posts')->get();
+
+// Get posts with user information
+$posts = Post::with('user')->where('published', true)->get();
+
+// Get users who have posts
+$users = User::has('posts')->get();
+
+// Get users with more than 5 posts
+$users = User::has('posts', '>', 5)->get();
+
+// Get posts with specific user
+$posts = Post::whereHas('user', function($query) {
+    $query->where('active', true);
+})->get();
+
+// Eager loading with conditions
+$users = User::with(['posts' => function($query) {
+    $query->where('published', true)
+          ->orderBy('created_at', 'desc');
+}])->get();</code></pre>
+                            </div>
+                        </div>
+
+                        <div class="mb-8">
+                            <h3 class="text-xl font-semibold text-gray-900 mb-4">Transaction Management</h3>
+                            <div class="code-block p-4 text-white rounded">
+                                <pre><code class="language-php">// Manual transaction handling
+$connection = new DatabaseConnection($config);
+$connection->beginTransaction();
+
+try {
+    $user = User::create([
+        'name' => 'John Doe',
+        'email' => 'john@example.com'
+    ]);
+    
+    $profile = Profile::create([
+        'user_id' => $user->id,
+        'bio' => 'Software Developer'
+    ]);
+    
+    $connection->commit();
+} catch (Exception $e) {
+    $connection->rollBack();
+    throw $e;
+}
+
+// Using transaction method
+$result = $connection->transaction(function() {
+    $user = User::create(['name' => 'Jane Doe', 'email' => 'jane@example.com']);
+    Profile::create(['user_id' => $user->id, 'bio' => 'Designer']);
+    return $user;
+});</code></pre>
+                            </div>
+                        </div>
+
+                        <div class="mb-8">
+                            <h3 class="text-xl font-semibold text-gray-900 mb-4">Raw SQL Queries</h3>
+                            <div class="code-block p-4 text-white rounded">
+                                <pre><code class="language-php">// Complex joins
+$results = QueryBuilder::table('users')
+    ->join('orders', 'users.id', '=', 'orders.user_id')
+    ->join('order_items', 'orders.id', '=', 'order_items.order_id')
+    ->select('users.name', QueryBuilder::raw('SUM(order_items.quantity * order_items.price) as total_spent'))
+    ->where('orders.status', 'completed')
+    ->groupBy('users.id')
+    ->having('total_spent', '>', 1000)
+    ->orderBy('total_spent', 'desc')
+    ->limit(10)
+    ->get();
+
+// Raw queries with bindings
+$users = $connection->query('
+    SELECT u.*, COUNT(p.id) as post_count 
+    FROM users u 
+    LEFT JOIN posts p ON u.id = p.user_id 
+    WHERE u.active = ? 
+    GROUP BY u.id 
+    HAVING post_count > ?
+    ORDER BY post_count DESC
+', [true, 5]);</code></pre>
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- Best Practices -->
+                    <section id="best-practices" class="section-anchor mb-12">
+                        <div class="bg-yellow-50 border-l-4 border-yellow-500 p-6 mb-8">
+                            <h2 class="text-2xl font-bold text-gray-900 mb-4">
+                                <i class="fas fa-lightbulb text-yellow-600 mr-3"></i>Best Practices
+                            </h2>
+                            <p class="text-gray-700">
+                                Recommended patterns and guidelines for working with the Database & ORM layer.
+                            </p>
+                        </div>
+
+                        <div class="grid md:grid-cols-2 gap-6">
+                            <div class="bg-white border border-gray-200 p-6 rounded-lg">
+                                <h4 class="font-semibold text-gray-900 mb-3">
+                                    <i class="fas fa-check-circle text-green-600 mr-2"></i>Do's
+                                </h4>
+                                <ul class="text-sm text-gray-600 space-y-2">
+                                    <li>• Use prepared statements and parameter binding</li>
+                                    <li>• Leverage eager loading to avoid N+1 queries</li>
+                                    <li>• Use transactions for related operations</li>
+                                    <li>• Index frequently queried columns</li>
+                                    <li>• Use query builders for complex queries</li>
+                                    <li>• Validate data before database operations</li>
+                                    <li>• Use migrations for schema changes</li>
+                                    <li>• Implement proper error handling</li>
+                                </ul>
+                            </div>
+
+                            <div class="bg-white border border-gray-200 p-6 rounded-lg">
+                                <h4 class="font-semibold text-gray-900 mb-3">
+                                    <i class="fas fa-times-circle text-red-600 mr-2"></i>Don'ts
+                                </h4>
+                                <ul class="text-sm text-gray-600 space-y-2">
+                                    <li>• Don't use raw SQL for simple queries</li>
+                                    <li>• Don't ignore SQL injection vulnerabilities</li>
+                                    <li>• Don't load all relationships at once</li>
+                                    <li>• Don't ignore database connection pooling</li>
+                                    <li>• Don't skip transaction rollback on errors</li>
+                                    <li>• Don't ignore query performance optimization</li>
+                                    <li>• Don't store sensitive data in plain text</li>
+                                    <li>• Don't ignore database backup strategies</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </section>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="bg-white border-t mt-16">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+            <div class="text-center text-gray-600">
+                <p class="text-sm">
+                    Forge Engine Documentation - Database & ORM API
+                </p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Mobile menu toggle
+        const mobileMenuBtn = document.getElementById('mobile-menu-btn');
+        const mobileMenu = document.getElementById('mobile-menu');
+        const mobileMenuOverlay = document.getElementById('mobile-menu-overlay');
+
+        function toggleMobileMenu() {
+            mobileMenu.classList.toggle('hidden');
+            mobileMenuOverlay.classList.toggle('active');
+        }
+
+        if (mobileMenuBtn) {
+            mobileMenuBtn.addEventListener('click', toggleMobileMenu);
+        }
+
+        if (mobileMenuOverlay) {
+            mobileMenuOverlay.addEventListener('click', toggleMobileMenu);
+        }
+
+        // Close mobile menu when clicking on links
+        const mobileMenuLinks = mobileMenu.querySelectorAll('a');
+        mobileMenuLinks.forEach(link => {
+            link.addEventListener('click', () => {
+                mobileMenu.classList.add('hidden');
+                mobileMenuOverlay.classList.remove('active');
+            });
+        });
+
+        // Active navigation highlighting
+        const currentPath = window.location.pathname.split('/').pop();
+        const navLinks = document.querySelectorAll('.nav-link');
+        navLinks.forEach(link => {
+            if (link.getAttribute('href') === currentPath) {
+                link.classList.add('active');
+            }
+        });
+    </script>
+</body>
+
+</html>

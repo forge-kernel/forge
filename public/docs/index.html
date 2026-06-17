@@ -1,0 +1,613 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Forge Engine</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.24.1/themes/prism-tomorrow.min.css">
+    <style>
+        .code-block {
+            background: #2d3748;
+            overflow-x: auto;
+        }
+
+        .code-block pre {
+            margin: 0;
+            padding: 1.5rem;
+        }
+
+        .nav-link {
+            transition: all 0.3s ease;
+        }
+
+        .nav-link:hover {
+            background-color: #f3f4f6;
+            padding-left: 1.5rem;
+        }
+
+        .nav-link.active {
+            background-color: #e0e7ff;
+            color: #4338ca;
+            border-left: 4px solid #6366f1;
+        }
+
+        .section-anchor {
+            scroll-margin-top: 2rem;
+        }
+
+        /* Mobile menu styles */
+        #mobile-menu {
+            display: none;
+        }
+
+        #mobile-menu:not(.hidden) {
+            display: block;
+        }
+
+        @media (max-width: 767px) {
+            .lg\:w-1\/4 {
+                position: fixed;
+                top: 0;
+                left: 0;
+                height: 100vh;
+                width: 80%;
+                max-width: 320px;
+                z-index: 50;
+                transform: translateX(-100%);
+                transition: transform 0.3s ease;
+                background: white;
+                overflow-y: auto;
+            }
+
+            .lg\:w-1\/4.mobile-menu-open {
+                transform: translateX(0);
+            }
+
+            .mobile-menu-overlay {
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                background: rgba(0, 0, 0, 0.5);
+                z-index: 40;
+                display: none;
+            }
+
+            .mobile-menu-overlay.active {
+                display: block;
+            }
+        }
+    </style>
+</head>
+
+<body class="bg-gray-50 text-gray-900">
+    <!-- Navigation -->
+    <nav class="bg-white border-b">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-16">
+                <div class="flex items-center">
+                    <div class="flex-shrink-0">
+                        <h1 class="text-xl font-bold text-gray-900">
+                            Forge Engine
+                        </h1>
+                    </div>
+                    <div class="hidden sm:ml-6 sm:flex sm:space-x-8">
+                        <a href="#home"
+                            class="text-gray-900 inline-flex items-center px-1 pt-1 text-sm font-medium hover:text-blue-600">
+                            Home
+                        </a>
+                        <a href="getting-started.html"
+                            class="text-gray-900 inline-flex items-center px-1 pt-1 text-sm font-medium hover:text-blue-600">
+                            Getting Started
+                        </a>
+                        <a href="core-concepts.html"
+                            class="text-gray-900 inline-flex items-center px-1 pt-1 text-sm font-medium hover:text-blue-600">
+                            Core Concepts
+                        </a>
+                        <a href="modules.html"
+                            class="text-gray-900 inline-flex items-center px-1 pt-1 text-sm font-medium hover:text-blue-600">
+                            Modules
+                        </a>
+                        <a href="api-reference.html"
+                            class="text-gray-900 inline-flex items-center px-1 pt-1 text-sm font-medium hover:text-blue-600">
+                            API Reference
+                        </a>
+                    </div>
+                </div>
+                <div class="flex items-center sm:hidden">
+                    <button id="mobile-menu-button" class="text-gray-700 hover:text-blue-600 px-3 py-2">
+                        <i class="fas fa-bars text-xl"></i>
+                    </button>
+                </div>
+            </div>
+            <!-- Mobile menu -->
+            <div id="mobile-menu" class="hidden sm:hidden bg-white border-t">
+                <div class="px-2 pt-2 pb-3 space-y-1">
+                    <a href="#home" class="block px-3 py-2 text-gray-700 hover:text-blue-600">
+                        Home
+                    </a>
+                    <a href="getting-started.html" class="block px-3 py-2 text-gray-700 hover:text-blue-600">
+                        Getting Started
+                    </a>
+                    <a href="core-concepts.html" class="block px-3 py-2 text-gray-700 hover:text-blue-600">
+                        Core Concepts
+                    </a>
+                    <a href="modules.html" class="block px-3 py-2 text-gray-700 hover:text-blue-600">
+                        Modules
+                    </a>
+                    <a href="api-reference.html" class="block px-3 py-2 text-gray-700 hover:text-blue-600">
+                        API Reference
+                    </a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <div class="flex flex-col lg:flex-row gap-8">
+
+
+            <!-- Main Content -->
+            <div class="lg:w-full">
+                <!-- Hero Section -->
+                <section id="home" class="section-anchor mb-12">
+                    <div class="bg-gray-900 text-white rounded-lg p-8 text-center">
+                        <h1 class="text-5xl md:text-6xl font-bold mb-6">
+                            Forge Engine
+                        </h1>
+                        <p class="text-xl md:text-2xl mb-8 max-w-3xl mx-auto">
+                            A toolbox for builders who like to do things their way.
+                        </p>
+                        <div class="flex flex-col sm:flex-row gap-4 justify-center mb-8">
+                            <a href="getting-started.html"
+                                class="bg-white text-gray-900 px-8 py-3 rounded-lg font-semibold hover:bg-gray-100 transition duration-200">
+                                Get Started
+                            </a>
+                            <a href="https://github.com/forge-engine"
+                                class="border-2 border-white text-white px-8 py-3 rounded-lg font-semibold hover:bg-white hover:text-gray-900 transition duration-200">
+                                GitHub
+                            </a>
+                        </div>
+                        <div class="bg-gray-800 border border-gray-700 rounded-lg p-6 mb-8 max-w-2xl mx-auto">
+                            <p class="text-sm text-gray-300 mb-4">Install:</p>
+                            <code class="bg-gray-900 text-green-400 px-4 py-2 rounded font-mono text-sm block">
+                                bash &lt;(curl -Ls https://raw.githubusercontent.com/forge-kernel/installer/main/installer.sh)
+                            </code>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Philosophy Section -->
+                <section id="philosophy" class="section-anchor mb-12">
+                    <div class="bg-white rounded-lg shadow-sm p-8">
+                        <div class="mb-8">
+                            <h2 class="text-3xl font-bold text-gray-900 mb-6">
+                                What this is
+                            </h2>
+                            <p class="text-lg text-gray-700 mb-4">
+                                Forge is a simple PHP framework and module system I built to serve my own projects. It's
+                                fully open source under the MIT license.
+                            </p>
+                            <p class="text-lg text-gray-700 mb-4">
+                                — take what helps, ignore what doesn't, fork it if you need to.
+                            </p>
+
+                            <h3 class="text-2xl font-bold text-gray-900 mb-4 mt-8">
+                                This organization contains:
+                            </h3>
+                            <ul class="text-lg text-gray-700 space-y-2">
+                                <li><strong>🧱 The Forge Engine</strong> — a minimal, dependency-free PHP framework.
+                                </li>
+                                <li><strong>🧩 Forge Modules</strong> — self-contained, optional packages that extend
+                                    functionality.</li>
+                                <li><strong>🛠️ Utilities & Installers</strong> — scripts and helpers for easier setup
+                                    and tooling.</li>
+                            </ul>
+                        </div>
+
+                        <div class="border-t pt-8">
+                            <h2 class="text-3xl font-bold text-gray-900 mb-6">
+                                Philosophy
+                            </h2>
+                            <p class="text-lg text-gray-700 mb-4">
+                                This isn't a product. There's no company behind it. No support SLA. No roadmap you
+                                should depend on.
+                            </p>
+                            <p class="text-lg text-gray-700 mb-4">
+                                Forge exists because I like to understand and own my stack. If others find value in it —
+                                awesome. If not — that's cool too.
+                            </p>
+                            <p class="text-lg text-gray-700 mb-4">
+                                You're not a user here. You're a builder.
+                            </p>
+                            <p class="text-lg text-gray-700 mb-4">
+                                If you use Forge, it's yours now. Your rules. Your path.
+                            </p>
+                            <p class="text-lg text-gray-700 mb-4">
+                                If I publish updates, they're for my use case. Pull them in if they help.
+                            </p>
+                            <p class="text-lg text-gray-700">
+                                If my direction doesn't match yours, fork it. Change everything. That's the point.
+                            </p>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Features Section -->
+                <section id="features" class="section-anchor mb-12">
+                    <div class="bg-white rounded-lg shadow-sm p-8">
+                        <div class="mb-8">
+                            <h2 class="text-3xl font-bold text-gray-900 mb-6">
+                                Core Features
+                            </h2>
+                            <p class="text-lg text-gray-700">
+                                Everything you need, nothing you don't
+                            </p>
+                        </div>
+                        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                            <div class="bg-gray-50 rounded-lg p-6">
+                                <h3 class="text-xl font-semibold mb-3">Lightning Fast</h3>
+                                <p class="text-gray-600">Zero dependencies and minimal overhead.</p>
+                            </div>
+                            <div class="bg-gray-50 rounded-lg p-6">
+                                <h3 class="text-xl font-semibold mb-3">Modular Design</h3>
+                                <p class="text-gray-600">Add functionality through modules.</p>
+                            </div>
+                            <div class="bg-gray-50 rounded-lg p-6">
+                                <h3 class="text-xl font-semibold mb-3">Database Ready</h3>
+                                <p class="text-gray-600">Built-in database abstraction with migration support.</p>
+                            </div>
+                            <div class="bg-gray-50 rounded-lg p-6">
+                                <h3 class="text-xl font-semibold mb-3">Security First</h3>
+                                <p class="text-gray-600">Secure by default with CSRF protection.</p>
+                            </div>
+                            <div class="bg-gray-50 rounded-lg p-6">
+                                <h3 class="text-xl font-semibold mb-3">CLI Tools</h3>
+                                <p class="text-gray-600">Command-line tools for scaffolding and development.</p>
+                            </div>
+                            <div class="bg-gray-50 rounded-lg p-6">
+                                <h3 class="text-xl font-semibold mb-3">Well Documented</h3>
+                                <p class="text-gray-600">Documentation and examples to get you started.</p>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Build Your Own Section -->
+                <section id="build-your-own" class="section-anchor mb-12">
+                    <div class="bg-gray-50 rounded-lg p-8">
+                        <div class="mb-8">
+                            <h2 class="text-3xl font-bold text-gray-900 mb-6">
+                                Want to build your own thing?
+                            </h2>
+                            <p class="text-lg text-gray-700 mb-4">
+                                You can fork the entire framework and module ecosystem to start your own direction.
+                                Check out
+                                <a href="https://github.com/forge-kernel/forge/blob/main/docs/FORGING-YOUR-OWN.md"
+                                    class="text-blue-600 hover:text-blue-800 underline">
+                                    FORGING-YOUR-OWN.md
+                                </a> in the main repo for notes on how everything is structured and how to get started.
+                            </p>
+                            <p class="text-lg text-gray-700">
+                                <a href="https://github.com/forge-engine"
+                                    class="text-blue-600 hover:text-blue-800 underline">
+                                    https://github.com/forge-engine
+                                </a>
+                            </p>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Performance Stats Section -->
+                <section id="performance" class="section-anchor mb-12">
+                    <div class="bg-white rounded-lg shadow-sm p-8">
+                        <div class="mb-8">
+                            <h2 class="text-3xl font-bold text-gray-900 mb-6">
+                                Performance Metrics
+                            </h2>
+                            <p class="text-lg text-gray-700 mb-6">
+                                Here's what <code class="bg-gray-100 px-2 py-1 rounded">php forge.php stats</code>
+                                shows:
+                            </p>
+
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                                <div>
+                                    <h3 class="text-xl font-semibold text-gray-900 mb-4">CLI Performance</h3>
+                                    <div class="overflow-x-auto">
+                                        <table class="min-w-full bg-white border border-gray-200">
+                                            <thead class="bg-gray-50">
+                                                <tr>
+                                                    <th
+                                                        class="px-4 py-2 text-left text-sm font-medium text-gray-900 border-b">
+                                                        Metric</th>
+                                                    <th
+                                                        class="px-4 py-2 text-left text-sm font-medium text-gray-900 border-b">
+                                                        Time (sec)</th>
+                                                    <th
+                                                        class="px-4 py-2 text-left text-sm font-medium text-gray-900 border-b">
+                                                        Memory (KB)</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody class="text-sm">
+                                                <tr>
+                                                    <td class="px-4 py-2 border-b">cli_resolution</td>
+                                                    <td class="px-4 py-2 border-b">0.05064</td>
+                                                    <td class="px-4 py-2 border-b">3,031.48</td>
+                                                </tr>
+                                                <tr>
+                                                    <td class="px-4 py-2 border-b">di_resolution</td>
+                                                    <td class="px-4 py-2 border-b">0.00001</td>
+                                                    <td class="px-4 py-2 border-b">1.48</td>
+                                                </tr>
+                                                <tr>
+                                                    <td class="px-4 py-2 border-b">config_resolution</td>
+                                                    <td class="px-4 py-2 border-b">0.00000</td>
+                                                    <td class="px-4 py-2 border-b">1.11</td>
+                                                </tr>
+                                                <tr>
+                                                    <td class="px-4 py-2 border-b">db_resolution</td>
+                                                    <td class="px-4 py-2 border-b">0.00001</td>
+                                                    <td class="px-4 py-2 border-b">4.90</td>
+                                                </tr>
+                                                <tr>
+                                                    <td class="px-4 py-2 border-b">db_connection_resolution</td>
+                                                    <td class="px-4 py-2 border-b">0.00000</td>
+                                                    <td class="px-4 py-2 border-b">3.33</td>
+                                                </tr>
+                                                <tr>
+                                                    <td class="px-4 py-2 border-b">module_discovery</td>
+                                                    <td class="px-4 py-2 border-b">0.01098</td>
+                                                    <td class="px-4 py-2 border-b">770.98</td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+
+                                <div>
+                                    <h3 class="text-xl font-semibold text-gray-900 mb-4">Web Performance</h3>
+                                    <div class="overflow-x-auto">
+                                        <table class="min-w-full bg-white border border-gray-200">
+                                            <thead class="bg-gray-50">
+                                                <tr>
+                                                    <th
+                                                        class="px-4 py-2 text-left text-sm font-medium text-gray-900 border-b">
+                                                        Key</th>
+                                                    <th
+                                                        class="px-4 py-2 text-left text-sm font-medium text-gray-900 border-b">
+                                                        Duration (sec)</th>
+                                                    <th
+                                                        class="px-4 py-2 text-left text-sm font-medium text-gray-900 border-b">
+                                                        Memory Used</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody class="text-sm">
+                                                <tr>
+                                                    <td class="px-4 py-2 border-b">engine_resolution</td>
+                                                    <td class="px-4 py-2 border-b">0.03388</td>
+                                                    <td class="px-4 py-2 border-b">520.39 KB</td>
+                                                </tr>
+                                                <tr>
+                                                    <td class="px-4 py-2 border-b">environment_resolution</td>
+                                                    <td class="px-4 py-2 border-b">0.00073</td>
+                                                    <td class="px-4 py-2 border-b">29.89 KB</td>
+                                                </tr>
+                                                <tr>
+                                                    <td class="px-4 py-2 border-b">db_resolution</td>
+                                                    <td class="px-4 py-2 border-b">0.00005</td>
+                                                    <td class="px-4 py-2 border-b">5.23 KB</td>
+                                                </tr>
+                                                <tr>
+                                                    <td class="px-4 py-2 border-b">db_connection_resolution</td>
+                                                    <td class="px-4 py-2 border-b">0.00001</td>
+                                                    <td class="px-4 py-2 border-b">3.63 KB</td>
+                                                </tr>
+                                                <tr>
+                                                    <td class="px-4 py-2 border-b">module_discovery</td>
+                                                    <td class="px-4 py-2 border-b">0.01816</td>
+                                                    <td class="px-4 py-2 border-b">289.36 KB</td>
+                                                </tr>
+                                                <tr>
+                                                    <td class="px-4 py-2 border-b">routing_dispatching</td>
+                                                    <td class="px-4 py-2 border-b">0.00004</td>
+                                                    <td class="px-4 py-2 border-b">8.68 KB</td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Quick Start Section -->
+                <section class="py-20 bg-gray-900 text-white">
+                    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                        <div class="text-center mb-16">
+                            <h2 class="text-4xl font-bold mb-4">Quick Start</h2>
+                            <p class="text-xl text-gray-300">Get up and running with Forge in minutes</p>
+                        </div>
+
+                        <div class="max-w-4xl mx-auto">
+                            <div class="bg-gray-800 border border-gray-700 rounded-lg p-6 mb-8">
+                                <p class="text-sm text-gray-300 mb-4">Install with one command:</p>
+                                <code class="bg-gray-900 text-green-400 px-4 py-2 rounded font-mono text-sm block">
+                        bash &lt;(curl -Ls https://raw.githubusercontent.com/forge-kernel/installer/main/installer.sh)
+                    </code>
+                            </div>
+
+                            <div class="text-center">
+                                <a href="getting-started.html"
+                                    class="inline-flex items-center bg-white text-gray-900 px-6 py-3 rounded-lg font-semibold hover:bg-gray-100 transition duration-200">
+                                    Full Installation Guide
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Modules Showcase -->
+                <section id="modules-showcase" class="section-anchor mb-12">
+                    <div class="bg-white rounded-lg shadow-sm p-8">
+                        <div class="text-center mb-8">
+                            <h2 class="text-4xl font-bold text-gray-900 mb-4">
+                                Optional Modules
+                            </h2>
+                            <p class="text-xl text-gray-600">Extend Forge with these official modules</p>
+                        </div>
+                        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                            <a href="forge-auth.html"
+                                class="bg-gray-50 rounded-lg p-6 hover:shadow-md transition-shadow">
+                                <div class="mb-4">
+                                    <h3 class="text-xl font-semibold">ForgeAuth</h3>
+                                </div>
+                                <p class="text-gray-600">Complete authentication system with user management</p>
+                                <div class="mt-4">
+                                    <span
+                                        class="inline-block bg-blue-100 text-blue-800 text-xs px-2 py-1 rounded">Authentication</span>
+                                </div>
+                            </a>
+                            <div class="bg-gray-50 rounded-lg p-6 hover:shadow-md transition-shadow">
+                                <div class="mb-4">
+                                    <h3 class="text-xl font-semibold">ForgeUI</h3>
+                                </div>
+                                <p class="text-gray-600">Beautiful UI components and styling utilities</p>
+                                <div class="mt-4">
+                                    <span
+                                        class="inline-block bg-purple-100 text-purple-800 text-xs px-2 py-1 rounded">UI
+                                        Components</span>
+                                </div>
+                            </div>
+                            <a href="forge-wire.html"
+                                class="bg-gray-50 rounded-lg p-6 hover:shadow-md transition-shadow block">
+                                <div class="mb-4">
+                                    <h3 class="text-xl font-semibold">ForgeWire</h3>
+                                </div>
+                                <p class="text-gray-600">Lightweight reactive components without WebSockets</p>
+                                <div class="mt-4">
+                                    <span
+                                        class="inline-block bg-yellow-100 text-yellow-800 text-xs px-2 py-1 rounded">Reactive</span>
+                                </div>
+                            </a>
+                        </div>
+                        <div class="text-center mt-8">
+                            <a href="modules.html"
+                                class="bg-indigo-600 text-white px-6 py-3 rounded-lg font-semibold hover:bg-indigo-700 transition duration-200">
+                                View All Modules
+                            </a>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Footer -->
+                <footer class="bg-gray-900 text-white rounded-lg p-8 mt-8">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                        <div>
+                            <h3 class="text-lg font-semibold mb-4">
+                                Forge Engine
+                            </h3>
+                            <p class="text-gray-400">A toolbox for builders who like to do things their way.</p>
+                        </div>
+                        <div>
+                            <h4 class="text-lg font-semibold mb-4">Documentation</h4>
+                            <ul class="space-y-2 text-gray-400">
+                                <li><a href="getting-started.html" class="hover:text-white">Getting Started</a></li>
+                                <li><a href="core-concepts.html" class="hover:text-white">Core Concepts</a></li>
+                                <li><a href="modules.html" class="hover:text-white">Modules</a></li>
+                                <li><a href="api-reference.html" class="hover:text-white">API Reference</a></li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="border-t border-gray-800 mt-8 pt-8 text-center text-gray-400">
+                        <p>&copy; 2024 Forge Engine. MIT License.</p>
+                    </div>
+                </footer>
+            </div>
+        </div>
+
+        <!-- Scripts -->
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.24.1/components/prism-core.min.js"></script>
+        <script
+            src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.24.1/plugins/autoloader/prism-autoloader.min.js"></script>
+        <script>
+            // Smooth scrolling for navigation links
+            document.querySelectorAll('.nav-link').forEach(link => {
+                link.addEventListener('click', function (e) {
+                    e.preventDefault();
+                    const target = document.querySelector(this.getAttribute('href'));
+                    if (target) {
+                        target.scrollIntoView({
+                            behavior: 'smooth',
+                            block: 'start'
+                        });
+
+                        // Update active state
+                        document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
+                        this.classList.add('active');
+                    }
+                });
+            });
+
+            // Update active navigation on scroll
+            window.addEventListener('scroll', function () {
+                const sections = document.querySelectorAll('.section-anchor');
+                const navLinks = document.querySelectorAll('.nav-link');
+
+                let current = '';
+                sections.forEach(section => {
+                    const sectionTop = section.offsetTop - 100;
+                    if (window.pageYOffset >= sectionTop) {
+                        current = section.getAttribute('id');
+                    }
+                });
+
+                navLinks.forEach(link => {
+                    link.classList.remove('active');
+                    if (link.getAttribute('href') === '#' + current) {
+                        link.classList.add('active');
+                    }
+                });
+            });
+
+            // Mobile menu toggle
+            const mobileMenuButton = document.getElementById('mobile-menu-button');
+            const mobileMenu = document.getElementById('mobile-menu');
+
+            function toggleMobileMenu() {
+                if (mobileMenu) {
+                    mobileMenu.classList.toggle('hidden');
+                }
+            }
+
+            if (mobileMenuButton) {
+                mobileMenuButton.addEventListener('click', toggleMobileMenu);
+            }
+
+            // Close mobile menu when clicking outside
+            document.addEventListener('click', function (event) {
+                if (mobileMenu && !mobileMenu.classList.contains('hidden')) {
+                    const isClickInsideMenu = mobileMenu.contains(event.target);
+                    const isClickOnMenuButton = mobileMenuButton && mobileMenuButton.contains(event.target);
+
+                    if (!isClickInsideMenu && !isClickOnMenuButton) {
+                        mobileMenu.classList.add('hidden');
+                    }
+                }
+            });
+
+            // Close mobile menu on window resize if above mobile breakpoint
+            window.addEventListener('resize', function () {
+                if (mobileMenu && window.innerWidth >= 640) {
+                    mobileMenu.classList.add('hidden');
+                }
+            });
+        </script>
+</body>
+
+</html>

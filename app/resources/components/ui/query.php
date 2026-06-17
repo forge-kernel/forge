@@ -1,0 +1,2 @@
+Query:
+<?= e($query) ?>

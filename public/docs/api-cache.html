@@ -1,0 +1,1760 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Caching API - Forge Engine Documentation</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-core.min.js"></script>
+    <script
+        src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/autoloader/prism-autoloader.min.js"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        .code-block {
+            background: #2d3748;
+            border-radius: 0.5rem;
+        }
+
+        .nav-link.active {
+            background-color: #eef2ff;
+            color: #4f46e5;
+            font-weight: 500;
+        }
+
+        .nav-link.active:hover {
+            background-color: #e0e7ff;
+        }
+
+        .section-anchor {
+            scroll-margin-top: 120px;
+        }
+
+        /* Mobile menu styles */
+        @media (max-width: 640px) {
+            .lg\:w-1\/4 {
+                position: fixed;
+                top: 0;
+                left: -100%;
+                width: 80%;
+                max-width: 320px;
+                height: 100vh;
+                z-index: 50;
+                transition: transform 0.3s ease;
+                background: white;
+                overflow-y: auto;
+            }
+
+            .lg\:w-1\/4.mobile-menu-open {
+                transform: translateX(0);
+            }
+
+            .mobile-menu-overlay {
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                background: rgba(0, 0, 0, 0.5);
+                z-index: 40;
+                display: none;
+            }
+
+            .mobile-menu-overlay.active {
+                display: block;
+            }
+        }
+    </style>
+</head>
+
+<body class="bg-gray-50">
+    <!-- Navigation -->
+    <nav class="bg-white shadow-sm border-b">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-16">
+                <div class="flex items-center">
+                    <div class="flex-shrink-0">
+                        <h1 class="text-xl font-bold text-gray-900">
+                            Forge Engine
+                        </h1>
+                    </div>
+                    <div class="hidden sm:ml-6 sm:flex sm:space-x-8">
+                        <a href="index.html"
+                            class="text-gray-900 inline-flex items-center px-1 pt-1 text-sm font-medium hover:text-blue-600">
+                            Home
+                        </a>
+                        <a href="getting-started.html"
+                            class="text-gray-900 inline-flex items-center px-1 pt-1 text-sm font-medium hover:text-blue-600">
+                            Getting Started
+                        </a>
+                        <a href="core-concepts.html"
+                            class="text-gray-900 inline-flex items-center px-1 pt-1 text-sm font-medium hover:text-blue-600">
+                            Core Concepts
+                        </a>
+                        <a href="modules.html"
+                            class="text-gray-900 inline-flex items-center px-1 pt-1 text-sm font-medium hover:text-blue-600">
+                            Modules
+                        </a>
+                        <a href="api-reference.html"
+                            class="text-blue-600 inline-flex items-center px-1 pt-1 text-sm font-medium border-b-2 border-blue-600">
+                            API Reference
+                        </a>
+                    </div>
+                </div>
+                <div class="flex items-center sm:hidden">
+                    <button id="mobile-menu-btn" class="text-gray-700 hover:text-blue-600" data-mobile-menu-toggle>
+                        <i class="fas fa-bars text-xl"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+        <!-- Mobile menu -->
+        <div id="mobile-menu" class="hidden sm:hidden bg-white border-t">
+            <div class="px-2 pt-2 pb-3 space-y-1">
+                <a href="index.html" class="block px-3 py-2 text-gray-700 hover:text-blue-600">
+                    Home
+                </a>
+                <a href="getting-started.html" class="block px-3 py-2 text-gray-700 hover:text-blue-600">
+                    Getting Started
+                </a>
+                <a href="core-concepts.html" class="block px-3 py-2 text-gray-700 hover:text-blue-600">
+                    Core Concepts
+                </a>
+                <a href="modules.html" class="block px-3 py-2 text-gray-700 hover:text-blue-600">
+                    Modules
+                </a>
+                <a href="api-reference.html" class="block px-3 py-2 text-blue-600">
+                    API Reference
+                </a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Mobile Menu Overlay -->
+    <div id="mobile-menu-overlay" class="mobile-menu-overlay"></div>
+
+    <!-- Main Content -->
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <div class="flex flex-col lg:flex-row gap-8">
+            <!-- Sidebar Navigation -->
+            <div class="lg:w-1/4">
+                <div class="bg-white rounded-lg shadow-sm p-6 sticky top-8">
+                    <h3 class="text-lg font-semibold text-gray-900 mb-4">
+                        API Reference
+                    </h3>
+                    <nav class="space-y-2">
+                        <a href="api-core.html" class="nav-link block px-3 py-2 text-sm text-gray-700 rounded-md hover:text-blue-600">
+                            <i class="fas fa-cogs mr-2"></i>Core Engine
+                        </a>
+                        <a href="api-http.html" class="nav-link block px-3 py-2 text-sm text-gray-700 rounded-md hover:text-blue-600">
+                            <i class="fas fa-globe mr-2"></i>HTTP Layer
+                        </a>
+                        <a href="api-database.html" class="nav-link block px-3 py-2 text-sm text-gray-700 rounded-md hover:text-blue-600">
+                            <i class="fas fa-database mr-2"></i>Database & ORM
+                        </a>
+                        <a href="api-di.html" class="nav-link block px-3 py-2 text-sm text-gray-700 rounded-md hover:text-blue-600">
+                            <i class="fas fa-puzzle-piece mr-2"></i>DI Container
+                        </a>
+                        <a href="api-routing.html" class="nav-link block px-3 py-2 text-sm text-gray-700 rounded-md hover:text-blue-600">
+                            <i class="fas fa-route mr-2"></i>Routing
+                        </a>
+                        <a href="api-modules.html" class="nav-link block px-3 py-2 text-sm text-gray-700 rounded-md hover:text-blue-600">
+                            <i class="fas fa-plug mr-2"></i>Module System
+                        </a>
+                        <a href="api-cli.html" class="nav-link block px-3 py-2 text-sm text-gray-700 rounded-md hover:text-blue-600">
+                            <i class="fas fa-terminal mr-2"></i>CLI & Console
+                        </a>
+                        <a href="api-cache.html" class="nav-link block px-3 py-2 text-sm text-gray-700 rounded-md hover:text-blue-600 active">
+                            <i class="fas fa-memory mr-2"></i>Caching
+                        </a>
+                        <a href="api-validation.html" class="nav-link block px-3 py-2 text-sm text-gray-700 rounded-md hover:text-blue-600">
+                            <i class="fas fa-check-circle mr-2"></i>Validation
+                        </a>
+                        <a href="api-helpers.html" class="nav-link block px-3 py-2 text-sm text-gray-700 rounded-md hover:text-blue-600">
+                            <i class="fas fa-tools mr-2"></i>Helpers & Traits
+                        </a>
+                        <a href="api-events.html" class="nav-link block px-3 py-2 text-sm text-gray-700 rounded-md hover:text-blue-600">
+                            <i class="fas fa-broadcast-tower mr-2"></i>Events
+                        </a>
+                        <a href="api-security.html" class="nav-link block px-3 py-2 text-sm text-gray-700 rounded-md hover:text-blue-600">
+                            <i class="fas fa-shield-alt mr-2"></i>Security
+                        </a>
+                    </nav>
+                </div>
+            </div>
+
+            <!-- Main Content -->
+            <div class="lg:w-3/4">
+                <div class="bg-white rounded-lg shadow-sm p-8">
+                    <h1 class="text-4xl font-bold text-gray-900 mb-6">
+                        Caching API
+                    </h1>
+                    <p class="text-xl text-gray-600 mb-8">
+                        High-performance caching system with multiple drivers, cache tagging, and advanced features. 
+                        The caching system provides a unified interface for various storage backends including Redis, 
+                        Memcached, file-based, and database caching with support for cache tags, TTL, and atomic operations.
+                    </p>
+
+                    <!-- Cache Manager -->
+                    <section id="cache-manager" class="section-anchor mb-12">
+                        <div class="bg-blue-50 border-l-4 border-blue-500 p-6 mb-8">
+                            <h2 class="text-2xl font-bold text-gray-900 mb-4">
+                                <i class="fas fa-memory text-blue-600 mr-3"></i>Cache Manager
+                            </h2>
+                            <p class="text-gray-700">
+                                Central cache management class that provides a unified interface for all caching operations. 
+                                The CacheManager handles driver initialization, configuration management, 
+                                and provides factory methods for creating cache instances.
+                            </p>
+                        </div>
+
+                        <div class="mb-8">
+                            <h3 class="text-xl font-semibold text-gray-900 mb-4">Basic Cache Operations</h3>
+                            
+                            <div class="api-method bg-gray-50 p-4 rounded-lg mb-4">
+                                <h4 class="font-semibold text-lg mb-2">Cache Configuration</h4>
+                                <p class="text-gray-600 text-sm mb-3">Configure cache drivers and settings.</p>
+                                <div class="code-block p-4 text-white rounded">
+                                    <pre><code class="language-php">use Forge\Cache\CacheManager;
+use Forge\Cache\Drivers\RedisDriver;
+use Forge\Cache\Drivers\FileDriver;
+use Forge\Cache\Drivers\DatabaseDriver;
+
+// Create cache manager
+$cacheManager = new CacheManager();
+
+// Configure default cache store
+$cacheManager->setDefaultStore('redis');
+
+// Configure cache stores
+$cacheManager->setStores([
+    'redis' => [
+        'driver' => RedisDriver::class,
+        'connection' => 'default',
+        'prefix' => 'forge_cache:',
+        'ttl' => 3600
+    ],
+    'file' => [
+        'driver' => FileDriver::class,
+        'path' => storage_path('framework/cache'),
+        'prefix' => 'forge_',
+        'ttl' => 7200
+    ],
+    'database' => [
+        'driver' => DatabaseDriver::class,
+        'table' => 'cache',
+        'connection' => 'default',
+        'prefix' => 'forge_',
+        'ttl' => 86400
+    ],
+    'array' => [
+        'driver' => 'array',
+        'ttl' => 300
+    ]
+]);
+
+// Get cache instance
+$cache = $cacheManager->store('redis');
+$defaultCache = $cacheManager->store(); // Uses default store
+
+// Configure global settings
+$cacheManager->setConfig([
+    'prefix' => 'app_',
+    'ttl' => 3600,
+    'serialize' => true,
+    'compression' => true,
+    'encryption' => false
+]);</code></pre>
+                                </div>
+                            </div>
+
+                            <div class="api-method bg-gray-50 p-4 rounded-lg mb-4">
+                                <h4 class="font-semibold text-lg mb-2">Basic Cache Operations</h4>
+                                <p class="text-gray-600 text-sm mb-3">Store, retrieve, and delete cache items.</p>
+                                <div class="code-block p-4 text-white rounded">
+                                    <pre><code class="language-php">// Store data in cache
+$cache->put('user:1', $userData, 3600); // TTL in seconds
+$cache->put('settings', $settings, now()->addHours(2));
+
+// Store if not exists
+$cache->add('counter', 1, 300); // Returns true if added, false if exists
+
+// Retrieve data from cache
+$user = $cache->get('user:1');
+$settings = $cache->get('settings', function() {
+    // This callback is executed if key doesn't exist
+    return $this->loadSettingsFromDatabase();
+});
+
+// Check if key exists
+if ($cache->has('user:1')) {
+    $user = $cache->get('user:1');
+}
+
+// Delete cache items
+$cache->forget('user:1');
+$cache->delete('settings');
+
+// Delete multiple keys
+$cache->deleteMultiple(['user:1', 'user:2', 'user:3']);
+
+// Clear all cache
+$cache->flush();
+
+// Get and delete (pull)
+$user = $cache->pull('user:1'); // Gets and removes from cache
+
+// Increment/decrement
+$cache->increment('visits');
+$cache->increment('visits', 5);
+$cache->decrement('stock');
+$cache->decrement('stock', 2);
+
+// Remember pattern
+$users = $cache->remember('users.active', 3600, function() {
+    return User::where('active', true)->get();
+});
+
+// Remember forever
+$countries = $cache->rememberForever('countries', function() {
+    return Country::all();
+});</code></pre>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="mb-8">
+                            <h3 class="text-xl font-semibold text-gray-900 mb-4">Advanced Cache Features</h3>
+
+                            <div class="api-method bg-gray-50 p-4 rounded-lg mb-4">
+                                <h4 class="font-semibold text-lg mb-2">Cache Tags</h4>
+                                <p class="text-gray-600 text-sm mb-3">Organize and manage related cache items using tags.</p>
+                                <div class="code-block p-4 text-white rounded">
+                                    <pre><code class="language-php">// Store with tags
+$cache->tags(['users', 'profiles'])->put('user:1', $userData, 3600);
+$cache->tags(['posts', 'recent'])->put('posts.recent', $recentPosts, 1800);
+
+// Retrieve with tags
+$user = $cache->tags(['users'])->get('user:1');
+$posts = $cache->tags(['posts', 'recent'])->get('posts.recent');
+
+// Flush specific tags
+$cache->tags(['users'])->flush(); // Remove all items tagged with 'users'
+$cache->tags(['posts', 'recent'])->flush(); // Remove items with both tags
+
+// Multiple tags operations
+$cache->tags(['users', 'admins'])->put('admin:1', $adminData, 3600);
+
+// Get all keys for a tag
+$userKeys = $cache->tags(['users'])->getKeys();
+
+// Check if tagged item exists
+if ($cache->tags(['users'])->has('user:1')) {
+    // Process cached user data
+}
+
+// Tagged remember pattern
+$admins = $cache->tags(['users', 'admins'])->remember('admins.all', 3600, function() {
+    return User::where('role', 'admin')->get();
+});
+
+// Clear cache by tags (useful for cache invalidation)
+$cache->tags(['user:1', 'posts'])->flush(); // Clear user's posts
+$cache->tags(['category:tech'])->flush(); // Clear tech category cache</code></pre>
+                                </div>
+                            </div>
+
+                            <div class="api-method bg-gray-50 p-4 rounded-lg mb-4">
+                                <h4 class="font-semibold text-lg mb-2">Cache Locking</h4>
+                                <p class="text-gray-600 text-sm mb-3">Prevent cache stampedes with atomic locking.</p>
+                                <div class="code-block p-4 text-white rounded">
+                                    <pre><code class="language-php">// Acquire lock
+$lock = $cache->lock('expensive-operation', 30); // 30 second timeout
+
+if ($lock->get()) {
+    try {
+        // Perform expensive operation
+        $data = $this->performExpensiveOperation();
+        
+        // Cache the result
+        $cache->put('expensive-data', $data, 3600);
+        
+        return $data;
+    } finally {
+        $lock->release();
+    }
+}
+
+// Wait for lock with timeout
+$lock = $cache->lock('report-generation', 60);
+
+if ($lock->block(10)) { // Wait up to 10 seconds
+    try {
+        // Generate report
+        $report = $this->generateReport();
+        
+        // Cache result
+        $cache->put('report:latest', $report, 3600);
+        
+        return $report;
+    } finally {
+        $lock->release();
+    }
+} else {
+    throw new \Exception('Could not acquire lock for report generation');
+}
+
+// Scoped locks
+$cache->lock('user:1:update', 30)->get(function() use ($cache, $userId) {
+    // This code is executed atomically
+    $user = $cache->get('user:1');
+    $user['last_seen'] = now();
+    $cache->put('user:1', $user, 3600);
+});
+
+// Check if lock exists
+if ($cache->lock('maintenance')->exists()) {
+    echo "Maintenance in progress";
+}
+
+// Force release lock
+$cache->lock('stuck-operation')->forceRelease();</code></pre>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- Cache Drivers -->
+                    <section id="cache-drivers" class="section-anchor mb-12">
+                        <div class="bg-green-50 border-l-4 border-green-500 p-6 mb-8">
+                            <h2 class="text-2xl font-bold text-gray-900 mb-4">
+                                <i class="fas fa-database text-green-600 mr-3"></i>Cache Drivers
+                            </h2>
+                            <p class="text-gray-700">
+                                Different storage backends for caching with specific features and configurations. 
+                                Each driver provides optimized performance for different use cases and environments.
+                            </p>
+                        </div>
+
+                        <div class="mb-8">
+                            <h3 class="text-xl font-semibold text-gray-900 mb-4">Redis Driver</h3>
+                            
+                            <div class="api-method bg-gray-50 p-4 rounded-lg mb-4">
+                                <h4 class="font-semibold text-lg mb-2">Redis Cache Configuration</h4>
+                                <p class="text-gray-600 text-sm mb-3">High-performance Redis-based caching with advanced features.</p>
+                                <div class="code-block p-4 text-white rounded">
+                                    <pre><code class="language-php">use Forge\Cache\Drivers\RedisDriver;
+use Forge\Redis\RedisManager;
+
+// Configure Redis driver
+$redisDriver = new RedisDriver([
+    'connection' => 'cache',
+    'prefix' => 'forge_cache:',
+    'serializer' => 'json', // json, php, igbinary, msgpack
+    'compression' => true,
+    'ttl' => 3600
+]);
+
+// Advanced Redis configuration
+$redisDriver->setRedis(new RedisManager([
+    'scheme' => 'tcp',
+    'host' => '127.0.0.1',
+    'port' => 6379,
+    'password' => null,
+    'database' => 1,
+    'timeout' => 5.0,
+    'read_timeout' => 10.0,
+    'persistent' => true,
+    'prefix' => 'forge:',
+    'serializer' => Redis::SERIALIZER_JSON,
+    'compression' => Redis::COMPRESSION_LZ4,
+    'retry_interval' => 100,
+    'retry_timeout' => 2000
+]));
+
+// Redis-specific operations
+$redisDriver->set('user:1', $userData, 3600);
+
+// Use Redis data structures
+$redisDriver->lpush('recent_users', 'user:1');
+$redisDriver->ltrim('recent_users', 0, 99); // Keep last 100
+
+$redisDriver->sadd('online_users', 'user:1');
+$redisDriver->srem('online_users', 'user:2');
+
+$redisDriver->zadd('leaderboard', 100, 'user:1');
+$redisDriver->zincrby('leaderboard', 10, 'user:1');
+
+// Hash operations
+$redisDriver->hset('user:1:session', 'last_seen', time());
+$redisDriver->hget('user:1:session', 'last_seen');
+$redisDriver->hgetall('user:1:session');
+
+// Set expiration
+$redisDriver->expire('temp_key', 300); // 5 minutes
+$redisDriver->expireat('temp_key', strtotime('+1 hour'));
+
+// Check TTL
+$ttl = $redisDriver->ttl('user:1'); // Returns seconds remaining
+
+// Persistence control
+$redisDriver->save(); // Synchronous save
+$redisDriver->bgsave(); // Background save
+
+// Pipeline operations for bulk processing
+$redisDriver->pipeline(function($pipe) {
+    for ($i = 0; $i < 1000; $i++) {
+        $pipe->set("key:{$i}", "value:{$i}", 3600);
+    }
+});</code></pre>
+                                </div>
+                            </div>
+
+                            <div class="api-method bg-gray-50 p-4 rounded-lg mb-4">
+                                <h4 class="font-semibold text-lg mb-2">Redis Cluster Configuration</h4>
+                                <p class="text-gray-600 text-sm mb-3">Configure Redis cluster for high availability.</p>
+                                <div class="code-block p-4 text-white rounded">
+                                    <pre><code class="language-php">$redisDriver->setRedis(new RedisManager([
+    'cluster' => true,
+    'clusters' => [
+        'default' => [
+            ['host' => '127.0.0.1', 'port' => 7000],
+            ['host' => '127.0.0.1', 'port' => 7001],
+            ['host' => '127.0.0.1', 'port' => 7002],
+        ],
+        'cache' => [
+            ['host' => '127.0.0.1', 'port' => 7003],
+            ['host' => '127.0.0.1', 'port' => 7004],
+            ['host' => '127.0.0.1', 'port' => 7005],
+        ]
+    ],
+    'options' => [
+        'timeout' => 5.0,
+        'read_timeout' => 10.0,
+        'persistent' => true,
+        'failover' => 'error', // error, distribute, none
+        'slave_failover' => 'distribute'
+    ]
+]));
+
+// Redis Sentinel configuration
+$redisDriver->setRedis(new RedisManager([
+    'sentinel' => true,
+    'sentinels' => [
+        ['host' => 'sentinel1', 'port' => 26379],
+        ['host' => 'sentinel2', 'port' => 26379],
+        ['host' => 'sentinel3', 'port' => 26379]
+    ],
+    'service' => 'mymaster',
+    'password' => 'redis_password',
+    'database' => 0
+]));</code></pre>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="mb-8">
+                            <h3 class="text-xl font-semibold text-gray-900 mb-4">File Driver</h3>
+
+                            <div class="api-method bg-gray-50 p-4 rounded-lg mb-4">
+                                <h4 class="font-semibold text-lg mb-2">File Cache Configuration</h4>
+                                <p class="text-gray-600 text-sm mb-3">File-based caching with directory organization.</p>
+                                <div class="code-block p-4 text-white rounded">
+                                    <pre><code class="language-php">use Forge\Cache\Drivers\FileCacheDriver;
+
+// Configure file driver
+$fileDriver = new FileCacheDriver([
+    'path' => storage_path('framework/cache'),
+    'prefix' => 'forge_',
+    'permission' => 0644,
+    'directory_permission' => 0755,
+    'ttl' => 7200,
+    'serialize' => true,
+    'compression' => false,
+    'encryption' => false
+]);
+
+// Advanced file cache configuration
+$fileDriver->setConfig([
+    'path' => storage_path('framework/cache/data'),
+    'hash_directory' => true, // Use hash-based directory structure
+    'directory_level' => 2, // Number of directory levels
+    'file_extension' => '.cache',
+    'max_file_size' => 1048576, // 1MB max file size
+    'gc_probability' => 0.01, // 1% garbage collection chance
+    'gc_divisor' => 100,
+    'lock_file' => true, // Use file locking
+    'lock_timeout' => 30 // 30 seconds
+]);
+
+// Organize cache by directories
+$fileDriver->put('config/app', $appConfig, 3600);
+$fileDriver->put('config/database', $dbConfig, 3600);
+$fileDriver->put('views/home', $homeView, 1800);
+$fileDriver->put('data/users', $userData, 3600);
+
+// Use different storage paths
+$fileDriver->setPath(storage_path('framework/cache/views'));
+$fileDriver->put('template:main', $templateData, 86400);
+
+$fileDriver->setPath(storage_path('framework/cache/sessions'));
+$fileDriver->put('session:' . $sessionId, $sessionData, 1800);
+
+// File-specific operations
+$fileDriver->clean(); // Remove expired files
+$fileDriver->gc(); // Run garbage collection
+$fileDriver->optimize(); // Optimize storage structure
+
+// Get cache statistics
+$stats = $fileDriver->getStats();
+echo "Total files: " . $stats['files'];
+echo "Total size: " . $stats['size'];
+echo "Expired files: " . $stats['expired'];
+
+// Backup cache files
+$fileDriver->backup(storage_path('backups/cache-' . date('Y-m-d') . '.tar.gz'));
+
+// Restore cache files
+$fileDriver->restore(storage_path('backups/cache-2024-01-01.tar.gz'));</code></pre>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="mb-8">
+                            <h3 class="text-xl font-semibold text-gray-900 mb-4">Database Driver</h3>
+
+                            <div class="api-method bg-gray-50 p-4 rounded-lg mb-4">
+                                <h4 class="font-semibold text-lg mb-2">Database Cache Configuration</h4>
+                                <p class="text-gray-600 text-sm mb-3">Database-based caching with automatic table management.</p>
+                                <div class="code-block p-4 text-white rounded">
+                                    <pre><code class="language-php">use Forge\Cache\Drivers\DatabaseCacheDriver;
+
+// Configure database driver
+$dbDriver = new DatabaseCacheDriver([
+    'table' => 'cache',
+    'connection' => 'default',
+    'prefix' => 'forge_',
+    'ttl' => 86400,
+    'serialize' => true,
+    'compression' => true,
+    'encryption' => false,
+    'chunk_size' => 1000
+]);
+
+// Database cache table schema
+$schema = "
+CREATE TABLE cache (
+    key VARCHAR(255) PRIMARY KEY,
+    value TEXT NOT NULL,
+    expiration INT NOT NULL,
+    tags TEXT,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    INDEX idx_expiration (expiration),
+    INDEX idx_tags (tags(191))
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+";
+
+// Advanced database cache configuration
+$dbDriver->setConfig([
+    'table' => 'cache',
+    'connection' => 'cache',
+    'chunk_size' => 500,
+    'batch_size' => 50,
+    'cleanup_batch_size' => 100,
+    'gc_frequency' => 0.1, // 10% chance of cleanup
+    'index_tags' => true,
+    'index_expiration' => true,
+    'partition_by_date' => false,
+    'archive_old' => true,
+    'archive_table' => 'cache_archive'
+]);
+
+// Database-specific operations
+$dbDriver->clean(); // Remove expired entries
+$dbDriver->vacuum(); // Optimize table
+$dbDriver->analyze(); // Update statistics
+
+// Batch operations
+$dbDriver->putMany([
+    'key1' => 'value1',
+    'key2' => 'value2',
+    'key3' => 'value3'
+], 3600);
+
+$values = $dbDriver->getMany(['key1', 'key2', 'key3']);
+
+// Tagged database cache
+$dbDriver->tags(['users', 'recent'])->put('users.recent', $users, 3600);
+
+// Database cache statistics
+$stats = $dbDriver->getStats();
+echo "Total entries: " . $stats['total'];
+echo "Expired entries: " . $stats['expired'];
+echo "Average size: " . $stats['avg_size'];
+
+// Cleanup operations
+$deleted = $dbDriver->cleanup(); // Remove expired entries
+$optimized = $dbDriver->optimize(); // Optimize storage</code></pre>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- Cache Patterns -->
+                    <section id="cache-patterns" class="section-anchor mb-12">
+                        <div class="bg-purple-50 border-l-4 border-purple-500 p-6 mb-8">
+                            <h2 class="text-2xl font-bold text-gray-900 mb-4">
+                                <i class="fas fa-code text-purple-600 mr-3"></i>Cache Patterns
+                            </h2>
+                            <p class="text-gray-700">
+                                Common caching patterns and strategies for different use cases. 
+                                These patterns help implement efficient caching strategies for various application scenarios.
+                            </p>
+                        </div>
+
+                        <div class="mb-8">
+                            <h3 class="text-xl font-semibold text-gray-900 mb-4">Cache-Aside Pattern</h3>
+                            
+                            <div class="api-method bg-gray-50 p-4 rounded-lg mb-4">
+                                <h4 class="font-semibold text-lg mb-2">Manual Cache Management</h4>
+                                <p class="text-gray-600 text-sm mb-3">Application manages cache explicitly.</p>
+                                <div class="code-block p-4 text-white rounded">
+                                    <pre><code class="language-php">class UserRepository
+{
+    private $cache;
+    
+    public function __construct(CacheManager $cache)
+    {
+        $this->cache = $cache;
+    }
+    
+    public function find($id)
+    {
+        $key = "user:{$id}";
+        
+        // Try to get from cache
+        $user = $this->cache->get($key);
+        
+        if ($user === null) {
+            // Not in cache, get from database
+            $user = User::find($id);
+            
+            if ($user) {
+                // Store in cache
+                $this->cache->put($key, $user, 3600);
+                $this->cache->tags(['users', "user:{$id}"])->put($key, $user, 3600);
+            }
+        }
+        
+        return $user;
+    }
+    
+    public function update($id, array $data)
+    {
+        $user = User::find($id);
+        
+        if ($user) {
+            $user->update($data);
+            
+            // Update cache
+            $this->cache->put("user:{$id}", $user, 3600);
+            
+            // Invalidate related caches
+            $this->cache->tags(['users'])->flush();
+            $this->cache->tags(['user:{$id}'])->flush();
+        }
+        
+        return $user;
+    }
+    
+    public function delete($id)
+    {
+        User::destroy($id);
+        
+        // Remove from cache
+        $this->cache->forget("user:{$id}");
+        
+        // Invalidate related caches
+        $this->cache->tags(['users'])->flush();
+        $this->cache->tags(['user:{$id}'])->flush();
+    }
+}</code></pre>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="mb-8">
+                            <h3 class="text-xl font-semibold text-gray-900 mb-4">Write-Through Pattern</h3>
+
+                            <div class="api-method bg-gray-50 p-4 rounded-lg mb-4">
+                                <h4 class="font-semibold text-lg mb-2">Automatic Cache Updates</h4>
+                                <p class="text-gray-600 text-sm mb-3">Cache is updated automatically on data changes.</p>
+                                <div class="code-block p-4 text-white rounded">
+                                    <pre><code class="language-php">class CachedUserRepository
+{
+    private $cache;
+    
+    public function __construct(CacheManager $cache)
+    {
+        $this->cache = $cache;
+    }
+    
+    public function create(array $data)
+    {
+        // Create user in database
+        $user = User::create($data);
+        
+        // Automatically cache the new user
+        $this->cache->tags(['users', "user:{$user->id}"])->put(
+            "user:{$user->id}",
+            $user,
+            3600
+        );
+        
+        // Invalidate user lists
+        $this->cache->tags(['user_lists'])->flush();
+        
+        return $user;
+    }
+    
+    public function update($id, array $data)
+    {
+        // Update user in database
+        $user = User::find($id);
+        
+        if ($user) {
+            $user->update($data);
+            
+            // Update cache immediately
+            $this->cache->tags(['users', "user:{$id}"])->put(
+                "user:{$id}",
+                $user,
+                3600
+            );
+            
+            // Invalidate related caches
+            $this->cache->tags(['user_lists', 'user:{$id}:related'])->flush();
+        }
+        
+        return $user;
+    }
+    
+    public function getAll($page = 1, $perPage = 20)
+    {
+        $key = "users:page:{$page}:per_page:{$perPage}";
+        
+        return $this->cache->tags(['user_lists'])->remember($key, 1800, function() use ($page, $perPage) {
+            return User::paginate($perPage, ['*'], 'page', $page);
+        });
+    }
+}</code></pre>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="mb-8">
+                            <h3 class="text-xl font-semibold text-gray-900 mb-4">Cache Warming</h3>
+
+                            <div class="api-method bg-gray-50 p-4 rounded-lg mb-4">
+                                <h4 class="font-semibold text-lg mb-2">Proactive Cache Population</h4>
+                                <p class="text-gray-600 text-sm mb-3">Pre-populate cache with frequently accessed data.</p>
+                                <div class="code-block p-4 text-white rounded">
+                                    <pre><code class="language-php">class CacheWarmer
+{
+    private $cache;
+    
+    public function __construct(CacheManager $cache)
+    {
+        $this->cache = $cache;
+    }
+    
+    public function warmCache()
+    {
+        // Warm user data
+        $this->warmUsers();
+        
+        // Warm configuration
+        $this->warmConfiguration();
+        
+        // Warm frequently accessed data
+        $this->warmFrequentlyAccessedData();
+        
+        // Warm reference data
+        $this->warmReferenceData();
+    }
+    
+    private function warmUsers()
+    {
+        // Cache active users
+        $activeUsers = User::where('active', true)
+            ->limit(1000)
+            ->get();
+            
+        foreach ($activeUsers as $user) {
+            $this->cache->tags(['users', "user:{$user->id}"])->put(
+                "user:{$user->id}",
+                $user,
+                3600
+            );
+        }
+        
+        // Cache user lists
+        $this->cache->tags(['user_lists'])->remember('users.active', 3600, function() {
+            return User::where('active', true)->get();
+        });
+        
+        $this->cache->tags(['user_lists'])->remember('users.recent', 1800, function() {
+            return User::orderBy('created_at', 'desc')
+                ->limit(100)
+                ->get();
+        });
+    }
+    
+    private function warmConfiguration()
+    {
+        // Cache application configuration
+        $config = [
+            'app_name' => config('app.name'),
+            'app_debug' => config('app.debug'),
+            'app_url' => config('app.url'),
+            'mail_driver' => config('mail.driver'),
+            'cache_default' => config('cache.default'),
+            'session_driver' => config('session.driver')
+        ];
+        
+        $this->cache->tags(['config'])->put('app.config', $config, 86400);
+    }
+    
+    private function warmFrequentlyAccessedData()
+    {
+        // Cache dashboard statistics
+        $this->cache->tags(['dashboard'])->remember('stats.users', 3600, function() {
+            return [
+                'total' => User::count(),
+                'active' => User::where('active', true)->count(),
+                'today' => User::whereDate('created_at', today())->count(),
+                'this_month' => User::whereMonth('created_at', now()->month)->count()
+            ];
+        });
+        
+        // Cache recent posts
+        $this->cache->tags(['posts'])->remember('posts.recent', 1800, function() {
+            return Post::with('author')
+                ->where('published', true)
+                ->orderBy('created_at', 'desc')
+                ->limit(50)
+                ->get();
+        });
+        
+        // Cache popular content
+        $this->cache->tags(['content'])->remember('content.popular', 3600, function() {
+            return Post::where('published', true)
+                ->orderBy('views', 'desc')
+                ->limit(20)
+                ->get();
+        });
+    }
+    
+    private function warmReferenceData()
+    {
+        // Cache countries
+        $this->cache->tags(['reference'])->rememberForever('countries', function() {
+            return Country::all();
+        });
+        
+        // Cache categories
+        $this->cache->tags(['reference'])->rememberForever('categories', function() {
+            return Category::all();
+        });
+        
+        // Cache settings
+        $this->cache->tags(['settings'])->rememberForever('settings', function() {
+            return Setting::pluck('value', 'key');
+        });
+    }
+    
+    // Schedule cache warming
+    public function scheduleWarming()
+    {
+        // Warm cache every hour
+        schedule()->call(function() {
+            $this->warmCache();
+        })->hourly();
+        
+        // Warm critical data every 15 minutes
+        schedule()->call(function() {
+            $this->warmFrequentlyAccessedData();
+        })->everyFifteenMinutes();
+        
+        // Warm reference data daily
+        schedule()->call(function() {
+            $this->warmReferenceData();
+        })->daily();
+    }
+}</code></pre>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- Cache Performance -->
+                    <section id="cache-performance" class="section-anchor mb-12">
+                        <div class="bg-orange-50 border-l-4 border-orange-500 p-6 mb-8">
+                            <h2 class="text-2xl font-bold text-gray-900 mb-4">
+                                <i class="fas fa-tachometer-alt text-orange-600 mr-3"></i>Cache Performance
+                            </h2>
+                            <p class="text-gray-700">
+                                Monitor and optimize cache performance with metrics, profiling, and tuning. 
+                                Understanding cache performance helps identify bottlenecks and optimization opportunities.
+                            </p>
+                        </div>
+
+                        <div class="mb-8">
+                            <h3 class="text-xl font-semibold text-gray-900 mb-4">Performance Monitoring</h3>
+                            
+                            <div class="api-method bg-gray-50 p-4 rounded-lg mb-4">
+                                <h4 class="font-semibold text-lg mb-2">Cache Metrics</h4>
+                                <p class="text-gray-600 text-sm mb-3">Monitor cache performance and usage.</p>
+                                <div class="code-block p-4 text-white rounded">
+                                    <pre><code class="language-php">use Forge\Cache\CacheProfiler;
+use Forge\Cache\CacheMetrics;
+
+// Enable profiling
+$profiler = new CacheProfiler($cacheManager);
+$profiler->enable();
+
+// Get cache metrics
+$metrics = new CacheMetrics($cacheManager);
+
+// Hit/miss ratio
+$hitRate = $metrics->getHitRate(); // 0.95 (95%)
+$missRate = $metrics->getMissRate(); // 0.05 (5%)
+
+// Operation counts
+$stats = $metrics->getStats();
+echo "Gets: " . $stats['gets'];
+echo "Sets: " . $stats['sets'];
+echo "Deletes: " . $stats['deletes'];
+echo "Hits: " . $stats['hits'];
+echo "Misses: " . $stats['misses'];
+
+// Memory usage
+$memoryUsage = $metrics->getMemoryUsage();
+echo "Used memory: " . $memoryUsage['used'];
+echo "Free memory: " . $memoryUsage['free'];
+echo "Total memory: " . $memoryUsage['total'];
+
+// Performance metrics
+$performance = $metrics->getPerformance();
+echo "Average get time: " . $performance['avg_get_time'] . "ms";
+echo "Average set time: " . $performance['avg_set_time'] . "ms";
+echo "Average delete time: " . $performance['avg_delete_time'] . "ms";
+
+// Top cached keys
+$topKeys = $metrics->getTopKeys(10);
+foreach ($topKeys as $key => $hits) {
+    echo "{$key}: {$hits} hits";
+}
+
+// Least used keys
+$leastUsed = $metrics->getLeastUsedKeys(10);
+
+// Cache efficiency
+$efficiency = $metrics->getEfficiency();
+echo "Cache efficiency: " . ($efficiency * 100) . "%";
+
+// Store metrics for analysis
+$metrics->recordMetrics([
+    'timestamp' => time(),
+    'hit_rate' => $hitRate,
+    'memory_usage' => $memoryUsage,
+    'performance' => $performance
+]);</code></pre>
+                                </div>
+                            </div>
+
+                            <div class="api-method bg-gray-50 p-4 rounded-lg mb-4">
+                                <h4 class="font-semibold text-lg mb-2">Performance Optimization</h4>
+                                <p class="text-gray-600 text-sm mb-3">Optimize cache performance based on metrics.</p>
+                                <div class="code-block p-4 text-white rounded">
+                                    <pre><code class="language-php">class CacheOptimizer
+{
+    private $cache;
+    private $metrics;
+    
+    public function __construct(CacheManager $cache, CacheMetrics $metrics)
+    {
+        $this->cache = $cache;
+        $this->metrics = $metrics;
+    }
+    
+    public function optimize()
+    {
+        // Analyze current performance
+        $analysis = $this->analyzePerformance();
+        
+        // Optimize based on findings
+        if ($analysis['hit_rate'] < 0.8) {
+            $this->optimizeHitRate();
+        }
+        
+        if ($analysis['memory_usage'] > 0.9) {
+            $this->optimizeMemoryUsage();
+        }
+        
+        if ($analysis['avg_get_time'] > 50) {
+            $this->optimizeGetTime();
+        }
+        
+        // Apply optimizations
+        $this->applyOptimizations($analysis);
+    }
+    
+    private function analyzePerformance()
+    {
+        $hitRate = $this->metrics->getHitRate();
+        $memoryUsage = $this->metrics->getMemoryUsage();
+        $performance = $this->metrics->getPerformance();
+        $topKeys = $this->metrics->getTopKeys(100);
+        
+        return [
+            'hit_rate' => $hitRate,
+            'memory_usage' => $memoryUsage['used'] / $memoryUsage['total'],
+            'avg_get_time' => $performance['avg_get_time'],
+            'avg_set_time' => $performance['avg_set_time'],
+            'top_keys' => $topKeys,
+            'total_keys' => count($topKeys)
+        ];
+    }
+    
+    private function optimizeHitRate()
+    {
+        // Increase TTL for frequently accessed items
+        $topKeys = $this->metrics->getTopKeys(50);
+        
+        foreach ($topKeys as $key => $hits) {
+            if ($hits > 100) {
+                // Get current value and extend TTL
+                $value = $this->cache->get($key);
+                if ($value !== null) {
+                    $this->cache->put($key, $value, 7200); // Extend to 2 hours
+                }
+            }
+        }
+        
+        // Pre-warm cache with predicted data
+        $this->prewarmPredictedData();
+    }
+    
+    private function optimizeMemoryUsage()
+    {
+        // Remove least used keys
+        $leastUsed = $this->metrics->getLeastUsedKeys(100);
+        
+        foreach ($leastUsed as $key => $hits) {
+            if ($hits < 5) {
+                $this->cache->forget($key);
+            }
+        }
+        
+        // Compress large values
+        $this->compressLargeValues();
+        
+        // Archive old data
+        $this->archiveOldData();
+    }
+    
+    private function optimizeGetTime()
+    {
+        // Switch to faster driver for high-traffic keys
+        $highTrafficKeys = $this->metrics->getTopKeys(20);
+        
+        if (count($highTrafficKeys) > 0) {
+            // Consider switching to Redis if using file cache
+            $this->upgradeToFasterDriver();
+        }
+        
+        // Optimize network settings
+        $this->optimizeNetworkSettings();
+    }
+    
+    private function prewarmPredictedData()
+    {
+        // Analyze access patterns
+        $patterns = $this->analyzeAccessPatterns();
+        
+        // Pre-warm based on time-based patterns
+        $hour = date('H');
+        if (isset($patterns['hourly'][$hour])) {
+            foreach ($patterns['hourly'][$hour] as $key) {
+                if (!$this->cache->has($key)) {
+                    $this->warmKey($key);
+                }
+            }
+        }
+        
+        // Pre-warm based on user behavior
+        $this->prewarmUserSpecificData();
+    }
+    
+    private function compressLargeValues()
+    {
+        // Find large values
+        $largeKeys = $this->metrics->getLargeKeys(50);
+        
+        foreach ($largeKeys as $key => $size) {
+            if ($size > 1048576) { // 1MB
+                $value = $this->cache->get($key);
+                if ($value !== null) {
+                    // Compress and re-store
+                    $compressed = gzcompress(serialize($value), 9);
+                    $this->cache->put($key, $compressed, 3600);
+                }
+            }
+        }
+    }
+    
+    private function upgradeToFasterDriver()
+    {
+        // This would involve configuration changes
+        // to switch from file to Redis, for example
+        config(['cache.default' => 'redis']);
+        config(['cache.stores.redis.compression' => true]);
+    }
+    
+    // Schedule optimization
+    public function scheduleOptimization()
+    {
+        // Run optimization hourly
+        schedule()->call(function() {
+            $this->optimize();
+        })->hourly();
+        
+        // Deep analysis daily
+        schedule()->call(function() {
+            $this->deepAnalysis();
+        })->daily();
+    }
+}</code></pre>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- Usage Examples -->
+                    <section id="examples" class="section-anchor mb-12">
+                        <div class="bg-gray-50 border-l-4 border-gray-500 p-6 mb-8">
+                            <h2 class="text-2xl font-bold text-gray-900 mb-4">
+                                <i class="fas fa-code text-gray-600 mr-3"></i>Usage Examples
+                            </h2>
+                            <p class="text-gray-700">
+                                Common caching scenarios and implementation patterns for different use cases.
+                            </p>
+                        </div>
+
+                        <div class="mb-8">
+                            <h3 class="text-xl font-semibold text-gray-900 mb-4">API Response Caching</h3>
+                            <div class="code-block p-4 text-white rounded">
+                                <pre><code class="language-php">class ApiResponseCache
+{
+    private $cache;
+    
+    public function __construct(CacheManager $cache)
+    {
+        $this->cache = $cache;
+    }
+    
+    public function cacheApiResponse($request, $response, $ttl = 300)
+    {
+        $key = $this->generateCacheKey($request);
+        
+        // Add cache headers to response
+        $response->headers->set('X-Cache', 'MISS');
+        $response->headers->set('Cache-Control', "public, max-age={$ttl}");
+        
+        // Store in cache
+        $this->cache->tags(['api', 'responses'])->put($key, [
+            'status' => $response->getStatusCode(),
+            'headers' => $response->headers->all(),
+            'content' => $response->getContent()
+        ], $ttl);
+        
+        return $response;
+    }
+    
+    public function getCachedResponse($request)
+    {
+        $key = $this->generateCacheKey($request);
+        
+        $cached = $this->cache->tags(['api', 'responses'])->get($key);
+        
+        if ($cached) {
+            // Create response from cache
+            $response = new Response(
+                $cached['content'],
+                $cached['status'],
+                $cached['headers']
+            );
+            
+            $response->headers->set('X-Cache', 'HIT');
+            
+            return $response;
+        }
+        
+        return null;
+    }
+    
+    private function generateCacheKey($request)
+    {
+        $parts = [
+            'api',
+            $request->method(),
+            $request->path(),
+            md5(json_encode($request->all())),
+            $request->header('Accept-Language', 'en'),
+            $request->header('Accept', 'application/json')
+        ];
+        
+        return implode(':', $parts);
+    }
+    
+    // Middleware for API caching
+    public function handle($request, $next, $ttl = 300)
+    {
+        // Check if caching is enabled
+        if (!config('api.cache_enabled')) {
+            return $next($request);
+        }
+        
+        // Try to get cached response
+        $cachedResponse = $this->getCachedResponse($request);
+        
+        if ($cachedResponse) {
+            return $cachedResponse;
+        }
+        
+        // Process request
+        $response = $next($request);
+        
+        // Cache successful responses
+        if ($response->isSuccessful()) {
+            $this->cacheApiResponse($request, $response, $ttl);
+        }
+        
+        return $response;
+    }
+}
+
+// Usage in routes
+Route::middleware('api.cache:600')->group(function() {
+    Route::get('/api/users', 'UserController@index');
+    Route::get('/api/posts', 'PostController@index');
+    Route::get('/api/categories', 'CategoryController@index');
+});</code></pre>
+                            </div>
+                        </div>
+
+                        <div class="mb-8">
+                            <h3 class="text-xl font-semibold text-gray-900 mb-4">Session Caching</h3>
+                            <div class="code-block p-4 text-white rounded">
+                                <pre><code class="language-php">class CachedSessionHandler
+{
+    private $cache;
+    private $ttl;
+    
+    public function __construct(CacheManager $cache, $ttl = 7200)
+    {
+        $this->cache = $cache;
+        $this->ttl = $ttl;
+    }
+    
+    public function read($sessionId)
+    {
+        $key = "session:{$sessionId}";
+        
+        $data = $this->cache->get($key);
+        
+        if ($data !== null) {
+            // Extend TTL on access
+            $this->cache->expire($key, $this->ttl);
+            return $data;
+        }
+        
+        return '';
+    }
+    
+    public function write($sessionId, $data)
+    {
+        $key = "session:{$sessionId}";
+        
+        return $this->cache->put($key, $data, $this->ttl);
+    }
+    
+    public function destroy($sessionId)
+    {
+        $key = "session:{$sessionId}";
+        
+        return $this->cache->forget($key);
+    }
+    
+    public function gc($maxLifetime)
+    {
+        // Cache automatically handles expiration
+        return true;
+    }
+    
+    // Session data caching with user context
+    public function cacheUserSession($userId, $sessionData)
+    {
+        $key = "user_session:{$userId}";
+        
+        // Store with user tags for invalidation
+        $this->cache->tags(['sessions', "user:{$userId}"])->put($key, [
+            'data' => $sessionData,
+            'created_at' => now(),
+            'last_activity' => now()
+        ], $this->ttl);
+        
+        return true;
+    }
+    
+    public function getUserSessions($userId)
+    {
+        $key = "user_session:{$userId}";
+        
+        return $this->cache->tags(['sessions', "user:{$userId}"])->get($key);
+    }
+    
+    public function invalidateUserSessions($userId)
+    {
+        // Clear all sessions for a user
+        $this->cache->tags(['sessions', "user:{$userId}"])->flush();
+        
+        return true;
+    }
+    
+    // Session locking to prevent race conditions
+    public function acquireSessionLock($sessionId, $timeout = 30)
+    {
+        $lockKey = "session_lock:{$sessionId}";
+        
+        return $this->cache->lock($lockKey, $timeout)->get();
+    }
+    
+    public function releaseSessionLock($sessionId)
+    {
+        $lockKey = "session_lock:{$sessionId}";
+        
+        return $this->cache->lock($lockKey)->release();
+    }
+}</code></pre>
+                            </div>
+                        </div>
+
+                        <div class="mb-8">
+                            <h3 class="text-xl font-semibold text-gray-900 mb-4">Database Query Caching</h3>
+                            <div class="code-block p-4 text-white rounded">
+                                <pre><code class="language-php">class QueryCache
+{
+    private $cache;
+    
+    public function __construct(CacheManager $cache)
+    {
+        $this->cache = $cache;
+    }
+    
+    public function rememberQuery($query, $ttl = 3600)
+    {
+        // Generate cache key from query
+        $key = $this->generateQueryKey($query);
+        
+        // Use cache tags based on tables
+        $tables = $this->getQueryTables($query);
+        $tags = array_merge(['queries'], $tables);
+        
+        return $this->cache->tags($tags)->remember($key, $ttl, function() use ($query) {
+            return $query->get();
+        });
+    }
+    
+    public function rememberQueryFirst($query, $ttl = 3600)
+    {
+        $key = $this->generateQueryKey($query) . ':first';
+        $tables = $this->getQueryTables($query);
+        $tags = array_merge(['queries'], $tables);
+        
+        return $this->cache->tags($tags)->remember($key, $ttl, function() use ($query) {
+            return $query->first();
+        });
+    }
+    
+    public function rememberQueryCount($query, $ttl = 3600)
+    {
+        $key = $this->generateQueryKey($query) . ':count';
+        $tables = $this->getQueryTables($query);
+        $tags = array_merge(['queries', 'counts'], $tables);
+        
+        return $this->cache->tags($tags)->remember($key, $ttl, function() use ($query) {
+            return $query->count();
+        });
+    }
+    
+    public function flushQueryCache($tables = null)
+    {
+        if ($tables === null) {
+            // Flush all query caches
+            $this->cache->tags(['queries'])->flush();
+        } else {
+            // Flush specific table caches
+            $tags = is_array($tables) ? $tables : [$tables];
+            $this->cache->tags($tags)->flush();
+        }
+        
+        return true;
+    }
+    
+    private function generateQueryKey($query)
+    {
+        $sql = $query->toSql();
+        $bindings = $query->getBindings();
+        
+        return 'query:' . md5($sql . serialize($bindings));
+    }
+    
+    private function getQueryTables($query)
+    {
+        // Extract table names from query
+        $sql = $query->toSql();
+        preg_match_all('/FROM\s+`?(\w+)`?/', $sql, $matches);
+        
+        return $matches[1] ?? [];
+    }
+    
+    // Model trait for caching
+    public function cachedScope($query, $ttl = 3600)
+    {
+        return $this->rememberQuery($query, $ttl);
+    }
+    
+    public function cachedRelation($relation, $ttl = 3600)
+    {
+        $key = "model:{$this->getTable()}:{$this->id}:relation:{$relation}";
+        
+        return $this->cache->tags(['models', $this->getTable()])->remember($key, $ttl, function() use ($relation) {
+            return $this->$relation;
+        });
+    }
+}
+
+// Usage in models
+trait Cacheable
+{
+    public function scopeCached($query, $ttl = 3600)
+    {
+        $cache = Container::getInstance()->make('cache');
+        $queryCache = new QueryCache($cache);
+        
+        return $queryCache->rememberQuery($query, $ttl);
+    }
+    
+    public function cachedRelation($relation, $ttl = 3600)
+    {
+        $cache = Container::getInstance()->make('cache');
+        $key = "model:{$this->getTable()}:{$this->id}:relation:{$relation}";
+        
+        return $cache->tags(['models', $this->getTable()])->remember($key, $ttl, function() use ($relation) {
+            return $this->$relation;
+        });
+    }
+    
+    public function clearCache()
+    {
+        $cache = Container::getInstance()->make('cache');
+        
+        // Clear model cache
+        $cache->tags(['models', $this->getTable()])->flush();
+        
+        // Clear specific instance
+        $cache->forget("model:{$this->getTable()}:{$this->id}");
+        
+        return true;
+    }
+}
+
+// Usage
+class User extends Model
+{
+    use Cacheable;
+    
+    public function posts()
+    {
+        return $this->hasMany(Post::class);
+    }
+}
+
+// In controllers
+$users = User::cached(3600)->get();
+$posts = $user->cachedRelation('posts', 1800);</code></pre>
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- Best Practices -->
+                    <section id="best-practices" class="section-anchor mb-12">
+                        <div class="bg-yellow-50 border-l-4 border-yellow-500 p-6 mb-8">
+                            <h2 class="text-2xl font-bold text-gray-900 mb-4">
+                                <i class="fas fa-lightbulb text-yellow-600 mr-3"></i>Best Practices
+                            </h2>
+                            <p class="text-gray-700">
+                                Recommended patterns and guidelines for working with the caching system.
+                            </p>
+                        </div>
+
+                        <div class="grid md:grid-cols-2 gap-6">
+                            <div class="bg-white border border-gray-200 p-6 rounded-lg">
+                                <h4 class="font-semibold text-gray-900 mb-3">
+                                    <i class="fas fa-check-circle text-green-600 mr-2"></i>Do's
+                                </h4>
+                                <ul class="text-sm text-gray-600 space-y-2">
+                                    <li>• Use meaningful cache keys with namespaces</li>
+                                    <li>• Set appropriate TTL values</li>
+                                    <li>• Use cache tags for related data</li>
+                                    <li>• Implement cache invalidation strategies</li>
+                                    <li>• Monitor cache hit rates</li>
+                                    <li>• Use appropriate cache drivers</li>
+                                    <li>• Handle cache misses gracefully</li>
+                                    <li>• Implement cache warming</li>
+                                    <li>• Use compression for large data</li>
+                                    <li>• Test cache behavior under load</li>
+                                </ul>
+                            </div>
+
+                            <div class="bg-white border border-gray-200 p-6 rounded-lg">
+                                <h4 class="font-semibold text-gray-900 mb-3">
+                                    <i class="fas fa-times-circle text-red-600 mr-2"></i>Don'ts
+                                </h4>
+                                <ul class="text-sm text-gray-600 space-y-2">
+                                    <li>• Don't cache everything</li>
+                                    <li>• Don't use overly long TTLs</li>
+                                    <li>• Don't ignore cache expiration</li>
+                                    <li>• Don't cache sensitive data without encryption</li>
+                                    <li>• Don't rely on cache for critical data</li>
+                                    <li>• Don't ignore cache size limits</li>
+                                    <li>• Don't use cache as primary storage</li>
+                                    <li>• Don't ignore cache driver limitations</li>
+                                    <li>• Don't cache volatile data</li>
+                                    <li>• Don't skip cache invalidation</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </section>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="bg-white border-t mt-16">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+            <div class="text-center text-gray-600">
+                <p class="text-sm">
+                    Forge Engine Documentation - Caching API
+                </p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Mobile menu toggle
+        const mobileMenuBtn = document.getElementById('mobile-menu-btn');
+        const mobileMenu = document.getElementById('mobile-menu');
+        const mobileMenuOverlay = document.getElementById('mobile-menu-overlay');
+
+        function toggleMobileMenu() {
+            mobileMenu.classList.toggle('hidden');
+            mobileMenuOverlay.classList.toggle('active');
+        }
+
+        if (mobileMenuBtn) {
+            mobileMenuBtn.addEventListener('click', toggleMobileMenu);
+        }
+
+        if (mobileMenuOverlay) {
+            mobileMenuOverlay.addEventListener('click', toggleMobileMenu);
+        }
+
+        // Close mobile menu when clicking on links
+        const mobileMenuLinks = mobileMenu.querySelectorAll('a');
+        mobileMenuLinks.forEach(link => {
+            link.addEventListener('click', () => {
+                mobileMenu.classList.add('hidden');
+                mobileMenuOverlay.classList.remove('active');
+            });
+        });
+
+        // Active navigation highlighting
+        const currentPath = window.location.pathname.split('/').pop();
+        const navLinks = document.querySelectorAll('.nav-link');
+        navLinks.forEach(link => {
+            if (link.getAttribute('href') === currentPath) {
+                link.classList.add('active');
+            }
+        });
+
+        // Smooth scrolling for anchor links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+
+        // Copy code functionality
+        document.querySelectorAll('.code-block').forEach(block => {
+            const button = document.createElement('button');
+            button.innerHTML = '<i class="fas fa-copy"></i>';
+            button.className = 'absolute top-2 right-2 bg-gray-700 hover:bg-gray-600 text-white px-2 py-1 rounded text-xs';
+            button.style.position = 'absolute';
+            button.style.top = '8px';
+            button.style.right = '8px';
+            
+            block.style.position = 'relative';
+            block.appendChild(button);
+            
+            button.addEventListener('click', () => {
+                const code = block.querySelector('code').textContent;
+                navigator.clipboard.writeText(code).then(() => {
+                    button.innerHTML = '<i class="fas fa-check"></i>';
+                    setTimeout(() => {
+                        button.innerHTML = '<i class="fas fa-copy"></i>';
+                    }, 2000);
+                });
+            });
+        });
+
+        // Add copy button styling
+        const style = document.createElement('style');
+        style.textContent = `
+            .code-block {
+                position: relative;
+            }
+            .code-block button {
+                opacity: 0;
+                transition: opacity 0.2s;
+            }
+            .code-block:hover button {
+                opacity: 1;
+            }
+        `;
+        document.head.appendChild(style);
+    </script>
+</body>
+</html>

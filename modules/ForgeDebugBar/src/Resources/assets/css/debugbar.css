@@ -1,0 +1,854 @@
+:root {
+    --border: rgba(0, 0, 0, 0.1);
+    --radius: 8px;
+    --gap: 1.5rem;
+    --primary: #212936;
+    --bg-light: #e6e7eb;
+    --text-light: #444444;
+    --bg-dark: #1a1a1a;
+    --text-dark: #e0e0e0;
+    --secondary: #4f46e5;
+}
+
+
+.forge-debugbar {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    background: white;
+    color: #f0f0f0;
+    font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+    z-index: 9999;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+    border: 2px solid var(--border);
+    display: flex !important;
+    align-items: center;
+    padding: 0 15px;
+    height: 40px;
+    line-height: 1.5;
+}
+
+.forge-debugbar-logo {
+    font-weight: bolder;
+    font-size: 1rem;
+    margin-right: 20px;
+    color: var(--primary);
+    cursor: pointer;
+}
+
+.forge-debugbar-metrics {
+    display: flex;
+    align-items: center;
+    margin-right: auto;
+}
+
+.forge-debugbar-tab {
+    padding: 4px 14px;
+    margin: 0 5px;
+    border-radius: 3px 3px 0 0;
+    background: white;
+    cursor: pointer;
+    font-size: 0.9em;
+    transition: background-color 0.2s ease;
+    color: var(--primary);
+}
+
+.forge-debugbar-tab:hover {
+    background-color: var(--primary);
+    color: white;
+}
+
+.forge-debugbar-tab.active {
+    background-color: var(--primary);
+    font-weight: bold;
+    color: white;
+}
+
+.forge-debugbar-item {
+    display: inline-flex;
+    align-items: center;
+    margin-right: 15px;
+    font-size: 0.9em;
+    padding-right: 10px;
+    color: var(--primary);
+    gap: 4px;
+}
+
+.forge-debugbar-item-value {
+    font-weight: bold;
+    margin-left: 0;
+}
+
+.forge-debugbar-icon {
+    width: 1em;
+    height: 1em;
+    vertical-align: middle;
+    stroke: var(--primary);
+}
+
+.forge-debugbar-panel {
+    position: fixed;
+    bottom: 40px;
+    left: 0;
+    width: 100%;
+    background: white;
+    color: black;
+    padding: 20px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+    border-radius: 5px 5px 0 0;
+    display: none;
+    max-height: 500px;
+    overflow-y: auto;
+    z-index: 800;
+}
+
+.forge-debugbar-panels {
+    display: block;
+}
+
+.forge-debugbar-panel-hidden {
+    display: none;
+}
+
+.forge-debugbar-panel.active {
+    display: block;
+}
+
+.forge-debugbar-panel pre {
+    white-space: pre-wrap;
+    word-wrap: break-word;
+    padding: 10px;
+    background: rgba(0, 0, 0, 0.05);;
+    border: 1px solid var(--border);
+    border-radius: calc(var(--radius) - 2px);
+    overflow-x: auto;
+}
+
+.forge-debugbar-panel ul {
+    list-style: none;
+}
+
+.forge-debugbar-panel li {
+    list-style: none;
+}
+
+.debugbar-messages-list {
+    list-style-type: none;
+    padding-left: 0;
+}
+
+.debugbar-message-item {
+    margin-bottom: 0.5em;
+    padding-bottom: 0.5em;
+    border-bottom: 1px dotted #ddd;
+    position: relative;
+}
+
+.debugbar-message-name {
+    font-size: 0.95em;
+    font-weight: 300;
+}
+
+.debugbar-message-label {
+    font-size: 0.7em;
+    padding: 0.2em 1em;
+    border-radius: 1em;
+    color: white;
+    float: right;
+    margin-left: 0.5em;
+    text-transform: uppercase;
+    font-weight: 600;
+}
+
+.debugbar-message-label-info {
+    background-color: #17a2b8;
+}
+
+.debugbar-message-label-warning {
+    background-color: #ffc107;
+    color: black;
+}
+
+.debugbar-message-label-error {
+    background-color: #dc3545;
+}
+
+.debugbar-timeline-label {
+    font-size: 0.7em;
+    padding: 0.2em 1em;
+    border-radius: 1em;
+    color: white;
+    float: right;
+    margin-left: 0.5em;
+    text-transform: uppercase;
+    font-weight: 600;
+}
+
+.debugbar-timeline-label-info {
+    background-color: #17a2b8;
+}
+
+.debugbar-timeline-label-warning {
+    background-color: #ffc107;
+    color: black;
+}
+
+.debugbar-timeline-label-error {
+    background-color: #dc3545;
+}
+
+.debugbar-timeline-label-start {
+    background-color: #28a745;
+}
+
+.debugbar-timeline-label-end {
+    background-color: #6c757d;
+}
+
+.debugbar-timeline-list {
+    list-style-type: none;
+    padding-left: 0;
+}
+
+.debugbar-timeline-item {
+    margin-bottom: 0.5em;
+    padding-bottom: 0.5em;
+    border-bottom: 1px dotted #ddd;
+    position: relative;
+}
+
+.debugbar-timeline-name {
+    font-size: 0.95em;
+    font-weight: 300;
+}
+
+.debugbar-timeline-data {
+    background-color: #f9f9f9;
+    padding: 0.5em;
+    border: 1px solid #eee;
+    font-size: 0.9em;
+    white-space: pre-wrap;
+}
+
+.debugbar-message-time,
+.debugbar-timeline-time {
+    font-size: 0.75em;
+    color: #999;
+    margin-right: 0.5em;
+}
+
+.debugbar-message-time,
+.debugbar-timeline-time {
+    font-size: 0.75em;
+    color: #999;
+    margin-right: 0.5em;
+}
+
+.forge-debugbar-current-route {
+    padding: 15px;
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    background-color: #fff;
+    box-shadow: 0 1px 1px rgba(0, 0, 0, 0.05);
+}
+
+.forge-debugbar-route-header {
+    display: flex;
+    align-items: baseline;
+    margin-bottom: 12px;
+}
+
+.forge-debugbar-route-method {
+    margin-right: 12px;
+}
+
+.forge-debugbar-route-uri {
+    font-size: 1.1em;
+    font-weight: bold;
+    color: var(--primary);
+}
+
+.forge-debugbar-route-details {
+
+}
+
+.forge-debugbar-route-detail-item {
+    margin-bottom: 8px;
+    font-size: 0.9em;
+}
+
+.forge-debugbar-detail-label {
+    font-weight: bold;
+    color: var(--primary);
+    margin-right: 6px;
+    display: inline-block;
+    width: 90px;
+    text-align: right;
+}
+
+.forge-debugbar-route-handler-value {
+    color: var(--text-light);
+}
+
+
+.forge-debugbar-route-middleware-details {
+    font-size: 0.85em;
+    margin-top: 8px;
+}
+
+.forge-debugbar-route-middleware-summary {
+    cursor: pointer;
+    color: var(--primary);
+    font-weight: bold;
+}
+
+.forge-debugbar-route-middleware-list {
+    padding-left: 1.5em;
+    margin-top: 4px;
+    list-style-type: disc;
+}
+
+.forge-debugbar-route-middleware-item {
+    color: var(--text-light);
+    margin-bottom: 2px;
+}
+
+.forge-debugbar-route-error {
+    color: #dc3545;
+    font-weight: bold;
+}
+
+.forge-debugbar-route-list {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.forge-debugbar-route-item {
+    padding: 12px 15px;
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    background-color: #fff;
+    box-shadow: 0 1px 1px rgba(0, 0, 0, 0.05);
+}
+
+.forge-debugbar-route-main-info {
+    display: flex;
+    align-items: baseline;
+    margin-bottom: 6px;
+}
+
+.forge-debugbar-route-method {
+    display: inline-block;
+    padding: 4px 8px;
+    border-radius: var(--radius);
+    font-size: 0.8em;
+    font-weight: bold;
+    color: white;
+    text-align: center;
+    margin-right: 8px; /* Space between method and uri */
+    text-transform: uppercase;
+}
+
+.forge-debugbar-route-method.method-get {
+    background-color: #28a745; /* Green for GET */
+}
+
+.forge-debugbar-route-method.method-post {
+    background-color: #007bff; /* Blue for POST */
+}
+
+.forge-debugbar-route-method.method-put {
+    background-color: #ffc107; /* Yellow for PUT */
+    color: black;
+}
+
+.forge-debugbar-route-method.method-delete {
+    background-color: #dc3545; /* Red for DELETE */
+}
+
+.forge-debugbar-route-method.method-patch {
+    background-color: #6f42c1; /* Indigo for PATCH */
+}
+
+.forge-debugbar-route-method.method-options {
+    background-color: #6c757d; /* Gray for OPTIONS */
+}
+
+.forge-debugbar-route-method.method-head {
+    background-color: #17a2b8; /* Info color for HEAD */
+}
+
+.forge-debugbar-route-uri {
+    font-weight: bold;
+    color: var(--primary);
+    font-size: 0.95em;
+}
+
+.forge-debugbar-route-handler {
+    font-size: 0.9em;
+    color: var(--text-light);
+    word-break: break-all;
+}
+
+.forge-debugbar-current-route-table {
+    padding: 0;
+    font-size: 0.93rem;
+}
+
+.forge-debugbar-route-row {
+    display: flex;
+    padding: 8px 0;
+    border-bottom: 1px dotted var(--border);
+    align-items: flex-start;
+}
+
+.forge-debugbar-route-row:last-child {
+    border-bottom: none;
+}
+
+.forge-debugbar-route-label {
+    width: 100px;
+    margin-right: 20px;
+    font-weight: 300;
+    color: var(--primary);
+    padding-top: 4px;
+    box-sizing: border-box;
+    flex-shrink: 0;
+}
+
+
+.forge-debugbar-route-value {
+    flex-grow: 1;
+}
+
+.forge-debugbar-route-uri-value {
+    font-weight: bold;
+    color: var(--primary);
+    font-size: 0.90em;
+    margin-left: 4px;
+}
+
+.forge-debugbar-route-method {
+    margin-right: 0;
+    margin-left: 0;
+}
+
+.forge-debugbar-route-middleware-list {
+    padding-left: 0;
+    list-style-type: none;
+}
+
+.forge-debugbar-route-middleware-item {
+    color: var(--text-light);
+    margin-bottom: 2px;
+    font-size: 0.9em;
+}
+
+.forge-debugbar-route-handler-value,
+.forge-debugbar-route-file-value,
+.forge-debugbar-route-prefix-value,
+.forge-debugbar-route-namespace-value,
+.forge-debugbar-route-where-value {
+    color: var(--text-light);
+    font-size: 0.9em;
+    word-break: break-word;
+}
+
+.debugbar-views-list {
+    list-style-type: none;
+    padding-left: 0;
+}
+
+.debugbar-view-item {
+    margin-bottom: 0.5em;
+    padding-bottom: 0.5em;
+    border-bottom: 1px dotted #ddd;
+}
+
+.debugbar-view-data-list,
+.debugbar-view-data-sublist {
+    list-style-type: none;
+    padding-left: 1em;
+}
+
+.debugbar-view-data-item,
+.debugbar-view-data-subitem {
+    font-size: 0.9em;
+    color: #555;
+    margin-bottom: 0.2em;
+}
+
+.debugbar-view-data-subitem {
+    margin-left: 1em;
+}
+
+
+.debugbar-view-data {
+    background-color: #f9f9f9;
+    padding: 0.5em;
+    border: 1px solid #eee;
+    font-size: 0.9em;
+    white-space: pre-wrap;
+}
+.debugbar-view-data-list {
+    list-style-type: none;
+    padding-left: 1em;
+}
+
+.debugbar-view-data-list li {
+    font-size: 0.9em;
+    color: #555;
+    margin-bottom: 0.2em;
+}
+.debugbar-request-list {
+    list-style-type: none;
+    padding-left: 0;
+}
+
+.debugbar-request-item {
+    margin-bottom: 0.5em;
+    padding-bottom: 0.5em;
+    border-bottom: 1px dotted #ddd;
+}
+
+.debugbar-request-headers-list,
+.debugbar-request-cookies-list {
+    list-style-type: none;
+    padding-left: 1em;
+}
+
+.debugbar-request-header-item,
+.debugbar-request-cookie-item {
+    font-size: 0.9em;
+    color: #555;
+    margin-bottom: 0.2em;
+}
+
+.debugbar-request-query,
+.debugbar-request-body,
+.debugbar-request-files {
+    background-color: #f9f9f9;
+    padding: 0.5em;
+    border: 1px solid #eee;
+    font-size: 0.9em;
+    white-space: pre-wrap;
+}
+.debugbar-session-list {
+    list-style-type: none;
+    padding-left: 0;
+}
+
+.debugbar-session-item {
+    margin-bottom: 0.5em;
+    padding-bottom: 0.5em;
+    border-bottom: 1px dotted #ddd;
+    font-weight: 300;
+}
+
+.debugbar-exceptions-list {
+    list-style-type: none;
+    padding-left: 0;
+    font-weight: 300;
+}
+
+.debugbar-exception-item {
+    margin-bottom: 0.5em;
+    padding-bottom: 0.5em;
+    border-bottom: 1px dotted #ddd;
+}
+
+.debugbar-exception-trace-list {
+    list-style-type: none;
+    padding-left: 1em;
+}
+
+.debugbar-exception-trace-item {
+    font-size: 0.9em;
+    color: #555;
+    margin-bottom: 0.2em;
+    font-weight: 300;
+}
+
+.forge-debugbar-tab-count {
+    background-color: var(--primary);
+    color: white;
+    padding: 0.2em 0.6em;
+    border-radius: 1em;
+    font-size: 0.7em;
+    margin-left: 0.5em;
+    font-weight: bold;
+}
+
+.forge-debugbar-query-entry {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 10px;
+    padding: 10px;
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    background-color: #fff;
+    box-shadow: 0 1px 1px rgba(0, 0, 0, 0.05);
+    position: relative;
+}
+
+.forge-debugbar-query-fast {
+    background-color: #f0f9f4;
+}
+
+.forge-debugbar-query-medium {
+    background-color: #fff9f0;
+}
+
+.forge-debugbar-query-slow {
+    background-color: #fff0f0;
+    border: 1px solid #e0b4b4;
+    box-shadow: 0 1px 2px rgba(224, 180, 180, 0.2);
+}
+
+.forge-debugbar-query-main-info {
+    flex-grow: 1;
+    margin-right: 15px;
+    font-weight: 300;
+}
+
+.forge-debugbar-query-secondary-info {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 8px;
+    margin-left: auto;
+    text-align: right;
+    font-size: 0.85em;
+    color: var(--text-light);
+}
+
+.forge-debugbar-info-item {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    line-height: 1;
+}
+
+.forge-debugbar-icon {
+    width: 1em;
+    height: 1em;
+    vertical-align: middle;
+    stroke: var(--text-light);
+}
+
+.forge-debugbar-query-index {
+    font-weight: bold;
+    margin-right: 10px;
+    color: var(--primary);
+}
+
+.forge-debugbar-query-details {
+    flex-grow: 1;
+}
+
+.forge-debugbar-query-sql {
+    font-weight: bold;
+    color: var(--primary);
+}
+
+.forge-debugbar-query-bindings {
+    color: var(--text-light);
+}
+
+.forge-debugbar-query-time {
+    color: var(--primary);
+}
+
+.forge-debugbar-memory-list {
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+}
+
+.forge-debugbar-memory-item {
+    display: flex;
+    justify-content: space-between;
+    padding: 8px 0;
+    border-bottom: 1px dotted var(--border);
+    font-size: 0.95em;
+    align-items: center; /* Vertically center label and value */
+}
+
+.forge-debugbar-memory-item:last-child {
+    border-bottom: none;
+}
+
+.forge-debugbar-memory-label {
+    font-weight: 500; /* Slightly bolder than 300 */
+    color: var(--primary);
+    flex-shrink: 0;
+    margin-right: 20px;
+}
+
+.forge-debugbar-memory-value {
+    font-weight: bold;
+    color: var(--text-light);
+    text-align: right;
+    flex-grow: 1;
+}
+
+.forge-debugbar-memory-peak {
+    color: #dc3545;
+}
+
+.usage-bar-item .forge-debugbar-memory-value {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.forge-debugbar-memory-bar {
+    flex-grow: 1;
+    height: 10px;
+    background-color: var(--bg-light);
+    border-radius: 5px;
+    overflow: hidden;
+    max-width: 250px;
+}
+
+.forge-debugbar-memory-bar-fill {
+    height: 100%;
+    transition: width 0.3s ease-in-out;
+    border-radius: 5px;
+}
+
+.forge-debugbar-memory-bar-fill.success {
+    background-color: #28a745;
+}
+
+.forge-debugbar-memory-bar-fill.warning {
+    background-color: #ffc107;
+}
+
+.forge-debugbar-memory-bar-fill.danger {
+    background-color: #dc3545;
+}
+
+.forge-debugbar-memory-percent-text {
+    font-weight: bold;
+    color: var(--primary);
+    flex-shrink: 0;
+    width: 50px;
+    text-align: right;
+}
+
+.debugbar-session-summary {
+    padding: 10px 15px;
+    margin-bottom: 15px;
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    background-color: rgba(33, 41, 54, 0.05); /* Light primary background */
+    display: flex;
+    flex-direction: column;
+}
+
+.debugbar-session-row {
+    display: flex;
+    justify-content: space-between;
+    padding: 4px 0;
+    font-size: 0.9em;
+}
+
+.debugbar-session-label {
+    font-weight: 500;
+    color: var(--primary);
+    margin-right: 15px;
+}
+
+.debugbar-session-value {
+    font-weight: normal;
+    color: var(--text-light);
+    word-break: break-all;
+}
+
+.debugbar-session-id {
+    font-size: 0.8em;
+    font-family: monospace;
+}
+
+/* Main Data Section Title (The Toggle) */
+.debugbar-session-data-title {
+    font-size: 1.1em;
+    margin-top: 15px;
+    margin-bottom: 10px;
+    padding-bottom: 5px;
+    border-bottom: 2px solid var(--border);
+    color: var(--primary);
+    cursor: pointer; /* Suggests interactivity */
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.toggle-indicator {
+    font-size: 0.7em;
+    font-weight: bold;
+    transform: rotate(0deg); /* Default state: collapsed */
+    transition: transform 0.2s ease;
+}
+
+.debugbar-session-data-title.active .toggle-indicator {
+    transform: rotate(90deg); /* Expanded state */
+}
+
+/* Collapsible Wrapper */
+.debugbar-session-data-wrapper.is-collapsed {
+    /* Assuming JS adds/removes this class for toggling */
+    display: none; 
+}
+
+/* Main List of Session Data (Top level keys inside 'data') */
+.debugbar-session-list {
+    list-style-type: none;
+    padding-left: 0;
+    margin: 0;
+}
+
+.debugbar-session-item {
+    margin-bottom: 0.5em;
+    padding: 8px 0; /* Increase padding for better separation */
+    border-bottom: 1px dotted #ddd;
+    font-weight: 300;
+}
+
+.debugbar-session-item strong {
+    font-weight: 600; /* Key name bold */
+    color: var(--primary);
+    display: inline-block;
+    min-width: 150px; /* Helps align values if keys are short */
+}
+
+/* Nested Lists (from debugbar_display_array) */
+.debugbar-session-sublist {
+    list-style-type: none;
+    padding-left: 0;
+    margin: 5px 0 0 0;
+}
+
+.debugbar-session-subitem {
+    font-size: 0.9em;
+    color: var(--text-light);
+    margin: 0;
+    padding: 2px 0;
+    line-height: 1.5;
+}
+
+.debugbar-session-subitem strong {
+    font-weight: 400; /* Sub-keys less bold */
+    color: var(--primary);
+}
+
+.array-indicator {
+    /* Style for the "Array (X items)" text */
+    font-style: italic;
+    color: #777;
+    font-weight: normal;
+}

@@ -1,0 +1,77 @@
+/* ===================================================================
+   Forge Design Tokens – variables.css
+   -------------------------------------------------------------------
+   • Everything derives from a single “base” scale
+   • Meaning‑first names (no t‑shirt sizes, no 50 shades of gray)
+   • Easy dark‑mode + theming hooks
+   =================================================================== */
+
+/* ---------- 1. Brand identity ------------------------------------ */
+:root {
+    --color-brand: #555; /* Forge charcoal */
+    --color-surface: #ffffff; /* cards / nav / form BGs      */
+    --color-bg: #fafafa; /* app background              */
+    --color-text: #181818; /* default foreground          */
+    --color-text-muted: #555; /* quieter text, borders       */
+
+    /* Functional colours */
+    --color-success: hsl(145 63% 40%);
+    --color-error: hsl(350 80% 50%);
+    --color-warning: hsl(45  100% 50%);
+    --color-info: hsl(200 90% 50%);
+
+    /* ---------- 2. Typography -------------------------------------- */
+    --font-base: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+    --font-heading: var(--font-base);
+
+    /* Scale → change ONE value to resize everything */
+    --scale: 1rem; /* 1 “unit” == body text size  */
+
+    --fs-body: var(--scale); /* 1.0 rem */
+    --fs-small: calc(var(--scale) * .875);
+    --fs-h6: calc(var(--scale) * 1.0);
+    --fs-h5: calc(var(--scale) * 1.15);
+    --fs-h4: calc(var(--scale) * 1.3);
+    --fs-h3: calc(var(--scale) * 1.45);
+    --fs-h2: calc(var(--scale) * 1.75);
+    --fs-h1: calc(var(--scale) * 2);
+
+    /* ---------- 3. Spacing & layout -------------------------------- */
+    --space-1: var(--scale); /* 1 unit  */
+    --space-2: calc(var(--scale) * 1.5); /* 1.5u    */
+    --space-3: calc(var(--scale) * 2); /* 2u      */
+    --space-4: calc(var(--scale) * 3); /* 3u      */
+
+    --radius: 4px;
+    --shadow: 0 2px 4px rgb(0 0 0 / .1);
+
+    /* Breakpoints (min‑width) */
+    --bp-sm: 576px;
+    --bp-md: 768px;
+    --bp-lg: 1024px;
+    --bp-xl: 1280px;
+}
+
+/* ---------- 4. Dark mode ----------------------------------------- */
+@media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+        --color-bg: #111;
+        --color-surface: #1b1b1b;
+        --color-text: #e5e5e5;
+        --color-text-muted: #9c9c9c;
+    }
+}
+
+/* Manual override via data‑theme="dark" / "light" */
+[data-theme="dark"] {
+    --color-bg: #111;
+    --color-surface: #1b1b1b;
+    --color-text: #e5e5e5;
+    --color-text-muted: #9c9c9c;
+}
+[data-theme="light"] {
+    --color-bg: #fafafa;
+    --color-surface: #ffffff;
+    --color-text: #181818;
+    --color-text-muted: #555;
+}

@@ -1,0 +1,17 @@
+# Deny all access to the root directory
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+
+    # Deny direct access to all files except the public directory
+    RewriteCond %{REQUEST_URI} !^/public/
+    RewriteRule ^ - [F,L]
+</IfModule>
+
+# Deny access to index files in the root directory
+<FilesMatch "^(index\.php|index\.html|index\.htm)$">
+    Require all denied
+</FilesMatch>
+
+<Files ".env">
+    Require all denied
+</Files>

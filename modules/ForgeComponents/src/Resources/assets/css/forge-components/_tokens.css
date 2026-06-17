@@ -1,0 +1,143 @@
+:root {
+  --fc-white: #fff;
+  --fc-black: #000;
+
+  /* Brand */
+  --fc-orange-50: #FFF7F0;
+  --fc-orange-100: #FFF4EA;
+  --fc-orange-200: #FBD2B0;
+  --fc-orange-300: #FBAD70;
+  --fc-orange-400: #FC8724;
+  --fc-orange-500: #FC7205;
+  --fc-orange-600: #E56600;
+
+  /* Neutrals */
+  --fc-gray-50: #F9FAFB;
+  --fc-gray-100: #F3F4F6;
+  --fc-gray-200: #E5E7EB;
+  --fc-gray-300: #D1D5DB;
+  --fc-gray-400: #9CA3AF;
+  --fc-gray-500: #6B7280;
+  --fc-gray-600: #4B5563;
+  --fc-gray-700: #374151;
+  --fc-gray-800: #1F2937;
+  --fc-gray-900: #111827;
+
+  /* Status */
+  --fc-red-50: #FEF2F2;
+  --fc-red-100: #FEE2E2;
+  --fc-red-200: #FECACA;
+  --fc-red-500: #EF4444;
+  --fc-red-600: #DC2626;
+  --fc-red-700: #B91C1C;
+  --fc-green-50: #F0FDF4;
+  --fc-green-100: #DCFCE7;
+  --fc-green-200: #BBF7D0;
+  --fc-green-500: #22C55E;
+  --fc-green-600: #16A34A;
+  --fc-blue-50: #EFF6FF;
+  --fc-blue-100: #DBEAFE;
+  --fc-blue-200: #BFDBFE;
+  --fc-blue-500: #3B82F6;
+  --fc-blue-600: #2563EB;
+  --fc-yellow-50: #FFFBEB;
+  --fc-yellow-100: #FEF3C7;
+  --fc-yellow-500: #F59E0B;
+  --fc-yellow-600: #D97706;
+
+  /* Typography */
+  --fc-font-sans: "Inter", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  --fc-font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  --fc-font-size-xs: 0.75rem;
+  --fc-font-size-sm: 0.875rem;
+  --fc-font-size-base: 1rem;
+  --fc-font-size-lg: 1.125rem;
+  --fc-font-size-xl: 1.25rem;
+  --fc-font-size-2xl: 1.5rem;
+  --fc-font-size-3xl: 1.875rem;
+  --fc-leading-tight: 1.25;
+  --fc-leading-normal: 1.5;
+  --fc-leading-relaxed: 1.625;
+
+  /* Spacing (8px scale) */
+  --fc-spacing-0-5: 0.125rem;
+  --fc-spacing-1: 0.25rem;
+  --fc-spacing-1-5: 0.375rem;
+  --fc-spacing-2: 0.5rem;
+  --fc-spacing-3: 0.75rem;
+  --fc-spacing-4: 1rem;
+  --fc-spacing-5: 1.25rem;
+  --fc-spacing-6: 1.5rem;
+  --fc-spacing-8: 2rem;
+  --fc-spacing-10: 2.5rem;
+  --fc-spacing-12: 3rem;
+  --fc-spacing-16: 4rem;
+
+  /* Radius */
+  --fc-radius-sm: 0.375rem;
+  --fc-radius-md: 0.5rem;
+  --fc-radius-lg: 0.625rem;
+  --fc-radius-xl: 0.75rem;
+  --fc-radius-2xl: 1rem;
+  --fc-radius-3xl: 1.25rem;
+  --fc-radius-full: 9999px;
+
+  /* Shadows */
+  --fc-shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.04);
+  --fc-shadow-md: 0 4px 12px rgba(0, 0, 0, 0.06);
+  --fc-shadow-lg: 0 12px 24px rgba(0, 0, 0, 0.08);
+  --fc-shadow-xl: 0 16px 32px rgba(0, 0, 0, 0.1);
+
+  /* Transitions */
+  --fc-transition: 150ms ease;
+  --fc-transition-slow: 300ms ease;
+
+  /* Brand tokens */
+  --fc-color-primary: #FC7205;
+  --fc-color-primary-hover: #FC8724;
+  --fc-color-primary-light: #FFF4EA;
+
+  /* Text */
+  --fc-color-text: #111827;
+  --fc-color-text-secondary: #6B7280;
+  --fc-color-text-muted: #9CA3AF;
+  --fc-color-text-disabled: #D1D5DB;
+
+  /* Backgrounds */
+  --fc-color-body: #FBFBFB;
+  --fc-color-surface: #FFFFFF;
+  --fc-color-sidebar: #FAFAFA;
+  --fc-color-hover: #FFF7F0;
+  --fc-color-selected: #FFF4EA;
+
+  /* Borders */
+  --fc-color-border: #E5E7EB;
+  --fc-color-border-light: #F1F3F5;
+  --fc-color-border-subtle: #F5F5F5;
+
+  /* Status */
+  --fc-color-success: #22C55E;
+  --fc-color-success-light: #F0FDF4;
+  --fc-color-warning: #F59E0B;
+  --fc-color-danger: #EF4444;
+  --fc-color-info: #3B82F6;
+
+  /* Component compat */
+  --fc-color-primary-text: var(--fc-white);
+  --fc-color-primary-active: var(--fc-orange-600);
+  --fc-color-secondary: var(--fc-gray-100);
+  --fc-color-secondary-hover: var(--fc-gray-200);
+  --fc-color-secondary-text: var(--fc-gray-700);
+  --fc-color-danger-hover: var(--fc-red-700);
+  --fc-color-danger-text: var(--fc-white);
+  --fc-color-text-label: var(--fc-gray-700);
+
+  /* Input */
+  --fc-color-input-bg: var(--fc-white);
+  --fc-color-input-border: var(--fc-gray-200);
+  --fc-color-input-focus: var(--fc-orange-500);
+  --fc-color-input-error: var(--fc-red-500);
+  --fc-color-input-error-bg: var(--fc-red-50);
+  --fc-color-disabled-bg: var(--fc-gray-50);
+  --fc-color-disabled-text: var(--fc-gray-400);
+}

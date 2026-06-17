@@ -1,0 +1,146 @@
+/* ==========================================================================
+   Forge Forms – form.css
+   --------------------------------------------------------------------------
+   – Works with reset.css + variables.css
+   – Pure HTML5 validation (no JS needed)
+   – Uses :focus‑visible for keyboard users
+   – Provides error state utility classes the server can toggle
+   ========================================================================== */
+
+/* 1. Fieldset & Legend ---------------------------------------------------- */
+fieldset {
+    border: none;
+    padding: 0;
+    margin: 0 0 var(--space-md);
+}
+legend {
+    font-size: var(--fs-large);
+    font-weight: 700;
+    margin-bottom: var(--space-sm);
+}
+
+/* 2. Form controls -------------------------------------------------------- */
+input,
+select,
+textarea,
+button {
+    font: inherit;
+    color: var(--color-text);
+}
+
+input,
+select,
+textarea {
+    width: 100%;
+    padding: var(--space-xs) var(--space-sm);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-base);
+    background: var(--color-surface);
+    transition: border-color .15s ease;
+}
+
+/* on focus—from keyboard only */
+input:focus-visible,
+select:focus-visible,
+textarea:focus-visible {
+    outline: 2px solid var(--color-brand);
+    outline-offset: 2px;
+    border-color: var(--color-brand);
+}
+
+/* disabled / readonly */
+input[disabled],
+select[disabled],
+textarea[disabled] {
+    opacity: .6;
+    cursor: not-allowed;
+}
+
+/* 3. Labels & help text --------------------------------------------------- */
+label {
+    display: inline-block;
+    margin-bottom: var(--space-xxs);
+    font-weight: 600;
+}
+
+.form-help {
+    font-size: var(--fs-small);
+    color: var(--color-muted);
+    margin-top: var(--space-xxs);
+}
+
+/* 4. Error state (server‑side or :invalid) -------------------------------- */
+.is-invalid,
+:invalid:not(:placeholder-shown) {
+    border-color: var(--color-error);
+}
+.error-msg {
+    display: none;
+    color: var(--color-error);
+    font-size: var(--fs-small);
+    margin-top: var(--space-xxs);
+}
+.is-invalid + .error-msg,
+:invalid:not(:placeholder-shown) + .error-msg {
+    display: block;
+}
+
+/* 5. Checkbox & radio ----------------------------------------------------- */
+input[type="checkbox"],
+input[type="radio"] {
+    width: auto;
+    accent-color: var(--color-brand); /* modern browsers */
+    margin-right: var(--space-xxs);
+}
+
+/* 6. Buttons -------------------------------------------------------------- */
+button,
+input[type="submit"] {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-xxs);
+    padding: var(--space-xs) var(--space-md);
+    border: none;
+    border-radius: var(--radius-base);
+    background: var(--color-brand);
+    color: var(--color-surface);
+    font-weight: 600;
+    cursor: pointer;
+    transition: background .15s ease;
+}
+button:hover,
+button:focus-visible {
+    background: var(--color-brand-dark);
+}
+button[disabled] {
+    opacity: .6;
+    cursor: not-allowed;
+}
+
+/* 7. Field grouping helpers ---------------------------------------------- */
+.form-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-sm);
+}
+.form-row > * {
+    flex: 1 1 16rem;
+}
+/* responsive columns */
+
+/* 8. File input tweak ----------------------------------------------------- */
+input[type="file"] {
+    padding: var(--space-xs) 0;
+}
+
+/* 9. Range slider (uses tokens) ------------------------------------------ */
+input[type="range"] {
+    width: 100%;
+    accent-color: var(--color-brand);
+}
+
+/* 10. Autofill fix (Safari/Chrome) --------------------------------------- */
+input:-webkit-autofill {
+    box-shadow: 0 0 0 1000px var(--color-surface) inset;
+    -webkit-text-fill-color: var(--color-text);
+}
