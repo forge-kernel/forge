@@ -34,7 +34,7 @@ use Forge\Core\Module\Attributes\Structure;
 
 
 #[Service]
-#[Module(name: 'ForgeLanguage', version: '0.2.0', description: 'Multi language support to extend Forge Kernel', order: 40, author: 'Your Name', license: 'MIT', tags: [])]
+#[Module(name: 'ForgeLanguage', version: '0.2.1', description: 'Multi language support to extend Forge Kernel', order: 40, author: 'Your Name', license: 'MIT', tags: [])]
 #[Compatibility(framework: '>=0.1.0', php: '>=8.3')]
 #[Repository(type: 'git', url: 'https://github.com/forge-kernel/kernel-module-registry')]
 #[ConfigDefaults(defaults: [
