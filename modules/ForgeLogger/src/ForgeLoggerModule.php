@@ -19,7 +19,7 @@ use Forge\CLI\Traits\OutputHelper;
 #[Service]
 #[Module(
     name: 'ForgeLogger',
-    version: '0.5.0',
+    version: '0.5.1',
     description: 'A logger by Forge.',
     order: 90,
     author: 'Forge Team',
@@ -41,7 +41,7 @@ use Forge\CLI\Traits\OutputHelper;
     'seeders' => 'src/Database/Seeders',
     'middlewares' => 'src/Middlewares',
 ])]
-#[Provides(ForgeLoggerInterface::class, version: '0.5.0')]
+#[Provides(ForgeLoggerInterface::class, version: '0.5.1')]
 #[Compatibility(framework: '>=0.1.0', php: '>=8.3')]
 #[Repository(type: 'git', url: 'https://github.com/forge-kernel/kernel-module-registry')]
 #[ConfigDefaults(defaults: [
