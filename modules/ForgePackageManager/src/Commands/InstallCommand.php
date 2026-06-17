@@ -22,7 +22,7 @@ use Throwable;
 final class InstallCommand extends Command
 {
     use Wizard;
-    
+
     public function __construct(private readonly PackageManagerService $packageManagerService)
     {
     }
@@ -34,10 +34,11 @@ final class InstallCommand extends Command
         try {
             $this->packageManagerService->installFromLock();
             $this->success("Modules installed successfully");
-            
+
             $this->line('');
-            $this->packageManagerService->scaffoldAppStructure();
-            
+            // TODO: refactor scaffold app structure
+            //$this->packageManagerService->scaffoldAppStructure();
+
             return 0;
         } catch (Throwable $e) {
             $this->error("Error: " . $e->getMessage());
