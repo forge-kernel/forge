@@ -18,7 +18,7 @@ use Forge\Core\Module\Attributes\Repository;
 
 #[Module(
     name: 'ForgeStorage',
-    version: '1.3.0',
+    version: '1.3.1',
     description: 'Simple file upload storage module with multiple provider support',
     author: 'Forge Team',
     license: 'MIT',
