@@ -5,12 +5,12 @@ return [
         'url' => 'https://github.com/forge-kernel/kernel-module-registry',
         'branch' => 'main',
         'private' => false,
-        'path' => BASE_PATH . '/modules-registry',
+        'path' => BASE_PATH . '/kernel-module-registry',
     ],
     'starter' => [
         'url' => 'https://github.com/forge-kernel/starter-template-registry',
         'branch' => 'main',
         'private' => false,
-        'path' => BASE_PATH . '/starter-registry',
+        'path' => BASE_PATH . '/starter-template-registry',
     ],
 ];
