@@ -11,6 +11,7 @@ use App\Modules\ForgeRouter\Events\RouterHookManager;
 use App\Modules\ForgeRouter\Events\RouterHookName;
 use App\Modules\ForgeRouter\Http\Kernel;
 use App\Modules\ForgeRouter\Http\Request;
+use Forge\Core\Debug\Metrics;
 use Forge\Core\DI\Container;
 use Forge\Core\Module\Attributes\ConfigDefaults;
 use Forge\Core\Module\Attributes\LifecycleHook;
@@ -25,7 +26,7 @@ use Throwable;
 #[Module(name: "ForgeRouter",
     description: "Forge Router and Http",
     author: "Forge Team",
-    version: '1.0.3',
+    version: '1.0.4',
     type: "core",
     license: "MIT",
     tags: ["router", "http"],
@@ -76,27 +77,44 @@ final class ForgeRouterModule
     #[LifecycleHook(hook: LifecycleHookName::APP_BOOTED)]
     public function boot(): void
     {
+        Metrics::start("router_hook_discover");
         RouterHookManager::discover();
+        Metrics::stop("router_hook_discover");
 
         $container = Container::getInstance();
 
+        Metrics::start("router_request_create");
         $request = Request::createFromGlobals();
         $container->setInstance(Request::class, $request);
+        Metrics::stop("router_request_create");
 
+        Metrics::start("router_before_request_hook");
         RouterHookManager::triggerHook(RouterHookName::BEFORE_REQUEST, $request);
+        Metrics::stop("router_before_request_hook");
 
         try {
+            Metrics::start("router_setup");
             $router = RouterSetup::setup($container);
+            Metrics::stop("router_setup");
+
             $kernel = new Kernel($router);
             self::$kernel = $kernel;
 
+            Metrics::start("router_kernel_handler");
             $response = $kernel->handler($request);
+            Metrics::stop("router_kernel_handler");
 
+            Metrics::start("router_after_request_hook");
             RouterHookManager::triggerHook(RouterHookName::AFTER_REQUEST, $request, $response);
+            Metrics::stop("router_after_request_hook");
 
+            Metrics::start("router_response_send");
             $response->send();
+            Metrics::stop("router_response_send");
 
+            Metrics::start("router_after_response_hook");
             RouterHookManager::triggerHook(RouterHookName::AFTER_RESPONSE, $request, $response);
+            Metrics::stop("router_after_response_hook");
         } catch (Throwable $e) {
             self::handleException($e);
         }
