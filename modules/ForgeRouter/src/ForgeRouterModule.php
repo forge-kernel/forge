@@ -26,7 +26,7 @@ use Throwable;
 #[Module(name: "ForgeRouter",
     description: "Forge Router and Http",
     author: "Forge Team",
-    version: '1.0.4',
+    version: '1.0.5',
     type: "core",
     license: "MIT",
     tags: ["router", "http"],
@@ -87,10 +87,6 @@ final class ForgeRouterModule
         $request = Request::createFromGlobals();
         $container->setInstance(Request::class, $request);
         Metrics::stop("router_request_create");
-
-        Metrics::start("router_before_request_hook");
-        RouterHookManager::triggerHook(RouterHookName::BEFORE_REQUEST, $request);
-        Metrics::stop("router_before_request_hook");
 
         try {
             Metrics::start("router_setup");
