@@ -9,7 +9,7 @@ use Forge\Core\DI\Container;
 use Forge\Core\Module\Attributes\Compatibility;
 use Forge\Core\Module\Attributes\ConfigDefaults;
 use Forge\Core\Module\Attributes\Module;
-use Forge\Core\Module\Attributes\Provides;
+use Forge\Core\Module\Attributes\Structure;
 use Forge\Core\Module\Attributes\Repository;
 use App\Modules\ForgeLogger\Contracts\ForgeLoggerInterface;
 use App\Modules\ForgeLogger\Services\ForgeLoggerService;
@@ -19,7 +19,7 @@ use Forge\CLI\Traits\OutputHelper;
 #[Service]
 #[Module(
     name: 'ForgeLogger',
-    version: '0.5.1',
+    version: '0.5.2',
     description: 'A logger by Forge.',
     order: 90,
     author: 'Forge Team',
@@ -41,7 +41,6 @@ use Forge\CLI\Traits\OutputHelper;
     'seeders' => 'src/Database/Seeders',
     'middlewares' => 'src/Middlewares',
 ])]
-#[Provides(ForgeLoggerInterface::class, version: '0.5.1')]
 #[Compatibility(framework: '>=0.1.0', php: '>=8.3')]
 #[Repository(type: 'git', url: 'https://github.com/forge-kernel/kernel-module-registry')]
 #[ConfigDefaults(defaults: [
