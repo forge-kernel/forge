@@ -20,28 +20,20 @@ use App\Modules\ForgeComponents\Definitions\Admin\IconDefinition;
 use App\Modules\ForgeComponents\Definitions\Admin\UserDropdownDefinition;
 use App\Modules\ForgeComponents\Definitions\Admin\DropdownItemDefinition;
 
-$sidebar = new SidebarDefinition(
-    brand: 'ForgeHub',
-    tagline: 'Business Management Platform',
+$sidebar = $layoutProps['sidebar'] ?? new SidebarDefinition(
+    brand: 'Admin',
+    brandHref: '/admin',
     groups: [
         new NavGroupDefinition(items: [
-            new NavItemDefinition(label: 'Dashboard', href: '/dashboard', icon: new IconDefinition(name: 'home'), active: is_link_active('/dashboard')),
-            new NavItemDefinition(label: 'Products', href: '/hub/products', icon: new IconDefinition(name: 'cube'), active: is_link_active('/products')),
-            new NavItemDefinition(label: 'Restock List', href: '/hub/restock', icon: new IconDefinition(name: 'arrow-trending-up')),
-            new NavItemDefinition(label: 'Finance', href: '/hub/finance', icon: new IconDefinition(name: 'currency-dollar')),
-            new NavItemDefinition(label: 'Contacts', href: '/hub/contacts', icon: new IconDefinition(name: 'users')),
-            new NavItemDefinition(label: 'Reports', href: '/hub/reports', icon: new IconDefinition(name: 'chart-bar')),
-            new NavItemDefinition(label: 'Settings', href: '/hub/settings', icon: new IconDefinition(name: 'cog-6-tooth')),
+            new NavItemDefinition(label: 'Dashboard', href: '/admin', icon: new IconDefinition(name: 'home'), active: is_link_active('/admin')),
         ]),
     ],
 );
 
-$user = new UserDropdownDefinition(
-    name: 'John Doe',
-    email: 'john@example.com',
+$user = $layoutProps['userDropdown'] ?? new UserDropdownDefinition(
+    name: 'User',
+    email: '',
     items: [
-        new DropdownItemDefinition(label: 'Profile', icon: new IconDefinition(name: 'user'), href: '/hub/profile'),
-        new DropdownItemDefinition(label: 'Settings', icon: new IconDefinition(name: 'cog-6-tooth'), href: '/hub/settings'),
         new DropdownItemDefinition(divider: true),
         new DropdownItemDefinition(label: 'Logout', icon: new IconDefinition(name: 'arrow-right-on-rectangle'), href: '/auth/logout', method: 'POST'),
     ],
@@ -56,12 +48,12 @@ $user = new UserDropdownDefinition(
     ]) ?>
 
     <?php if (isset($layoutSections['breadcrumbs'])): ?>
-                  <div class="fc-admin__breadcrumbs">
-                    <?= raw($layoutSections['breadcrumbs']) ?>
-                  </div>
+                      <div class="fc-admin__breadcrumbs">
+                        <?= raw($layoutSections['breadcrumbs']) ?>
+                      </div>
     <?php endif; ?>
 
-    <main class="fc-admin__content fc-admin__content--compact">
+    <main class="fc-admin__content fc-admin__content">
       <?= $content ?>
     </main>
   </div>

@@ -8,6 +8,7 @@ final readonly class SidebarDefinition
     /** @param NavGroupDefinition[] $groups */
     public function __construct(
         public string $brand = '',
+        public string $brandHref = '/',
         public string $tagline = '',
         public string $logoUrl = '',
         public array $groups = [],

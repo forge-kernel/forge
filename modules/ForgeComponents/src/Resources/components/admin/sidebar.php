@@ -10,7 +10,7 @@ if ($props->brand) {
 
 ?>
 <aside id="fc-sidebar" class="fc-admin__sidebar">
-  <a href="/hub" class="fc-admin__sidebar-brand">
+  <a href="<?= e($props->brandHref) ?>" class="fc-admin__sidebar-brand">
     <?php if ($props->logoUrl): ?>
       <div class="fc-admin__sidebar-logo">
         <img src="<?= e($props->logoUrl) ?>" alt="<?= e($props->brand) ?>">

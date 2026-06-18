@@ -108,3 +108,18 @@ select.fc-input {
   background-size: 1.25rem;
   padding-right: 2.5rem;
 }
+
+/* Textarea */
+textarea.fc-input { height: auto; min-height: 5rem; padding: var(--fc-spacing-3); resize: vertical; line-height: var(--fc-leading-normal); }
+.fc-textarea { font-family: var(--fc-font-sans); }
+
+/* Checkbox group */
+.fc-checkbox-group { display: flex; align-items: flex-start; gap: var(--fc-spacing-2); }
+.fc-checkbox-label { font-family: var(--fc-font-sans); font-size: var(--fc-font-size-sm); color: var(--fc-gray-600); line-height: var(--fc-leading-normal); cursor: pointer; }
+
+/* Link variants */
+.fc-link--default { color: var(--fc-color-primary); }
+.fc-link--muted { color: var(--fc-color-text-secondary); }
+.fc-link--muted:hover { color: var(--fc-color-text); }
+.fc-link--sm { font-size: var(--fc-font-size-sm); }
+.fc-link--md { font-size: var(--fc-font-size-base); }

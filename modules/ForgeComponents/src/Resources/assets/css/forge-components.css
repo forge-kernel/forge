@@ -6,6 +6,7 @@
  *   fc.components  — button, input, checkbox, badge, card, alert
  *   fc.layouts     — stack, split, center, sidebar primitives
  *   fc.auth        — auth-split, auth-center, auth-cover page layouts
+ *   fc.public      — navbar, footer, public page layout
  *
  * Source files in forge-components/_*.css
  */
@@ -15,3 +16,4 @@
 @import url("forge-components/_components.css") layer(fc.components);
 @import url("forge-components/_layouts.css") layer(fc.layouts);
 @import url("forge-components/_auth.css") layer(fc.auth);
+@import url("forge-components/_public.css") layer(fc.public);

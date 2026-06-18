@@ -1,0 +1,83 @@
+/* ForgeLanding — public landing page styles */
+
+.fc-landing {
+  min-height: calc(100vh - 3.5rem);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--fc-spacing-12) var(--fc-spacing-6);
+  background: var(--fc-color-body);
+}
+
+.fc-landing__container {
+  max-width: 64rem;
+  margin: 0 auto;
+  width: 100%;
+}
+
+.fc-landing__flash {
+  margin-bottom: var(--fc-spacing-6);
+}
+
+.fc-landing__hero {
+  text-align: center;
+  margin-bottom: var(--fc-spacing-16);
+}
+
+.fc-landing__hero-badge {
+  display: flex;
+  justify-content: center;
+  gap: var(--fc-spacing-2);
+  margin-bottom: var(--fc-spacing-6);
+}
+
+.fc-landing__hero-title {
+  font-family: var(--fc-font-sans);
+  font-size: clamp(2rem, 5vw, 3rem);
+  font-weight: 800;
+  line-height: 1.1;
+  color: var(--fc-color-text);
+  margin: 0 0 var(--fc-spacing-6);
+}
+
+.fc-landing__hero-highlight {
+  color: var(--fc-color-primary);
+}
+
+.fc-landing__hero-subtitle {
+  font-family: var(--fc-font-sans);
+  font-size: var(--fc-font-size-lg);
+  line-height: var(--fc-leading-relaxed);
+  color: var(--fc-color-text-secondary);
+  max-width: 36rem;
+  margin: 0 auto var(--fc-spacing-8);
+}
+
+.fc-landing__hero-actions {
+  display: flex;
+  justify-content: center;
+  gap: var(--fc-spacing-3);
+  flex-wrap: wrap;
+}
+
+.fc-landing__features {
+  margin-top: var(--fc-spacing-12);
+}
+
+.fc-landing__feature-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--fc-spacing-4);
+}
+
+@media (min-width: 640px) {
+  .fc-landing__feature-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (min-width: 1024px) {
+  .fc-landing__feature-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}

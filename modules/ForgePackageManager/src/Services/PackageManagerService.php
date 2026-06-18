@@ -17,6 +17,7 @@ use Forge\Core\Module\Attributes\PostUninstall;
 use Forge\Core\Module\Attributes\Provides;
 use Forge\Core\Module\Attributes\Requires;
 use Forge\Traits\StringHelper;
+use Forge\Traits\NamespaceHelper;
 use ReflectionClass;
 use ReflectionException;
 use ZipArchive;
@@ -28,6 +29,7 @@ final class PackageManagerService implements PackageManagerInterface
 {
     use OutputHelper;
     use StringHelper;
+    use NamespaceHelper;
 
     private const string FRAMEWORK_MODULE_NAME = "forge-kernel/kernel";
     private const string PACKAGE_MANAGER_MODULE_NAME = "forge-package-manager";
@@ -376,22 +378,28 @@ final class PackageManagerService implements PackageManagerInterface
             }
 
             $this->updateForgeJson($moduleName, $versionToInstall);
-            $executedCommands = $this->runPostInstallAttributes(
+
+            $moduleSrcPath = $moduleInstallPath . '/src';
+            if (is_dir($moduleSrcPath)) {
+                \Forge\Core\Autoloader::addPath(
+                    'App\\Modules\\' . $moduleInstallFolderName . '\\',
+                    $moduleSrcPath,
+                );
+            }
+
+            $modulePascalName = $this->toPascalCase($moduleName);
+            $postInstallCommands = $this->detectPostInstallCommands(
                 $moduleInstallPath,
-                $this->toPascalCase($moduleName),
-                $registryName,
+                $modulePascalName,
             );
 
-            if (
-                !empty($executedCommands) &&
-                !$this->isSourceTrusted($registryName)
-            ) {
-                if ($this->promptTrustSource($registryName)) {
-                    $this->trustSource($registryName);
-                    $this->success(
-                        "Source '{$registryName}' has been trusted for future installations.",
-                    );
-                }
+            if (!empty($postInstallCommands)) {
+                $this->executePostInstallCommands(
+                    $postInstallCommands,
+                    $modulePascalName,
+                    $registryName,
+                    false,
+                );
             }
 
             $this->success(
@@ -504,6 +512,11 @@ final class PackageManagerService implements PackageManagerInterface
     private function getModulesPath(): string
     {
         return $this->modulesPath;
+    }
+
+    private function getStagingPath(string $moduleFolderName): string
+    {
+        return $this->cachePath . 'staging' . \DIRECTORY_SEPARATOR . $moduleFolderName;
     }
 
     private function installFrameworkModule(?string $version = null): void
@@ -726,141 +739,255 @@ final class PackageManagerService implements PackageManagerInterface
         return rmdir($dir);
     }
 
+    private function clearAutoloaderCache(): void
+    {
+        $cacheFile = \defined('BASE_PATH')
+            ? BASE_PATH . '/storage/framework/cache/class_file_map.php'
+            : null;
+        if ($cacheFile !== null && file_exists($cacheFile)) {
+            @unlink($cacheFile);
+        }
+    }
+
     /**
-     * @throws ReflectionException
+     * Find the module class ReflectionClass by scanning src/ for the #[Module] attribute.
+     *
+     * Uses the tokenizer (getClassNameFromFile) to extract FQCNs without executing PHP.
+     * Only require_once's the single module class file if the class isn't already loaded.
+     *
+     * @return ReflectionClass|null
      */
-    private function runPostInstallAttributes(
-        string $moduleInstallPath,
-        string $moduleName,
-        string $registryName,
-    ): array {
-        $executedCommands = [];
-        $moduleSrc = glob($moduleInstallPath . "/**/*.php");
-        if (!$moduleSrc) {
-            $this->warning(
-                "No PHP files found in module {$moduleName}, skipping PostInstall scanning.",
-            );
-            return $executedCommands;
+    private function findModuleReflection(string $modulePath, string $moduleName): ?ReflectionClass
+    {
+        $srcPath = $modulePath . '/src';
+        if (!is_dir($srcPath)) {
+            return null;
         }
 
-        foreach ($moduleSrc as $file) {
-            require_once $file;
-        }
+        $iterator = new \RecursiveIteratorIterator(
+            new \RecursiveDirectoryIterator($srcPath, \FilesystemIterator::SKIP_DOTS),
+        );
 
-        $foundModuleClass = false;
-
-        foreach (get_declared_classes() as $class) {
-            $ref = new ReflectionClass($class);
-            $moduleAttr = $ref->getAttributes(Module::class);
-
-            if (empty($moduleAttr)) {
+        foreach ($iterator as $file) {
+            if (!$file->isFile() || $file->getExtension() !== 'php') {
                 continue;
             }
 
-            $moduleInstance = $moduleAttr[0]->newInstance();
+            $filePath = $file->getRealPath();
+            $content = file_get_contents($filePath);
 
-            if ($moduleInstance->name === $moduleName) {
-                $foundModuleClass = true;
-                $postInstallAttrs = $ref->getAttributes(PostInstall::class);
+            if (!str_contains($content, '#[Module') && !str_contains($content, '@Attributes\\Module')) {
+                continue;
+            }
 
-                if (empty($postInstallAttrs)) {
-                    $this->info(
-                        "Module {$moduleName} has no PostInstall attributes defined.",
-                    );
-                    return $executedCommands;
+            $className = $this->getClassNameFromFile($filePath);
+            if ($className === null) {
+                continue;
+            }
+
+            if (!class_exists($className, false)) {
+                try {
+                    require_once $filePath;
+                } catch (\Throwable $e) {
+                    continue;
+                }
+            }
+
+            if (!class_exists($className)) {
+                continue;
+            }
+
+            try {
+                $ref = new ReflectionClass($className);
+                $moduleAttr = $ref->getAttributes(Module::class);
+                if (empty($moduleAttr)) {
+                    continue;
                 }
 
-                $commandCount = count($postInstallAttrs);
-                $isTrusted = $this->isSourceTrusted($registryName);
-
-                if (!$isTrusted) {
-                    $this->showPostInstallWarning(
-                        $moduleName,
-                        $registryName,
-                        $commandCount,
-                    );
-                } else {
-                    $this->info(
-                        "Source '{$registryName}' is trusted. Executing all PostInstall commands automatically.",
-                    );
+                $moduleInstance = $moduleAttr[0]->newInstance();
+                if ($moduleInstance->name === $moduleName) {
+                    return $ref;
                 }
-
-                $acceptAll = false;
-                $rejectAll = false;
-
-                foreach ($postInstallAttrs as $index => $attr) {
-                    if ($rejectAll) {
-                        $this->info(
-                            "Skipping command " .
-                            ($index + 1) .
-                            " of {$commandCount} (rejected all).",
-                        );
-                        continue;
-                    }
-
-                    /** @var PostInstall $instance */
-                    $instance = $attr->newInstance();
-                    $args = implode(" ", $instance->args);
-                    $command = "php forge.php {$instance->command} {$args}";
-
-                    if ($isTrusted || $acceptAll) {
-                        $shouldExecute = true;
-                    } else {
-                        $response = $this->confirmPostInstallCommand(
-                            $command,
-                            $moduleName,
-                            $registryName,
-                            $index + 1,
-                            $commandCount,
-                        );
-
-                        if ($response === "reject-all") {
-                            $rejectAll = true;
-                            $shouldExecute = false;
-                        } elseif ($response === "all") {
-                            $acceptAll = true;
-                            $shouldExecute = true;
-                        } else {
-                            $shouldExecute = $response === "yes";
-                        }
-                    }
-
-                    if ($shouldExecute) {
-                        $this->info("Running: {$command}");
-                        exec($command, $output, $code);
-                        $this->line();
-
-                        if ($code !== 0) {
-                            $this->error(
-                                "Command '{$command}' failed for module {$moduleName} (exit code {$code})",
-                            );
-                            if (!empty($output)) {
-                                $this->error(
-                                    "Output:\n" . implode("\n", $output),
-                                );
-                            }
-                        } else {
-                            $this->success(
-                                "Command '{$command}' executed successfully.",
-                            );
-                            $executedCommands[] = $command;
-                        }
-                    } else {
-                        $this->info("Skipping command: {$command}");
-                    }
-                }
-
-                return $executedCommands;
+            } catch (\Throwable $e) {
+                continue;
             }
         }
 
-        if (!$foundModuleClass) {
+        return null;
+    }
+
+    /**
+     * Detect #[PostInstall] commands from the module class without executing them.
+     *
+     * @return array{command: string, args: array<string>}[] List of PostInstall command definitions.
+     */
+    private function detectPostInstallCommands(string $modulePath, string $moduleName): array
+    {
+        $ref = $this->findModuleReflection($modulePath, $moduleName);
+        if ($ref === null) {
             $this->warning(
-                "No #[Module] class found for '{$moduleName}', skipping PostInstall execution.",
+                "No #[Module] class found for '{$moduleName}', skipping PostInstall detection.",
+            );
+            return [];
+        }
+
+        $postInstallAttrs = $ref->getAttributes(PostInstall::class);
+        if (empty($postInstallAttrs)) {
+            $this->info(
+                "Module {$moduleName} has no PostInstall attributes defined.",
+            );
+            return [];
+        }
+
+        $commands = [];
+        foreach ($postInstallAttrs as $attr) {
+            /** @var PostInstall $instance */
+            $instance = $attr->newInstance();
+            $commands[] = [
+                'command' => $instance->command,
+                'args' => $instance->args,
+            ];
+        }
+
+        return $commands;
+    }
+
+    /**
+     * Execute PostInstall commands with trust prompting.
+     *
+     * @param array{command: string, args: array<string>}[] $commands
+     * @return array<string> List of executed command strings.
+     */
+    private function executePostInstallCommands(
+        array $commands,
+        string $moduleName,
+        string $registryName,
+        bool $autoTrustSource = false,
+    ): array {
+        $executedCommands = [];
+
+        if (empty($commands)) {
+            return $executedCommands;
+        }
+
+        $commandCount = count($commands);
+        $isTrusted = $this->isSourceTrusted($registryName);
+
+        if (!$isTrusted) {
+            if ($autoTrustSource) {
+                $this->trustSource($registryName);
+                $this->success(
+                    "Source '{$registryName}' has been automatically trusted.",
+                );
+                $isTrusted = true;
+            } else {
+                $this->showPostInstallWarning(
+                    $moduleName,
+                    $registryName,
+                    $commandCount,
+                );
+            }
+        } else {
+            $this->info(
+                "Source '{$registryName}' is trusted. Executing all PostInstall commands automatically.",
             );
         }
 
+        $acceptAll = false;
+        $rejectAll = false;
+        $trustConfirmed = $isTrusted;
+
+        foreach ($commands as $index => $cmd) {
+            if ($rejectAll) {
+                $this->info(
+                    "Skipping command " .
+                    ($index + 1) .
+                    " of {$commandCount} (rejected all).",
+                );
+                continue;
+            }
+
+            $args = implode(" ", $cmd['args']);
+            $command = "php forge.php {$cmd['command']} {$args}";
+
+            if ($isTrusted || $acceptAll) {
+                $shouldExecute = true;
+            } else {
+                $response = $this->confirmPostInstallCommand(
+                    $command,
+                    $moduleName,
+                    $registryName,
+                    $index + 1,
+                    $commandCount,
+                );
+
+                if ($response === "reject-all") {
+                    $rejectAll = true;
+                    $shouldExecute = false;
+                } elseif ($response === "all") {
+                    $acceptAll = true;
+                    $shouldExecute = true;
+                } else {
+                    $shouldExecute = $response === "yes";
+                }
+            }
+
+            if ($shouldExecute) {
+                $this->info("Running: {$command}");
+                exec($command, $output, $code);
+                $this->line();
+
+                if ($code !== 0) {
+                    $this->error(
+                        "Command '{$command}' failed for module {$moduleName} (exit code {$code})",
+                    );
+                    if (!empty($output)) {
+                        $this->error(
+                            "Output:\n" . implode("\n", $output),
+                        );
+                    }
+                } else {
+                    $this->success(
+                        "Command '{$command}' executed successfully.",
+                    );
+                    $executedCommands[] = $command;
+                }
+            } else {
+                $this->info("Skipping command: {$command}");
+            }
+        }
+
         return $executedCommands;
+    }
+
+    /**
+     * Prompt the user to trust the source after PostInstall commands have been shown.
+     */
+    private function promptTrustAfterPostInstall(
+        string $moduleName,
+        string $registryName,
+        bool $autoTrustSource,
+    ): bool {
+        if ($this->isSourceTrusted($registryName)) {
+            return true;
+        }
+
+        if ($autoTrustSource) {
+            $this->trustSource($registryName);
+            $this->success(
+                "Source '{$registryName}' has been automatically trusted.",
+            );
+            return true;
+        }
+
+        $confirmed = $this->promptTrustSource($registryName);
+        if ($confirmed) {
+            $this->trustSource($registryName);
+            $this->success(
+                "Source '{$registryName}' has been trusted for future installations.",
+            );
+        }
+        return $confirmed;
     }
 
     /**
@@ -874,14 +1001,15 @@ final class PackageManagerService implements PackageManagerInterface
         bool $autoTrustSource = false,
         ?string $configMode = null,
     ): void {
-        $wantsLatest = $version === null || $version === 'latest' || $version === '*';
-        if ($wantsLatest) {
+        $explicitLatest = $version === 'latest' || $version === '*';
+        $resolveLatest = $version === null || $explicitLatest;
+        if ($resolveLatest) {
             $version = null;
         }
 
         $this->info(
             "Installing module: {$moduleName}" .
-            ($wantsLatest ? " (latest)" : " version {$version}"),
+            ($resolveLatest ? " (latest)" : " version {$version}"),
         );
 
         if ($moduleName === self::FRAMEWORK_MODULE_NAME) {
@@ -909,7 +1037,7 @@ final class PackageManagerService implements PackageManagerInterface
             return;
         }
 
-        $forgeJsonVersion = $wantsLatest ? 'latest' : $versionToInstall;
+        $forgeJsonVersion = $explicitLatest ? 'latest' : $versionToInstall;
 
         $moduleDownloadPathInRepo = $versionDetails["url"];
         $registryDetails = $this->getRegistryDetailsForModule($moduleName);
@@ -980,10 +1108,15 @@ final class PackageManagerService implements PackageManagerInterface
             }
         }
 
-        $stagingPath = $this->getModulesPath() . '.' . $moduleInstallFolderName . '.staging';
+        $stagingPath = $this->getStagingPath($moduleInstallFolderName);
 
         if (is_dir($stagingPath)) {
             $this->removeDirectory($stagingPath);
+        }
+
+        $stagingParent = dirname($stagingPath);
+        if (!is_dir($stagingParent)) {
+            mkdir($stagingParent, 0755, true);
         }
 
         $extractionSourcePath = "";
@@ -999,38 +1132,20 @@ final class PackageManagerService implements PackageManagerInterface
             return;
         }
 
-        \Forge\Core\Autoloader::addPath(
-            'App\\Modules\\' . $moduleInstallFolderName . '\\',
-            $stagingPath . '/src',
-        );
-
         $registryName = $registryDetails["name"] ?? "unknown";
-        $executedCommands = $this->runPostInstallAttributes(
+        $modulePascalName = $this->toPascalCase($moduleName);
+
+        $postInstallCommands = $this->detectPostInstallCommands(
             $stagingPath,
-            $this->toPascalCase($moduleName),
-            $registryName,
+            $modulePascalName,
         );
 
-        if (
-            !empty($executedCommands) &&
-            !$this->isSourceTrusted($registryName)
-        ) {
-            $confirmed = false;
-            if ($autoTrustSource) {
-                $this->trustSource($registryName);
-                $this->success(
-                    "Source '{$registryName}' has been automatically trusted.",
-                );
-                $confirmed = true;
-            } else {
-                $confirmed = $this->promptTrustSource($registryName);
-                if ($confirmed) {
-                    $this->trustSource($registryName);
-                    $this->success(
-                        "Source '{$registryName}' has been trusted for future installations.",
-                    );
-                }
-            }
+        if (!empty($postInstallCommands) && !$this->isSourceTrusted($registryName)) {
+            $confirmed = $this->promptTrustAfterPostInstall(
+                $moduleName,
+                $registryName,
+                $autoTrustSource,
+            );
 
             if (!$confirmed) {
                 $this->removeDirectory($stagingPath);
@@ -1048,6 +1163,8 @@ final class PackageManagerService implements PackageManagerInterface
             $this->removeDirectory($stagingPath);
             return;
         }
+
+        $this->clearAutoloaderCache();
 
         if ($preservedPath !== null && is_dir($preservedPath)) {
             $this->removeDirectory($preservedPath);
@@ -1068,6 +1185,15 @@ final class PackageManagerService implements PackageManagerInterface
             $moduleName,
             $configMode,
         );
+
+        if (!empty($postInstallCommands)) {
+            $this->executePostInstallCommands(
+                $postInstallCommands,
+                $modulePascalName,
+                $registryName,
+                $autoTrustSource,
+            );
+        }
 
         $this->success(
             "Module {$moduleName} version {$versionToInstall} installed successfully.",
@@ -1379,6 +1505,8 @@ final class PackageManagerService implements PackageManagerInterface
             $this->info("Module directory removed successfully.");
         }
 
+        $this->clearAutoloaderCache();
+
         // Always update JSON files regardless of directory removal status
         $jsonUpdateSuccess = true;
         try {
@@ -1417,84 +1545,53 @@ final class PackageManagerService implements PackageManagerInterface
 
     /**
      * Executes #[PostUninstall] commands defined in the module class before removal.
-     *
-     * @throws ReflectionException
      */
     private function runPostUninstallAttributes(
         string $moduleInstallPath,
         string $moduleName,
     ): void {
-        $moduleSrc = glob($moduleInstallPath . "/**/*.php");
-        if (!$moduleSrc) {
+        $ref = $this->findModuleReflection($moduleInstallPath, $moduleName);
+        if ($ref === null) {
             $this->warning(
-                "No PHP files found in module {$moduleName}, skipping PostUninstall scanning.",
+                "No #[Module] class found for '{$moduleName}', skipping PostUninstall execution.",
             );
             return;
         }
 
-        foreach ($moduleSrc as $file) {
-            require_once $file;
-        }
-
-        $foundModuleClass = false;
-
-        foreach (get_declared_classes() as $class) {
-            $ref = new ReflectionClass($class);
-            $moduleAttr = $ref->getAttributes(Module::class);
-
-            if (empty($moduleAttr)) {
-                continue;
-            }
-
-            $moduleInstance = $moduleAttr[0]->newInstance();
-
-            if ($moduleInstance->name === $moduleName) {
-                $foundModuleClass = true;
-                $postUninstallAttrs = $ref->getAttributes(PostUninstall::class);
-
-                if (empty($postUninstallAttrs)) {
-                    $this->info(
-                        "Module {$moduleName} has no PostUninstall attributes defined.",
-                    );
-                    return;
-                }
-
-                $this->info(
-                    "Executing PostUninstall commands for module {$moduleName}...",
-                );
-
-                foreach ($postUninstallAttrs as $attr) {
-                    /** @var PostUninstall $instance */
-                    $instance = $attr->newInstance();
-                    $args = implode(" ", $instance->args);
-                    $command = "php forge.php {$instance->command} {$args}";
-                    $this->info("Running: {$command}");
-
-                    exec($command, $output, $code);
-                    $this->line();
-
-                    if ($code !== 0) {
-                        $this->error(
-                            "Command '{$command}' failed for module {$moduleName} (exit code {$code})",
-                        );
-                        if (!empty($output)) {
-                            $this->error("Output:\n" . implode("\n", $output));
-                        }
-                    } else {
-                        $this->success(
-                            "Command '{$command}' executed successfully.",
-                        );
-                    }
-                }
-
-                return;
-            }
-        }
-
-        if (!$foundModuleClass) {
-            $this->warning(
-                "No #[Module] class found for '{$moduleName}', skipping PostUninstall execution.",
+        $postUninstallAttrs = $ref->getAttributes(PostUninstall::class);
+        if (empty($postUninstallAttrs)) {
+            $this->info(
+                "Module {$moduleName} has no PostUninstall attributes defined.",
             );
+            return;
+        }
+
+        $this->info(
+            "Executing PostUninstall commands for module {$moduleName}...",
+        );
+
+        foreach ($postUninstallAttrs as $attr) {
+            /** @var PostUninstall $instance */
+            $instance = $attr->newInstance();
+            $args = implode(" ", $instance->args);
+            $command = "php forge.php {$instance->command} {$args}";
+            $this->info("Running: {$command}");
+
+            exec($command, $output, $code);
+            $this->line();
+
+            if ($code !== 0) {
+                $this->error(
+                    "Command '{$command}' failed for module {$moduleName} (exit code {$code})",
+                );
+                if (!empty($output)) {
+                    $this->error("Output:\n" . implode("\n", $output));
+                }
+            } else {
+                $this->success(
+                    "Command '{$command}' executed successfully.",
+                );
+            }
         }
     }
 

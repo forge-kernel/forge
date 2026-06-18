@@ -1,0 +1,56 @@
+/* Public layout */
+.fc-public { display: flex; flex-direction: column; min-height: 100vh; }
+.fc-public__main { flex: 1; }
+
+/* Navbar */
+.fc-navbar {
+  border-bottom: 1px solid var(--fc-color-border);
+  background: var(--fc-color-surface);
+  position: sticky; top: 0; z-index: 100;
+}
+.fc-navbar__container {
+  display: flex; align-items: center; justify-content: space-between;
+  max-width: 80rem; margin: 0 auto;
+  padding: 0 var(--fc-spacing-6);
+  height: 3.5rem;
+}
+.fc-navbar__brand {
+  display: flex; align-items: center; gap: var(--fc-spacing-2);
+  font-family: var(--fc-font-sans); font-weight: 600; font-size: var(--fc-font-size-lg);
+  color: var(--fc-color-text); text-decoration: none;
+}
+.fc-navbar__brand-icon { display: flex; align-items: center; color: var(--fc-color-primary); }
+.fc-navbar__brand-svg { width: 1.5rem; height: 1.5rem; }
+.fc-navbar__links {
+  display: flex; align-items: center; gap: var(--fc-spacing-6);
+}
+.fc-navbar__link {
+  font-family: var(--fc-font-sans); font-size: var(--fc-font-size-sm); font-weight: 500;
+  color: var(--fc-color-text-secondary); text-decoration: none;
+  transition: color var(--fc-transition);
+}
+.fc-navbar__link:hover { color: var(--fc-color-text); }
+.fc-navbar__link--active { color: var(--fc-color-primary); }
+.fc-navbar__actions { display: flex; align-items: center; gap: var(--fc-spacing-2); }
+
+/* Footer */
+.fc-footer {
+  border-top: 1px solid var(--fc-color-border);
+  background: var(--fc-color-surface);
+  padding: var(--fc-spacing-6) 0;
+}
+.fc-footer__container {
+  display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between;
+  gap: var(--fc-spacing-4);
+  max-width: 80rem; margin: 0 auto;
+  padding: 0 var(--fc-spacing-6);
+}
+.fc-footer__text { font-family: var(--fc-font-sans); font-size: var(--fc-font-size-sm); color: var(--fc-color-text-secondary); }
+.fc-footer__links { display: flex; gap: var(--fc-spacing-4); }
+.fc-footer__copyright { font-family: var(--fc-font-sans); font-size: var(--fc-font-size-sm); color: var(--fc-color-text-muted); }
+
+/* Responsive navbar */
+@media (max-width: 768px) {
+  .fc-navbar__links { display: none; }
+  .fc-navbar__container { padding: 0 var(--fc-spacing-4); }
+}
