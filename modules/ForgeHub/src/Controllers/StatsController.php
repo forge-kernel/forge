@@ -31,10 +31,6 @@ final class StatsController
     #[Layout("ForgeHub:hub")]
     public function index(): Response
     {
-        $data = [
-            'metrics' => Metrics::get()
-        ];
-
-        return $this->view(view: "pages/stats", data: $data);
+        return $this->view(view: "pages/stats", data: []);
     }
 }

@@ -6,6 +6,7 @@ namespace App\Modules\ForgeRouter\Bootstrap;
 
 use Forge\Core\Bootstrap\OptimizedDirectoryScanner;
 use Forge\Core\Config\Config;
+use Forge\Core\Debug\Metrics;
 use Forge\Core\DI\Container;
 use Forge\Core\Helpers\FileExistenceCache;
 use Forge\Core\Helpers\ModuleHelper;
@@ -36,6 +37,7 @@ final class RouterSetup
      */
     private static function initRouter(Container $container): Router
     {
+        Metrics::start("router_controller_dir_scan");
         $structureResolver = $container->has(StructureResolver::class)
             ? $container->get(StructureResolver::class)
             : null;
@@ -52,17 +54,25 @@ final class RouterSetup
 
         // Merge with existing controller directories
         $controllerDirs = array_merge($controllerDirs, $moduleControllerDirs);
+        Metrics::stop("router_controller_dir_scan");
 
+        Metrics::start("router_controller_cache_load");
         $structureResolver = $container->has(StructureResolver::class)
             ? $container->get(StructureResolver::class)
             : null;
         $loader = new ControllerLoader($container, $controllerDirs, $structureResolver);
-        $controllers = self::loadControllersWithCache($loader);
+        $cacheResult = self::loadControllersWithCache($loader);
+        $controllers = $cacheResult['controllers'];
+        $cachedRouteData = $cacheResult['routeData'];
+        Metrics::stop("router_controller_cache_load");
 
+        Metrics::start("router_middleware_loader");
         /** @var MiddlewareLoader $middlewareLoader */
         $middlewareLoader = $container->make(MiddlewareLoader::class);
         $autoLoadedMap = $middlewareLoader->load();
+        Metrics::stop("router_middleware_loader");
 
+        Metrics::start("router_middleware_merge");
         $appMiddlewareConfigFile = BASE_PATH . "/config/middleware.php";
         $appMiddlewareConfig = [];
         if (FileExistenceCache::exists($appMiddlewareConfigFile)) {
@@ -134,11 +144,30 @@ final class RouterSetup
             }
         }
 
-        $router = Router::init($container, $finalMiddlewareConfig);
+        Metrics::stop("router_middleware_merge");
 
-        foreach ($controllers as $controllerMeta) {
-            $router->registerControllers($controllerMeta['class']);
+        Metrics::start("router_init");
+        $router = Router::init($container, $finalMiddlewareConfig);
+        Metrics::stop("router_init");
+
+        Metrics::start("router_register_controllers");
+        if ($cachedRouteData !== null) {
+            foreach ($controllers as $controllerMeta) {
+                $class = $controllerMeta['class'];
+                if (isset($cachedRouteData[$class])) {
+                    $router->registerCachedControllers($cachedRouteData[$class]);
+                }
+            }
+        } else {
+            $allRouteData = [];
+            foreach ($controllers as $controllerMeta) {
+                $class = $controllerMeta['class'];
+                $routes = $router->registerControllers($class);
+                $allRouteData[$class] = $routes;
+            }
+            self::writeControllerCache($controllers, $allRouteData);
         }
+        Metrics::stop("router_register_controllers");
 
         return $router;
     }
@@ -152,15 +181,20 @@ final class RouterSetup
             if (is_array($data) && isset($data['controllers']) && is_array($data['controllers'])) {
                 $controllers = $data['controllers'];
                 if (!self::hasControllerFilesChanged($controllers)) {
-                    return $controllers;
+                    return [
+                        'controllers' => $controllers,
+                        'routeData' => array_key_exists('routeData', $data) ? $data['routeData'] : null,
+                    ];
                 }
             }
         }
 
         $controllers = $loader->registerControllers();
-        self::writeControllerCache($controllers);
 
-        return $controllers;
+        return [
+            'controllers' => $controllers,
+            'routeData' => null, // signal to build routes via reflection
+        ];
     }
 
     private static function hasControllerFilesChanged(array $controllers): bool
@@ -190,7 +224,7 @@ final class RouterSetup
         return OptimizedDirectoryScanner::hasFilesChanged($filesToCheck);
     }
 
-    private static function writeControllerCache(array $controllers): void
+    private static function writeControllerCache(array $controllers, array $routeData = []): void
     {
         $cacheFile = self::ROUTE_CACHE_FILE;
         $dir = dirname($cacheFile);
@@ -198,7 +232,10 @@ final class RouterSetup
             mkdir($dir, 0777, true);
         }
 
-        $export = var_export(['controllers' => $controllers], true);
+        $export = var_export([
+            'controllers' => $controllers,
+            'routeData' => $routeData,
+        ], true);
         $content = '<?php return ' . $export . ';';
 
         $tmp = tempnam($dir, 'routes_');

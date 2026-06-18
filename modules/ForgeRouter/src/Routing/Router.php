@@ -89,9 +89,11 @@ final class Router
 
     /**
      * Auto-register controllers (recursively) and **skip** wrong-scope ones when route scope filter is available.
+     * Returns extracted route data for caching.
+     * @return array<int, array>
      * @throws \ReflectionException
      */
-    public function registerControllers(string $controllerClass): void
+    public function registerControllers(string $controllerClass): array
     {
         $moduleName = ModuleHelper::extractModuleNameFromNamespace(
             $controllerClass,
@@ -100,7 +102,7 @@ final class Router
             $moduleName !== null &&
             ModuleHelper::isModuleDisabled($moduleName)
         ) {
-            return;
+            return [];
         }
 
         $reflection = new ReflectionClass($controllerClass);
@@ -108,17 +110,17 @@ final class Router
         $scopeFilter = $this->getRouteScopeFilter();
 
         if ($scopeFilter === null) {
-            $this->registerAll($reflection);
-            return;
+            return $this->registerAll($reflection);
         }
 
         $onCentral = $scopeFilter::isCentralDomain();
 
         $ctrlScope = $scopeFilter->extractScope($reflection);
         if ($ctrlScope && !$scopeFilter->allowedHere($ctrlScope, $onCentral)) {
-            return;
+            return [];
         }
 
+        $extracted = [];
         foreach ($reflection->getMethods() as $method) {
             $methScope = $scopeFilter->extractScope($method) ?? $ctrlScope;
             if (
@@ -128,34 +130,70 @@ final class Router
                 continue;
             }
 
-            $this->registerMethodRoutes($method, $controllerClass);
+            $routeInfos = $this->extractRouteInfos($method, $controllerClass);
+            foreach ($routeInfos as $info) {
+                $this->applyRouteInfo($info);
+                $extracted[] = $info;
+            }
         }
+
+        return $extracted;
     }
 
-    private function registerAll(ReflectionClass $reflection): void
+    /**
+     * Register controllers from cached route data, skipping all reflection.
+     *
+     * @param array<int, array> $cachedRoutes
+     */
+    public function registerCachedControllers(array $cachedRoutes): void
     {
-        foreach ($reflection->getMethods() as $method) {
-            $this->registerMethodRoutes($method, $reflection->getName());
+        foreach ($cachedRoutes as $info) {
+            $this->applyRouteInfo($info);
         }
     }
 
-    private function registerMethodRoutes(
+    /**
+     * @return array<int, array>
+     */
+    private function registerAll(ReflectionClass $reflection): array
+    {
+        $extracted = [];
+        foreach ($reflection->getMethods() as $method) {
+            $routeInfos = $this->extractRouteInfos($method, $reflection->getName());
+            foreach ($routeInfos as $info) {
+                $this->applyRouteInfo($info);
+                $extracted[] = $info;
+            }
+        }
+        return $extracted;
+    }
+
+    /**
+     * Extract route data from a method's attributes without side effects.
+     *
+     * @return array<int, array{httpMethod: string, path: string, regex: string, routeData: array}>
+     */
+    private function extractRouteInfos(
         ReflectionMethod $method,
         string $controllerClass,
-    ): void {
+    ): array {
         $routeAttributes = array_merge(
             $method->getAttributes(Route::class),
             $method->getAttributes(ApiRoute::class),
         );
 
-        $attr = new ReflectionClass($controllerClass);
+        if (empty($routeAttributes)) {
+            return [];
+        }
+
+        $reflectionClass = new ReflectionClass($controllerClass);
         $middlewareAttributes = array_merge(
-            $attr->getAttributes(Middleware::class),
+            $reflectionClass->getAttributes(Middleware::class),
             $method->getAttributes(Middleware::class),
         );
 
         $roleAttributes = array_merge(
-            $attr->getAttributes(RequiresRole::class),
+            $reflectionClass->getAttributes(RequiresRole::class),
             $method->getAttributes(RequiresRole::class),
         );
 
@@ -166,7 +204,7 @@ final class Router
         $roles = array_unique($roles);
 
         $layout = null;
-        $classLayoutAttributes = $attr->getAttributes(Layout::class);
+        $classLayoutAttributes = $reflectionClass->getAttributes(Layout::class);
         $methodLayoutAttributes = $method->getAttributes(Layout::class);
         foreach ($classLayoutAttributes as $layoutAttr) {
             $layout = $layoutAttr->newInstance()->name;
@@ -186,12 +224,13 @@ final class Router
             }
         }
 
+        $infos = [];
         foreach ($routeAttributes as $attr) {
             $route = $attr->newInstance();
             $routeMiddlewares = $this->resolveMiddlewareGroups(
                 $route->middleware,
             );
-            $middleware = array_merge($middleware, $routeMiddlewares);
+            $allMiddleware = array_merge($middleware, $routeMiddlewares);
             $permissions = $route->permissions;
 
             $paramNames = [];
@@ -219,62 +258,83 @@ final class Router
                 "method" => $method->getName(),
                 "handler" => [$controllerClass, $method->getName()],
                 "params" => $paramNames,
-                "middleware" => $middleware,
+                "middleware" => $allMiddleware,
                 "permissions" => $permissions,
                 "roles" => $roles,
                 "layout" => $layout,
                 "preferred" => $route->preferred,
             ];
 
-            if (empty($paramNames)) {
-                $staticKey = $route->method . ":" . $route->path;
-                if (isset($this->staticRoutes[$staticKey])) {
-                    if (
-                        !empty($this->staticRoutes[$staticKey]["preferred"]) &&
-                        !$route->preferred
-                    ) {
-                        continue;
-                    }
+            $infos[] = [
+                'httpMethod' => $route->method,
+                'path' => $route->path,
+                'regex' => $regex,
+                'routeData' => $routeData,
+            ];
+        }
+
+        return $infos;
+    }
+
+    /**
+     * Apply previously extracted route info to Router state.
+     */
+    private function applyRouteInfo(array $info): void
+    {
+        $routeData = $info['routeData'];
+        $paramNames = $routeData['params'];
+        $httpMethod = $info['httpMethod'];
+        $path = $info['path'];
+        $regex = $info['regex'];
+
+        if (empty($paramNames)) {
+            $staticKey = $httpMethod . ":" . $path;
+            if (isset($this->staticRoutes[$staticKey])) {
+                if (
+                    !empty($this->staticRoutes[$staticKey]["preferred"]) &&
+                    !$routeData["preferred"]
+                ) {
+                    return;
                 }
-                $this->staticRoutes[$staticKey] = $routeData;
+            }
+            $this->staticRoutes[$staticKey] = $routeData;
 
-                $key = $route->method . $regex;
-                $this->routes[$key] = $routeData;
-            } else {
-                if (!isset($this->dynamicRoutes[$route->method])) {
-                    $this->dynamicRoutes[$route->method] = [];
+            $key = $httpMethod . $regex;
+            $this->routes[$key] = $routeData;
+        } else {
+            if (!isset($this->dynamicRoutes[$httpMethod])) {
+                $this->dynamicRoutes[$httpMethod] = [];
+            }
+
+            if (isset($this->dynamicRoutes[$httpMethod][$regex])) {
+                if (
+                    !empty(
+                        $this->dynamicRoutes[$httpMethod][$regex][
+                            "preferred"
+                        ]
+                    ) &&
+                    !$routeData["preferred"]
+                ) {
+                    return;
                 }
+            }
 
-                if (isset($this->dynamicRoutes[$route->method][$regex])) {
-                    if (
-                        !empty(
-                            $this->dynamicRoutes[$route->method][$regex][
-                                "preferred"
-                            ]
-                        ) &&
-                        !$route->preferred
-                    ) {
-                        continue;
-                    }
-                }
+            $routeDataWithRegex = array_merge($routeData, [
+                "regex" => $regex,
+            ]);
+            $this->dynamicRoutes[$httpMethod][
+                $regex
+            ] = $routeDataWithRegex;
 
-                $routeDataWithRegex = array_merge($routeData, [
-                    "regex" => $regex,
-                ]);
-                $this->dynamicRoutes[$route->method][
-                    $regex
-                ] = $routeDataWithRegex;
+            $key = $httpMethod . $regex;
+            $this->routes[$key] = $routeData;
 
-                $key = $route->method . $regex;
-                $this->routes[$key] = $routeData;
-
-                $methodUpper = strtoupper($route->method);
-                if (isset($this->radixTrees[$methodUpper])) {
-                    $this->radixTrees[$methodUpper]->add(
-                        $route->path,
-                        $routeData,
-                    );
-                }
+            $methodUpper = strtoupper($httpMethod);
+            if (isset($this->radixTrees[$methodUpper])) {
+                $this->radixTrees[$methodUpper]->add(
+                    $path,
+                    $routeData,
+                );
             }
         }
     }

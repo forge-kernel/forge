@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Modules\ForgeView;
 
 use Forge\Core\DI\Container;
+use Forge\Core\Debug\Metrics;
 use Forge\Core\Helpers\ModuleHelper;
 use Forge\Core\Structure\StructureResolver;
 use App\Modules\ForgeView\ViewState;
@@ -138,7 +139,10 @@ final class View
     {
         $state = self::getState();
         try {
+            Metrics::start("view_compile");
             $viewResult = $this->compileView($view, $data);
+            Metrics::stop("view_compile");
+
             $viewContent = $viewResult["content"];
             $layoutSlots = $viewResult["layoutSlots"];
             $layoutSections = $viewResult["layoutSections"];
@@ -168,10 +172,12 @@ final class View
             }
 
             if ($resolvedLayoutName && !$state->shouldSuppressLayout()) {
+                Metrics::start("view_layout_chain");
                 $viewContent = $this->renderLayoutChain(
                     $viewContent, $resolvedLayoutName,
                     $layoutSlots, $layoutSections, $layoutProps,
                 );
+                Metrics::stop("view_layout_chain");
             }
 
             return $viewContent;
@@ -188,7 +194,9 @@ final class View
         array $props,
         array $visited = [],
     ): string {
+        Metrics::start("view_finder_findLayout");
         $resolvedPath = $this->finder->findLayout($layoutName, $this->module);
+        Metrics::stop("view_finder_findLayout");
 
         if (isset($visited[$resolvedPath])) {
             $cycle = array_values($visited);
@@ -200,12 +208,14 @@ final class View
 
         $visited[$resolvedPath] = $layoutName;
 
+        Metrics::start("view_layout_execute");
         $result = $this->executeFile($resolvedPath, [
             "content" => $content,
             "layoutSlots" => $slots,
             "layoutSections" => $sections,
             "layoutProps" => $props,
         ], true);
+        Metrics::stop("view_layout_execute");
 
         $parentLayout = $result["parentLayout"] ?? null;
         if ($parentLayout) {
@@ -229,8 +239,14 @@ final class View
         string $view,
         array $data,
     ): array {
+        Metrics::start("view_finder_findView");
         $viewFile = $this->finder->findView($view, $this->module);
-        return $this->executeFile($viewFile, $data, true);
+        Metrics::stop("view_finder_findView");
+
+        Metrics::start("view_execute_file");
+        $result = $this->executeFile($viewFile, $data, true);
+        Metrics::stop("view_execute_file");
+        return $result;
     }
 
     private function executeFile(string $file, array|object|null $data, bool $captureLayoutVars = false): string|array
@@ -341,8 +357,13 @@ final class View
             ? new self(container: $this->container, module: $module)
             : $this;
 
+        Metrics::start("view_finder_findComponent");
         $file = $view->finder->findComponent($viewSubPath, $view->module);
+        Metrics::stop("view_finder_findComponent");
+
+        Metrics::start("view_component_execute");
         $result = $view->executeFile($file, $data);
+        Metrics::stop("view_component_execute");
 
         $state->setSlots($previousSlots);
 
