@@ -306,7 +306,7 @@ return array (
     'hubItems' => 
     array (
     ),
-    'mtime' => 1781765656,
+    'mtime' => 1781766751,
     'modulePath' => '/Users/acidlake/Development/UPPER/Forge/repos/forge-v3/modules/ForgeRouter',
   ),
   'App\\Modules\\ForgeStaticGen\\ForgeStaticGenModule' => 

@@ -38,6 +38,8 @@ final class Router
     private array $radixTrees = [];
     /** @var array<string, callable> Pre-computed middleware pipelines keyed by route hash */
     private array $pipelineCache = [];
+    /** @var array<class-string, object> Cached middleware instances reused across requests */
+    private array $middlewareInstances = [];
 
     private function __construct(
         Container $container,
@@ -472,15 +474,21 @@ final class Router
         if (!isset($this->pipelineCache[$pipelineKey])) {
             $this->pipelineCache[$pipelineKey] = array_reduce(
                 array_reverse($allMiddlewares),
-                fn($next, $mw) => fn($req) => $this->container
-                    ->make($mw)
-                    ->handle($req, $next),
+                fn($next, $mw) => function ($req) use ($mw, $next) {
+                    if (!isset($this->middlewareInstances[$mw])) {
+                        $this->middlewareInstances[$mw] = $this->container->make($mw);
+                    }
+                    return $this->middlewareInstances[$mw]->handle($req, $next);
+                },
                 fn($req) => $this->runController($route, $req),
             );
         }
 
         Metrics::stop("routing_dispatching");
-        return $this->pipelineCache[$pipelineKey]($request);
+        Metrics::start("router_pipeline_execution");
+        $result = $this->pipelineCache[$pipelineKey]($request);
+        Metrics::stop("router_pipeline_execution");
+        return $result;
     }
 
     /**
@@ -537,8 +545,15 @@ final class Router
             $arguments[] = $value;
         }
 
+        Metrics::start("controller_make");
         $controllerInstance = $this->container->make($controllerClass);
-        return $controllerInstance->$methodName(...$arguments);
+        Metrics::stop("controller_make");
+
+        Metrics::start("controller_method_run");
+        $result = $controllerInstance->$methodName(...$arguments);
+        Metrics::stop("controller_method_run");
+
+        return $result;
     }
 
     /**
