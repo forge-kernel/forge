@@ -22,7 +22,7 @@ use Forge\Core\Module\Attributes\Structure;
 #[Service]
 #[Module(
     name: 'ForgeAuth',
-    version: '2.0.1',
+    version: '2.0.2',
     description: 'An Auth module by forge.',
     order: 99,
     author: 'Forge Team',
@@ -69,8 +69,8 @@ use Forge\Core\Module\Attributes\Structure;
     'seeders' => 'src/Database/Seeders',
     'middlewares' => 'src/Middlewares',
 ])]
-#[PostInstall(command: 'db:migrate', args: ['--type=', 'module', '--module=', 'ForgeAuth'])]
-#[PostUninstall(command: 'db:migrate', args: ['--type=', 'module', '--module=', 'ForgeAuth'])]
+#[PostInstall(command: 'db:migrate', args: ['--type=module', '--module=ForgeAuth'])]
+#[PostUninstall(command: 'db:migrate', args: ['--type=module', '--module=ForgeAuth'])]
 final class ForgeAuthModule
 {
     use OutputHelper;
