@@ -428,14 +428,9 @@ final class PackageManagerService implements PackageManagerInterface
 
         $hadErrors = false;
 
-        foreach ($modules as $moduleName => $versionConstraint) {
+        foreach ($modules as $moduleName => $version) {
             if ($moduleName === "forge-package-manager") {
                 continue;
-            }
-
-            $version = $versionConstraint;
-            if ($version === "*" || $version === "latest") {
-                $version = null;
             }
 
             $moduleDirName = $this->generateModuleInstallFolderName($moduleName);
@@ -879,9 +874,14 @@ final class PackageManagerService implements PackageManagerInterface
         bool $autoTrustSource = false,
         ?string $configMode = null,
     ): void {
+        $wantsLatest = $version === null || $version === 'latest' || $version === '*';
+        if ($wantsLatest) {
+            $version = null;
+        }
+
         $this->info(
             "Installing module: {$moduleName}" .
-            ($version ? " version {$version}" : " (latest)"),
+            ($wantsLatest ? " (latest)" : " version {$version}"),
         );
 
         if ($moduleName === self::FRAMEWORK_MODULE_NAME) {
@@ -908,6 +908,8 @@ final class PackageManagerService implements PackageManagerInterface
             );
             return;
         }
+
+        $forgeJsonVersion = $wantsLatest ? 'latest' : $versionToInstall;
 
         $moduleDownloadPathInRepo = $versionDetails["url"];
         $registryDetails = $this->getRegistryDetailsForModule($moduleName);
@@ -978,36 +980,33 @@ final class PackageManagerService implements PackageManagerInterface
             }
         }
 
+        $stagingPath = $this->getModulesPath() . '.' . $moduleInstallFolderName . '.staging';
+
+        if (is_dir($stagingPath)) {
+            $this->removeDirectory($stagingPath);
+        }
+
         $extractionSourcePath = "";
         if (
             !$this->extractModule(
                 $moduleCachePath,
-                $moduleInstallPath,
+                $stagingPath,
                 $extractionSourcePath,
-                $preservedPath,
+                null,
             )
         ) {
             $this->error("Failed to extract module {$moduleName}.");
             return;
         }
 
-        if ($preservedPath !== null && is_dir($preservedPath)) {
-            $this->removeDirectory($preservedPath);
-        }
-
-        $this->updateForgeJson($moduleName, $versionToInstall);
-        $this->createForgeLockJson(
-            $moduleName,
-            $versionToInstall,
-            $registryDetails,
-            $moduleDownloadPathInRepo,
-            $integrityHash,
-            $sourceType,
+        \Forge\Core\Autoloader::addPath(
+            'App\\Modules\\' . $moduleInstallFolderName . '\\',
+            $stagingPath . '/src',
         );
 
         $registryName = $registryDetails["name"] ?? "unknown";
         $executedCommands = $this->runPostInstallAttributes(
-            $moduleInstallPath,
+            $stagingPath,
             $this->toPascalCase($moduleName),
             $registryName,
         );
@@ -1016,22 +1015,52 @@ final class PackageManagerService implements PackageManagerInterface
             !empty($executedCommands) &&
             !$this->isSourceTrusted($registryName)
         ) {
+            $confirmed = false;
             if ($autoTrustSource) {
                 $this->trustSource($registryName);
                 $this->success(
                     "Source '{$registryName}' has been automatically trusted.",
                 );
-            } elseif ($this->promptTrustSource($registryName)) {
-                $this->trustSource($registryName);
-                $this->success(
-                    "Source '{$registryName}' has been trusted for future installations.",
-                );
+                $confirmed = true;
+            } else {
+                $confirmed = $this->promptTrustSource($registryName);
+                if ($confirmed) {
+                    $this->trustSource($registryName);
+                    $this->success(
+                        "Source '{$registryName}' has been trusted for future installations.",
+                    );
+                }
+            }
+
+            if (!$confirmed) {
+                $this->removeDirectory($stagingPath);
+                $this->warning("Installation of {$moduleName} cancelled by user.");
+                return;
             }
         }
 
-        \Forge\Core\Autoloader::addPath(
-            'App\\Modules\\' . $moduleInstallFolderName . '\\',
-            $moduleInstallPath . '/src',
+        if (is_dir($moduleInstallPath)) {
+            $this->removeDirectory($moduleInstallPath);
+        }
+
+        if (!rename($stagingPath, $moduleInstallPath)) {
+            $this->error("Failed to finalize module {$moduleName} installation.");
+            $this->removeDirectory($stagingPath);
+            return;
+        }
+
+        if ($preservedPath !== null && is_dir($preservedPath)) {
+            $this->removeDirectory($preservedPath);
+        }
+
+        $this->updateForgeJson($moduleName, $forgeJsonVersion);
+        $this->createForgeLockJson(
+            $moduleName,
+            $versionToInstall,
+            $registryDetails,
+            $moduleDownloadPathInRepo,
+            $integrityHash,
+            $sourceType,
         );
 
         $this->configGenerator->generateConfigFromModule(
