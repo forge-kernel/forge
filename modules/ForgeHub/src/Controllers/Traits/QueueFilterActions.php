@@ -2,13 +2,10 @@
 
 declare(strict_types=1);
 
-namespace App\Modules\ForgeEvents\Controllers\Hub\Traits;
+namespace App\Modules\ForgeHub\Controllers\Traits;
 
 use App\Modules\ForgeWire\Attributes\Action;
 
-/**
- * Trait for filter and search actions
- */
 trait QueueFilterActions
 {
     abstract protected function getStatusFilter(): string;

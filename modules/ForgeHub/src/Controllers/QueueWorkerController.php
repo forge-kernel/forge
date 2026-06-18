@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Modules\ForgeEvents\Controllers\Hub;
+namespace App\Modules\ForgeHub\Controllers;
 
 use App\Modules\ForgeEvents\Services\QueueWorkerService;
 use Forge\Core\DI\Attributes\Service;
@@ -50,7 +50,7 @@ final class QueueWorkerController
             'phpInfo' => $phpInfo,
         ];
 
-        return $this->view(view: "pages/hub/queue-workers", data: $data);
+        return $this->view(view: "queue-workers", data: $data);
     }
 
     #[Route("/hub/queue-workers", "POST")]

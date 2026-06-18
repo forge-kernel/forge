@@ -2,12 +2,8 @@
 
 declare(strict_types=1);
 
-namespace App\Modules\ForgeEvents\Controllers\Hub\DTOs;
+namespace App\Modules\ForgeHub\Controllers\DTOs;
 
-/**
- * DTO for queue filter state
- * Groups related filter properties together
- */
 final class QueueFilterState
 {
     public function __construct(

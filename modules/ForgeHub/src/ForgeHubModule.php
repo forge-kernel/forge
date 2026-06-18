@@ -31,6 +31,8 @@ use Forge\Core\Security\PermissionsEnum;
 #[HubItem(label: 'Logs', route: '/hub/logs', icon: ForgeIcon::LOG, order: 3)]
 #[HubItem(label: 'Modules', route: '/hub/modules', icon: ForgeIcon::STORAGE, order: 2)]
 #[HubItem(label: 'Cache', route: '/hub/cache', icon: ForgeIcon::CACHE, order: 5)]
+#[HubItem(label: 'Queues', route: '/hub/queues', icon: ForgeIcon::QUEUE, order: 6)]
+#[HubItem(label: 'Queue Workers', route: '/hub/queue-workers', icon: ForgeIcon::COMMAND, order: 7)]
 #[HubItem(label: 'Cron Jobs', route: '/hub/cron-jobs', icon: ForgeIcon::CLOCK, order: 8)]
 #[HubItem(label: 'Monitoring', route: '/hub/monitoring', icon: ForgeIcon::MONITOR, order: 9)]
 #[Service]

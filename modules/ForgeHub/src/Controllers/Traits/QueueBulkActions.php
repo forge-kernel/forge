@@ -2,14 +2,11 @@
 
 declare(strict_types=1);
 
-namespace App\Modules\ForgeEvents\Controllers\Hub\Traits;
+namespace App\Modules\ForgeHub\Controllers\Traits;
 
 use App\Modules\ForgeEvents\Services\QueueHubService;
 use App\Modules\ForgeWire\Attributes\Action;
 
-/**
- * Trait for bulk operations on selected jobs
- */
 trait QueueBulkActions
 {
     abstract protected function getQueueService(): QueueHubService;

@@ -2,13 +2,13 @@
 
 declare(strict_types=1);
 
-namespace App\Modules\ForgeEvents\Controllers\Hub;
+namespace App\Modules\ForgeHub\Controllers;
 
-use App\Modules\ForgeEvents\Controllers\Hub\Traits\QueueBulkActions;
-use App\Modules\ForgeEvents\Controllers\Hub\Traits\QueueFilterActions;
-use App\Modules\ForgeEvents\Controllers\Hub\Traits\QueueJobActions;
-use App\Modules\ForgeEvents\Controllers\Hub\Traits\QueueSelectionActions;
-use App\Modules\ForgeEvents\Controllers\Hub\Traits\QueueSortActions;
+use App\Modules\ForgeHub\Controllers\Traits\QueueBulkActions;
+use App\Modules\ForgeHub\Controllers\Traits\QueueFilterActions;
+use App\Modules\ForgeHub\Controllers\Traits\QueueJobActions;
+use App\Modules\ForgeHub\Controllers\Traits\QueueSelectionActions;
+use App\Modules\ForgeHub\Controllers\Traits\QueueSortActions;
 use App\Modules\ForgeEvents\Services\QueueHubService;
 use App\Modules\ForgeSqlOrm\ORM\Paginator;
 use App\Modules\ForgeWire\Attributes\Reactive;
@@ -84,7 +84,7 @@ final class QueueController
 
         $queues = $this->queueService->getQueues();
 
-        return $this->view("pages/hub/queues", [
+        return $this->view("queues", [
             'jobs' => $this->jobs,
             'stats' => $this->stats,
             'paginator' => $this->paginator,

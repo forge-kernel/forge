@@ -6,7 +6,7 @@ return array (
     'hubItems' => 
     array (
     ),
-    'mtime' => 1781755670,
+    'mtime' => 1781816473,
     'modulePath' => '/Users/acidlake/Development/UPPER/Forge/repos/forge-v3/modules/ForgeDatabaseSQL',
   ),
   'App\\Modules\\ForgeComponents\\ForgeComponentsModule' => 
@@ -137,6 +137,26 @@ return array (
       ),
       4 => 
       array (
+        'label' => 'Queues',
+        'route' => '/hub/queues',
+        'icon' => 'list',
+        'order' => 6,
+        'permissions' => 
+        array (
+        ),
+      ),
+      5 => 
+      array (
+        'label' => 'Queue Workers',
+        'route' => '/hub/queue-workers',
+        'icon' => 'terminal',
+        'order' => 7,
+        'permissions' => 
+        array (
+        ),
+      ),
+      6 => 
+      array (
         'label' => 'Cron Jobs',
         'route' => '/hub/cron-jobs',
         'icon' => 'clock',
@@ -145,7 +165,7 @@ return array (
         array (
         ),
       ),
-      5 => 
+      7 => 
       array (
         'label' => 'Monitoring',
         'route' => '/hub/monitoring',
@@ -156,7 +176,7 @@ return array (
         ),
       ),
     ),
-    'mtime' => 1781730113,
+    'mtime' => 1781822880,
     'modulePath' => '/Users/acidlake/Development/UPPER/Forge/repos/forge-v3/modules/ForgeHub',
   ),
   'App\\Modules\\ForgeLanguage\\ForgeLanguageModule' => 
@@ -245,28 +265,8 @@ return array (
   array (
     'hubItems' => 
     array (
-      0 => 
-      array (
-        'label' => 'Queues',
-        'route' => '/hub/queues',
-        'icon' => 'list',
-        'order' => 7,
-        'permissions' => 
-        array (
-        ),
-      ),
-      1 => 
-      array (
-        'label' => 'Queue Workers',
-        'route' => '/hub/queue-workers',
-        'icon' => 'terminal',
-        'order' => 8,
-        'permissions' => 
-        array (
-        ),
-      ),
     ),
-    'mtime' => 1781730058,
+    'mtime' => 1781822868,
     'modulePath' => '/Users/acidlake/Development/UPPER/Forge/repos/forge-v3/modules/ForgeEvents',
   ),
   'App\\Modules\\ForgeNotification\\ForgeNotificationModule' => 
@@ -306,7 +306,7 @@ return array (
     'hubItems' => 
     array (
     ),
-    'mtime' => 1781815598,
+    'mtime' => 1781815993,
     'modulePath' => '/Users/acidlake/Development/UPPER/Forge/repos/forge-v3/modules/ForgeWire',
   ),
   'App\\Modules\\ForgeTesting\\ForgeTestingModule' => 
