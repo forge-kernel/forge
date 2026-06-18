@@ -1029,9 +1029,9 @@ final class PackageManagerService implements PackageManagerInterface
             }
         }
 
-        $this->registerModuleAutoloadPath(
-            $moduleInstallFolderName,
-            $moduleInstallPath,
+        \Forge\Core\Autoloader::addPath(
+            'App\\Modules\\' . $moduleInstallFolderName . '\\',
+            $moduleInstallPath . '/src',
         );
 
         $this->configGenerator->generateConfigFromModule(
