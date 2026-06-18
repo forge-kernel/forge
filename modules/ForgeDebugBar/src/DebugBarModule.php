@@ -12,7 +12,6 @@ use App\Modules\ForgeRouter\Collectors\DatabaseCollector;
 use App\Modules\ForgeRouter\Collectors\ExceptionCollector;
 use App\Modules\ForgeRouter\Collectors\TimelineCollector;
 use App\Modules\ForgeRouter\Collectors\ViewCollector;
-use Forge\Core\DI\Attributes\Service;
 use Forge\Core\DI\Container;
 use App\Modules\ForgeRouter\Http\Request;
 use App\Modules\ForgeRouter\Http\Response;
@@ -24,16 +23,14 @@ use App\Modules\ForgeRouter\Events\RouterHookName;
 use Forge\Core\Module\Attributes\Module;
 use Forge\Core\Module\Attributes\PostInstall;
 use Forge\Core\Module\Attributes\PostUninstall;
-use Forge\Core\Module\Attributes\Provides;
 use Forge\Core\Module\ForgeIcon;
 use Forge\Traits\InjectsAssets;
 use \App\Modules\ForgeDebugBar\DebugBar;
 use Forge\Core\Config\Config;
 
-#[Service]
 #[Module(
     name: 'ForgeDebugBar',
-    version: '1.3.3',
+    version: '1.3.4',
     description: 'A debug bar by Forge',
     order: 3,
     author: 'Forge Team',
@@ -42,7 +39,6 @@ use Forge\Core\Config\Config;
     tags: ['generic', 'debug', 'debug-bar', 'debug-bar-system', 'debug-bar-library', 'debug-bar-framework']
 )]
 #[HubItem(label: 'Debug Bar', route: '/hub/debugbar', icon: ForgeIcon::COG, order: 6)]
-#[Provides(DebugBar::class, version: '1.3.3')]
 #[Compatibility(framework: '>=4.15.11', php: '>=8.3')]
 #[ConfigDefaults(defaults: [
     'forge_debug_bar' => [
