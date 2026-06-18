@@ -5,18 +5,21 @@
     "version": "latest"
   },
   "modules": {
-    "forge-storage": "0.2.0",
-    "forge-logger": "0.1.0",
-    "forge-error-handler": "0.1.0",
-    "forge-auth": "1.0.0",
-    "forge-testing": "0.1.4",
-    "forge-package-manager": "1.1.0",
-    "forge-deployment": "0.4.0",
-    "forge-debug-bar": "0.1.3",
-    "forge-welcome": "1.1.0",
-    "forge-wire": "2.4.0",
-    "app-auth": "1.1.0",
-    "forge-multi-tenant": "0.3.0",
-    "forge-hub": "2.5.0"
+    "forge-storage": "latest",
+    "forge-logger": "latest",
+    "forge-error-handler": "latest",
+    "forge-auth": "latest",
+    "forge-testing": "latest",
+    "forge-package-manager": "latest",
+    "forge-deployment": "latest",
+    "forge-debug-bar": "latest",
+    "forge-welcome": "latest",
+    "forge-wire": "latest",
+    "app-auth": "latest",
+    "forge-multi-tenant": "latest",
+    "forge-hub": "latest",
+    "forge-view": "latest",
+    "forge-router": "latest",
+    "forge-components": "latest"
   }
 }
