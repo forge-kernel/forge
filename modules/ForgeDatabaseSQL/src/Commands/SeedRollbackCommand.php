@@ -18,7 +18,7 @@ use Throwable;
 #[Cli(
     command: 'db:seed:rollback',
     description: 'Rollback database seeders',
-    usage: 'db:seed:rollback [--type=app|kernel|module] [--module=ModuleName] [--group=GroupName] [--steps=N]',
+    usage: 'db:seed:rollback [--type=app|module] [--module=ModuleName] [--group=GroupName] [--steps=N]',
     examples: [
         'db:seed:rollback --type=app --steps=1',
         'db:seed:rollback --type=module --module=Blog --group=Users --steps=2',
@@ -30,7 +30,7 @@ final class SeedRollbackCommand extends Command
     use StringHelper;
     use Wizard;
 
-    #[Arg(name: 'type', description: 'Seeder type: app, kernel, module', required: false, validate: 'app|kernel|module')]
+    #[Arg(name: 'type', description: 'Seeder type: app, module', required: false, validate: 'app|module')]
     private ?string $type = null;
     #[Arg(name: 'module', description: 'Module name if type=module', required: false)]
     private ?string $module = null;

@@ -19,7 +19,7 @@ use Throwable;
     Cli(
     command: "db:migrate",
     description: "Run database migrations",
-    usage: "db:migrate [--type=app|kernel|module|all] [--module=ModuleName] [--group=group_name] [--preview]",
+    usage: "db:migrate [--type=app|module|all] [--module=ModuleName] [--group=group_name] [--preview]",
     examples: [
         "db:migrate --type=all",
         "db:migrate --type=app",
@@ -38,9 +38,9 @@ final class MigrateCommand extends Command
     #[
         Arg(
         name: "type",
-        description: "Migration type: app, kernel, module, all",
+        description: "Migration type: app, module, all",
         required: true,
-        validate: "app|kernel|module|all",
+        validate: "app|module|all",
     ),
     ]
     private ?string $type = null;
@@ -87,7 +87,6 @@ final class MigrateCommand extends Command
         $migratorScope = match ($type) {
             "app" => "app",
             "module" => "module",
-            "kernel" => "core",
             default => "all",
         };
 

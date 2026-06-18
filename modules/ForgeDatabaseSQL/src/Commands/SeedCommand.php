@@ -16,7 +16,7 @@ use Forge\CLI\Traits\Wizard;
 #[Cli(
     command: 'db:seed',
     description: 'Run database seeders',
-    usage: 'db:seed [--type=app|kernel|module] [--module=ModuleName]',
+    usage: 'db:seed [--type=app|module] [--module=ModuleName]',
     examples: [
         'db:seed --type=app',
         'db:seed --type=module --module=Blog',
@@ -27,7 +27,7 @@ final class SeedCommand extends Command
 {
     use Wizard;
 
-    #[Arg(name: 'type', description: 'Seeder type: app, kernel, module', required: true, validate: 'app|kernel|module')]
+    #[Arg(name: 'type', description: 'Seeder type: app, module', required: true, validate: 'app|module')]
     private ?string $type = null;
     #[Arg(name: 'module', description: 'Module name if type=module', required: false)]
     private ?string $module = null;
@@ -46,7 +46,6 @@ final class SeedCommand extends Command
 
         $managerType = match ($type) {
             'app' => 'app',
-            'kernel' => 'core',
             'module' => 'module',
             default => 'all',
         };

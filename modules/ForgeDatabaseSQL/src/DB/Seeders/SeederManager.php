@@ -6,6 +6,8 @@ declare(strict_types=1);
 namespace App\Modules\ForgeDatabaseSQL\DB\Seeders;
 
 use Forge\Core\Contracts\Database\DatabaseConnectionInterface;
+use Forge\Core\Helpers\ModuleHelper;
+use Forge\Core\Structure\StructureResolver;
 use Forge\Traits\StringHelper;
 use PDO;
 use ReflectionException;
@@ -17,12 +19,12 @@ final class SeederManager
     use StringHelper;
 
     private const string SEEDERS_TABLE = 'forge_seeders';
-    private const string CORE_SEEDERS_PATH = BASE_PATH . '/kernel/Database/Seeders';
-    private const string APP_SEEDERS_PATH = BASE_PATH . '/app/Database/Seeders';
     private const string MODULES_PATH = BASE_PATH . '/modules';
 
-    public function __construct(private DatabaseConnectionInterface $connection)
-    {
+    public function __construct(
+        private DatabaseConnectionInterface $connection,
+        private readonly ?StructureResolver $structureResolver = null,
+    ) {
         $this->ensureSeedersTable();
     }
 
@@ -72,12 +74,10 @@ final class SeederManager
 
         $paths = match ($type) {
             'module' => $this->getModuleSeeders($module),
-            'app' => glob(self::APP_SEEDERS_PATH . '/*.php'),
-            'core' => glob(self::CORE_SEEDERS_PATH . '/*.php'),
-            'tenants' => glob(self::APP_SEEDERS_PATH . '/Tenants/*.php'),
+            'app' => $this->getAppSeederFiles(),
+            'tenants' => $this->getTenantSeederFiles(),
             'all' => array_merge(
-                glob(self::CORE_SEEDERS_PATH . '/*.php'),
-                glob(self::APP_SEEDERS_PATH . '/*.php'),
+                $this->getAppSeederFiles(),
                 $this->getModuleSeeders()
             ),
             default => [],
@@ -90,6 +90,43 @@ final class SeederManager
     {
         $stmt = $this->connection->query("SELECT seeder FROM " . self::SEEDERS_TABLE);
         return $stmt->fetchAll(PDO::FETCH_COLUMN);
+    }
+
+    private function getAppSeederFiles(): array
+    {
+        $dir = $this->resolveAppSeedersPath();
+        return $dir !== null ? glob($dir . '/*.php') : [];
+    }
+
+    private function getTenantSeederFiles(): array
+    {
+        $dir = $this->resolveAppSeedersPath();
+        if ($dir === null) {
+            return [];
+        }
+        $tenantDir = $dir . '/Tenants';
+        return is_dir($tenantDir) ? glob($tenantDir . '/*.php') : [];
+    }
+
+    private function resolveAppSeedersPath(): ?string
+    {
+        if ($this->structureResolver) {
+            try {
+                $path = $this->structureResolver->getAppPath('seeders');
+                $fullPath = BASE_PATH . '/' . $path;
+                return is_dir($fullPath) ? $fullPath : null;
+            } catch (\InvalidArgumentException $e) {
+                return $this->getDefaultAppSeedersPath();
+            }
+        }
+
+        return $this->getDefaultAppSeedersPath();
+    }
+
+    private function getDefaultAppSeedersPath(): ?string
+    {
+        $fullPath = BASE_PATH . '/app/Database/Seeders';
+        return is_dir($fullPath) ? $fullPath : null;
     }
 
     private function getModuleSeeders(?string $target = null): array
@@ -107,13 +144,39 @@ final class SeederManager
             if ($target && $module !== $target) {
                 continue;
             }
-            $path = self::MODULES_PATH . "/{$module}/src/Database/Seeders";
-            if (is_dir($path)) {
+
+            if (ModuleHelper::isModuleDisabled($module)) {
+                continue;
+            }
+
+            $path = $this->resolveModuleSeedersPath($module);
+            if ($path !== null && is_dir($path)) {
                 $result = array_merge($result, glob($path . '/*.php'));
             }
         }
 
         return $result;
+    }
+
+    private function resolveModuleSeedersPath(string $moduleName): ?string
+    {
+        if ($this->structureResolver) {
+            try {
+                $path = $this->structureResolver->getModulePath($moduleName, 'seeders');
+                $fullPath = self::MODULES_PATH . '/' . $moduleName . '/' . $path;
+                return is_dir($fullPath) ? $fullPath : null;
+            } catch (\InvalidArgumentException $e) {
+                return $this->getDefaultModuleSeedersPath($moduleName);
+            }
+        }
+
+        return $this->getDefaultModuleSeedersPath($moduleName);
+    }
+
+    private function getDefaultModuleSeedersPath(string $moduleName): ?string
+    {
+        $fullPath = self::MODULES_PATH . '/' . $moduleName . '/src/Database/Seeders';
+        return is_dir($fullPath) ? $fullPath : null;
     }
 
     /**
@@ -213,8 +276,7 @@ final class SeederManager
     private function findSeederPath(string $filename): ?string
     {
         $paths = array_merge(
-            glob(self::CORE_SEEDERS_PATH . '/*.php'),
-            glob(self::APP_SEEDERS_PATH . '/*.php'),
+            $this->getAppSeederFiles(),
             $this->getModuleSeeders()
         );
 
@@ -263,32 +325,39 @@ final class SeederManager
     {
         $paths = [];
 
-        if ($type === null || $type === 'core' || $type === 'all') {
-            $paths['core'] = [self::CORE_SEEDERS_PATH];
-        }
-
         if ($type === null || $type === 'app' || $type === 'all') {
-            $paths['app'] = [self::APP_SEEDERS_PATH];
+            $dir = $this->resolveAppSeedersPath();
+            if ($dir !== null) {
+                $paths['app'] = [$dir];
+            }
         }
 
         if ($type === null || $type === 'tenants' || $type === 'all') {
-            $dir = self::APP_SEEDERS_PATH . '/Tenants';
-            if (is_dir($dir)) {
-                $paths['tenants'] = [$dir];
+            $dir = $this->resolveAppSeedersPath();
+            if ($dir !== null) {
+                $tenantDir = $dir . '/Tenants';
+                if (is_dir($tenantDir)) {
+                    $paths['tenants'] = [$tenantDir];
+                }
             }
         }
 
         if ($type === null || $type === 'module' || $type === 'all') {
-            $moduleSeederBaseDir = '/src/Database/Seeders';
-
             if ($module) {
-                $dir = BASE_PATH . "/modules/{$module}{$moduleSeederBaseDir}";
-                if (is_dir($dir)) {
+                $dir = $this->resolveModuleSeedersPath($module);
+                if ($dir !== null) {
                     $paths['modules'][] = $dir;
                 }
             } else {
-                $moduleDirs = glob(BASE_PATH . '/modules/*' . $moduleSeederBaseDir, GLOB_ONLYDIR);
-                $paths['modules'] = $moduleDirs;
+                foreach ($this->getAvailableModules() as $moduleName) {
+                    if (ModuleHelper::isModuleDisabled($moduleName)) {
+                        continue;
+                    }
+                    $dir = $this->resolveModuleSeedersPath($moduleName);
+                    if ($dir !== null) {
+                        $paths['modules'][] = $dir;
+                    }
+                }
             }
         }
 
@@ -310,5 +379,17 @@ final class SeederManager
         }
 
         return $seeders;
+    }
+
+    private function getAvailableModules(): array
+    {
+        if (!is_dir(self::MODULES_PATH)) {
+            return [];
+        }
+
+        return array_filter(scandir(self::MODULES_PATH), function ($item) {
+            return is_dir(self::MODULES_PATH . "/" . $item) &&
+                !in_array($item, [".", ".."]);
+        });
     }
 }

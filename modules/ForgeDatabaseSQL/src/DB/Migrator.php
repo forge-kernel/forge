@@ -6,6 +6,7 @@ namespace App\Modules\ForgeDatabaseSQL\DB;
 
 use App\Modules\ForgeDatabaseSQL\DB\Attributes\GroupMigration;
 use App\Modules\ForgeDatabaseSQL\DB\Migrations\Migration;
+use App\Modules\ForgeDatabaseSQL\Services\MigrationPathResolverService;
 use App\Modules\ForgeDatabaseSQL\DB\Schema\MySqlFormatter;
 use App\Modules\ForgeDatabaseSQL\DB\Schema\PostgreSqlFormatter;
 use App\Modules\ForgeDatabaseSQL\DB\Schema\SqliteFormatter;
@@ -13,7 +14,6 @@ use Forge\Core\Contracts\Database\DatabaseConnectionInterface;
 use Forge\Core\DI\Attributes\Migration as MigrationAttribute;
 use Forge\Core\DI\Container;
 use Forge\Core\Helpers\FileExistenceCache;
-use Forge\Core\Helpers\ModuleHelper;
 use Forge\Core\Services\AttributeDiscoveryService;
 use Forge\Core\Structure\StructureResolver;
 use Forge\Traits\StringHelper;
@@ -30,11 +30,9 @@ final class Migrator
     use OutputHelper;
 
     private const string MIGRATIONS_TABLE = "forge_migrations";
-    private const string CORE_MIGRATIONS_PATH =
-        BASE_PATH . "/kernel/Database/Migrations";
-    private const string MODULES_PATH = BASE_PATH . "/modules";
     private ?int $currentBatch = null;
     private ?StructureResolver $structureResolver = null;
+    private ?MigrationPathResolverService $pathResolver = null;
     private ?Container $container = null;
 
     public function __construct(
@@ -43,10 +41,17 @@ final class Migrator
     ) {
         $this->container = $container;
         $this->ensureMigrationsTable();
-        if ($container && $container->has(StructureResolver::class)) {
-            $this->structureResolver = $container->get(
-                StructureResolver::class,
-            );
+        if ($container) {
+            if ($container->has(StructureResolver::class)) {
+                $this->structureResolver = $container->get(
+                    StructureResolver::class,
+                );
+            }
+            if ($container->has(MigrationPathResolverService::class)) {
+                $this->pathResolver = $container->get(
+                    MigrationPathResolverService::class,
+                );
+            }
         }
     }
 
@@ -81,7 +86,7 @@ final class Migrator
     /**
      * Retrieves the list of migrations that are pending to be run based on filters (for preview).
      *
-     * @param string|null $scope Defaults to 'all'. The type of migrations to preview: 'all', 'app', 'core', or 'module'.
+     * @param string|null $scope Defaults to 'all'. The type of migrations to preview: 'all', 'app', or 'module'.
      * @throws ReflectionException
      */
     public function previewRun(
@@ -172,30 +177,9 @@ final class Migrator
     ): array {
         $files = [];
 
-        $paths = [];
-        switch ($scope) {
-            case "core":
-                $paths[] = self::CORE_MIGRATIONS_PATH;
-                break;
-            case "app":
-                $appMigrationsPath = $this->getAppMigrationsPath();
-                $paths[] = $appMigrationsPath;
-                break;
-            case "module":
-                $paths = $this->getModuleMigrationPaths($module);
-                break;
-            case "all":
-                $paths[] = self::CORE_MIGRATIONS_PATH;
-                $appMigrationsPath = $this->getAppMigrationsPath();
-                $paths[] = $appMigrationsPath;
-                $paths = array_merge(
-                    $paths,
-                    $this->getModuleMigrationPaths(null),
-                );
-                break;
-            default:
-                break;
-        }
+        $paths = $this->pathResolver
+            ? $this->pathResolver->getMigrationPaths($scope, $module)
+            : [];
 
         foreach ($paths as $path) {
             if (is_dir($path)) {
@@ -224,8 +208,15 @@ final class Migrator
         string $scope,
         ?string $module,
     ): array {
+        if (!$this->pathResolver) {
+            return [];
+        }
+
         $discoveryService = new AttributeDiscoveryService();
-        $basePaths = $this->getBasePathsForMigrationDiscovery($scope, $module);
+        $basePaths = $this->pathResolver->getBasePathsForDiscovery(
+            $scope,
+            $module,
+        );
 
         $classMap = $discoveryService->discover($basePaths, [
             MigrationAttribute::class,
@@ -243,7 +234,7 @@ final class Migrator
                             FileExistenceCache::exists($filepath)
                         ) {
                             if (
-                                $this->matchesScopeAndModule(
+                                $this->pathResolver->matchesScopeAndModule(
                                     $filepath,
                                     $scope,
                                     $module,
@@ -261,208 +252,7 @@ final class Migrator
         return $files;
     }
 
-    /**
-     * Get base paths for migration discovery based on scope
-     *
-     * @return array<string>
-     */
-    private function getBasePathsForMigrationDiscovery(
-        string $scope,
-        ?string $module,
-    ): array {
-        $basePaths = [];
 
-        switch ($scope) {
-            case "core":
-                $basePaths[] = "kernel";
-                break;
-            case "app":
-                $basePaths[] = "app";
-                break;
-            case "module":
-                if ($module) {
-                    $basePaths[] = "modules/$module/src";
-                }
-                break;
-            case "all":
-                $basePaths[] = "app";
-                $basePaths[] = "kernel";
-                if (is_dir(self::MODULES_PATH)) {
-                    $modules = array_filter(
-                        scandir(self::MODULES_PATH),
-                        fn($item) => is_dir(self::MODULES_PATH . "/" . $item) &&
-                        !in_array($item, [".", ".."]),
-                    );
-                    foreach ($modules as $moduleName) {
-                        if (!ModuleHelper::isModuleDisabled($moduleName)) {
-                            $basePaths[] = "modules/$moduleName/src";
-                        }
-                    }
-                }
-                break;
-        }
-
-        return $basePaths;
-    }
-
-    /**
-     * Check if a migration file matches the requested scope and module
-     */
-    private function matchesScopeAndModule(
-        string $filepath,
-        string $scope,
-        ?string $module,
-    ): bool {
-        $relativePath = str_replace(BASE_PATH . "/", "", $filepath);
-
-        if ($scope === "core") {
-            return str_starts_with($relativePath, "kernel/");
-        }
-
-        if ($scope === "app") {
-            if ($this->structureResolver) {
-                try {
-                    $appMigrationsPath = $this->structureResolver->getAppPath(
-                        "migrations",
-                    );
-                    return str_starts_with($relativePath, $appMigrationsPath);
-                } catch (\InvalidArgumentException $e) {
-                    return str_starts_with(
-                        $relativePath,
-                        "app/Database/Migrations",
-                    );
-                }
-            }
-            return str_starts_with($relativePath, "app/");
-        }
-
-        if ($scope === "module" && $module) {
-            $modulePath = "modules/$module/";
-            if (str_starts_with($relativePath, $modulePath)) {
-                if ($this->structureResolver) {
-                    try {
-                        $moduleMigrationsPath = $this->structureResolver->getModulePath(
-                            $module,
-                            "migrations",
-                        );
-                        $expectedPath = "$modulePath$moduleMigrationsPath";
-                        return str_starts_with($relativePath, $expectedPath);
-                    } catch (\InvalidArgumentException $e) {
-                        return str_starts_with(
-                            $relativePath,
-                            "$modulePath" . "src/Database/Migrations",
-                        );
-                    }
-                }
-                return true;
-            }
-            return false;
-        }
-
-        return true;
-    }
-
-    private function getAppMigrationsPath(): string
-    {
-        if ($this->structureResolver) {
-            try {
-                $appMigrationsPath = $this->structureResolver->getAppPath(
-                    "migrations",
-                );
-                return BASE_PATH . "/" . $appMigrationsPath;
-            } catch (\InvalidArgumentException $e) {
-                return BASE_PATH . "/app/Database/Migrations";
-            }
-        }
-        return BASE_PATH . "/app/Database/Migrations";
-    }
-
-    /**
-     * Returns an array of directory paths for module migrations.
-     * @param string|null $target Target module name, or null for all modules.
-     * @return array<string> List of full directory paths
-     */
-    private function getModuleMigrationPaths(?string $target = null): array
-    {
-        $paths = [];
-        if (!is_dir(self::MODULES_PATH)) {
-            return [];
-        }
-
-        $modules = $target
-            ? [$target]
-            : array_filter(scandir(self::MODULES_PATH), function ($item) {
-                return is_dir(self::MODULES_PATH . "/" . $item) &&
-                    !in_array($item, [".", ".."]);
-            });
-
-        foreach ($modules as $moduleName) {
-            if (ModuleHelper::isModuleDisabled($moduleName)) {
-                continue;
-            }
-
-            if ($this->structureResolver) {
-                try {
-                    $moduleMigrationsPath = $this->structureResolver->getModulePath(
-                        $moduleName,
-                        "migrations",
-                    );
-                    $central =
-                        self::MODULES_PATH .
-                        "/" .
-                        $moduleName .
-                        "/" .
-                        $moduleMigrationsPath;
-                    if (is_dir($central)) {
-                        $paths[] = $central;
-                    }
-
-                    $tenant = $central . "/Tenants";
-                    if (is_dir($tenant)) {
-                        $paths[] = $tenant;
-                    }
-                } catch (\InvalidArgumentException $e) {
-                    $central =
-                        self::MODULES_PATH .
-                        "/" .
-                        $moduleName .
-                        "/src/Database/Migrations";
-                    if (is_dir($central)) {
-                        $paths[] = $central;
-                    }
-
-                    $tenant =
-                        self::MODULES_PATH .
-                        "/" .
-                        $moduleName .
-                        "/src/Database/Migrations/Tenants";
-                    if (is_dir($tenant)) {
-                        $paths[] = $tenant;
-                    }
-                }
-            } else {
-                $central =
-                    self::MODULES_PATH .
-                    "/" .
-                    $moduleName .
-                    "/src/Database/Migrations";
-                if (is_dir($central)) {
-                    $paths[] = $central;
-                }
-
-                $tenant =
-                    self::MODULES_PATH .
-                    "/" .
-                    $moduleName .
-                    "/src/Database/Migrations/Tenants";
-                if (is_dir($tenant)) {
-                    $paths[] = $tenant;
-                }
-            }
-        }
-
-        return $paths;
-    }
 
     /**
      * Uses reflection and path analysis to determine migration metadata.
@@ -489,9 +279,7 @@ final class Migrator
 
         $relativePath = str_replace(BASE_PATH . "/", "", $path);
 
-        if (str_starts_with($relativePath, "kernel/Database/Migrations")) {
-            $type = "core";
-        } elseif (str_starts_with($relativePath, "modules/")) {
+        if (str_starts_with($relativePath, "modules/")) {
             $type = "module";
             if (preg_match("/^modules\/([^\/]+)\//", $relativePath, $matches)) {
                 $module = $matches[1];
@@ -604,7 +392,7 @@ final class Migrator
     /**
      * Runs pending migrations based on scope and group filters.
      *
-     * @param string|null $scope Defaults to 'all'. The type of migrations to run: 'all', 'app', 'core', or 'module'.
+     * @param string|null $scope Defaults to 'all'. The type of migrations to run: 'all', 'app', or 'module'.
      * @param string|null $module The specific module name if scope is 'module'.
      * @param string|null $group The group name to filter migrations by.
      * @throws ReflectionException
@@ -758,7 +546,7 @@ final class Migrator
      * Rollback migrations based on complex filters.
      *
      * @param int $steps Number of batches to roll back (default 1). Ignored if $batch is set.
-     * @param string|null $type Filter by type ('all', 'app', 'core', 'module').
+     * @param string|null $type Filter by type ('all', 'app', 'module').
      * @param string|null $module Filter by specific module name.
      * @param string|null $group Filter by migration group name.
      * @param int|null $batch Filter by specific batch number.

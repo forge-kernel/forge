@@ -17,7 +17,7 @@ use Forge\Traits\StringHelper;
 #[Cli(
     command: 'db:seed:preview',
     description: 'Preview all available seeders and their status.',
-    usage: 'seed:preview [--type=all|app|kernel|module] [--module=ModuleName]',
+    usage: 'seed:preview [--type=all|app|module] [--module=ModuleName]',
     examples: [
         'db:seed:preview --type=app',
         'db:seed:preview --type=module --module=Blog',
@@ -29,7 +29,7 @@ final class SeedPreviewCommand extends Command
     use StringHelper;
     use Wizard;
 
-    #[Arg(name: 'type', description: 'Seeder type: all, app, kernel, module, tenants', validate: 'all|app|kernel|module|tenants')]
+    #[Arg(name: 'type', description: 'Seeder type: all, app, module, tenants', validate: 'all|app|module|tenants')]
     private string $type = 'all';
     #[Arg(name: 'module', description: 'Module name if type=module', required: false)]
     private ?string $module = null;

@@ -11,6 +11,7 @@ use Forge\CLI\Traits\OutputHelper;
 use Forge\Core\Config\Config;
 use Forge\Core\DI\Attributes\Service;
 use Forge\Core\Module\Attributes\Module;
+use Forge\Core\Structure\StructureResolver;
 use Forge\Core\Module\Attributes\PostInstall;
 use Forge\Core\Module\Attributes\PostUninstall;
 use Forge\Core\Module\Attributes\Provides;
@@ -42,6 +43,7 @@ final class PackageManagerService implements PackageManagerInterface
     public function __construct(
         private readonly Config $config,
         private readonly ConfigGeneratorService $configGenerator,
+        private readonly ?StructureResolver $structureResolver = null,
     ) {
         $this->registries = $this->config->get("source_list.registry", []);
         $cacheTtlValue = $this->config->get("source_list.cache_ttl", 3600);
@@ -444,7 +446,15 @@ final class PackageManagerService implements PackageManagerInterface
 
             $this->info("Installing {$moduleName}" . ($version ? " v{$version}" : "") . " from forge.json...");
 
-            $this->installModule($moduleName, $version);
+            try {
+                $this->installModule($moduleName, $version);
+            } catch (\Throwable $e) {
+                $this->error(
+                    "Failed to install {$moduleName}: " . $e->getMessage(),
+                );
+                $hadErrors = true;
+                continue;
+            }
 
             if (!is_dir($this->getModulesPath() . $moduleDirName)) {
                 $hadErrors = true;
@@ -1019,6 +1029,11 @@ final class PackageManagerService implements PackageManagerInterface
             }
         }
 
+        $this->registerModuleAutoloadPath(
+            $moduleInstallFolderName,
+            $moduleInstallPath,
+        );
+
         $this->configGenerator->generateConfigFromModule(
             $moduleInstallPath,
             $moduleName,
@@ -1487,12 +1502,46 @@ final class PackageManagerService implements PackageManagerInterface
 
     public function moduleHasMigrations(string $module): bool
     {
-        return is_dir(BASE_PATH . "/modules/{$module}/src/Database/Migrations");
+        $path = $this->resolveModuleStructurePath($module, 'migrations');
+        return $path !== null && is_dir($path);
     }
 
     public function moduleHasSeeders(string $module): bool
     {
-        return is_dir(BASE_PATH . "/modules/{$module}/src/Database/Seeders");
+        $path = $this->resolveModuleStructurePath($module, 'seeders');
+        return $path !== null && is_dir($path);
+    }
+
+    private function resolveModuleStructurePath(string $module, string $type): ?string
+    {
+        $moduleDir = $this->toPascalCase($module);
+
+        if ($this->structureResolver) {
+            try {
+                $relativePath = $this->structureResolver->getModulePath($moduleDir, $type);
+                $fullPath = BASE_PATH . "/modules/{$moduleDir}/{$relativePath}";
+                return is_dir($fullPath) ? $fullPath : null;
+            } catch (\InvalidArgumentException $e) {
+                return $this->getDefaultModuleStructurePath($moduleDir, $type);
+            }
+        }
+
+        return $this->getDefaultModuleStructurePath($moduleDir, $type);
+    }
+
+    private function getDefaultModuleStructurePath(string $moduleDir, string $type): ?string
+    {
+        $defaultPaths = [
+            'migrations' => "/modules/{$moduleDir}/src/Database/Migrations",
+            'seeders' => "/modules/{$moduleDir}/src/Database/Seeders",
+        ];
+
+        if (!isset($defaultPaths[$type])) {
+            return null;
+        }
+
+        $fullPath = BASE_PATH . $defaultPaths[$type];
+        return is_dir($fullPath) ? $fullPath : null;
     }
 
     public function moduleHasAssets(string $module): bool

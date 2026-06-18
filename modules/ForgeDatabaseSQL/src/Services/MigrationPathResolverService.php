@@ -14,7 +14,6 @@ final class MigrationPathResolverService
 {
     use StringHelper;
 
-    private const string CORE_MIGRATIONS_PATH = BASE_PATH . "/kernel/Database/Migrations";
     private const string MODULES_PATH = BASE_PATH . "/modules";
 
     public function __construct(
@@ -28,8 +27,6 @@ final class MigrationPathResolverService
     public function getMigrationPaths(?string $scope = "all", ?string $module = null): array
     {
         switch ($scope) {
-            case "core":
-                return $this->getCorePaths();
             case "app":
                 return $this->getAppPaths();
             case "module":
@@ -41,20 +38,12 @@ final class MigrationPathResolverService
     }
 
     /**
-     * Get core migration paths
-     */
-    public function getCorePaths(): array
-    {
-        return [self::CORE_MIGRATIONS_PATH];
-    }
-
-    /**
      * Get app migration paths
      */
     public function getAppPaths(): array
     {
         $appPath = $this->resolveAppMigrationsPath();
-        return [$appPath];
+        return $appPath !== null ? [$appPath] : [];
     }
 
     /**
@@ -84,12 +73,11 @@ final class MigrationPathResolverService
     }
 
     /**
-     * Get all migration paths (core + app + modules)
+     * Get all migration paths (app + modules)
      */
     public function getAllPaths(): array
     {
         $paths = array_merge(
-            $this->getCorePaths(),
             $this->getAppPaths(),
             $this->getModulePaths()
         );
@@ -103,10 +91,6 @@ final class MigrationPathResolverService
     public function matchesScopeAndModule(string $filepath, ?string $scope, ?string $module): bool
     {
         $relativePath = str_replace(BASE_PATH . "/", "", $filepath);
-
-        if ($scope === "core") {
-            return str_starts_with($relativePath, "kernel/");
-        }
 
         if ($scope === "app") {
             return $this->matchesAppPath($relativePath);
@@ -125,10 +109,6 @@ final class MigrationPathResolverService
     public function extractTypeFromPath(string $path): string
     {
         $relativePath = str_replace(BASE_PATH . "/", "", $path);
-
-        if (str_starts_with($relativePath, "kernel/Database/Migrations")) {
-            return "core";
-        }
 
         if (str_starts_with($relativePath, "modules/")) {
             return "module";
@@ -154,18 +134,25 @@ final class MigrationPathResolverService
     /**
      * Resolve app migrations path using StructureResolver or fallback
      */
-    private function resolveAppMigrationsPath(): string
+    private function resolveAppMigrationsPath(): ?string
     {
         if ($this->structureResolver) {
             try {
                 $appMigrationsPath = $this->structureResolver->getAppPath("migrations");
-                return BASE_PATH . "/" . $appMigrationsPath;
+                $fullPath = BASE_PATH . "/" . $appMigrationsPath;
+                return is_dir($fullPath) ? $fullPath : null;
             } catch (\InvalidArgumentException $e) {
-                return BASE_PATH . "/app/Database/Migrations";
+                return $this->getDefaultAppPath();
             }
         }
 
-        return BASE_PATH . "/app/Database/Migrations";
+        return $this->getDefaultAppPath();
+    }
+
+    private function getDefaultAppPath(): ?string
+    {
+        $fullPath = BASE_PATH . "/app/Database/Migrations";
+        return is_dir($fullPath) ? $fullPath : null;
     }
 
     /**
@@ -277,45 +264,18 @@ final class MigrationPathResolverService
     }
 
     /**
-     * Get base paths for migration discovery
+     * Get base paths for migration discovery using configured structure paths.
+     * Returns migration directories relative to BASE_PATH so attribute discovery
+     * only scans the folders the user/module actually configured.
      */
     public function getBasePathsForDiscovery(?string $scope, ?string $module): array
     {
-        $basePaths = [];
+        $paths = $this->getMigrationPaths($scope, $module);
 
-        switch ($scope) {
-            case "core":
-                $basePaths[] = "kernel";
-                break;
-            case "app":
-                $basePaths[] = "app";
-                break;
-            case "module":
-                if ($module) {
-                    $basePaths[] = "modules/$module/src";
-                }
-                break;
-            case "all":
-                $basePaths[] = "app";
-                $basePaths[] = "kernel";
-
-                if (is_dir(self::MODULES_PATH)) {
-                    $modules = array_filter(
-                        scandir(self::MODULES_PATH),
-                        fn($item) => is_dir(self::MODULES_PATH . "/" . $item) &&
-                        !in_array($item, [".", ".."]),
-                    );
-
-                    foreach ($modules as $moduleName) {
-                        if (!ModuleHelper::isModuleDisabled($moduleName)) {
-                            $basePaths[] = "modules/$moduleName/src";
-                        }
-                    }
-                }
-                break;
-        }
-
-        return $basePaths;
+        return array_map(
+            fn(string $path): string => str_replace(BASE_PATH . "/", "", $path),
+            $paths,
+        );
     }
 
     /**
