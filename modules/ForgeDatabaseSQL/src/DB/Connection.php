@@ -9,6 +9,7 @@ use Forge\Core\Contracts\Database\DatabaseConfigInterface;
 use Forge\Core\Contracts\Database\DatabaseConnectionInterface;
 use Forge\Core\DI\Container;
 use Forge\Core\Helpers\Debuger;
+use Forge\Core\Observability\ObservabilityManager;
 use PDO;
 use PDOException;
 use PDOStatement;
@@ -106,21 +107,23 @@ class Connection implements DatabaseConnectionInterface
   /**
    * Collect database query for debugging.
    */
-  public function collectQuery(string $query, array $bindings, float $timeMs, string $method): void
-  {
-    try {
-      $container = Container::getInstance();
-      if ($container->has(DatabaseCollector::class)) {
-        /** @var DatabaseCollector $collector */
-        $collector = $container->get(DatabaseCollector::class);
-        $origin = Debuger::backtraceOrigin();
-        $connectionName = $this->getDriver();
-        $collector->addQuery($query, $bindings, $timeMs, $connectionName, $origin);
-      }
-    } catch (\Throwable $e) {
+    public function collectQuery(string $query, array $bindings, float $timeMs, string $method): void
+    {
+        try {
+            $container = Container::getInstance();
+            if ($container->has(DatabaseCollector::class)) {
+                /** @var DatabaseCollector $collector */
+                $collector = $container->get(DatabaseCollector::class);
+                $origin = Debuger::backtraceOrigin();
+                $connectionName = $this->getDriver();
+                $collector->addQuery($query, $bindings, $timeMs, $connectionName, $origin);
+            }
 
+            ObservabilityManager::getInstance()?->recordQuery($query, $bindings, $timeMs, Debuger::backtraceOrigin());
+        } catch (\Throwable $e) {
+
+        }
     }
-  }
 
   public function getDriver(): string
   {

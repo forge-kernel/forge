@@ -53,6 +53,7 @@ final class ServeCommand extends Command
 
         if (PHP_SAPI === 'cli') {
             ModuleSetup::compileHooks();
+            RouterHookManager::discover();
             RouterHookManager::compile();
         }
 

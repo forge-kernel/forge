@@ -89,12 +89,56 @@ final class RouterHookManager
         $cacheFile = self::$cacheFile;
         if (FileExistenceCache::exists($cacheFile)) {
             self::loadCompiled();
-            return;
+
+            // If the compiled cache is empty or failed to load, fall through
+            // and rediscover hooks from the module registry.
+            if (!empty(self::$hooks)) {
+                self::$compiledLoaded = true;
+                return;
+            }
         }
 
         self::discoverFromModuleRegistry();
         self::compile();
         self::$compiledLoaded = true;
+    }
+
+    /**
+     * Force a full rebuild of the router hook cache from the module registry.
+     * Useful for cache:warm and manual cache invalidation.
+     */
+    public static function rebuild(): void
+    {
+        if (self::$cacheFile === null) {
+            self::init();
+        }
+
+        self::debugReset();
+
+        if (FileExistenceCache::exists(self::$cacheFile)) {
+            @unlink(self::$cacheFile);
+        }
+
+        self::discoverFromModuleRegistry();
+        self::compile();
+        self::$compiledLoaded = true;
+    }
+
+    /**
+     * Clear the compiled router hook cache without rebuilding it.
+     * The next request will rediscover hooks automatically.
+     */
+    public static function clearCompiled(): void
+    {
+        if (self::$cacheFile === null) {
+            self::init();
+        }
+
+        self::debugReset();
+
+        if (FileExistenceCache::exists(self::$cacheFile)) {
+            @unlink(self::$cacheFile);
+        }
     }
 
     private static function discoverFromModuleRegistry(): void

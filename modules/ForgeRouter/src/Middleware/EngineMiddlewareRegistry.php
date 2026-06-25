@@ -19,6 +19,13 @@ final class EngineMiddlewareRegistry
     {
         return [
             // Global middlewares
+            \App\Modules\ForgeRouter\Http\Middlewares\ObservabilityMiddleware::class => [
+                'class' => \App\Modules\ForgeRouter\Http\Middlewares\ObservabilityMiddleware::class,
+                'group' => 'global',
+                'order' => -1,
+                'enabled' => true,
+                'description' => 'Captures request traces and performance data with minimal overhead',
+            ],
             \App\Modules\ForgeRouter\Http\Middlewares\RateLimitMiddleware::class => [
                 'class' => \App\Modules\ForgeRouter\Http\Middlewares\RateLimitMiddleware::class,
                 'group' => 'global',

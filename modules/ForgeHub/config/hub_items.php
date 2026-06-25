@@ -6,7 +6,7 @@ return array (
     'hubItems' => 
     array (
     ),
-    'mtime' => 1781816473,
+    'mtime' => 1781824345,
     'modulePath' => '/Users/acidlake/Development/UPPER/Forge/repos/forge-v3/modules/ForgeDatabaseSQL',
   ),
   'App\\Modules\\ForgeComponents\\ForgeComponentsModule' => 
@@ -22,7 +22,7 @@ return array (
     'hubItems' => 
     array (
     ),
-    'mtime' => 1781815156,
+    'mtime' => 1781826764,
     'modulePath' => '/Users/acidlake/Development/UPPER/Forge/repos/forge-v3/modules/ForgePackageManager',
   ),
   'App\\Modules\\ForgeSqlOrm\\ForgeSqlOrmModule' => 
@@ -175,8 +175,18 @@ return array (
         array (
         ),
       ),
+      8 => 
+      array (
+        'label' => 'Observability',
+        'route' => '/hub/observability',
+        'icon' => 'chart-line',
+        'order' => 10,
+        'permissions' => 
+        array (
+        ),
+      ),
     ),
-    'mtime' => 1781822880,
+    'mtime' => 1782237687,
     'modulePath' => '/Users/acidlake/Development/UPPER/Forge/repos/forge-v3/modules/ForgeHub',
   ),
   'App\\Modules\\ForgeLanguage\\ForgeLanguageModule' => 
@@ -240,7 +250,7 @@ return array (
     'hubItems' => 
     array (
     ),
-    'mtime' => 1781815751,
+    'mtime' => 1781828326,
     'modulePath' => '/Users/acidlake/Development/UPPER/Forge/repos/forge-v3/modules/ForgeAuth',
   ),
   'App\\Modules\\ForgeDeployment\\ForgeDeploymentModule' => 
@@ -266,7 +276,7 @@ return array (
     'hubItems' => 
     array (
     ),
-    'mtime' => 1781822868,
+    'mtime' => 1781823627,
     'modulePath' => '/Users/acidlake/Development/UPPER/Forge/repos/forge-v3/modules/ForgeEvents',
   ),
   'App\\Modules\\ForgeNotification\\ForgeNotificationModule' => 
@@ -306,7 +316,7 @@ return array (
     'hubItems' => 
     array (
     ),
-    'mtime' => 1781815993,
+    'mtime' => 1782392714,
     'modulePath' => '/Users/acidlake/Development/UPPER/Forge/repos/forge-v3/modules/ForgeWire',
   ),
   'App\\Modules\\ForgeTesting\\ForgeTestingModule' => 

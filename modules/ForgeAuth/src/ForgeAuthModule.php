@@ -13,15 +13,12 @@ use Forge\Core\Module\Attributes\PostInstall;
 use Forge\Core\Module\Attributes\PostUninstall;
 use Forge\Core\Module\Attributes\Repository;
 use App\Modules\ForgeAuth\Contracts\ForgeAuthInterface;
-use App\Modules\ForgeAuth\Contracts\UserProviderInterface;
 use App\Modules\ForgeAuth\Services\ForgeAuthService;
-use Forge\Core\DI\Attributes\Service;
 use Forge\CLI\Traits\OutputHelper;
+use Forge\Core\Module\ModuleLoader\Loader;
 use Forge\Core\Module\Attributes\Structure;
 
-#[Service]
-#[Module(
-    name: 'ForgeAuth',
+#[Module(name: 'ForgeAuth',
     version: '2.0.4',
     description: 'An Auth module by forge.',
     order: 99,

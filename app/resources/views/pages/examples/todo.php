@@ -1,5 +1,3 @@
-<?php layout('main') ?>
-
 <div fw:shared>
     <div <?= fw_id('todo-app') ?> class="container my-5" fw:depends="counter">
         <h1 class="text-3xl" fw:target>Reactive Todo List counter: <?= $counter ?></h1>
@@ -15,23 +13,23 @@
             <div fw:target>
                 <ul class="list-group">
                     <?php foreach ($todos as $todo): ?>
-                        <li class="list-group-item d-flex justify-content-between align-items-center">
-                            <div>
-                                <input type="checkbox" <?= $todo['done'] ? 'checked' : '' ?> fw:click="toggleTodo"
-                                    fw:param-id="<?= $todo['id'] ?>" class="form-check-input me-2">
-                                <span style="<?= $todo['done'] ? 'text-decoration: line-through;' : '' ?>">
-                                    <?= e($todo['text']) ?>
-                                </span>
-                            </div>
-                            <button class="btn btn-sm btn-danger" fw:click="removeTodo" fw:param-id="<?= $todo['id'] ?>">
-                                &times;
-                            </button>
-                        </li>
+                            <li class="list-group-item d-flex justify-content-between align-items-center">
+                                <div>
+                                    <input type="checkbox" <?= $todo['done'] ? 'checked' : '' ?> fw:click="toggleTodo"
+                                        fw:param-id="<?= $todo['id'] ?>" class="form-check-input me-2">
+                                    <span style="<?= $todo['done'] ? 'text-decoration: line-through;' : '' ?>">
+                                        <?= e($todo['text']) ?>
+                                    </span>
+                                </div>
+                                <button class="btn btn-sm btn-danger" fw:click="removeTodo" fw:param-id="<?= $todo['id'] ?>">
+                                    &times;
+                                </button>
+                            </li>
                     <?php endforeach; ?>
                 </ul>
 
                 <?php if (empty($todos)): ?>
-                    <p class="mt-3 text-muted">You're all caught up!</p>
+                        <p class="mt-3 text-muted">You're all caught up!</p>
                 <?php endif; ?>
             </div>
 

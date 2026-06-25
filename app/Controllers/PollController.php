@@ -11,6 +11,7 @@ use App\Modules\ForgeRouter\Http\Attributes\Middleware;
 use App\Modules\ForgeRouter\Traits\ControllerHelper;
 use App\Modules\ForgeRouter\Routing\Route;
 use App\Modules\ForgeRouter\Http\Response;
+use App\Modules\ForgeRouter\Attributes\Layout;
 
 #[Middleware("web")]
 #[Reactive]
@@ -29,6 +30,7 @@ final class PollController
     public bool $hasVoted = false;
 
     #[Route("/examples/poll")]
+    #[Layout('main')]
     public function index(): Response
     {
         return $this->view("pages/examples/poll", [

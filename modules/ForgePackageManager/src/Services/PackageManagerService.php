@@ -1135,6 +1135,12 @@ final class PackageManagerService implements PackageManagerInterface
         $registryName = $registryDetails["name"] ?? "unknown";
         $modulePascalName = $this->toPascalCase($moduleName);
 
+        $moduleNamespacePrefix = 'App\\Modules\\' . $moduleInstallFolderName . '\\';
+        $stagingSrcPath = $stagingPath . '/src';
+        if (is_dir($stagingSrcPath)) {
+            \Forge\Core\Autoloader::addPath($moduleNamespacePrefix, $stagingSrcPath);
+        }
+
         $postInstallCommands = $this->detectPostInstallCommands(
             $stagingPath,
             $modulePascalName,
@@ -1149,6 +1155,7 @@ final class PackageManagerService implements PackageManagerInterface
 
             if (!$confirmed) {
                 $this->removeDirectory($stagingPath);
+                \Forge\Core\Autoloader::removePath($moduleNamespacePrefix);
                 $this->warning("Installation of {$moduleName} cancelled by user.");
                 return;
             }
@@ -1161,7 +1168,13 @@ final class PackageManagerService implements PackageManagerInterface
         if (!rename($stagingPath, $moduleInstallPath)) {
             $this->error("Failed to finalize module {$moduleName} installation.");
             $this->removeDirectory($stagingPath);
+            \Forge\Core\Autoloader::removePath($moduleNamespacePrefix);
             return;
+        }
+
+        $installSrcPath = $moduleInstallPath . '/src';
+        if (is_dir($installSrcPath)) {
+            \Forge\Core\Autoloader::addPath($moduleNamespacePrefix, $installSrcPath);
         }
 
         $this->clearAutoloaderCache();

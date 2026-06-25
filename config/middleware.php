@@ -14,6 +14,7 @@
  * AVAILABLE KERNEL MIDDLEWARES:
  *
  * Global Group (applies to all routes):
+ * - \App\Modules\ForgeRouter\Http\Middlewares\ObservabilityMiddleware::class (order: -1) - Request tracing and observability
  * - \App\Modules\ForgeRouter\Http\Middlewares\RateLimitMiddleware::class (order: 0) - Rate limiting
  * - \App\Modules\ForgeRouter\Http\Middlewares\CircuitBreakerMiddleware::class (order: 1) - Circuit breaker
  * - \App\Modules\ForgeRouter\Http\Middlewares\CorsMiddleware::class (order: 2) - CORS headers
@@ -44,6 +45,7 @@
 
 return [
     "global" => [
+        \App\Modules\ForgeRouter\Http\Middlewares\ObservabilityMiddleware::class,
         \App\Modules\ForgeRouter\Http\Middlewares\RateLimitMiddleware::class,
         \App\Modules\ForgeRouter\Http\Middlewares\CircuitBreakerMiddleware::class,
         \App\Modules\ForgeRouter\Http\Middlewares\CorsMiddleware::class,

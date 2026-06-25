@@ -13,6 +13,7 @@ use App\Modules\ForgeRouter\Traits\ControllerHelper;
 use App\Modules\ForgeRouter\Routing\Route;
 use App\Modules\ForgeRouter\Http\Request;
 use App\Modules\ForgeRouter\Http\Response;
+use App\Modules\ForgeRouter\Attributes\Layout;
 
 #[Reactive]
 #[Middleware("web")]
@@ -46,6 +47,7 @@ final class TodoListController
     public string $newTask = '';
 
     #[Route("/examples/todo")]
+    #[Layout('main')]
     public function index(Request $request): Response
     {
         return $this->view("pages/examples/todo", [

@@ -1,12 +1,3 @@
-<?php
-
-/**
- * @var string $title
- * @var string $userId
- */
-
-layout(name: "main");
-?>
 <div class="bg-gray-100">
     <div class="fixed bottom-0 left-0 w-full bg-white border-t border-gray-200 shadow">
         <div class="container mx-auto px-4 py-2 flex justify-between items-center">

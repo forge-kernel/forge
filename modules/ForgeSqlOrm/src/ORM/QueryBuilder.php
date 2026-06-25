@@ -7,6 +7,7 @@ use App\Modules\ForgeRouter\Collectors\DatabaseCollector;
 use Forge\Core\Contracts\Database\{DatabaseConnectionInterface, QueryBuilderInterface};
 use Forge\Core\DI\Container;
 use Forge\Core\Helpers\Debuger;
+use Forge\Core\Observability\ObservabilityManager;
 use PDOStatement;
 
 final class QueryBuilder implements QueryBuilderInterface
@@ -335,6 +336,8 @@ final class QueryBuilder implements QueryBuilderInterface
         $connectionName = $this->conn->getDriver();
         $collector->addQuery($query, $bindings, $timeMs, $connectionName, $origin);
       }
+
+      ObservabilityManager::getInstance()?->recordQuery($query, $bindings, $timeMs, Debuger::backtraceOrigin());
     } catch (\Throwable $e) {
 
     }

@@ -15,7 +15,7 @@ $layoutProps = array_merge($layoutProps ?? [], [
 ?>
 <div class="fc-admin__layout">
   <?php if (isset($layoutProps['sidebar'])): ?>
-        <?= component(name: 'ForgeComponents:admin/sidebar', props: $layoutProps['sidebar']) ?>
+            <?= component(name: 'ForgeComponents:admin/sidebar', props: $layoutProps['sidebar']) ?>
   <?php endif; ?>
 
   <div class="fc-admin__main">
@@ -26,19 +26,19 @@ $layoutProps = array_merge($layoutProps ?? [], [
     ]) ?>
 
     <?php if (isset($layoutSlots['breadcrumbs'])): ?>
-          <div class="fc-admin__breadcrumbs">
-            <?= raw($layoutSlots['breadcrumbs']) ?>
-          </div>
+              <div class="fc-admin__breadcrumbs">
+                <?= raw($layoutSlots['breadcrumbs']) ?>
+              </div>
     <?php endif; ?>
 
-    <main class="fc-admin__content fc-admin__content--compact">
+    <main class="fc-admin__content fc-admin__content">
       <?= $content ?>
     </main>
 
     <?php if (isset($layoutProps['footer'])): ?>
-          <footer class="fc-admin__footer">
-            <?= $layoutProps['footer'] ?>
-          </footer>
+              <footer class="fc-admin__footer">
+                <?= $layoutProps['footer'] ?>
+              </footer>
     <?php endif; ?>
   </div>
 </div>

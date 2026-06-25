@@ -376,15 +376,22 @@ final class ConfigGeneratorService
         if ($namespace) {
           $className = $namespace . '\\' . pathinfo($file->getFilename(), PATHINFO_FILENAME);
           try {
-            if (class_exists($className)) {
-              $reflectionClass = new ReflectionClass($className);
-              $attributes = $reflectionClass->getAttributes(Module::class);
-              if (!empty($attributes)) {
-                return $className;
+            if (!class_exists($className, false)) {
+              try {
+                require_once $file->getRealPath();
+              } catch (\Throwable $e) {
+                continue;
+              }
+              if (!class_exists($className, false)) {
+                continue;
               }
             }
-          } catch (ReflectionException $e) {
-            // Continue searching
+            $reflectionClass = new ReflectionClass($className);
+            $attributes = $reflectionClass->getAttributes(Module::class);
+            if (!empty($attributes)) {
+              return $className;
+            }
+          } catch (\Throwable $e) {
             continue;
           }
         }

@@ -6,11 +6,14 @@ namespace App\Modules\ForgeHub;
 
 use Forge\Core\DI\Container;
 use Forge\Core\Module\Attributes\Compatibility;
+use Forge\Core\Module\Attributes\ConfigDefaults;
 use Forge\Core\Module\Attributes\Module;
 use Forge\Core\Module\Attributes\Repository;
 use App\Modules\ForgeHub\Contracts\ForgeHubInterface;
 use App\Modules\ForgeHub\Services\ForgeHubService;
 use App\Modules\ForgeHub\Services\HubItemRegistry;
+use App\Modules\ForgeHub\Services\ObservabilityService;
+use App\Modules\ForgeHub\Services\ObservabilityServiceInterface;
 use Forge\Core\DI\Attributes\Service;
 use Forge\CLI\Traits\OutputHelper;
 use Forge\Core\Module\Attributes\HubItem;
@@ -35,9 +38,24 @@ use Forge\Core\Security\PermissionsEnum;
 #[HubItem(label: 'Queue Workers', route: '/hub/queue-workers', icon: ForgeIcon::COMMAND, order: 7)]
 #[HubItem(label: 'Cron Jobs', route: '/hub/cron-jobs', icon: ForgeIcon::CLOCK, order: 8)]
 #[HubItem(label: 'Monitoring', route: '/hub/monitoring', icon: ForgeIcon::MONITOR, order: 9)]
+#[HubItem(label: 'Observability', route: '/hub/observability', icon: ForgeIcon::MONITOR, order: 10)]
 #[Service]
 #[Compatibility(framework: '>=4.15.10', php: '>=8.3')]
 #[Repository(type: 'git', url: 'https://github.com/forge-kernel/kernel-module-registry')]
+#[ConfigDefaults(defaults: [
+    'forge_observability' => [
+        'enabled' => true,
+        'sampling' => [
+            'strategy' => 'adaptive',
+            'base_rate' => 0.1,
+            'slow_threshold_ms' => 200,
+            'slow_query_ms' => 100,
+        ],
+        'storage' => [
+            'retention_days' => 7,
+        ],
+    ],
+])]
 final class ForgeHubModule
 {
     use OutputHelper;
@@ -45,6 +63,7 @@ final class ForgeHubModule
     public function register(Container $container): void
     {
         $container->bind(ForgeHubInterface::class, ForgeHubService::class);
+        $container->bind(ObservabilityServiceInterface::class, ObservabilityService::class);
 
         if ($container->has(HubItemRegistry::class)) {
             $registry = $container->get(HubItemRegistry::class);
