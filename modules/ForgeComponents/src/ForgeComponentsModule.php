@@ -19,7 +19,7 @@ use Forge\Core\Module\Attributes\Structure;
 ])]
 #[Module(
     name: 'ForgeComponents',
-    version: '0.3.4',
+    version: '0.3.5',
     description: 'Primitive reusable UI components with vanilla CSS design system',
     order: 1,
     author: 'Forge Team',
