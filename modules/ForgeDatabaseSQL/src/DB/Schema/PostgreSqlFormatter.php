@@ -13,7 +13,7 @@ final class PostgreSqlFormatter implements FormatterInterface
 
     public function formatColumn(string $name, array $attributes): string
     {
-        $dbType = $this->formatType($attributes);
+        $dbType = $this->formatType($name, $attributes);
 
         $parts = [
             "\"$name\"",
@@ -41,7 +41,7 @@ final class PostgreSqlFormatter implements FormatterInterface
 
     private array $columnComments = [];
 
-    private function formatType(array $attributes): string
+    private function formatType(string $name, array $attributes): string
     {
         $type = $attributes['type'];
 
@@ -56,7 +56,7 @@ final class PostgreSqlFormatter implements FormatterInterface
             'DATE' => 'DATE',
             'DATETIME' => 'TIMESTAMP',
             'TIMESTAMP' => 'TIMESTAMP',
-            'ENUM' => $this->formatEnum($attributes),
+            'ENUM' => $this->formatEnum($name, $attributes),
             'JSON' => 'JSONB',
             'BLOB' => 'BYTEA',
             'ARRAY' => 'TEXT[]',
@@ -66,7 +66,7 @@ final class PostgreSqlFormatter implements FormatterInterface
 
     private function formatInteger(array $attributes): string
     {
-        return ($attributes['unsigned'] ?? false) ? 'INTEGER' : 'INTEGER';
+        return 'INTEGER';
     }
 
     private function formatDecimal(array $attributes): string
@@ -76,14 +76,14 @@ final class PostgreSqlFormatter implements FormatterInterface
         return "DECIMAL($precision, $scale)";
     }
 
-    private function formatEnum(array $attributes): string
+    private function formatEnum(string $name, array $attributes): string
     {
         if ($attributes['type'] !== 'ENUM' || empty($attributes['enum'])) {
             return 'VARCHAR(255)';
         }
 
         $values = array_map(fn($v) => "'$v'", $attributes['enum']);
-        return 'VARCHAR(255)';
+        return 'VARCHAR(255) CHECK ("' . $name . '" IN (' . implode(',', $values) . '))';
     }
 
     private function getPrimaryKeyClause(array $attributes): string
@@ -259,7 +259,7 @@ final class PostgreSqlFormatter implements FormatterInterface
         
         // Build ALTER COLUMN statements for each changed property
         if (isset($attributes['type'])) {
-            $dbType = $this->formatType($attributes);
+            $dbType = $this->formatType($column, $attributes);
             $parts[] = sprintf('ALTER COLUMN "%s" SET DATA TYPE %s', $column, $dbType);
         }
         

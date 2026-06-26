@@ -50,12 +50,8 @@ final class SeedRollbackCommand extends Command
     {
         $this->wizard($args);
 
-        $type = $this->type ?? 'app';
-        $module = $this->module ? $this->toPascalCase($this->module) : null;
-        $group = $this->group;
-
         $this->info("Rolling back seeders...");
-        $this->manager->rollback($this->steps, $type, $module, $group);
+        $this->manager->rollback($this->steps);
 
         $this->success("Rolled back {$this->steps} batch(es) successfully");
         return 0;

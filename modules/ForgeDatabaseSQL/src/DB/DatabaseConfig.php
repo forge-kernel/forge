@@ -10,6 +10,8 @@ use PDO;
 
 final class DatabaseConfig implements DatabaseConfigInterface
 {
+    private readonly int $port;
+
     private array $driverOptions = [
         "sqlite" => [
             "dsn" => "sqlite:%Database%",
@@ -37,10 +39,15 @@ final class DatabaseConfig implements DatabaseConfigInterface
         private readonly string $host = "localhost",
         private readonly string $username = "",
         private readonly string $password = "",
-        private readonly int $port = 3306,
+        ?int $port = null,
         private readonly string $charset = "utf8mb4"
     ) {
         $this->validateDriver();
+        $this->port = $port ?? match ($this->driver) {
+            'mysql' => 3306,
+            'pgsql' => 5432,
+            default => 3306,
+        };
     }
 
     private function validateDriver(): void

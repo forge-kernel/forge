@@ -52,7 +52,7 @@ final class DatabaseSetup
                 host: $env->get("DB_HOST", 'localhost'),
                 username: $env->get("DB_USER", 'root'),
                 password: $env->get("DB_PASS", ''),
-                port: $env->get("DB_PORT", 3306)
+                port: (int) $env->get("DB_PORT", 3306)
             );
         });
 
@@ -66,8 +66,8 @@ final class DatabaseSetup
         });
 
         $container->singleton(CentralQueryBuilderInterface::class, function () use ($container) {
-            $config = $container->get(DatabaseConfigInterface::class);
-            return new QueryBuilder(new Connection($config));
+            $connection = $container->get(DatabaseConnectionInterface::class);
+            return new QueryBuilder($connection);
         });
     }
 

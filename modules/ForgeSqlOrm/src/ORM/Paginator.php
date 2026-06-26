@@ -78,7 +78,7 @@ final class Paginator implements PaginatorInterface, JsonSerializable
 
   public function lastPage(): int
   {
-    return (int) ceil($this->total / $this->perPage);
+    return $this->total > 0 ? (int) ceil($this->total / $this->perPage) : 1;
   }
 
   public function hasMorePages(): bool
@@ -201,6 +201,41 @@ final class Paginator implements PaginatorInterface, JsonSerializable
   public function cursor(): ?string
   {
     return $this->cursor;
+  }
+
+  public function sortColumn(): string
+  {
+    return $this->sortColumn;
+  }
+
+  public function sortDirection(): string
+  {
+    return $this->sortDirection;
+  }
+
+  public function filters(): array
+  {
+    return $this->filters;
+  }
+
+  public function search(): ?string
+  {
+    return $this->search;
+  }
+
+  public function searchFields(): array
+  {
+    return $this->searchFields;
+  }
+
+  public function baseUrl(): string
+  {
+    return $this->baseUrl;
+  }
+
+  public function queryParams(): array
+  {
+    return $this->queryParams;
   }
 
   public function setBaseUrl(string $url): self

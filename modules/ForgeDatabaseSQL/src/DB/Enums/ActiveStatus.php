@@ -11,7 +11,7 @@ enum ActiveStatus: string
     use EnumHelper;
 
     case ACTIVE = 'ACTIVE';
-    case COMPLETED = 'DELETED';
+    case COMPLETED = 'COMPLETED';
     case PENDING_DELETION = 'PENDING_DELETION';
     case ARCHIVED = 'ARCHIVED';
 }

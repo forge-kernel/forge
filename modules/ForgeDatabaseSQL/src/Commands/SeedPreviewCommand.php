@@ -64,7 +64,7 @@ final class SeedPreviewCommand extends Command
             $nameForDisplay = $seeder['name'];
             $source = strtoupper($seeder['source']);
 
-            $lookupKey = $nameForDisplay . '.php';
+            $lookupKey = $nameForDisplay;
             $details = $ranSeeders[$lookupKey] ?? null;
 
             $batch = $details['batch'] ?? '-';

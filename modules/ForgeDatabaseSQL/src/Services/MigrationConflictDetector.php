@@ -162,12 +162,7 @@ final class MigrationConflictDetector
             $stmt = $this->connection->query($query);
             $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
-            // Handle different result formats for different drivers
-            if ($driver === 'mysql') {
-                $tables = array_map(fn($row) => reset($row), $results);
-            } else {
-                $tables = $stmt->fetchAll(PDO::FETCH_COLUMN);
-            }
+            $tables = array_map(fn($row) => reset($row), $results);
 
             $this->tablesCache = $tables;
             return $tables;

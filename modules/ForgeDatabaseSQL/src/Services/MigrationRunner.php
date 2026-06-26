@@ -122,6 +122,10 @@ final class MigrationRunner
         $className = $this->getMigrationClassName($path);
         $reflection = new ReflectionClass($className);
 
+        if (!$reflection->isSubclassOf(Migration::class)) {
+            throw new RuntimeException("Invalid migration class: $className");
+        }
+
         $driver = $this->connection
             ->getPdo()
             ->getAttribute(PDO::ATTR_DRIVER_NAME);
@@ -140,8 +144,6 @@ final class MigrationRunner
 
     private function getMigrationClassName(string $path): string
     {
-        $filename = basename($path, '.php');
-        $className = str_replace('.php', '', $filename);
-        return $className;
+        return preg_replace('/^\d{4}_\d{2}_\d{2}_\d{6}_/', '', basename($path, '.php'));
     }
 }

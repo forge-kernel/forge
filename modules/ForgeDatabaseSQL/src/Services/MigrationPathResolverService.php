@@ -237,7 +237,7 @@ final class MigrationPathResolverService
             }
         }
 
-        return str_starts_with($relativePath, "app/");
+        return str_starts_with($relativePath, "app/Database/Migrations/");
     }
 
     /**

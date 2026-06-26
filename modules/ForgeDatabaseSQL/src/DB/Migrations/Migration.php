@@ -21,7 +21,6 @@ use App\Modules\ForgeDatabaseSQL\DB\Attributes\Timestamps;
 use App\Modules\ForgeDatabaseSQL\DB\Enums\ColumnType;
 use App\Modules\ForgeDatabaseSQL\DB\Schema\FormatterInterface;
 use Forge\Core\Contracts\Database\DatabaseConnectionInterface;
-use Forge\Core\Contracts\Database\QueryBuilderInterface;
 use Forge\Core\Helpers\FileExistenceCache;
 use Forge\Traits\StringHelper;
 use PDOException;
@@ -34,18 +33,12 @@ abstract class Migration
     protected array $schema = [];
     protected array $indexes = [];
     protected array $relationships = [];
-    protected ?QueryBuilderInterface $queryBuilder = null;
     private array $columnOrder = [];
 
     public function __construct(
         protected DatabaseConnectionInterface $pdo,
         protected FormatterInterface $formatter,
     ) {
-        if (class_exists(\App\Modules\ForgeSqlOrm\ORM\QueryBuilder::class)) {
-            $this->queryBuilder = new \App\Modules\ForgeSqlOrm\ORM\QueryBuilder(
-                $this->pdo,
-            );
-        }
         $this->formatter = $formatter;
 
         $reflector = new ReflectionClass($this);
@@ -226,23 +219,6 @@ abstract class Migration
             ];
         }
 
-        $multiTenantFile =
-            BASE_PATH .
-            "/modules/ForgeMultiTenant/src/ForgeMultiTenantModule.php";
-
-        $multitenantReady = FileExistenceCache::exists($multiTenantFile);
-        if ($multitenantReady) {
-            $tenantScoped = false;
-            foreach ($reflector->getAttributes() as $attribute) {
-                if (
-                    $attribute->getName() ===
-                    "App\\Modules\\ForgeMultiTenant\\Attributes\\TenantScoped"
-                ) {
-                    $tenantScoped = true;
-                    break;
-                }
-            }
-        }
     }
 
     private function reflectRelationships(): void
@@ -334,14 +310,11 @@ abstract class Migration
         $identifierQuote = $this->getIdentifierQuote($driver);
         $quotedTableName =
             $identifierQuote . $this->schema["table"] . $identifierQuote;
-        $sql = "CREATE TABLE IF NOT EXISTS {$quotedTableName} (\n{$columnsSql}\n)";
-
-        if (!empty($this->indexes)) {
-            foreach ($this->indexes as $index) {
-                $sql .= ";\n" . $this->formatter->formatIndex($index);
-            }
+        if ($this->pdo->getDriver() === "sqlite") {
+            $this->formatter->skipForeignKeys = true;
         }
 
+        $sql = "CREATE TABLE IF NOT EXISTS {$quotedTableName} (\n{$columnsSql}\n)";
         $sql .= $this->formatter->formatTableOptions();
         $sql .=
             "\n" .
@@ -353,7 +326,12 @@ abstract class Migration
                 "",
                 $sql,
             );
-            $this->formatter->skipForeignKeys = true;
+        }
+
+        if (!empty($this->indexes)) {
+            foreach ($this->indexes as $index) {
+                $sql .= ";\n" . $this->formatter->formatIndex($index);
+            }
         }
 
         $this->execute($sql);
@@ -406,12 +384,13 @@ abstract class Migration
         // Process Index attributes for ALTER operations
         foreach ($reflector->getAttributes(Index::class) as $indexAttribute) {
             $index = $indexAttribute->newInstance();
-            if ($alterTable !== null) {
+            $table = $alterTable ?? $index->table;
+            if ($table !== null) {
                 $sql = $this->formatter->formatIndex([
                     "name" => $index->name,
                     "columns" => $index->columns,
                     "unique" => $index->unique,
-                    "table" => $alterTable,
+                    "table" => $table,
                 ]);
                 $this->execute($sql);
             }
@@ -646,7 +625,7 @@ abstract class Migration
         }
 
         return sprintf(
-            "ALTER TABLE %s%s%s ADD COLUMN %s%s %s %s%s",
+            "ALTER TABLE %s%s%s ADD COLUMN %s%s%s %s %s%s%s",
             $identifierQuote,
             $tableName,
             $identifierQuote,

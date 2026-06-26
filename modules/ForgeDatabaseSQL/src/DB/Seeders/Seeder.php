@@ -38,17 +38,24 @@ abstract class Seeder
         return $cache[$key];
     }
 
+    private function getQuoteChar(): string
+    {
+        $driver = $this->connection->getPdo()->getAttribute(\PDO::ATTR_DRIVER_NAME);
+        return $driver === 'mysql' ? '`' : '"';
+    }
+
     protected function deleteWhere(string $table, array $where): void
     {
         $clauses = [];
         $params = [];
+        $q = $this->getQuoteChar();
 
         foreach ($where as $col => $val) {
-            $clauses[] = "`$col` = ?";
+            $clauses[] = "$q$col$q = ?";
             $params[] = $val;
         }
 
-        $sql = sprintf("DELETE FROM %s WHERE %s", $table, implode(' AND ', $clauses));
+        $sql = sprintf("DELETE FROM $q%s$q WHERE %s", $table, implode(' AND ', $clauses));
         $stmt = $this->connection->getPdo()->prepare($sql);
         $stmt->execute($params);
     }
@@ -58,8 +65,9 @@ abstract class Seeder
         if (empty($rows)) return;
 
         $pdo = $this->connection->getPdo();
+        $q = $this->getQuoteChar();
         $columns = array_keys($rows[0]);
-        $colList = implode(',', array_map(fn($c) => "`$c`", $columns));
+        $colList = implode(',', array_map(fn($c) => "$q$c$q", $columns));
         $placeholders = '(' . implode(',', array_fill(0, count($columns), '?')) . ')';
 
         $chunks = array_chunk($rows, $batchSize);
@@ -69,7 +77,7 @@ abstract class Seeder
                 $values = array_merge($values, array_values($row));
             }
 
-            $stmt = $pdo->prepare("INSERT INTO {$table} ({$colList}) VALUES " .
+            $stmt = $pdo->prepare("INSERT INTO $q{$table}$q ({$colList}) VALUES " .
                 implode(',', array_fill(0, count($chunk), $placeholders)));
             $stmt->execute($values);
         }

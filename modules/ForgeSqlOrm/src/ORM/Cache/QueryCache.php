@@ -4,10 +4,11 @@ declare(strict_types=1);
 
 namespace App\Modules\ForgeSqlOrm\ORM\Cache;
 
+use App\Modules\ForgeSqlOrm\Contracts\CacheInterface;
 use Forge\Core\DI\Attributes\Service;
 
 #[Service]
-final class QueryCache
+final class QueryCache implements CacheInterface
 {
     private array $cache = [];
     private array $ttl = [];

@@ -13,7 +13,7 @@ class SqliteFormatter implements FormatterInterface
 
     public function formatColumn(string $name, array $attributes): string
     {
-        $dbType = $this->formatType($attributes);
+        $dbType = $this->formatType($name, $attributes);
 
         $definition = [
             "\"$name\"",
@@ -29,13 +29,13 @@ class SqliteFormatter implements FormatterInterface
         return implode(' ', array_filter($definition));
     }
 
-    private function formatType(array $attributes): string
+    private function formatType(string $name, array $attributes): string
     {
         $type = $attributes['type'];
 
         return match ($type) {
             'UUID' => 'TEXT',
-            'STRING' => isset($attributes['length']) ? 'TEXT' : 'TEXT',
+            'STRING' => 'TEXT',
             'TEXT' => 'TEXT',
             'INTEGER' => 'INTEGER',
             'BOOLEAN' => 'INTEGER',
@@ -44,7 +44,7 @@ class SqliteFormatter implements FormatterInterface
             'DATE' => 'TEXT',
             'DATETIME' => 'TEXT',
             'TIMESTAMP' => 'DATETIME',
-            'ENUM' => 'TEXT',
+            'ENUM' => $this->formatEnum($name, $attributes),
             'JSON' => 'JSON',
             'BLOB' => 'BLOB',
             'ARRAY' => 'TEXT',
@@ -66,7 +66,7 @@ class SqliteFormatter implements FormatterInterface
 
         $clause = 'PRIMARY KEY';
 
-        if ($attributes['autoIncrement'] && $attributes['type'] === 'INT') {
+        if ($attributes['autoIncrement'] && $attributes['type'] === 'INTEGER') {
             $clause .= ' AUTOINCREMENT';
         }
 
@@ -183,14 +183,14 @@ class SqliteFormatter implements FormatterInterface
         );
     }
 
-    private function formatEnum(array $attributes): string
+    private function formatEnum(string $name, array $attributes): string
     {
         if ($attributes['type'] !== 'ENUM' || empty($attributes['enum'])) {
             return 'TEXT';
         }
 
         $values = array_map(fn($v) => "'$v'", $attributes['enum']);
-        return 'TEXT CHECK ("' . implode('" OR "', $values) . '")';
+        return 'TEXT CHECK ("' . $name . '" IN (' . implode(',', $values) . '))';
     }
 
     public function formatAddColumn(string $table, string $column, array $attributes, ?string $after = null, bool $first = false): string
@@ -205,11 +205,9 @@ class SqliteFormatter implements FormatterInterface
         );
     }
 
-    public function formatDropColumn(string $table, string $column): string
+    public function formatDropColumn(string $table, string $column): ?string
     {
-        // SQLite doesn't support DROP COLUMN directly - requires table recreation
-        // Return empty string with a warning comment
-        return "-- WARNING: SQLite doesn't support DROP COLUMN directly. Use table recreation instead.";
+        return null;
     }
 
     public function formatRenameColumn(string $table, string $old, string $new): string
@@ -223,9 +221,8 @@ class SqliteFormatter implements FormatterInterface
         );
     }
 
-    public function formatAlterColumn(string $table, string $column, array $attributes): string
+    public function formatAlterColumn(string $table, string $column, array $attributes): ?string
     {
-        // SQLite doesn't support ALTER COLUMN directly - requires table recreation
-        return "-- WARNING: SQLite doesn't support ALTER COLUMN directly. Use table recreation instead.";
+        return null;
     }
 }

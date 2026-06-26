@@ -7,7 +7,7 @@ namespace App\Controllers;
 use App\Modules\ForgeWire\Attributes\Reactive;
 use App\Modules\ForgeWire\Attributes\Action;
 use App\Modules\ForgeWire\Attributes\State;
-use App\Modules\ForgeWire\Traits\ReactiveControllerHelper;
+use App\Modules\ForgeWire\Traits\WithWireResponse;
 use App\Modules\ForgeRouter\Http\Request;
 use App\Modules\ForgeRouter\Http\Response;
 use App\Modules\ForgeRouter\Traits\ControllerHelper;
@@ -19,7 +19,7 @@ use App\Modules\ForgeRouter\Http\Attributes\Middleware;
 final class SearchController
 {
     use ControllerHelper;
-    use ReactiveControllerHelper;
+    use WithWireResponse;
 
     #[State]
     public string $query = '';

@@ -24,7 +24,7 @@ final class MySqlFormatter implements FormatterInterface
             isset($attributes['check']) ? "CHECK ({$attributes['check']})" : '',
             isset($attributes['default']) ?
                 $this->formatDefault($attributes['default']) : '',
-            isset($attributes['comment']) ? "COMMENT '{$attributes['comment']}'" : ''
+            isset($attributes['comment']) ? "COMMENT '" . str_replace("'", "\\'", $attributes['comment']) . "'" : ''
         ];
 
         return implode(' ', array_filter($definition));
@@ -72,7 +72,7 @@ final class MySqlFormatter implements FormatterInterface
             return 'VARCHAR(255)';
         }
 
-        $values = $attributes['enum'];
+        $values = array_map(fn($v) => "'$v'", $attributes['enum']);
         return 'ENUM(' . implode(',', $values) . ')';
     }
 
@@ -84,7 +84,7 @@ final class MySqlFormatter implements FormatterInterface
 
         $clause = 'PRIMARY KEY';
 
-        if ($attributes['autoIncrement'] && $attributes['type'] === 'INT') {
+        if ($attributes['autoIncrement'] && $attributes['type'] === 'INTEGER') {
             $clause .= ' AUTO_INCREMENT';
         }
 
@@ -121,7 +121,7 @@ final class MySqlFormatter implements FormatterInterface
     {
         $columns = array_map(fn($col) => "`$col`", $index['columns']);
         return sprintf(
-            'CREATE %sINDEX IF NOT EXISTS `%s` ON `%s` (%s) USING BTREE',
+            'CREATE %sINDEX `%s` ON `%s` (%s) USING BTREE',
             $index['unique'] ? 'UNIQUE ' : '',
             $index['name'],
             $index['table'],

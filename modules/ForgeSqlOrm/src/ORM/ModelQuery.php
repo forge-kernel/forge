@@ -13,6 +13,7 @@ final class ModelQuery
   private QueryBuilderInterface $builder;
   private string $model;
   private array $withRelations = [];
+  private bool $withTrashed = false;
 
   public function __construct(string $model)
   {
@@ -29,9 +30,28 @@ final class ModelQuery
       ->table($model::table());
   }
 
+  public function withTrashed(): self
+  {
+    $this->withTrashed = true;
+    return $this;
+  }
+
+  private function applySoftDeleteFilter(): void
+  {
+    if ($this->withTrashed) {
+      return;
+    }
+    $col = $this->model::softDeleteColumn();
+    if ($col === null) {
+      return;
+    }
+    $this->builder = $this->builder->whereNull($col);
+  }
+
   /** @return array<Model> */
   public function get(): array
   {
+    $this->applySoftDeleteFilter();
     $results = array_map(
       $this->model::fromRow(...),
       $this->builder->get()
@@ -81,12 +101,14 @@ final class ModelQuery
     if ($col === null) {
       throw new LogicException('Model is not soft-deletable');
     }
+    $this->withTrashed = true;
     $this->builder = $this->builder->whereNotNull($col);
     return $this;
   }
 
   public function first(): ?Model
   {
+    $this->applySoftDeleteFilter();
     $row = $this->builder->first();
     if ($row === null) {
       return null;
@@ -106,6 +128,11 @@ final class ModelQuery
     return $this->builder->insert($data);
   }
 
+  public function insertMany(array $rows): int
+  {
+    return $this->builder->insertMany($rows);
+  }
+
   public function forceDelete(): int
   {
     return $this->builder->delete();
@@ -122,6 +149,12 @@ final class ModelQuery
     return $this->builder->update([$col => date('Y-m-d H:i:s')]);
   }
 
+  public function count(): int
+  {
+    $this->applySoftDeleteFilter();
+    return $this->builder->count();
+  }
+
   public function update(array $data): int
   {
     return $this->builder->update($data);
@@ -133,10 +166,21 @@ final class ModelQuery
     return $this;
   }
 
+  public function whereNotIn(string $column, array $values): self
+  {
+    $this->builder = $this->builder->whereNotIn($column, $values);
+    return $this;
+  }
+
   public function with(string ...$relations): self
   {
     $this->withRelations = array_merge($this->withRelations, $relations);
     return $this;
+  }
+
+  public function getBuilder(): QueryBuilderInterface
+  {
+    return $this->builder;
   }
 
   public function orderBy(string $column, string $direction = 'ASC'): self
@@ -173,6 +217,7 @@ final class ModelQuery
    */
   public function paginate(int $perPage = 15, int $page = 1, array $options = []): Paginator
   {
+    $this->applySoftDeleteFilter();
     $page = max(1, $page);
     $perPage = max(1, $perPage);
     $offset = ($page - 1) * $perPage;

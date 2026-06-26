@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Modules\ForgeComponents\Support;
+namespace App\Modules\ForgeComponents;
 
 /**
  * A stringable wrapper that signals the contained HTML is safe to render raw.

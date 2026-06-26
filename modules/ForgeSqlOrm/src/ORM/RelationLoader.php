@@ -40,6 +40,11 @@ final class RelationLoader
         $rel = $this->parents[0]::describe($relation);
         $kind = $rel->kind;
 
+        if ($kind === RelationKind::BelongsToMany) {
+            $this->loadBelongsToMany($rel, $relation, $nested);
+            return;
+        }
+
         $localKeysMap = [];
         $parentIndexMap = [];
         
@@ -103,6 +108,87 @@ final class RelationLoader
                     $loader = new RelationLoader(...$childrenToLoad);
                     $loader->load(...$nested);
                 }
+            }
+        }
+    }
+
+    private function loadBelongsToMany(Relation $rel, string $relation, array $nested): void
+    {
+        $pivotTable = $rel->pivotTable;
+        $pivotFk = $rel->pivotForeignKey;
+        $pivotLk = $rel->pivotLocalKey;
+
+        /** @var Model $target */
+        $target = $rel->target;
+
+        $localKeysMap = [];
+        $parentIndexMap = [];
+
+        foreach ($this->parents as $index => $p) {
+            $key = $p->{$rel->localKey};
+            if ($key === null || $key === '' || $key === '0') {
+                continue;
+            }
+            $stringKey = (string)$key;
+            $localKeysMap[$stringKey] = true;
+            $parentIndexMap[$stringKey][] = $index;
+        }
+
+        $localKeys = array_keys($localKeysMap);
+        if ($localKeys === []) {
+            foreach ($this->parents as $parent) {
+                $parent->setRelation($relation, []);
+            }
+            return;
+        }
+
+        $pivotRows = $target::query()->getBuilder()
+            ->table($pivotTable)
+            ->whereIn($pivotFk, $localKeys)
+            ->get();
+
+        $pivotGrouped = [];
+        foreach ($pivotRows as $row) {
+            $fk = (string)$row[$pivotFk];
+            $pivotGrouped[$fk][] = $row[$pivotLk];
+        }
+
+        $targetIds = [];
+        foreach ($pivotGrouped as $ids) {
+            foreach ($ids as $id) {
+                $targetIds[(string)$id] = true;
+            }
+        }
+
+        $children = $targetIds !== []
+            ? $target::query()->whereIn($rel->foreignKey, array_keys($targetIds))->get()
+            : [];
+
+        $childBucket = [];
+        foreach ($children as $child) {
+            $childBucket[(string)$child->{$rel->foreignKey}] = $child;
+        }
+
+        foreach ($this->parents as $index => $parent) {
+            $key = $parent->{$rel->localKey};
+            if ($key === null || $key === '' || $key === '0') {
+                $parent->setRelation($relation, []);
+                continue;
+            }
+            $stringKey = (string)$key;
+            $pivotIds = $pivotGrouped[$stringKey] ?? [];
+            $related = [];
+            foreach ($pivotIds as $id) {
+                $idStr = (string)$id;
+                if (isset($childBucket[$idStr])) {
+                    $related[] = $childBucket[$idStr];
+                }
+            }
+            $parent->setRelation($relation, $related);
+
+            if (!empty($nested) && $related !== []) {
+                $loader = new RelationLoader(...$related);
+                $loader->load(...$nested);
             }
         }
     }

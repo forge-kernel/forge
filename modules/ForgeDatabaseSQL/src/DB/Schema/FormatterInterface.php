@@ -26,7 +26,7 @@ interface FormatterInterface
     /**
      * Format ALTER TABLE DROP COLUMN statement
      */
-    public function formatDropColumn(string $table, string $column): string;
+    public function formatDropColumn(string $table, string $column): ?string;
 
     /**
      * Format ALTER TABLE RENAME COLUMN statement
@@ -36,5 +36,5 @@ interface FormatterInterface
     /**
      * Format ALTER TABLE MODIFY COLUMN statement
      */
-    public function formatAlterColumn(string $table, string $column, array $attributes): string;
+    public function formatAlterColumn(string $table, string $column, array $attributes): ?string;
 }

@@ -21,6 +21,8 @@ final class QueryBuilder implements QueryBuilderInterface
     private array                       $where = [],
     private array                       $params = [],
     private ?string                     $order = null,
+    private array                       $groupBy = [],
+    private array                       $having = [],
     private ?int                        $limit = null,
     private ?int                        $offset = null,
     private bool                        $forUpdate = false,
@@ -133,8 +135,9 @@ final class QueryBuilder implements QueryBuilderInterface
     $newParams = $this->params;
 
     foreach ($values as $v) {
-      $keys[] = $key = ':p' . count($this->params);
       $key = ':p' . count($newParams);
+      $keys[] = $key;
+      $newParams[$key] = $v;
     }
     $where = [...$this->where, "$column NOT IN (" . implode(',', $keys) . ")"];
     return new self(
@@ -153,12 +156,36 @@ final class QueryBuilder implements QueryBuilderInterface
 
   public function whereNull(string $column): self
   {
-    return $this->where($column, 'IS', 'NULL');
+    $where = [...$this->where, "$column IS NULL"];
+    return new self(
+      $this->conn,
+      table: $this->table,
+      select: $this->select,
+      where: $where,
+      params: $this->params,
+      order: $this->order,
+      limit: $this->limit,
+      offset: $this->offset,
+      forUpdate: $this->forUpdate,
+      joins: $this->joins
+    );
   }
 
   public function whereNotNull(string $column): self
   {
-    return $this->where($column, 'IS NOT', 'NULL');
+    $where = [...$this->where, "$column IS NOT NULL"];
+    return new self(
+      $this->conn,
+      table: $this->table,
+      select: $this->select,
+      where: $where,
+      params: $this->params,
+      order: $this->order,
+      limit: $this->limit,
+      offset: $this->offset,
+      forUpdate: $this->forUpdate,
+      joins: $this->joins
+    );
   }
 
   public function orderBy(string $column, string $direction = 'ASC'): self
@@ -216,11 +243,19 @@ final class QueryBuilder implements QueryBuilderInterface
 
   public function selectRaw(string $expression, array $params = []): self
   {
-    $this->select[] = $expression;
-    if (!empty($params)) {
-      $this->params = array_merge($this->params, $params);
-    }
-    return $this;
+    $newParams = !empty($params) ? array_merge($this->params, $params) : $this->params;
+    return new self(
+      $this->conn,
+      table: $this->table,
+      select: [...$this->select, $expression],
+      where: $this->where,
+      params: $newParams,
+      order: $this->order,
+      limit: $this->limit,
+      offset: $this->offset,
+      forUpdate: $this->forUpdate,
+      joins: $this->joins
+    );
   }
 
 
@@ -251,15 +286,21 @@ final class QueryBuilder implements QueryBuilderInterface
     if ($this->where !== []) {
       $sql .= ' WHERE ' . implode(' AND ', $this->where);
     }
+    if ($this->groupBy !== []) {
+      $sql .= ' GROUP BY ' . implode(', ', $this->groupBy);
+    }
+    if ($this->having !== []) {
+      $sql .= ' HAVING ' . implode(' AND ', $this->having);
+    }
     if ($this->order !== null) {
       $sql .= " ORDER BY {$this->order}";
     }
 
-    if ($this->limit !== null) {
-      $sql .= " LIMIT {$this->limit}";
-    }
     if ($this->offset !== null && $this->offset > 0) {
-      $sql .= " OFFSET {$this->offset}";
+      $limit = $this->limit ?? -1;
+      $sql .= " LIMIT {$limit} OFFSET {$this->offset}";
+    } elseif ($this->limit !== null) {
+      $sql .= " LIMIT {$this->limit}";
     }
 
     if ($this->forUpdate && in_array($this->conn->getDriver(), ['mysql', 'pgsql'], true)) {
@@ -292,18 +333,45 @@ final class QueryBuilder implements QueryBuilderInterface
     return $this->insert($data);
   }
 
+  public function insertMany(array $rows): int
+  {
+    if ($rows === []) {
+      return 0;
+    }
+    $cols = implode(', ', array_keys($rows[0]));
+    $valueStrings = [];
+    $params = [];
+    $rowIndex = 0;
+    foreach ($rows as $row) {
+      $placeholders = [];
+      foreach ($row as $col => $val) {
+        $key = ":im_{$rowIndex}_{$col}";
+        $placeholders[] = $key;
+        $params[$key] = $val;
+      }
+      $valueStrings[] = '(' . implode(', ', $placeholders) . ')';
+      $rowIndex++;
+    }
+    $sql = "INSERT INTO {$this->table} ($cols) VALUES " . implode(', ', $valueStrings);
+    $startTime = microtime(true);
+    $this->conn->prepare($sql)->execute($params);
+    $this->collectQuery($sql, $params, (microtime(true) - $startTime) * 1000, 'insert');
+    return (int)$this->conn->getPdo()->lastInsertId();
+  }
+
   public function update(array $data): int
   {
     $set = [];
+    $params = $this->params;
     foreach ($data as $col => $val) {
       $set[] = "$col = :u_$col";
-      $this->params[':u_' . $col] = $val;
+      $params[':u_' . $col] = $val;
     }
     $sql = "UPDATE {$this->table} SET " . implode(', ', $set) . $this->buildWhere();
     $startTime = microtime(true);
     $stmt = $this->conn->prepare($sql);
-    $stmt->execute($this->params);
-    $this->collectQuery($sql, $this->params, (microtime(true) - $startTime) * 1000, 'update');
+    $stmt->execute($params);
+    $this->collectQuery($sql, $params, (microtime(true) - $startTime) * 1000, 'update');
     return $stmt->rowCount();
   }
 
@@ -389,8 +457,10 @@ final class QueryBuilder implements QueryBuilderInterface
     return new self($this->conn);
   }
 
+  /** @deprecated Use selectRaw() or execute() instead. */
   public function raw(string $sql, array $params = []): array
   {
+    trigger_error('raw() is deprecated. Use selectRaw() or execute() instead.', E_USER_DEPRECATED);
     $stmt = $this->conn->prepare($sql);
     $stmt->execute($params);
     return $stmt->fetchAll();
@@ -498,12 +568,41 @@ final class QueryBuilder implements QueryBuilderInterface
 
   public function groupBy(string ...$cols): self
   {
-    return $this;
+    return new self(
+      $this->conn,
+      table: $this->table,
+      select: $this->select,
+      where: $this->where,
+      params: $this->params,
+      order: $this->order,
+      groupBy: $cols,
+      having: $this->having,
+      limit: $this->limit,
+      offset: $this->offset,
+      forUpdate: $this->forUpdate,
+      joins: $this->joins
+    );
   }
 
   public function having(string $col, string $op, mixed $val): self
   {
-    return $this;
+    $key = ':h' . count($this->params);
+    $having = [...$this->having, "$col $op $key"];
+    $params = [...$this->params, $key => $val];
+    return new self(
+      $this->conn,
+      table: $this->table,
+      select: $this->select,
+      where: $this->where,
+      params: $params,
+      order: $this->order,
+      groupBy: $this->groupBy,
+      having: $having,
+      limit: $this->limit,
+      offset: $this->offset,
+      forUpdate: $this->forUpdate,
+      joins: $this->joins
+    );
   }
 
   public function exists(): bool
@@ -535,7 +634,15 @@ final class QueryBuilder implements QueryBuilderInterface
 
   public function transaction(callable $cb): mixed
   {
-    return $cb($this);
+    $this->beginTransaction();
+    try {
+      $result = $cb($this);
+      $this->commit();
+      return $result;
+    } catch (\Throwable $e) {
+      $this->rollback();
+      throw $e;
+    }
   }
 
   public function beginTransaction(): self
@@ -569,7 +676,63 @@ final class QueryBuilder implements QueryBuilderInterface
 
   public function createTableFromAttributes(string $t, array $c, array $i = []): string
   {
-    return '';
+    $driver = $this->conn->getDriver();
+    $identifierQuote = $this->getIdentifierQuote($driver);
+    $quotedTableName = $identifierQuote . $t . $identifierQuote;
+
+    $columnDefinitions = [];
+    foreach ($c as $columnName => $column) {
+      $quotedColumnName = $identifierQuote . $columnName . $identifierQuote;
+      if (is_string($column)) {
+        $columnDefinitions[] = $quotedColumnName . ' ' . $this->normalizeColumnDefinition($column, $driver);
+      } elseif ($column instanceof \App\Modules\ForgeSqlOrm\ORM\Attributes\Column) {
+        $type = $this->resolveColumnType($columnName, $column);
+        $def = $type;
+        if ($column->primary) {
+          $def .= ' PRIMARY KEY';
+          $def .= $driver === 'sqlite' ? ' AUTOINCREMENT' : ' AUTO_INCREMENT';
+        }
+        if ($column->cast === \App\Modules\ForgeSqlOrm\ORM\Values\Cast::JSON) {
+          $def = $driver === 'pgsql' ? 'JSONB' : 'TEXT';
+        }
+        $columnDefinitions[] = $quotedColumnName . ' ' . $def;
+      }
+    }
+
+    $columnsSql = implode(",\n    ", $columnDefinitions);
+    $indexSqls = [];
+    foreach ($i as $indexName => $indexCols) {
+      $quotedIndexName = $identifierQuote . $indexName . $identifierQuote;
+      $quotedIndexCols = array_map(fn($col) => $identifierQuote . $col . $identifierQuote, (array) $indexCols);
+      $indexSqls[] = "CREATE INDEX {$quotedIndexName} ON {$quotedTableName} (" . implode(', ', $quotedIndexCols) . ")";
+    }
+
+    $sql = "CREATE TABLE {$quotedTableName} (\n    {$columnsSql}\n)";
+    if ($driver === 'mysql') {
+      $sql .= ' ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci';
+    }
+
+    $this->lastSql = $sql;
+    return $sql . ($indexSqls ? ";\n" . implode(";\n", $indexSqls) : '');
+  }
+
+  private function resolveColumnType(string $name, \App\Modules\ForgeSqlOrm\ORM\Attributes\Column $column): string
+  {
+    if ($column->primary) {
+      return 'INTEGER';
+    }
+    return match ($column->cast) {
+      \App\Modules\ForgeSqlOrm\ORM\Values\Cast::INT => 'INTEGER',
+      \App\Modules\ForgeSqlOrm\ORM\Values\Cast::FLOAT => 'REAL',
+      \App\Modules\ForgeSqlOrm\ORM\Values\Cast::BOOL => 'INTEGER',
+      \App\Modules\ForgeSqlOrm\ORM\Values\Cast::STRING => 'TEXT',
+      \App\Modules\ForgeSqlOrm\ORM\Values\Cast::JSON => 'TEXT',
+      \App\Modules\ForgeSqlOrm\ORM\Values\Cast::DATE => 'TEXT',
+      \App\Modules\ForgeSqlOrm\ORM\Values\Cast::DATETIME => 'TEXT',
+      \App\Modules\ForgeSqlOrm\ORM\Values\Cast::TIMESTAMP => 'TEXT',
+      \App\Modules\ForgeSqlOrm\ORM\Values\Cast::ENUM => 'TEXT',
+      default => 'TEXT',
+    };
   }
 
   public function createTable(string $n, array $c, bool $i = false): string
@@ -582,7 +745,14 @@ final class QueryBuilder implements QueryBuilderInterface
 
   public function createIndex(string $n, array $c, bool $u = false): string
   {
-    return '';
+    $driver = $this->conn->getDriver();
+    $identifierQuote = $this->getIdentifierQuote($driver);
+    $quotedTableName = $identifierQuote . $n . $identifierQuote;
+    $quotedCols = array_map(fn($col) => $identifierQuote . $col . $identifierQuote, $c);
+    $unique = $u ? 'UNIQUE ' : '';
+    $sql = "CREATE {$unique}INDEX {$identifierQuote}idx_{$n}_" . implode('_', $c) . "{$identifierQuote} ON {$quotedTableName} (" . implode(', ', $quotedCols) . ")";
+    $this->lastSql = $sql;
+    return $sql;
   }
 
   public function dropTable(string $n): string
@@ -692,7 +862,6 @@ final class QueryBuilder implements QueryBuilderInterface
 
   public function find(int $id): ?array
   {
-    // TODO: Implement find() method.
-    return [];
+    return $this->where('id', '=', (string) $id)->first();
   }
 }

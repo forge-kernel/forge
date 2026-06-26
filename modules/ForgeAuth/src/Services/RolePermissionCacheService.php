@@ -4,10 +4,11 @@ declare(strict_types=1);
 
 namespace App\Modules\ForgeAuth\Services;
 
+use Forge\Core\Contracts\Cache\CacheWarmerInterface;
 use Forge\Core\DI\Attributes\Service;
 
 #[Service]
-final class RolePermissionCacheService
+final class RolePermissionCacheService implements CacheWarmerInterface
 {
     private const string ROLE_CACHE_FILE =
         BASE_PATH . "/storage/framework/cache/role_cache.php";

@@ -285,31 +285,7 @@ final class Migrator
                 $module = $matches[1];
             }
         } else {
-            if ($this->structureResolver) {
-                try {
-                    $appMigrationsPath = $this->structureResolver->getAppPath(
-                        "migrations",
-                    );
-                    if (str_starts_with($relativePath, $appMigrationsPath)) {
-                        $type = "app";
-                    } else {
-                        $type = "app";
-                    }
-                } catch (\InvalidArgumentException $e) {
-                    if (
-                        str_starts_with(
-                            $relativePath,
-                            "app/Database/Migrations",
-                        )
-                    ) {
-                        $type = "app";
-                    }
-                }
-            } else {
-                if (str_starts_with($relativePath, "app/Database/Migrations")) {
-                    $type = "app";
-                }
-            }
+            $type = "app";
         }
 
         return [$className, $type, $module, $group];
@@ -447,10 +423,7 @@ final class Migrator
 
     private function getNextBatchNumber(): int
     {
-        $stmt = $this->connection->query(
-            "SELECT MAX(batch) FROM " . self::MIGRATIONS_TABLE,
-        );
-        return (int) $stmt->fetchColumn() + 1;
+        return $this->getLastBatch() + 1;
     }
 
     /**
@@ -664,9 +637,16 @@ final class Migrator
     private function getExistingTables(): array
     {
         try {
-            $stmt = $this->connection->query(
-                "SELECT name FROM sqlite_master WHERE type='table'",
-            );
+            $driver = $this->connection->getPdo()->getAttribute(PDO::ATTR_DRIVER_NAME);
+
+            $query = match ($driver) {
+                'mysql' => 'SHOW TABLES',
+                'pgsql' => "SELECT tablename FROM pg_catalog.pg_tables WHERE schemaname != 'pg_catalog' AND schemaname != 'information_schema'",
+                'sqlite' => "SELECT name FROM sqlite_master WHERE type='table'",
+                default => throw new \RuntimeException("Unsupported database driver: $driver")
+            };
+
+            $stmt = $this->connection->query($query);
             return $stmt->fetchAll(PDO::FETCH_COLUMN);
         } catch (\Throwable $e) {
             return [];
@@ -804,8 +784,10 @@ final class Migrator
 
         foreach ($untrackedTables as $untracked) {
             echo "Dropping table: {$untracked["table"]}\n";
+            $driver = $this->connection->getPdo()->getAttribute(PDO::ATTR_DRIVER_NAME);
+            $q = $driver === 'mysql' ? '`' : '"';
             $this->connection->exec(
-                "DROP TABLE IF EXISTS {$untracked["table"]}",
+                "DROP TABLE IF EXISTS $q{$untracked["table"]}$q",
             );
         }
 

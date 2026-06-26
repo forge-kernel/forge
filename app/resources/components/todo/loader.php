@@ -1,0 +1,3 @@
+<div fw:loading class="mt-2 text-info">
+    Saving...
+</div>

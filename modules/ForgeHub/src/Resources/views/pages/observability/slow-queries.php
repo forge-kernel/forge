@@ -1,7 +1,7 @@
 <?php
 
-use App\Modules\ForgeComponents\Support\HtmlString;
-use App\Modules\ForgeHub\Support\AdminLayout;
+use App\Modules\ForgeComponents\HtmlString;
+use App\Modules\ForgeHub\Layouts\AdminLayout;
 
 /** @var string $title */
 /** @var array<int, array<string, mixed>> $queries */

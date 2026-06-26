@@ -5,7 +5,7 @@
   </div>
 
   <!-- Stats Cards - Separate island -->
-  <div <?= fw_id('queue-stats') ?> class="space-y-4" fw:depends="jobs">
+  <div <?= scope('queue-stats') ?> class="space-y-4" fw:depends="jobs">
     <div class="flex justify-between items-center">
       <div>
         <h2 class="text-lg font-semibold text-gray-900">Statistics</h2>
@@ -90,7 +90,7 @@
   </div>
 
   <!-- Data Table - Separate island -->
-  <div <?= fw_id('queue-table') ?>> <?= component(name: 'ForgeHub:data-table', props: [
+  <div <?= scope('queue-table') ?>> <?= component(name: 'ForgeHub:data-table', props: [
         'columns' => [
             ['key' => 'id', 'label' => 'ID', 'sortable' => true],
             ['key' => 'queue', 'label' => 'Queue', 'sortable' => true],
@@ -122,83 +122,83 @@
         'statusFilter' => $statusFilter ?? '',
         'queueFilter' => $queueFilter ?? '',
     ]) ?> <?php if (!empty($jobDetails) && ($showJobModal ?? false)): ?>
-          <div class="overflow-y-auto fixed inset-0 z-50">
-            <div class="fixed inset-0 bg-black bg-opacity-50 backdrop-blur-sm transition-opacity"></div>
-            <div class="flex relative justify-center items-center p-4 min-h-screen sm:p-6">
-              <div class="relative w-full max-w-4xl bg-white rounded-lg shadow-xl">
-                <div class="flex justify-between items-center px-6 py-4 border-b border-gray-200">
-                  <h3 class="text-xl font-semibold text-gray-900">
-                    Job #<?= htmlspecialchars((string) ($jobDetails['id'] ?? '')) ?> Details
-                  </h3>
-                  <button fw:click="closeJobModal"
-                    class="p-1 text-gray-400 rounded-lg transition-colors hover:text-gray-600 focus:outline-none focus:ring-2 focus:ring-gray-500"
-                    aria-label="Close modal">
-                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
-                    </svg>
-                  </button>
-                </div>
-                <div class="px-6 py-6 space-y-6">
-                  <div class="grid grid-cols-1 gap-4 text-sm md:grid-cols-2">
-                    <div>
-                      <p class="text-gray-500">Queue</p>
-                      <p class="font-medium text-gray-900">
-                        <?= htmlspecialchars((string) ($jobDetails['queue'] ?? 'default')) ?>
-                      </p>
-                    </div>
-                    <div>
-                      <p class="text-gray-500">Status</p>
-                      <p class="font-medium text-gray-900"><?= htmlspecialchars((string) ($jobDetails['status'] ?? '')) ?></p>
-                    </div>
-                    <div>
-                      <p class="text-gray-500">Priority</p>
-                      <p class="font-medium text-gray-900"><?= htmlspecialchars((string) ($jobDetails['priority'] ?? 0)) ?>
-                      </p>
-                    </div>
-                    <div>
-                      <p class="text-gray-500">Attempts</p>
-                      <p class="font-medium text-gray-900"><?= htmlspecialchars((string) ($jobDetails['attempts'] ?? 0)) ?>
-                      </p>
-                    </div>
-                    <div>
-                      <p class="text-gray-500">Event Class</p>
-                      <p class="font-medium text-gray-900">
-                        <?= htmlspecialchars((string) ($jobDetails['event_class'] ?? '')) ?>
-                      </p>
-                    </div>
-                    <div>
-                      <p class="text-gray-500">Created At</p>
-                      <p class="font-medium text-gray-900"><?= htmlspecialchars((string) ($jobDetails['created_at'] ?? '')) ?>
-                      </p>
+                  <div class="overflow-y-auto fixed inset-0 z-50">
+                    <div class="fixed inset-0 bg-black bg-opacity-50 backdrop-blur-sm transition-opacity"></div>
+                    <div class="flex relative justify-center items-center p-4 min-h-screen sm:p-6">
+                      <div class="relative w-full max-w-4xl bg-white rounded-lg shadow-xl">
+                        <div class="flex justify-between items-center px-6 py-4 border-b border-gray-200">
+                          <h3 class="text-xl font-semibold text-gray-900">
+                            Job #<?= htmlspecialchars((string) ($jobDetails['id'] ?? '')) ?> Details
+                          </h3>
+                          <button fw:click="closeJobModal"
+                            class="p-1 text-gray-400 rounded-lg transition-colors hover:text-gray-600 focus:outline-none focus:ring-2 focus:ring-gray-500"
+                            aria-label="Close modal">
+                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                            </svg>
+                          </button>
+                        </div>
+                        <div class="px-6 py-6 space-y-6">
+                          <div class="grid grid-cols-1 gap-4 text-sm md:grid-cols-2">
+                            <div>
+                              <p class="text-gray-500">Queue</p>
+                              <p class="font-medium text-gray-900">
+                                <?= htmlspecialchars((string) ($jobDetails['queue'] ?? 'default')) ?>
+                              </p>
+                            </div>
+                            <div>
+                              <p class="text-gray-500">Status</p>
+                              <p class="font-medium text-gray-900"><?= htmlspecialchars((string) ($jobDetails['status'] ?? '')) ?></p>
+                            </div>
+                            <div>
+                              <p class="text-gray-500">Priority</p>
+                              <p class="font-medium text-gray-900"><?= htmlspecialchars((string) ($jobDetails['priority'] ?? 0)) ?>
+                              </p>
+                            </div>
+                            <div>
+                              <p class="text-gray-500">Attempts</p>
+                              <p class="font-medium text-gray-900"><?= htmlspecialchars((string) ($jobDetails['attempts'] ?? 0)) ?>
+                              </p>
+                            </div>
+                            <div>
+                              <p class="text-gray-500">Event Class</p>
+                              <p class="font-medium text-gray-900">
+                                <?= htmlspecialchars((string) ($jobDetails['event_class'] ?? '')) ?>
+                              </p>
+                            </div>
+                            <div>
+                              <p class="text-gray-500">Created At</p>
+                              <p class="font-medium text-gray-900"><?= htmlspecialchars((string) ($jobDetails['created_at'] ?? '')) ?>
+                              </p>
+                            </div>
+                          </div>
+
+                          <?php if (isset($jobDetails['details']['payload'])): ?>
+                                        <div>
+                                          <h4 class="mb-2 text-sm font-semibold text-gray-700">Payload</h4>
+                                          <div
+                                            class="bg-gray-900 text-gray-100 rounded-lg p-4 max-h-[50vh] overflow-y-auto font-mono text-xs border border-gray-700">
+                                            <pre
+                                              class="whitespace-pre-wrap break-words"><?= htmlspecialchars(json_encode($jobDetails['details']['payload'], JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES)) ?></pre>
+                                          </div>
+                                        </div>
+                          <?php endif; ?>
+
+                          <?php if (isset($jobDetails['details']['metadata'])): ?>
+                                        <div>
+                                          <h4 class="mb-2 text-sm font-semibold text-gray-700">Metadata</h4>
+                                          <dl class="grid grid-cols-2 gap-2 text-sm">
+                                            <?php foreach ($jobDetails['details']['metadata'] as $key => $value): ?>
+                                                          <dt class="font-medium text-gray-500"><?= htmlspecialchars(ucfirst((string) $key)) ?>:</dt>
+                                                          <dd class="text-gray-900"><?= htmlspecialchars((string) $value) ?></dd>
+                                            <?php endforeach; ?>
+                                          </dl>
+                                        </div>
+                          <?php endif; ?>
+                        </div>
+                      </div>
                     </div>
                   </div>
-
-                  <?php if (isset($jobDetails['details']['payload'])): ?>
-                        <div>
-                          <h4 class="mb-2 text-sm font-semibold text-gray-700">Payload</h4>
-                          <div
-                            class="bg-gray-900 text-gray-100 rounded-lg p-4 max-h-[50vh] overflow-y-auto font-mono text-xs border border-gray-700">
-                            <pre
-                              class="whitespace-pre-wrap break-words"><?= htmlspecialchars(json_encode($jobDetails['details']['payload'], JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES)) ?></pre>
-                          </div>
-                        </div>
-                  <?php endif; ?>
-
-                  <?php if (isset($jobDetails['details']['metadata'])): ?>
-                        <div>
-                          <h4 class="mb-2 text-sm font-semibold text-gray-700">Metadata</h4>
-                          <dl class="grid grid-cols-2 gap-2 text-sm">
-                            <?php foreach ($jobDetails['details']['metadata'] as $key => $value): ?>
-                                  <dt class="font-medium text-gray-500"><?= htmlspecialchars(ucfirst((string) $key)) ?>:</dt>
-                                  <dd class="text-gray-900"><?= htmlspecialchars((string) $value) ?></dd>
-                            <?php endforeach; ?>
-                          </dl>
-                        </div>
-                  <?php endif; ?>
-                </div>
-              </div>
-            </div>
-          </div>
     <?php endif; ?>
   </div>
 </div>

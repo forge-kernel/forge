@@ -13,7 +13,7 @@ use App\Modules\ForgeEvents\Services\QueueHubService;
 use App\Modules\ForgeSqlOrm\ORM\Paginator;
 use App\Modules\ForgeWire\Attributes\Reactive;
 use App\Modules\ForgeWire\Attributes\State;
-use App\Modules\ForgeWire\Traits\ReactiveControllerHelper;
+use App\Modules\ForgeWire\Traits\WithWireResponse;
 use App\Modules\ForgeRouter\Http\Attributes\Middleware;
 use App\Modules\ForgeRouter\Http\Response;
 use App\Modules\ForgeRouter\Routing\Route;
@@ -25,7 +25,7 @@ use App\Modules\ForgeRouter\Traits\ControllerHelper;
 final class QueueController
 {
     use ControllerHelper;
-    use ReactiveControllerHelper;
+    use WithWireResponse;
     use QueueJobActions;
     use QueueBulkActions;
     use QueueFilterActions;

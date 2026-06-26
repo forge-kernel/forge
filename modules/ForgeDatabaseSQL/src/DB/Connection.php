@@ -22,25 +22,13 @@ class Connection implements DatabaseConnectionInterface
   public function __construct(DatabaseConfigInterface $config)
   {
     $dsn = $config->getDsn();
-    $pdoOptionsToUse = [
-      PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
-      PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
-    ];
-
-    if ($config->getDriver() === "mysql") {
-      $pdoOptionsToUse = [
+    $pdoOptionsToUse = array_merge(
+      [
         PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
         PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
-      ];
-    } else {
-      $pdoOptionsToUse = array_merge(
-        [
-          PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
-          PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
-        ],
-        $config->getOptions(),
-      );
-    }
+      ],
+      $config->getOptions(),
+    );
 
     try {
       $this->pdo = new PDO(

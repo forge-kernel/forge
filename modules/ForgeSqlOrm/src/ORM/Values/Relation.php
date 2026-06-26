@@ -11,6 +11,9 @@ final readonly class Relation
         public string       $target,
         public string       $foreignKey,
         public string       $localKey,
+        public ?string      $pivotTable = null,
+        public ?string      $pivotForeignKey = null,
+        public ?string      $pivotLocalKey = null,
     )
     {
     }

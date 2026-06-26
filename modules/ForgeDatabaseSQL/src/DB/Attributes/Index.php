@@ -10,9 +10,10 @@ use Attribute;
 final class Index
 {
     public function __construct(
-        public array  $columns,
-        public string $name,
-        public bool   $unique = false
+        public array   $columns,
+        public string  $name,
+        public bool    $unique = false,
+        public ?string $table = null,
     )
     {
     }

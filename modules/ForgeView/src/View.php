@@ -6,7 +6,6 @@ namespace App\Modules\ForgeView;
 
 use Forge\Core\DI\Container;
 use Forge\Core\Debug\Metrics;
-use Forge\Core\Helpers\ModuleHelper;
 use Forge\Core\Structure\StructureResolver;
 use App\Modules\ForgeView\ViewState;
 use RuntimeException;
@@ -174,8 +173,11 @@ final class View
             if ($resolvedLayoutName && !$state->shouldSuppressLayout()) {
                 Metrics::start("view_layout_chain");
                 $viewContent = $this->renderLayoutChain(
-                    $viewContent, $resolvedLayoutName,
-                    $layoutSlots, $layoutSections, $layoutProps,
+                    $viewContent,
+                    $resolvedLayoutName,
+                    $layoutSlots,
+                    $layoutSections,
+                    $layoutProps,
                 );
                 Metrics::stop("view_layout_chain");
             }

@@ -6,7 +6,7 @@ namespace App\Controllers;
 
 use App\Modules\ForgeWire\Attributes\Action;
 use App\Modules\ForgeWire\Attributes\Reactive;
-use App\Modules\ForgeWire\Traits\ReactiveControllerHelper;
+use App\Modules\ForgeWire\Traits\WithWireResponse;
 use App\Modules\ForgeRouter\Http\Attributes\Middleware;
 use App\Modules\ForgeRouter\Traits\ControllerHelper;
 use App\Modules\ForgeRouter\Routing\Route;
@@ -18,7 +18,7 @@ use App\Modules\ForgeRouter\Http\Response;
 final class ForgeWireBrowserActionsController
 {
     use ControllerHelper;
-    use ReactiveControllerHelper;
+    use WithWireResponse;
 
     #[Route("/forge-wire-browser-actions")]
     #[Action]

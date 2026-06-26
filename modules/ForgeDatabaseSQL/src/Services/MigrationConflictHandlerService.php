@@ -160,12 +160,8 @@ final class MigrationConflictHandlerService
             };
 
             $stmt = $this->connection->query($query);
-            $tables = $stmt->fetchAll(PDO::FETCH_COLUMN);
-
-            // For MySQL, the column name is not predictable, so we need to get the first column
-            if ($driver === 'mysql') {
-                $tables = array_map(fn($row) => reset($row), $stmt->fetchAll(PDO::FETCH_ASSOC));
-            }
+            $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
+            $tables = array_map(fn($row) => reset($row), $results);
 
             return $tables;
         } catch (Throwable $e) {

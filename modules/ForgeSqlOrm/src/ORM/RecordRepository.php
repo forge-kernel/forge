@@ -27,6 +27,8 @@ abstract class RecordRepository implements Repository
     foreach ($data as $key => $value) {
       if (property_exists($record, $key)) {
         $record->{$key} = $value;
+      } else {
+        trigger_error('Unknown property "' . $key . '" on ' . $this->modelClass, E_USER_WARNING);
       }
     }
 
@@ -82,13 +84,13 @@ abstract class RecordRepository implements Repository
     $cached = $this->cache->get($key);
 
     if ($cached !== null) {
-      return $cached;
+      return clone $cached;
     }
 
     $record = $this->modelClass::query()->id($id)->first();
 
     if ($record !== null) {
-      $this->cache->set($key, $record);
+      $this->cache->set($key, clone $record);
     }
     return $record;
   }
@@ -99,13 +101,13 @@ abstract class RecordRepository implements Repository
     $cached = $this->cache->get($key);
 
     if ($cached !== null) {
-      return $cached;
+      return clone $cached;
     }
 
     $record = $this->modelClass::query()->where($field, '=', $value)->first();
 
     if ($record !== null) {
-      $this->cache->set($key, $record);
+      $this->cache->set($key, clone $record);
     }
 
     return $record;
@@ -136,15 +138,23 @@ abstract class RecordRepository implements Repository
     $records = [];
     $pk = $this->modelClass::primaryProperty()->getName();
 
-    foreach ($data as $row) {
-      $record = new ($this->modelClass)();
-      foreach ($row as $key => $value) {
-        if (property_exists($record, $key)) {
-          $record->{$key} = $value;
+    $builder = $this->modelClass::query()->getBuilder();
+    $builder->beginTransaction();
+    try {
+      foreach ($data as $row) {
+        $record = new ($this->modelClass)();
+        foreach ($row as $key => $value) {
+          if (property_exists($record, $key)) {
+            $record->{$key} = $value;
+          }
         }
+        $record->save();
+        $records[] = $record;
       }
-      $record->save();
-      $records[] = $record;
+      $builder->commit();
+    } catch (\Throwable $e) {
+      $builder->rollback();
+      throw $e;
     }
 
     $this->cache->invalidate($this->tableName);
@@ -156,10 +166,18 @@ abstract class RecordRepository implements Repository
   {
     $count = 0;
 
-    foreach ($records as $record) {
-      if ($this->update($record, $data)) {
-        $count++;
+    $builder = $this->modelClass::query()->getBuilder();
+    $builder->beginTransaction();
+    try {
+      foreach ($records as $record) {
+        if ($this->update($record, $data)) {
+          $count++;
+        }
       }
+      $builder->commit();
+    } catch (\Throwable $e) {
+      $builder->rollback();
+      throw $e;
     }
 
     return $count;
@@ -169,10 +187,18 @@ abstract class RecordRepository implements Repository
   {
     $count = 0;
 
-    foreach ($ids as $id) {
-      if ($this->delete($id)) {
-        $count++;
+    $builder = $this->modelClass::query()->getBuilder();
+    $builder->beginTransaction();
+    try {
+      foreach ($ids as $id) {
+        if ($this->delete($id)) {
+          $count++;
+        }
       }
+      $builder->commit();
+    } catch (\Throwable $e) {
+      $builder->rollback();
+      throw $e;
     }
 
     return $count;

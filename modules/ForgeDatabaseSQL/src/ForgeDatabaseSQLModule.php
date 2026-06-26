@@ -21,7 +21,7 @@ use Forge\CLI\Traits\OutputHelper;
 
 #[Module(
     name: 'ForgeDatabaseSQL',
-    version: '0.9.10',
+    version: '0.9.11',
     description: 'SQL database support (SQLite, MySQL, PostgreSQL)',
     order: 0,
     author: 'Forge Team',
@@ -71,6 +71,10 @@ final class ForgeDatabaseSQLModule
                     $container->setInstance(SessionInterface::class, $session);
                 }
             } catch (\Throwable $e) {
+                trigger_error(
+                    "Failed to setup database session driver: " . $e->getMessage(),
+                    E_USER_WARNING
+                );
             }
         }
     }

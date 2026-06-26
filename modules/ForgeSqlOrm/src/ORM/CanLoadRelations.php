@@ -37,7 +37,42 @@ trait CanLoadRelations
         return match ($rel->kind) {
             RelationKind::BelongsTo => $this->belongsToQuery($rel),
             RelationKind::HasOne, RelationKind::HasMany => $this->hasQuery($rel),
+            RelationKind::BelongsToMany => $this->belongsToManyQuery($rel),
         };
+    }
+
+    private function belongsToManyQuery(Relation $rel): ModelQuery
+    {
+        /** @var Model $target */
+        $target = $rel->target;
+        $pivotTable = $rel->pivotTable ?? $this->guessPivotTable($target);
+        $pivotFk = $rel->pivotForeignKey ?? $this->guessPivotForeignKey();
+        $pivotLk = $rel->pivotLocalKey ?? $target::table() . '_id';
+
+        $localValue = $this->{$rel->localKey};
+        if ($localValue === null) {
+            return $target::query()->where('1', '=', '0');
+        }
+
+        return $target::query()->whereRaw(
+            "{$target::table()}.{$rel->foreignKey} IN (SELECT {$pivotLk} FROM {$pivotTable} WHERE {$pivotFk} = ?)",
+            [$localValue]
+        );
+    }
+
+    private function guessPivotTable(Model|string $target): string
+    {
+        $segments = [
+            (new \ReflectionClass($this))->getShortName(),
+            is_string($target) ? (new \ReflectionClass($target))->getShortName() : 'unknown',
+        ];
+        sort($segments);
+        return strtolower(implode('_', $segments));
+    }
+
+    private function guessPivotForeignKey(): string
+    {
+        return (new \ReflectionClass($this))->getShortName() . '_id';
     }
 
     /**
@@ -52,7 +87,15 @@ trait CanLoadRelations
         }
         /** @var Relate $r */
         $r = $attr->newInstance();
-        return new Relation($r->kind, $r->target, $r->foreignKey, $r->localKey);
+        return new Relation(
+            $r->kind,
+            $r->target,
+            $r->foreignKey,
+            $r->localKey,
+            $r->pivotTable,
+            $r->pivotForeignKey,
+            $r->pivotLocalKey,
+        );
     }
 
     private function belongsToQuery(Relation $rel): ModelQuery

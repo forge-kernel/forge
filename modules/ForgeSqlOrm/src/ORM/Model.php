@@ -38,11 +38,11 @@ abstract class Model implements JsonSerializable
 
   private static array $primaryProperties = [];
 
-  private static ?string $softDeleteColumn = null;
-
   private static ?array $softDeleteColumnCache = null;
 
   private static array $protectedFields = [];
+
+  private static array $columnProperties = [];
 
   private bool $exists = false;
 
@@ -54,11 +54,7 @@ abstract class Model implements JsonSerializable
     $instance->exists = true;
     $instance->original = $row;
 
-    foreach (static::reflection()->getProperties() as $p) {
-      $col = $p->getAttributes(Column::class)[0] ?? null;
-      if ($col === null)
-        continue;
-
+    foreach (static::columnProperties() as $p) {
       $name = $p->getName();
 
       if ($p->getAttributes(Hidden::class) !== []) {
@@ -77,14 +73,31 @@ abstract class Model implements JsonSerializable
         ? $reflectionType->getName()
         : null;
 
-      $value = $col->newInstance()->cast
-        ? cast($row[$name], $col->newInstance()->cast, $targetType)
+      $colAttr = $p->getAttributes(Column::class)[0]->newInstance();
+      $value = $colAttr->cast
+        ? cast($row[$name], $colAttr->cast, $targetType)
         : $row[$name];
 
       $p->setValue($instance, $value);
     }
 
     return $instance;
+  }
+
+  /**
+   * @return ReflectionProperty[]
+   */
+  private static function columnProperties(): array
+  {
+    if (!isset(self::$columnProperties[static::class])) {
+      self::$columnProperties[static::class] = [];
+      foreach (static::reflection()->getProperties() as $p) {
+        if ($p->getAttributes(Column::class)[0] ?? null) {
+          self::$columnProperties[static::class][] = $p;
+        }
+      }
+    }
+    return self::$columnProperties[static::class];
   }
 
   final protected static function reflection(): ReflectionClass
@@ -177,12 +190,7 @@ abstract class Model implements JsonSerializable
   private function dirty(): array
   {
     $dirty = [];
-    foreach (self::reflection()->getProperties() as $p) {
-      $colAttr = $p->getAttributes(Column::class)[0] ?? null;
-      if ($colAttr === null) {
-        continue;
-      }
-
+    foreach (static::columnProperties() as $p) {
       $name = $p->getName();
 
       if (!$p->isInitialized($this)) {
@@ -192,9 +200,18 @@ abstract class Model implements JsonSerializable
       $curr = $p->getValue($this);
       $prev = $this->original[$name] ?? null;
 
-      if ($curr !== $prev) {
+      if ($curr instanceof DateTimeImmutable) {
+        $prevDate = $prev instanceof DateTimeImmutable
+          ? $prev
+          : (is_string($prev) ? DateTimeImmutable::createFromFormat('Y-m-d H:i:s', $prev) : null);
+        if ($prevDate !== null && $curr == $prevDate) {
+          continue;
+        }
+      } elseif ($curr === $prev) {
+        continue;
+      }
         /** @var Column $col */
-        $col = $colAttr->newInstance();
+        $col = $p->getAttributes(Column::class)[0]->newInstance();
         $value = $curr;
 
         if ($curr instanceof BackedEnum) {
@@ -214,7 +231,6 @@ abstract class Model implements JsonSerializable
         }
 
         $dirty[$name] = $value;
-      }
     }
     return $dirty;
   }
@@ -250,6 +266,8 @@ abstract class Model implements JsonSerializable
 
       $this->{$pkName} = $newId;
       $data[$pkName] = $newId;
+    } elseif (!self::isUuidPrimaryKey($pk) && isset($data[$pkName]) && empty($data[$pkName])) {
+      unset($data[$pkName]);
     }
 
     if (property_exists($this, 'created_at')) {
@@ -312,7 +330,7 @@ abstract class Model implements JsonSerializable
    */
   public static final function softDeleteColumn(): ?string
   {
-    if (array_key_exists('softDeleteColumn', self::$softDeleteColumnCache ??= [])) {
+    if (array_key_exists(static::class, self::$softDeleteColumnCache ??= [])) {
       return self::$softDeleteColumnCache[static::class];
     }
 
