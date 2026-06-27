@@ -19,7 +19,7 @@ use Forge\CLI\Traits\OutputHelper;
 #[Service]
 #[Module(
     name: 'ForgeLogger',
-    version: '0.5.2',
+    version: '0.5.3',
     description: 'A logger by Forge.',
     order: 90,
     author: 'Forge Team',
@@ -31,8 +31,8 @@ use Forge\CLI\Traits\OutputHelper;
     'controllers' => 'src/Controllers',
     'services' => 'src/Services',
     'migrations' => 'src/Database/Migrations',
-    'views' => 'src/Resources/views',
-    'components' => 'src/Resources/components',
+    'views' => 'src/UI/views',
+    'components' => 'src/UI/views/components',
     'commands' => 'src/Commands',
     'events' => 'src/Events',
     'tests' => 'src/tests',
