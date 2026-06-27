@@ -20,8 +20,8 @@ use Forge\Core\Module\Attributes\Structure;
     'controllers' => 'src/Controllers',
     'services' => 'src/Services',
     'migrations' => 'src/Database/Migrations',
-    'views' => 'src/Resources/views',
-    'components' => 'src/Resources/components',
+    'views' => 'src/UI/views',
+    'components' => 'src/UI/views/components',
     'commands' => 'src/Commands',
     'events' => 'src/Events',
     'tests' => 'src/tests',
@@ -34,7 +34,7 @@ use Forge\Core\Module\Attributes\Structure;
 
 
 #[Service]
-#[Module(name: 'ForgeLanguage', version: '0.2.1', description: 'Multi language support to extend Forge Kernel', order: 40, author: 'Your Name', license: 'MIT', tags: [])]
+#[Module(name: 'ForgeLanguage', version: '0.2.2', description: 'Multi language support to extend Forge Kernel', order: 40, author: 'Your Name', license: 'MIT', tags: [])]
 #[Compatibility(framework: '>=0.1.0', php: '>=8.3')]
 #[Repository(type: 'git', url: 'https://github.com/forge-kernel/kernel-module-registry')]
 #[ConfigDefaults(defaults: [
