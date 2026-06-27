@@ -18,7 +18,7 @@ use Forge\CLI\Traits\OutputHelper;
 #[Service]
 #[Module(
     name: 'ForgeNotification',
-    version: '0.3.1',
+    version: '0.3.2',
     description: 'Multi-channel notification system with provider support, fluent API, and async queue integration',
     order: 99,
     author: 'Forge Team',
