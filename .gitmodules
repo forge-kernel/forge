@@ -13,12 +13,12 @@
 [submodule "kernel-module-registry"]
 	path = kernel-module-registry
 	url = git@github.com:forge-kernel/kernel-module-registry.git
-[submodule "starter-templates"]
-	path = starter-templates
-	url = git@github.com:forge-kernel/starter-templates.git
-[submodule "starter-template-registry"]
-	path = starter-template-registry
-	url = git@github.com:forge-kernel/starter-template-registry.git
+[submodule "blueprint-templates"]
+	path = blueprint-templates
+	url = git@github.com:forge-kernel/blueprints.git
+[submodule "blueprint-registry"]
+	path = blueprint-registry
+	url = git@github.com:forge-kernel/blueprint-registry.git
 [submodule "modules/ForgeWire"]
 	path = modules/ForgeWire
 	url = git@github.com:forge-kernel/forge-wire.git

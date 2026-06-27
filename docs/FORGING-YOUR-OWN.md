@@ -9,7 +9,7 @@ Awesome — this doc will walk you through exactly what to fork, what to change,
 
 Forge is an Application Hosted Kernel with pluggable capabilities. It's modular and transparent by design, and everything lives in public repositories under the [forge-kernel](https://github.com/forge-kernel) GitHub org.
 
-You can fork any part — just the capabilities (modules), just the starter, or the whole system.
+You can fork any part — just the capabilities (modules), just the blueprints, or the whole system.
 
 If you're going all in, here's what to do.
 
@@ -27,9 +27,9 @@ To fully own and rebrand your Forge stack, fork the following repositories:
 
 - [forge-kernel/kernel-registry](https://github.com/forge-kernel/kernel-registry) – maps module names to GitHub URLs (used by the package manager)
 
-### Starter Templates
+### Blueprints
 
-- [forge-kernel/starter-templates](https://github.com/forge-kernel/starter-templates) – a ready-to-go project templates with minimal setup
+- [forge-kernel/blueprints](https://github.com/forge-kernel/blueprints) – ready-to-go project blueprints with minimal setup
 
 ### Capabilities (Modules)
 
@@ -117,7 +117,7 @@ return [
 In your fork of the installer repo, edit `installer.sh`:
 
 ```bash
-STARTER_REPO_BASE_URL="https://github.com/your-org/forge-starter/archive/refs/heads/main.zip"
+BLUEPRINT_REPO_BASE_URL="https://github.com/your-org/forge-blueprint/archive/refs/heads/main.zip"
 ```
 
 ### 3. install.php Scripts
@@ -125,7 +125,7 @@ STARTER_REPO_BASE_URL="https://github.com/your-org/forge-starter/archive/refs/he
 In both:
 
 - `forge/installer/install.php`
-- `forge-starter/install.php`
+- `forge-blueprint/install.php`
 
 Update the kernel registry URL:
 
@@ -133,9 +133,9 @@ Update the kernel registry URL:
 const FRAMEWORK_REPO_URL = 'https://github.com/your-org/framework-registry';
 ```
 
-### 4. Starter Updates
+### 4. Blueprint Updates
 
-In your `forge-starter` fork:
+In your `forge-blueprint` fork:
 
 - Update `config/source_list.php` to point to your registries
 - Update `.env.example`, `composer.json`, and docs if needed

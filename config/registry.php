@@ -7,10 +7,10 @@ return [
         'private' => false,
         'path' => BASE_PATH . '/kernel-module-registry',
     ],
-    'starter' => [
-        'url' => 'https://github.com/forge-kernel/starter-template-registry',
+    'blueprint' => [
+        'url' => 'https://github.com/forge-kernel/blueprint-registry',
         'branch' => 'main',
         'private' => false,
-        'path' => BASE_PATH . '/starter-template-registry',
+        'path' => BASE_PATH . '/blueprint-registry',
     ],
 ];
