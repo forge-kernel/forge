@@ -26,7 +26,7 @@ use Throwable;
 #[Module(name: "ForgeRouter",
     description: "Forge Router and Http",
     author: "Forge Team",
-    version: '1.0.5',
+    version: '1.0.6',
     type: "core",
     license: "MIT",
     tags: ["router", "http"],
