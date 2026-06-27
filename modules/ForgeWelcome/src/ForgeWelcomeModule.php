@@ -20,7 +20,7 @@ use Forge\Core\Module\Attributes\Structure;
 
 #[Module(
     name: 'ForgeWelcome',
-    version: '1.2.3',
+    version: '1.2.4',
     description: 'A playground by forge',
     order: 99,
     author: 'Forge Team',
@@ -35,8 +35,8 @@ use Forge\Core\Module\Attributes\Structure;
     'controllers' => 'src/Controllers',
     'services' => 'src/Services',
     'migrations' => 'src/Database/Migrations',
-    'views' => 'src/Resources/views',
-    'components' => 'src/Resources/components',
+    'views' => 'src/UI/views',
+    'components' => 'src/UI/views/components',
     'commands' => 'src/Commands',
     'events' => 'src/Events',
     'tests' => 'src/tests',
