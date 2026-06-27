@@ -15,7 +15,7 @@ use Forge\CLI\Traits\OutputHelper;
 
 #[Module(
     name: 'ForgeNexus',
-    version: '0.2.1',
+    version: '0.2.2',
     description: 'CMS for Forge Framework',
     author: 'Forge Team',
     license: 'MIT',
