@@ -11,7 +11,7 @@ use Forge\Core\Module\Attributes\Provides;
 
 #[Module(
   name: 'ForgeMarkDown',
-  version: '0.1.1',
+  version: '0.1.2',
   description: 'A markdown processor',
   order: 70,
   author: 'Forge Team',
@@ -21,7 +21,7 @@ use Forge\Core\Module\Attributes\Provides;
 )]
 #[Service()]
 #[Compatibility(framework: '>=0.1.0', php: '>=8.3')]
-#[Provides(interface: ForgeMarkDownInterface::class, version: '0.1.1')]
+#[Provides(interface: ForgeMarkDownInterface::class, version: '0.1.2')]
 class ForgeMarkDownModule
 {
   public function register(Container $container): void
