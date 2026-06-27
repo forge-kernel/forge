@@ -23,14 +23,22 @@ use App\Modules\ForgeRouter\Events\RouterHookName;
 use Forge\Core\Module\Attributes\Module;
 use Forge\Core\Module\Attributes\PostInstall;
 use Forge\Core\Module\Attributes\PostUninstall;
+use Forge\Core\Module\Attributes\Structure;
 use Forge\Core\Module\ForgeIcon;
 use Forge\Traits\InjectsAssets;
 use \App\Modules\ForgeDebugBar\DebugBar;
 use Forge\Core\Config\Config;
 
+#[Structure(structure: [
+    'controllers' => 'src/Controllers',
+    'services' => 'src/Services',
+    'views' => 'src/views',
+    'components' => 'src/UI/views/components',
+    'assets' => 'src/UI/assets',
+])]
 #[Module(
     name: 'ForgeDebugBar',
-    version: '1.3.5',
+    version: '1.3.6',
     description: 'A debug bar by Forge',
     order: 3,
     author: 'Forge Team',
@@ -51,30 +59,22 @@ class DebugBarModule
 {
     use InjectsAssets;
 
-    private static ?MemoryCollector $memoryCollector = null;
-
-    public function register(Container $container): void
-    {
-        $container->bind(DebugBar::class, DebugBar::class);
-        $this->setupConfigDefaults($container);
-    }
-
-    private function setupConfigDefaults(Container $container): void
-    {
-        /** @var Config $config */
-        $config = $container->get(Config::class);
-        $config->set('forge_debug_bar.enabled', env('FORGE_DEBUG_BAR_ENABLED', true));
-    }
-
     #[RouterHookAttribute(RouterHookName::AFTER_REQUEST)]
     public function onAfterRequest(Request $request, Response $response): void
     {
-        //add_timeline_event('onAfterRequest', 'end');
-
-        self::$memoryCollector = MemoryCollector::instance();
-
         $debugbar = $this->getDebugbarInstance();
 
+        $this->registerCoreCollectors($debugbar, $request);
+        $this->registerCrossModuleCollectors($debugbar, $request);
+        $this->registerTabs($debugbar);
+
+        $this->registerDebugBarAssets();
+        $this->injectAssets($response);
+        $this->storeLatestDataForHub();
+    }
+
+    private function registerCoreCollectors(DebugBar $debugbar, Request $request): void
+    {
         $requestData = RequestCollector::collect($request);
         $debugbar->addCollector('request', function () use ($requestData) {
             return $requestData;
@@ -86,53 +86,12 @@ class DebugBarModule
         });
 
         $debugbar->addCollector('memory', function () {
-            return self::$memoryCollector ? self::$memoryCollector->getMemoryUsage() : ['error' => 'Memory collector not initialized'];
+            return MemoryCollector::instance()->getMemoryUsage();
         });
 
         $debugbar->addCollector('time', function ($startTime) {
             return TimeCollector::collect($startTime);
         });
-
-        try {
-            $container = Container::getInstance();
-
-            if ($container->has(TimelineCollector::class)) {
-                /** @var TimelineCollector $timelineCollector */
-                $timelineCollector = $container->get(TimelineCollector::class);
-                $timelineData = $timelineCollector->collect($request);
-                $debugbar->addCollector('timeline', function () use ($timelineData) {
-                    return $timelineData;
-                });
-            }
-
-            if ($container->has(ViewCollector::class)) {
-                /** @var ViewCollector $viewCollector */
-                $viewCollector = $container->get(ViewCollector::class);
-                $viewData = $viewCollector->collect($request);
-                $debugbar->addCollector('views', function () use ($viewData) {
-                    return $viewData;
-                });
-            }
-
-            if ($container->has(ExceptionCollector::class)) {
-                /** @var ExceptionCollector $exceptionCollector */
-                $exceptionCollector = $container->get(ExceptionCollector::class);
-                $exceptionData = $exceptionCollector->collect($request);
-                $debugbar->addCollector('exceptions', function () use ($exceptionData) {
-                    return $exceptionData;
-                });
-            }
-
-            if ($container->has(DatabaseCollector::class)) {
-                /** @var DatabaseCollector $databaseCollector */
-                $databaseCollector = $container->get(DatabaseCollector::class);
-                $databaseData = $databaseCollector->collect($request);
-                $debugbar->addCollector('Database', function () use ($databaseData) {
-                    return $databaseData;
-                });
-            }
-        } catch (\Throwable $e) {
-        }
 
         $debugbar->addCollector('messages', function ($startTime) {
             return MessageCollector::collect($startTime);
@@ -142,10 +101,55 @@ class DebugBarModule
         $debugbar->addCollector('route', function () use ($routeData) {
             return $routeData;
         });
+    }
 
-        $this->registerDebugBarAssets();
-        $this->injectAssets($response);
-        $this->storeLatestDataForHub();
+    private function registerCrossModuleCollectors(DebugBar $debugbar, Request $request): void
+    {
+        try {
+            $container = Container::getInstance();
+
+            if ($container->has(TimelineCollector::class)) {
+                $timelineCollector = $container->get(TimelineCollector::class);
+                $debugbar->addCollector('timeline', function () use ($timelineCollector, $request) {
+                    return $timelineCollector->collect($request);
+                });
+            }
+
+            if ($container->has(ViewCollector::class)) {
+                $viewCollector = $container->get(ViewCollector::class);
+                $debugbar->addCollector('views', function () use ($viewCollector, $request) {
+                    return $viewCollector->collect($request);
+                });
+            }
+
+            if ($container->has(ExceptionCollector::class)) {
+                $exceptionCollector = $container->get(ExceptionCollector::class);
+                $debugbar->addCollector('exceptions', function () use ($exceptionCollector, $request) {
+                    return $exceptionCollector->collect($request);
+                });
+            }
+
+            if ($container->has(DatabaseCollector::class)) {
+                $databaseCollector = $container->get(DatabaseCollector::class);
+                $debugbar->addCollector('Database', function () use ($databaseCollector, $request) {
+                    return $databaseCollector->collect($request);
+                });
+            }
+        } catch (\Throwable) {
+        }
+    }
+
+    private function registerTabs(DebugBar $debugbar): void
+    {
+        $debugbar->registerTab('overview', 'Overview', 'ForgeDebugBar:panels/overview', options: ['data_key' => 'request']);
+        $debugbar->registerTab('console', 'Console', 'ForgeDebugBar:panels/console', options: ['data_key' => 'messages']);
+        $debugbar->registerTab('errors', 'Errors', 'ForgeDebugBar:panels/errors', options: ['data_key' => 'exceptions']);
+        $debugbar->registerTab('database', 'Database', 'ForgeDebugBar:panels/database', options: ['data_key' => 'Database']);
+        $debugbar->registerTab('router', 'Router', 'ForgeDebugBar:panels/router', options: ['data_key' => 'route']);
+        $debugbar->registerTab('templates', 'Templates', 'ForgeDebugBar:panels/templates', options: ['data_key' => 'views']);
+        $debugbar->registerTab('state', 'State', 'ForgeDebugBar:panels/state', options: ['data_key' => 'session']);
+        $debugbar->registerTab('resources', 'Resources', 'ForgeDebugBar:panels/resources', options: ['data_key' => 'resources']);
+        $debugbar->registerTab('timeline', 'Timeline', 'ForgeDebugBar:panels/timeline', options: ['data_key' => 'timeline']);
     }
 
     private function storeLatestDataForHub(): void
