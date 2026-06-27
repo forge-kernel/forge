@@ -1,49 +1,74 @@
-document.addEventListener('DOMContentLoaded', function () {
-    const tabs = document.querySelectorAll('.forge-debugbar-tab');
-    const panels = document.querySelectorAll('.forge-debugbar-panel');
-    const logo = document.querySelector('.forge-debugbar-logo');
+(function () {
+    'use strict';
 
-    tabs.forEach(tab => {
-        tab.addEventListener('click', function () {
-            const tabName = this.dataset.tab;
-            const isActive = this.classList.contains('active');
+    var bar = document.querySelector('.fdb-bar');
+    if (!bar) return;
 
-            if (isActive) {
-                tabs.forEach(t => t.classList.remove('active'));
-                panels.forEach(p => p.classList.remove('active'));
-                return;
-            }
+    var panelsContainer = document.querySelector('.fdb-panels');
+    if (!panelsContainer) return;
 
-            tabs.forEach(t => t.classList.remove('active'));
-            panels.forEach(p => p.classList.remove('active'));
+    function closeAll() {
+        var activeTabs = bar.querySelectorAll('.fdb-tab--active');
+        var activePanels = panelsContainer.querySelectorAll('.fdb-panel--active');
+        for (var i = 0; i < activeTabs.length; i++) {
+            activeTabs[i].classList.remove('fdb-tab--active');
+        }
+        for (var j = 0; j < activePanels.length; j++) {
+            activePanels[j].classList.remove('fdb-panel--active');
+        }
+    }
 
-            this.classList.add('active');
-            const targetPanel = document.getElementById(`debugbar-panel-${tabName}`);
-            if (targetPanel) {
-                targetPanel.classList.add('active');
-            }
-        });
+    function openTab(tabName) {
+        var panel = document.getElementById('fdb-panel-' + tabName);
+        var tab = bar.querySelector('.fdb-tab[data-tab="' + tabName + '"]');
+        if (!tab || !panel) return;
+        closeAll();
+        tab.classList.add('fdb-tab--active');
+        panel.classList.add('fdb-panel--active');
+    }
+
+    bar.addEventListener('click', function (e) {
+        var tab = e.target.closest('.fdb-tab');
+        if (!tab) return;
+        var tabName = tab.getAttribute('data-tab');
+        if (tab.classList.contains('fdb-tab--active')) {
+            closeAll();
+        } else {
+            openTab(tabName);
+        }
     });
 
-    if (logo) {
-        logo.addEventListener('click', function (e) {
-            tabs.forEach(t => t.classList.remove('active'));
-            panels.forEach(p => p.classList.remove('active'));
+    var brand = bar.querySelector('.fdb-bar__brand');
+    if (brand) {
+        brand.addEventListener('click', function () {
+            closeAll();
         });
     }
 
-    const toggles = document.querySelectorAll('.clickable-toggle');
-
-    toggles.forEach(toggle => {
-        toggle.addEventListener('click', function() {
-            const targetId = this.dataset.target;
-            const targetElement = document.querySelector(targetId);
-
-            if (targetElement) {
-                targetElement.classList.toggle('is-collapsed');
-                this.classList.toggle('active');
-            }
-        });
+    document.addEventListener('keydown', function (e) {
+        if (e.key === 'Escape') {
+            closeAll();
+        }
+        if (e.key === 'ArrowRight' || e.key === 'ArrowLeft') {
+            var activeTab = bar.querySelector('.fdb-tab--active');
+            if (!activeTab) return;
+            var allTabs = bar.querySelectorAll('.fdb-tab');
+            var currentIndex = Array.prototype.indexOf.call(allTabs, activeTab);
+            var nextIndex = e.key === 'ArrowRight'
+                ? (currentIndex + 1) % allTabs.length
+                : (currentIndex - 1 + allTabs.length) % allTabs.length;
+            e.preventDefault();
+            openTab(allTabs[nextIndex].getAttribute('data-tab'));
+        }
     });
 
-});
+    var toggles = panelsContainer.querySelectorAll('[data-toggle]');
+    for (var k = 0; k < toggles.length; k++) {
+        toggles[k].addEventListener('click', function () {
+            var target = document.querySelector(this.getAttribute('data-toggle'));
+            if (target) {
+                target.classList.toggle('is-collapsed');
+            }
+        });
+    }
+})();

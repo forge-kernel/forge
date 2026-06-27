@@ -1,24 +1,19 @@
 <?php
 
-use App\Modules\ForgeDebugBar\Collectors\TimelineCollector;
-use App\Modules\ForgeDebugBar\Collectors\ViewCollector;
 use App\Modules\ForgeDebugBar\DebugBar;
 use Forge\Core\DI\Container;
 use Forge\Exceptions\MissingServiceException;
 use Forge\Exceptions\ResolveParameterException;
 
 if (!function_exists("add_timeline_event")) {
-  /**
-   * @throws ReflectionException
-   * @throws MissingServiceException
-   * @throws ResolveParameterException
-   */
   function add_timeline_event(string $name, string $label, array $data = []): void
   {
     if (filter_var($_ENV["APP_DEBUG"] ?? false, FILTER_VALIDATE_BOOLEAN)) {
-      /** @var TimelineCollector $timelineCollector */
-      $timelineCollector = Container::getInstance()->get(TimelineCollector::class);
-      $timelineCollector::instance()->addEvent($name, $label, $data);
+      try {
+        $timelineCollector = Container::getInstance()->get(\App\Modules\ForgeRouter\Collectors\TimelineCollector::class);
+        $timelineCollector->addEvent($name, $label, $data);
+      } catch (\Throwable) {
+      }
     }
   }
 }
@@ -26,7 +21,14 @@ if (!function_exists("add_timeline_event")) {
 if (!function_exists("collect_view_data")) {
   function collect_view_data(string $view, mixed $data = []): void
   {
-    ViewCollector::instance()->addView($view, $data);
+    try {
+      $container = Container::getInstance();
+      if ($container->has(\App\Modules\ForgeRouter\Collectors\ViewCollector::class)) {
+        $viewCollector = $container->get(\App\Modules\ForgeRouter\Collectors\ViewCollector::class);
+        $viewCollector->addView($view, $data);
+      }
+    } catch (\Throwable) {
+    }
   }
 }
 
@@ -41,3 +43,5 @@ if (!function_exists('formatBytes')) {
     return round($bytes, 2) . ' ' . $units[$pow];
   }
 }
+
+

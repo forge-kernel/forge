@@ -11,6 +11,7 @@ class DebugBar implements DebugBarInterface
 {
   private static ?self $instance = null;
   private array $collectors = [];
+  private array $tabs = [];
   private float $startTime;
   private int $startMemory;
 
@@ -31,6 +32,22 @@ class DebugBar implements DebugBarInterface
   public function addCollector(string $name, callable $collector): void
   {
     $this->collectors[$name] = $collector;
+  }
+
+  public function registerTab(string $name, string $label, string $component, ?callable $collector = null, array $options = []): void
+  {
+    $this->tabs[$name] = [
+      'name' => $name,
+      'label' => $label,
+      'component' => $component,
+      'collector' => $collector,
+      'data_key' => $options['data_key'] ?? $name,
+    ];
+  }
+
+  public function getTabs(): array
+  {
+    return $this->tabs;
   }
 
   public function injectDebugBarIfEnabled(Response $response, Container $container): Response
@@ -81,7 +98,9 @@ class DebugBar implements DebugBarInterface
       return '';
     }
     ob_start();
-    extract(['data' => $this->getData()]);
+    $data = $this->getData();
+    $tabs = $this->getTabs();
+    extract(compact('data', 'tabs'));
     include $modulePath;
     return ob_get_clean();
   }
@@ -102,8 +121,8 @@ class DebugBar implements DebugBarInterface
 
   public function injectDebugBarIntoHtml(string $htmlContent, string $debugBarHtml, Container $container): string
   {
-    $cssLinkTag = sprintf('<link rel="stylesheet" href="/assets/modules/ForgeDebugBar/css/debugbar.css">');
-    $jsScriptTag = sprintf('<script src="/assets/modules/ForgeDebugBar/js/debugbar.js"></script>');
+    $cssLinkTag = sprintf('<link rel="stylesheet" href="/assets/modules/forge-debug-bar/css/debugbar.css">');
+    $jsScriptTag = sprintf('<script src="/assets/modules/forge-debug-bar/js/debugbar.js"></script>');
 
     if (!is_string($htmlContent)) {
       return $debugBarHtml;

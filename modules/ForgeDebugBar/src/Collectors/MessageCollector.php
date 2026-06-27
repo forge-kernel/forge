@@ -5,7 +5,7 @@ namespace App\Modules\ForgeDebugBar\Collectors;
 class MessageCollector implements CollectorInterface
 {
   private array $messages = [];
-  private ?float $startTime = null;
+  private float $startTime;
 
   public function __construct()
   {
@@ -14,18 +14,7 @@ class MessageCollector implements CollectorInterface
 
   public static function collect(...$args): array
   {
-    $instance = self::instance();
-    $startTime = $args[0] ?? $instance->startTime ?? microtime(true);
-
-    $messages = $instance->messages;
-    foreach ($messages as &$message) {
-      if (!isset($message['relative_time'])) {
-        $message['relative_time'] = ($message['time'] - $startTime) * 1000;
-      }
-    }
-    unset($message);
-
-    return $messages;
+    return self::instance()->messages;
   }
 
   public static function instance(): self
@@ -39,12 +28,12 @@ class MessageCollector implements CollectorInterface
 
   public function addMessage(mixed $message, string $label = 'info'): void
   {
-    $currentTime = microtime(true);
+    $now = microtime(true);
     $this->messages[] = [
       'message' => $message,
       'label' => $label,
-      'time' => $currentTime,
-      'relative_time' => $this->startTime ? ($currentTime - $this->startTime) * 1000 : 0,
+      'time' => $now,
+      'relative_time' => round(($now - $this->startTime) * 1000, 2),
     ];
   }
 
@@ -52,7 +41,9 @@ class MessageCollector implements CollectorInterface
   {
     $this->startTime = $startTime;
     foreach ($this->messages as &$message) {
-      $message['relative_time'] = ($message['time'] - $startTime) * 1000;
+      if (isset($message['time'])) {
+        $message['relative_time'] = round(($message['time'] - $startTime) * 1000, 2);
+      }
     }
     unset($message);
   }
