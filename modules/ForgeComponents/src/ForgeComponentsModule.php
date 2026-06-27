@@ -13,13 +13,13 @@ use Forge\Core\Module\Attributes\Structure;
 #[Structure(structure: [
     'controllers' => 'src/Controllers',
     'services' => 'src/Services',
-    'views' => 'src/Resources/views',
-    'components' => 'src/Resources/components',
-    'assets' => 'src/Resources/assets',
+    'views' => 'src/UI/views',
+    'components' => 'src/UI/views/components',
+    'assets' => 'src/UI/assets',
 ])]
 #[Module(
     name: 'ForgeComponents',
-    version: '0.3.5',
+    version: '0.3.6',
     description: 'Primitive reusable UI components with vanilla CSS design system',
     order: 1,
     author: 'Forge Team',
