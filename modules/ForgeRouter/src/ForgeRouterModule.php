@@ -26,7 +26,7 @@ use Throwable;
 #[Module(name: "ForgeRouter",
     description: "Forge Router and Http",
     author: "Forge Team",
-    version: '1.0.6',
+    version: '1.0.7',
     type: "core",
     license: "MIT",
     tags: ["router", "http"],
@@ -95,6 +95,10 @@ final class ForgeRouterModule
 
             $kernel = new Kernel($router);
             self::$kernel = $kernel;
+
+            Metrics::start("router_before_request_hook");
+            RouterHookManager::triggerHook(RouterHookName::BEFORE_REQUEST, $request);
+            Metrics::stop("router_before_request_hook");
 
             Metrics::start("router_kernel_handler");
             $response = $kernel->handler($request);
