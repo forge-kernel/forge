@@ -19,7 +19,7 @@ use Forge\CLI\Traits\OutputHelper;
 
 #[Module(
     name: 'ForgeMultiTenant',
-    version: '0.3.3',
+    version: '0.3.4',
     description: 'A Multi Tenant Module by Forge',
     order: 2,
     author: 'Forge Team',
