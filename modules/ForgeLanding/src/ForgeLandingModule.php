@@ -16,8 +16,8 @@ use Forge\Core\Module\Attributes\Structure;
     'controllers' => 'src/Controllers',
     'services'    => 'src/Services',
     'migrations'  => 'src/Database/Migrations',
-    'views'       => 'src/Resources/views',
-    'components'  => 'src/Resources/components',
+    'views'       => 'src/UI/views',
+    'components'  => 'src/UI/views/components',
     'commands'    => 'src/Commands',
     'events'      => 'src/Events',
     'tests'       => 'src/tests',
@@ -30,7 +30,7 @@ use Forge\Core\Module\Attributes\Structure;
 #[Service]
 #[Module(
     name: 'ForgeLanding',
-    version: '0.1.0',
+    version: '0.1.1',
     description: 'Public-facing landing page with navigation to auth flows',
     order: 50,
     author: 'Forge Team',
