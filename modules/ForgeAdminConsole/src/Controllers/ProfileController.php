@@ -4,24 +4,25 @@ declare(strict_types=1);
 namespace App\Modules\ForgeAdminConsole\Controllers;
 
 use App\Modules\ForgeAuth\Contracts\UserContextInterface;
-use Forge\Core\DI\Attributes\Service;
 use Forge\Core\Helpers\Flash;
 use App\Modules\ForgeRouter\Helpers\Redirect;
-use App\Modules\ForgeRouter\Http\Attributes\Middleware;
+use App\Modules\ForgeRouter\Http\Attributes\UseMiddleware;
 use App\Modules\ForgeRouter\Http\Request;
 use App\Modules\ForgeRouter\Http\Response;
 use App\Modules\ForgeRouter\Attributes\Layout;
-use App\Modules\ForgeRouter\Routing\Route;
-use App\Modules\ForgeRouter\Traits\ControllerHelper;
+use App\Modules\ForgeRouter\Routing\Endpoint;
+use App\Modules\ForgeRouter\Attributes\Routable;
+use App\Modules\ForgeRouter\Traits\ResponseHelper;
+use App\Modules\ForgeView\Traits\ViewHelper;
 use Forge\Traits\SecurityHelper;
 
-#[Service]
-#[Middleware('web')]
-#[Middleware('auth')]
+#[Routable]
+#[UseMiddleware(['web', 'auth'])]
 #[Layout("ForgeComponents:wrappers/admin-default")]
 final class ProfileController
 {
-    use ControllerHelper;
+    use ResponseHelper;
+    use ViewHelper;
     use SecurityHelper;
 
     public function __construct(
@@ -29,16 +30,16 @@ final class ProfileController
     ) {
     }
 
-    #[Route("/admin/profile")]
+    #[Endpoint("/admin/profile")]
     public function editProfile(): Response
     {
         $user = $this->userContext->current();
-        return $this->view(view: "pages/admin/profile", data: [
+        return $this->view(view: "admin/profile", data: [
             'currentUser' => $user,
         ]);
     }
 
-    #[Route("/admin/profile", "POST")]
+    #[Endpoint("/admin/profile", "POST")]
     public function saveProfile(Request $request): Response
     {
         try {

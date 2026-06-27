@@ -9,27 +9,31 @@ use App\Modules\ForgeMultiTenant\Attributes\TenantScope;
 use App\Modules\ForgeSaas\Attributes\RequiresFeature;
 use App\Modules\ForgeSaas\Attributes\RequiresPlan;
 use App\Modules\ForgeSaas\Attributes\WithinLimit;
-use App\Modules\ForgeRouter\Http\Attributes\Middleware;
+use App\Modules\ForgeRouter\Http\Attributes\UseMiddleware;
 use App\Modules\ForgeRouter\Http\Request;
 use App\Modules\ForgeRouter\Http\Response;
 use App\Modules\ForgeRouter\Attributes\Layout;
-use App\Modules\ForgeRouter\Routing\Route;
-use App\Modules\ForgeRouter\Traits\ControllerHelper;
+use App\Modules\ForgeRouter\Routing\Endpoint;
+use App\Modules\ForgeRouter\Attributes\Routable;
+use App\Modules\ForgeRouter\Traits\ResponseHelper;
+use App\Modules\ForgeView\Traits\ViewHelper;
 use Forge\Traits\SecurityHelper;
 
+#[Routable]
 #[TenantScope("tenant")]
-#[Middleware("web")]
+#[UseMiddleware("web")]
 #[Layout("ForgeComponents:admin")]
 final class DashboardController
 {
-    use ControllerHelper;
+    use ResponseHelper;
+    use ViewHelper;
     use SecurityHelper;
 
     public function __construct(private readonly UserContext $userContext)
     {
     }
 
-    #[Route("/admin/dashboard")]
+    #[Endpoint("/admin/dashboard")]
     public function index(): Response
     {
 
@@ -62,21 +66,21 @@ final class DashboardController
             ]
         ];
 
-        return $this->view(view: "pages/admin/dashboard", data: $data);
+        return $this->view(view: "admin/dashboard", data: $data);
     }
 
-    #[Route("/admin/reports")]
+    #[Endpoint("/admin/reports")]
     #[RequiresFeature("advanced_reports")]
     public function reports(): Response
     {
-        return $this->view(view: "pages/admin/reports");
+        return $this->view(view: "admin/reports");
     }
 
-    #[Route("/admin/white-label")]
+    #[Endpoint("/admin/white-label")]
     #[RequiresPlan("enterprise")]
     public function whiteLabel(): Response
     {
-        return $this->view(view: "pages/admin/whitelabel");
+        return $this->view(view: "admin/whitelabel");
     }
 
     #[WithinLimit(resource: "max_users", table: "users")]

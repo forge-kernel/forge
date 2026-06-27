@@ -16,7 +16,7 @@ use Forge\CLI\Traits\Wizard;
     usage: 'tailwind:watch [--input=CSS_PATH] [--output=CSS_PATH] [--platform=PLATFORM]',
     examples: [
         'tailwind:watch',
-        'tailwind:watch --input=app/resources/css/tailwind.css --output=public/assets/css/app.css',
+        'tailwind:watch --input=app/UI/assets/css/tailwind.css --output=public/assets/css/app.css',
         'tailwind:watch --platform=linux-x64'
     ]
 )]
@@ -27,7 +27,7 @@ final class WatchTailwindCommand extends Command
 
     #[Arg(
         name: 'input',
-        description: 'Input CSS file path (default: app/resources/assets/css/tailwind.css)',
+        description: 'Input CSS file path (default: app/UI/assets/css/tailwind.css)',
         required: false
     )]
     private ?string $inputCss = null;
@@ -105,7 +105,7 @@ final class WatchTailwindCommand extends Command
             $this->info("Tailwind CSS binary setup complete for platform '{$this->platform}'.", 'TailwindSetup');
         }
 
-        $input = escapeshellarg($this->inputCss ?? BASE_PATH . '/app/resources/assets/css/tailwind.css');
+        $input = escapeshellarg($this->inputCss ?? BASE_PATH . '/app/UI/assets/css/tailwind.css');
         $output = escapeshellarg($this->outputCss ?? BASE_PATH . '/public/assets/css/app.css');
 
         $this->info('Watching CSS for changes… (Ctrl-C to stop)', 'TailwindWatch');

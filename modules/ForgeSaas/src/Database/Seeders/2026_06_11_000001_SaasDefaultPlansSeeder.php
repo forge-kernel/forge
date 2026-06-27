@@ -2,9 +2,13 @@
 
 declare(strict_types=1);
 
+namespace App\Modules\ForgeSaas\Database\Seeders;
+
 use App\Modules\ForgeDatabaseSQL\DB\Seeders\Attributes\SeederInfo;
+use App\Modules\ForgeDatabaseSQL\DB\Seeders\Attributes\Seedable;
 use App\Modules\ForgeDatabaseSQL\DB\Seeders\Seeder;
 
+#[Seedable]
 #[SeederInfo(description: 'Seeds the default SaaS plans', author: 'Forge Team')]
 class SaasDefaultPlansSeeder extends Seeder
 {

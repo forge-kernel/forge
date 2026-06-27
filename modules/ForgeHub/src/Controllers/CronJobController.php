@@ -6,23 +6,25 @@ namespace App\Modules\ForgeHub\Controllers;
 
 use App\Modules\ForgeAuth\Enums\Role;
 use App\Modules\ForgeHub\Services\CronJobService;
-use Forge\Core\DI\Attributes\Service;
 use Forge\Core\DI\Container;
-use App\Modules\ForgeRouter\Http\Attributes\Middleware;
+use App\Modules\ForgeRouter\Http\Attributes\UseMiddleware;
 use App\Modules\ForgeRouter\Http\Attributes\RequiresRole;
 use App\Modules\ForgeRouter\Http\Request;
 use App\Modules\ForgeRouter\Http\Response;
-use App\Modules\ForgeRouter\Routing\Route;
+use App\Modules\ForgeRouter\Routing\Endpoint;
+use App\Modules\ForgeRouter\Attributes\Routable;
 use App\Modules\ForgeRouter\Attributes\Layout;
-use App\Modules\ForgeRouter\Traits\ControllerHelper;
+use App\Modules\ForgeRouter\Traits\ResponseHelper;
+use App\Modules\ForgeView\Traits\ViewHelper;
 
-#[Service]
+#[Routable(prefix: '/hub')]
 #[RequiresRole(Role::ADMIN->value)]
-#[Middleware(['web', 'auth', 'role', 'hub-permissions'])]
+#[UseMiddleware(['web', 'auth', 'role', 'hub-permissions'])]
 
 final class CronJobController
 {
-    use ControllerHelper;
+    use ResponseHelper;
+    use ViewHelper;
 
     public function __construct(
         private readonly CronJobService $cronJobService,
@@ -30,7 +32,7 @@ final class CronJobController
     ) {
     }
 
-    #[Route("/hub/cron-jobs")]
+    #[Endpoint("/cron-jobs")]
     #[Layout("ForgeHub:hub")]
     public function index(Request $request): Response
     {
@@ -60,10 +62,10 @@ final class CronJobController
             'phpInfo' => $phpInfo,
         ];
 
-        return $this->view(view: "pages/cron-jobs", data: $data);
+        return $this->view(view: "cron-jobs", data: $data);
     }
 
-    #[Route("/hub/cron-jobs", "POST")]
+    #[Endpoint("/cron-jobs", "POST")]
     public function create(Request $request): Response
     {
         $data = $request->json();
@@ -163,7 +165,7 @@ final class CronJobController
         ]);
     }
 
-    #[Route("/hub/cron-jobs/{id:[^/]+}", "PUT")]
+    #[Endpoint("/cron-jobs/{id:[^/]+}", "PUT")]
     public function update(Request $request, string $id): Response
     {
 
@@ -284,7 +286,7 @@ final class CronJobController
         ]);
     }
 
-    #[Route("/hub/cron-jobs/{id:[^/]+}/output", "GET")]
+    #[Endpoint("/cron-jobs/{id:[^/]+}/output", "GET")]
     public function getOutput(Request $request, string $id): Response
     {
         $maxLines = (int) ($request->query('lines') ?? 200);
@@ -297,7 +299,7 @@ final class CronJobController
         ]);
     }
 
-    #[Route("/hub/cron-jobs/{id:[^/]+}/output", "DELETE")]
+    #[Endpoint("/cron-jobs/{id:[^/]+}/output", "DELETE")]
     public function clearOutput(Request $request, string $id): Response
     {
         $this->cronJobService->clearOutput($id);
@@ -308,7 +310,7 @@ final class CronJobController
         ]);
     }
 
-    #[Route("/hub/cron-jobs/{id:[^/]+}/run", "POST")]
+    #[Endpoint("/cron-jobs/{id:[^/]+}/run", "POST")]
     public function run(Request $request, string $id): Response
     {
 
@@ -437,7 +439,7 @@ final class CronJobController
         ]);
     }
 
-    #[Route("/hub/cron-jobs/{id:[^/]+}", "GET")]
+    #[Endpoint("/cron-jobs/{id:[^/]+}", "GET")]
     public function show(Request $request, string $id): Response
     {
 
@@ -464,7 +466,7 @@ final class CronJobController
         ]);
     }
 
-    #[Route("/hub/cron-jobs/{id:[^/]+}", "DELETE")]
+    #[Endpoint("/cron-jobs/{id:[^/]+}", "DELETE")]
     public function delete(Request $request, string $id): Response
     {
 
@@ -483,7 +485,7 @@ final class CronJobController
         ]);
     }
 
-    #[Route("/hub/cron-jobs/commands", "GET")]
+    #[Endpoint("/cron-jobs/commands", "GET")]
     public function getCommands(Request $request): Response
     {
         try {
@@ -541,7 +543,7 @@ final class CronJobController
                         }
                     }
 
-                    $cliAttrs = $reflection->getAttributes(\Forge\CLI\Attributes\Cli::class);
+                    $cliAttrs = $reflection->getAttributes(\Forge\CLI\Attributes\Command::class) ?: $reflection->getAttributes(\Forge\CLI\Attributes\Cli::class);
                     if (empty($cliAttrs)) {
                         continue;
                     }

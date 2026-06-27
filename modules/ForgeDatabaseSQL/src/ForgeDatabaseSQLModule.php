@@ -21,7 +21,7 @@ use Forge\CLI\Traits\OutputHelper;
 
 #[Module(
     name: 'ForgeDatabaseSQL',
-    version: '0.9.11',
+    version: '0.9.12',
     description: 'SQL database support (SQLite, MySQL, PostgreSQL)',
     order: 0,
     author: 'Forge Team',
@@ -33,8 +33,8 @@ use Forge\CLI\Traits\OutputHelper;
     'controllers' => 'src/Controllers',
     'services' => 'src/Services',
     'migrations' => 'src/Database/Migrations',
-    'views' => 'src/Resources/views',
-    'components' => 'src/Resources/components',
+    'views' => 'src/UI/views',
+    'components' => 'src/UI/views/components',
     'commands' => 'src/Commands',
     'events' => 'src/Events',
     'tests' => 'src/tests',

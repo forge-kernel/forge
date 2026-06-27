@@ -7,24 +7,26 @@ namespace App\Modules\AppAuth\Controllers\Web;
 use App\Modules\AppAuth\Requeriments\PasswordRequeriments;
 use App\Modules\AppAuth\Validations\RegisterValidation;
 use App\Modules\ForgeAuth\Services\ForgeAuthService;
-use Forge\Core\DI\Attributes\Service;
 use Forge\Core\Helpers\Flash;
 use App\Modules\ForgeRouter\Helpers\Redirect;
-use App\Modules\ForgeRouter\Http\Attributes\Middleware;
+use App\Modules\ForgeRouter\Http\Attributes\UseMiddleware;
 use App\Modules\ForgeRouter\Http\Request;
 use App\Modules\ForgeRouter\Http\Response;
 use App\Modules\ForgeRouter\Attributes\Layout;
-use App\Modules\ForgeRouter\Routing\Route;
+use App\Modules\ForgeRouter\Routing\Endpoint;
+use App\Modules\ForgeRouter\Attributes\Routable;
 use Forge\Core\Services\RedirectHandlerService;
 use Forge\Exceptions\ValidationException;
-use App\Modules\ForgeRouter\Traits\ControllerHelper;
+use App\Modules\ForgeRouter\Traits\ResponseHelper;
+use App\Modules\ForgeView\Traits\ViewHelper;
 use Forge\Traits\SecurityHelper;
 
-#[Service]
-#[Middleware('web')]
+#[Routable(prefix: '/auth')]
+#[UseMiddleware('web')]
 final class RegisterController
 {
-    use ControllerHelper;
+    use ResponseHelper;
+    use ViewHelper;
     use SecurityHelper;
 
     public function __construct(
@@ -33,15 +35,15 @@ final class RegisterController
     ) {
     }
 
-    #[Route("/auth/register")]
+    #[Endpoint("/register")]
     #[Layout("ForgeComponents:auth-split")]
-    public function index(): Response
+    public function register(): Response
     {
-        return $this->view(view: "pages/register");
+        return $this->view(view: "register");
     }
 
-    #[Route("/auth/register", "POST")]
-    public function register(Request $request): Response
+    #[Endpoint("/register", "POST")]
+    public function createUser(Request $request): Response
     {
         try {
             RegisterValidation::validate($request->postData);

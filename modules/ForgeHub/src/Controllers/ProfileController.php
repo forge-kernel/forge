@@ -7,25 +7,27 @@ namespace App\Modules\ForgeHub\Controllers;
 use App\Modules\ForgeAuth\Enums\Role;
 use App\Modules\AppAuth\Models\Profile;
 use App\Modules\AppAuth\Services\UserContext;
-use Forge\Core\DI\Attributes\Service;
 use Forge\Core\Helpers\Flash;
 use App\Modules\ForgeRouter\Helpers\Redirect;
-use App\Modules\ForgeRouter\Http\Attributes\Middleware;
+use App\Modules\ForgeRouter\Http\Attributes\UseMiddleware;
 use App\Modules\ForgeRouter\Http\Attributes\RequiresRole;
 use App\Modules\ForgeRouter\Http\Request;
 use App\Modules\ForgeRouter\Http\Response;
-use App\Modules\ForgeRouter\Routing\Route;
+use App\Modules\ForgeRouter\Routing\Endpoint;
+use App\Modules\ForgeRouter\Attributes\Routable;
 use App\Modules\ForgeRouter\Attributes\Layout;
-use App\Modules\ForgeRouter\Traits\ControllerHelper;
+use App\Modules\ForgeRouter\Traits\ResponseHelper;
+use App\Modules\ForgeView\Traits\ViewHelper;
 use Forge\Traits\SecurityHelper;
 
-#[Service]
-#[Middleware(['web', 'auth', 'role', 'hub-permissions'])]
+#[Routable(prefix: '/hub')]
+#[UseMiddleware(['web', 'auth', 'role', 'hub-permissions'])]
 #[RequiresRole(Role::ADMIN->value)]
 
 final class ProfileController
 {
-    use ControllerHelper;
+    use ResponseHelper;
+    use ViewHelper;
     use SecurityHelper;
 
     public function __construct(
@@ -33,7 +35,7 @@ final class ProfileController
     ) {
     }
 
-    #[Route("/hub/profile")]
+    #[Endpoint("/profile")]
     #[Layout("ForgeHub:hub")]
     public function index(): Response
     {
@@ -51,10 +53,10 @@ final class ProfileController
             'profile' => $profile,
         ];
 
-        return $this->view(view: "pages/profile", data: $data);
+        return $this->view(view: "profile", data: $data);
     }
 
-    #[Route("/hub/profile", "POST")]
+    #[Endpoint("/profile", "POST")]
     public function update(Request $request): Response
     {
         $user = $this->userContext->current();

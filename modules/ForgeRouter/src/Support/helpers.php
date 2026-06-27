@@ -8,6 +8,7 @@ use App\Modules\ForgeRouter\Collectors\TimelineCollector;
 use App\Modules\ForgeRouter\Collectors\ViewCollector;
 use App\Modules\ForgeRouter\Http\Request;
 use Forge\Core\DI\Container;
+use Forge\Core\Services\TokenManager;
 
 if (!function_exists('request')) {
     function request(): Request
@@ -103,5 +104,40 @@ if (!function_exists('collect_exception')) {
             }
         } catch (Throwable $e) {
         }
+    }
+}
+
+if (!function_exists('csrf_token')) {
+    function csrf_token(): string
+    {
+        $mgr = Container::getInstance()->make(TokenManager::class);
+        return $mgr->getToken("web");
+    }
+}
+
+if (!function_exists('csrf_meta')) {
+    function csrf_meta(): string
+    {
+        return '<meta name="csrf-token" content="' .
+            htmlspecialchars(csrf_token(), ENT_QUOTES, "UTF-8") .
+            '">';
+    }
+}
+
+if (!function_exists('csrf_input')) {
+    function csrf_input(): string
+    {
+        return '<input type="hidden" name="_token" value="' .
+            htmlspecialchars(csrf_token(), ENT_QUOTES, "UTF-8") .
+            '">';
+    }
+}
+
+if (!function_exists('window_csrf_token')) {
+    function window_csrf_token(): string
+    {
+        return "<script>
+        window.csrfToken = document.querySelector('meta[name='csrf-token']')?.getAttribute('content') || '';
+        </script>";
     }
 }

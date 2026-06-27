@@ -1,9 +1,0 @@
-<?php
-/**
- * @var string $title
- */
-
-layout(name: "main", fromModule: false);
-?>
-
-<h2>Welcome <?=$title?></h2>

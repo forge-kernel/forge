@@ -6,21 +6,21 @@ namespace App\Modules\AppAuth\Controllers\Api;
 
 use App\Modules\ForgeAuth\Enums\Permission;
 use App\Modules\AppAuth\Models\User;
-use Forge\Core\DI\Attributes\Service;
 use App\Modules\ForgeRouter\Http\Attributes\ApiRoute;
-use App\Modules\ForgeRouter\Http\Attributes\Middleware;
+use App\Modules\ForgeRouter\Http\Attributes\UseMiddleware;
 use App\Modules\ForgeRouter\Http\Request;
 use App\Modules\ForgeRouter\Http\Response;
+use App\Modules\ForgeRouter\Attributes\Routable;
 use Forge\Exceptions\UserNotFoundException;
-use Forge\Traits\AuthorizeRequests;
-use App\Modules\ForgeRouter\Traits\ControllerHelper;
-use Forge\Traits\PaginationHelper;
+use App\Modules\ForgeRouter\Traits\AuthorizeRequests;
+use App\Modules\ForgeRouter\Traits\ResponseHelper;
+use App\Modules\ForgeRouter\Traits\PaginationHelper;
 
-#[Service]
-#[Middleware("api")]
+#[Routable]
+#[UseMiddleware("api")]
 final class ApiUserController
 {
-    use ControllerHelper;
+    use ResponseHelper;
     use AuthorizeRequests;
     use PaginationHelper;
 

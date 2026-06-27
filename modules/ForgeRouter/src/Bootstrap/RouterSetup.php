@@ -14,7 +14,9 @@ use App\Modules\ForgeRouter\Middleware\EngineMiddlewareRegistry;
 use App\Modules\ForgeRouter\Middleware\MiddlewareLoader;
 use App\Modules\ForgeRouter\Routing\ControllerLoader;
 use App\Modules\ForgeRouter\Routing\Router;
+use Forge\Core\Services\AttributeDiscoveryService;
 use Forge\Core\Structure\StructureResolver;
+use App\Modules\ForgeRouter\Attributes\Routable;
 use Forge\Exceptions\MissingServiceException;
 use ReflectionException;
 
@@ -65,6 +67,34 @@ final class RouterSetup
         $controllers = $cacheResult['controllers'];
         $cachedRouteData = $cacheResult['routeData'];
         Metrics::stop("router_controller_cache_load");
+
+        $routableMetadata = [];
+        if ($container->has(AttributeDiscoveryService::class)) {
+            $discoveryService = $container->get(AttributeDiscoveryService::class);
+            $routableMetadata = $discoveryService->getClassesWithAttributeMetadata(Routable::class);
+        }
+
+        $existingClasses = [];
+        foreach ($controllers as $c) {
+            $existingClasses[$c['class']] = true;
+        }
+
+        $hasNewRoutable = false;
+        foreach ($routableMetadata as $className => $metadata) {
+            if (!isset($existingClasses[$className])) {
+                $container->register($className);
+                $controllers[] = [
+                    'class' => $className,
+                    'file' => $metadata['file'],
+                    'mtime' => $metadata['mtime'],
+                ];
+                $hasNewRoutable = true;
+            }
+        }
+
+        if ($hasNewRoutable) {
+            $cachedRouteData = null;
+        }
 
         Metrics::start("router_middleware_loader");
         /** @var MiddlewareLoader $middlewareLoader */
@@ -166,6 +196,17 @@ final class RouterSetup
                 $allRouteData[$class] = $routes;
             }
             self::writeControllerCache($controllers, $allRouteData);
+
+            foreach ($controllers as $controllerMeta) {
+                $class = $controllerMeta['class'] ?? '';
+                if ($class && !isset($routableMetadata[$class])) {
+                    trigger_error(
+                        "Controller class \"{$class}\" uses legacy folder-based discovery. Add #[Routable] attribute to the class.",
+                        E_USER_DEPRECATED
+                    );
+                }
+            }
+
         }
         Metrics::stop("router_register_controllers");
 

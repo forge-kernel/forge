@@ -4,9 +4,12 @@ declare(strict_types=1);
 
 namespace App\Modules\ForgeRouter\Middleware;
 
+use Forge\Core\Bootstrap\OptimizedDirectoryScanner;
 use Forge\Core\Helpers\FileExistenceCache;
 use Forge\Core\Helpers\ModuleHelper;
+use Forge\Core\Services\AttributeDiscoveryService;
 use Forge\Core\Structure\StructureResolver;
+use App\Modules\ForgeRouter\Middleware\Attributes\Middleware;
 use App\Modules\ForgeRouter\Middleware\Attributes\RegisterMiddleware;
 use ReflectionClass;
 use ReflectionException;
@@ -56,14 +59,62 @@ final class MiddlewareLoader
     }
 
     /**
-     * Scans defined directories for PHP classes with the RegisterMiddleware attribute.
+     * Discovers middlewares via attribute scanning first, then legacy folder fallback.
      * @return array<string, array<int, array{class: class-string, order: int, overrideClass: ?string}>>
      */
     private function scanDirectories(): array
     {
         $autoMiddlewares = [];
-        $filesToScan = [];
+        $discoveredClasses = [];
 
+        // 1. Attribute-based discovery: any class under app/ or modules/{Module}/src with #[RegisterMiddleware] or #[Middleware]
+        $basePaths = $this->getAttributeDiscoveryBasePaths();
+        if (!empty($basePaths)) {
+            $discoveryService = new AttributeDiscoveryService();
+            $classMap = $discoveryService->discover($basePaths, [RegisterMiddleware::class, Middleware::class]);
+
+            foreach ($classMap as $className => $metadata) {
+                if (!in_array(RegisterMiddleware::class, $metadata['attributes'] ?? [], true) && !in_array(Middleware::class, $metadata['attributes'] ?? [], true)) {
+                    continue;
+                }
+
+                if (!class_exists($className)) {
+                    continue;
+                }
+
+                try {
+                    $reflection = new ReflectionClass($className);
+                    $attribute = $reflection->getAttributes(Middleware::class)[0] ?? $reflection->getAttributes(RegisterMiddleware::class)[0] ?? null;
+
+                    if (!$attribute) {
+                        continue;
+                    }
+
+                    /** @var RegisterMiddleware|Middleware $attrInstance */
+                    $attrInstance = $attribute->newInstance();
+
+                    if (!$attrInstance->enabled) {
+                        continue;
+                    }
+
+                    if (!isset($autoMiddlewares[$attrInstance->group])) {
+                        $autoMiddlewares[$attrInstance->group] = [];
+                    }
+
+                    $autoMiddlewares[$attrInstance->group][] = [
+                        'class' => $className,
+                        'order' => $attrInstance->order,
+                        'overrideClass' => $attrInstance->overrideClass ?? $className,
+                    ];
+                    $discoveredClasses[$className] = true;
+                } catch (ReflectionException $e) {
+                    //
+                }
+            }
+        }
+
+        // 2. Legacy folder fallback: app/Middlewares/ and modules/{Module}/src/Middlewares/
+        $filesToScan = [];
         foreach ($this->resolveMiddlewareDirectories() as $dir) {
             if (FileExistenceCache::isDir($dir)) {
                 $directoryIterator = new RecursiveDirectoryIterator($dir);
@@ -81,12 +132,16 @@ final class MiddlewareLoader
             try {
                 $className = $this->fileToClass($file);
 
+                if (isset($discoveredClasses[$className])) {
+                    continue;
+                }
+
                 if ($className && class_exists($className)) {
                     $reflection = new ReflectionClass($className);
-                    $attribute = $reflection->getAttributes(RegisterMiddleware::class)[0] ?? null;
+                    $attribute = $reflection->getAttributes(Middleware::class)[0] ?? $reflection->getAttributes(RegisterMiddleware::class)[0] ?? null;
 
                     if ($attribute) {
-                        /** @var RegisterMiddleware $attrInstance */
+                        /** @var RegisterMiddleware|Middleware $attrInstance */
                         $attrInstance = $attribute->newInstance();
 
                         if (!$attrInstance->enabled) {
@@ -110,6 +165,14 @@ final class MiddlewareLoader
         }
 
         return $autoMiddlewares;
+    }
+
+    /**
+     * @return array<string>
+     */
+    private function getAttributeDiscoveryBasePaths(): array
+    {
+        return OptimizedDirectoryScanner::getAttributeDiscoveryPaths();
     }
 
     /**
@@ -315,10 +378,16 @@ final class MiddlewareLoader
         $files = [];
         $dirs = [];
 
-        foreach ($this->resolveMiddlewareDirectories() as $dir) {
-            if (FileExistenceCache::isDir($dir)) {
-                $dirs[] = $dir;
-                $directoryIterator = new RecursiveDirectoryIterator($dir, RecursiveDirectoryIterator::SKIP_DOTS);
+        $directoriesToScan = array_merge(
+            $this->resolveMiddlewareDirectories(),
+            $this->getAttributeDiscoveryBasePaths(),
+        );
+
+        foreach ($directoriesToScan as $dir) {
+            $fullDir = str_starts_with($dir, BASE_PATH) ? $dir : BASE_PATH . '/' . ltrim($dir, '/');
+            if (FileExistenceCache::isDir($fullDir)) {
+                $dirs[] = $fullDir;
+                $directoryIterator = new RecursiveDirectoryIterator($fullDir, RecursiveDirectoryIterator::SKIP_DOTS);
                 $iterator = new RecursiveIteratorIterator($directoryIterator, RecursiveIteratorIterator::SELF_FIRST);
 
                 foreach ($iterator as $file) {
@@ -332,8 +401,8 @@ final class MiddlewareLoader
         }
 
         return [
-            'files' => $files,
-            'dirs' => $dirs
+            'files' => array_values(array_unique($files)),
+            'dirs' => array_values(array_unique($dirs)),
         ];
     }
 

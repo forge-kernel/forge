@@ -350,13 +350,13 @@ use Forge\Core\Http\Attributes\Middleware;
 use Forge\Core\Http\Response;
 use Forge\Core\Routing\Route;
 use Forge\Core\Http\Request;
-use Forge\Traits\ControllerHelper;
+use Forge\Traits\EndpointHelper;
 
 #[Service]
 #[Middleware('web')]
 final class WelcomeController
 {
-    use ControllerHelper;
+    use EndpointHelper;
 
     #[Route("/welcome")]
     public function index(Request $request): Response

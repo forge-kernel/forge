@@ -7,23 +7,25 @@ namespace App\Modules\AppAuth\Controllers\Web;
 use App\Modules\AppAuth\Validations\LoginValidation;
 use App\Modules\ForgeAuth\Exceptions\LoginException;
 use App\Modules\ForgeAuth\Services\ForgeAuthService;
-use Forge\Core\DI\Attributes\Service;
 use Forge\Core\Helpers\Flash;
 use App\Modules\ForgeRouter\Helpers\Redirect;
-use App\Modules\ForgeRouter\Http\Attributes\Middleware;
+use App\Modules\ForgeRouter\Http\Attributes\UseMiddleware;
 use App\Modules\ForgeRouter\Http\Request;
 use App\Modules\ForgeRouter\Http\Response;
 use App\Modules\ForgeRouter\Attributes\Layout;
-use App\Modules\ForgeRouter\Routing\Route;
+use App\Modules\ForgeRouter\Routing\Endpoint;
+use App\Modules\ForgeRouter\Attributes\Routable;
 use Forge\Core\Services\RedirectHandlerService;
-use App\Modules\ForgeRouter\Traits\ControllerHelper;
+use App\Modules\ForgeRouter\Traits\ResponseHelper;
+use App\Modules\ForgeView\Traits\ViewHelper;
 use Forge\Traits\SecurityHelper;
 
-#[Service]
-#[Middleware('web')]
+#[Routable(prefix: '/auth')]
+#[UseMiddleware('web')]
 final class LoginController
 {
-    use ControllerHelper;
+    use ResponseHelper;
+    use ViewHelper;
     use SecurityHelper;
 
     public function __construct(
@@ -32,14 +34,14 @@ final class LoginController
     ) {
     }
 
-    #[Route("/auth/login")]
+    #[Endpoint("/login")]
     #[Layout("ForgeComponents:auth-split")]
     public function index(): Response
     {
-        return $this->view(view: "pages/login");
+        return $this->view(view: "login");
     }
 
-    #[Route("/auth/login", "POST")]
+    #[Endpoint("/login", "POST")]
     public function login(Request $request): Response
     {
         try {
@@ -54,7 +56,7 @@ final class LoginController
         }
     }
 
-    #[Route('/auth/logout', 'POST')]
+    #[Endpoint('/logout', 'POST')]
     public function logout(): Response
     {
         $this->forgeAuthService->logout();

@@ -10,21 +10,27 @@ use App\Modules\ForgeWire\Attributes\State;
 use App\Modules\ForgeWire\Traits\WithWireResponse;
 use App\Modules\ForgeRouter\Http\Request;
 use App\Modules\ForgeRouter\Http\Response;
-use App\Modules\ForgeRouter\Traits\ControllerHelper;
-use App\Modules\ForgeRouter\Routing\Route;
-use App\Modules\ForgeRouter\Http\Attributes\Middleware;
+use App\Modules\ForgeRouter\Traits\ResponseHelper;
+use App\Modules\ForgeView\Traits\ViewHelper;
+use App\Modules\ForgeRouter\Routing\Endpoint;
+use App\Modules\ForgeRouter\Attributes\Routable;
+use App\Modules\ForgeRouter\Attributes\Layout;
+use App\Modules\ForgeRouter\Http\Attributes\UseMiddleware;
 
+#[Routable]
 #[Reactive]
-#[Middleware("web")]
+#[UseMiddleware("web")]
 final class SearchController
 {
-    use ControllerHelper;
+    use ResponseHelper;
+    use ViewHelper;
     use WithWireResponse;
 
     #[State]
     public string $query = '';
 
-    #[Route("/search")]
+    #[Endpoint("/search")]
+    #[Layout('main')]
     public function index(Request $request): Response
     {
         define("TEST", true);
@@ -35,7 +41,7 @@ final class SearchController
             "query" => $this->query
         ];
 
-        return $this->view("pages/search/index", $data);
+        return $this->view("search/index", $data);
     }
 
     #[Action]
@@ -46,9 +52,9 @@ final class SearchController
         }
 
         return [
-            (object)['title' => "Result for: $query 1"],
-            (object)['title' => "Result for: $query 2"],
-            (object)['title' => "Result for: $query 3"],
+            (object) ['title' => "Result for: $query 1"],
+            (object) ['title' => "Result for: $query 2"],
+            (object) ['title' => "Result for: $query 3"],
         ];
     }
 }

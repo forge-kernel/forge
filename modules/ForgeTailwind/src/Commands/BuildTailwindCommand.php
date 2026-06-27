@@ -16,7 +16,7 @@ use Forge\CLI\Traits\Wizard;
     usage: 'tailwind:build [--input=CSS_PATH] [--output=CSS_PATH]',
     examples: [
         'tailwind:build',
-        'tailwind:build --input=app/resources/css/tailwind.css --output=public/assets/css/app.css'
+        'tailwind:build --input=app/UI/assets/css/tailwind.css --output=public/assets/css/app.css'
     ]
 )]
 final class BuildTailwindCommand extends Command
@@ -26,7 +26,7 @@ final class BuildTailwindCommand extends Command
 
     #[Arg(
         name: 'input',
-        description: 'Input CSS file path (default: app/resources/assets/css/tailwind.css)',
+        description: 'Input CSS file path (default: app/UI/assets/css/tailwind.css)',
         required: false
     )]
     private ?string $inputCss = null;
@@ -79,7 +79,7 @@ final class BuildTailwindCommand extends Command
             $this->info('Tailwind CSS binary setup complete.', 'TailwindSetup');
         }
 
-        $input = escapeshellarg($this->inputCss ?? BASE_PATH . '/app/resources/assets/css/tailwind.css');
+        $input = escapeshellarg($this->inputCss ?? BASE_PATH . '/app/UI/assets/css/tailwind.css');
         $output = escapeshellarg($this->outputCss ?? BASE_PATH . '/public/assets/css/app.css');
 
         $cmd = escapeshellarg($bin) . " -i {$input} -o {$output} --minify 2>&1";

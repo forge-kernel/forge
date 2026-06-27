@@ -1,11 +1,16 @@
 <?php
 
 declare(strict_types=1);
+
+namespace App\Modules\ForgeMultiTenant\Database\Seeders;
+
 use App\Modules\ForgeDatabaseSQL\DB\Seeders\Attributes\AutoRollback;
 use App\Modules\ForgeDatabaseSQL\DB\Seeders\Attributes\SeederInfo;
+use App\Modules\ForgeDatabaseSQL\DB\Seeders\Attributes\Seedable;
 use App\Modules\ForgeDatabaseSQL\DB\Seeders\Seeder;
 
 
+#[Seedable]
 #[SeederInfo(description: 'Seed for TenantSeeder', author: 'Forge Team')]
 #[AutoRollback('tenants', ['domain' => 'central'])]
 class CreateTenantSeeder extends Seeder

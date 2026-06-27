@@ -5,26 +5,28 @@ declare(strict_types=1);
 namespace App\Modules\ForgeHub\Controllers;
 
 use App\Modules\ForgeEvents\Services\QueueWorkerService;
-use Forge\Core\DI\Attributes\Service;
-use App\Modules\ForgeRouter\Http\Attributes\Middleware;
+use App\Modules\ForgeRouter\Http\Attributes\UseMiddleware;
 use App\Modules\ForgeRouter\Http\Request;
 use App\Modules\ForgeRouter\Http\Response;
-use App\Modules\ForgeRouter\Routing\Route;
+use App\Modules\ForgeRouter\Routing\Endpoint;
+use App\Modules\ForgeRouter\Attributes\Routable;
 use App\Modules\ForgeRouter\Attributes\Layout;
-use App\Modules\ForgeRouter\Traits\ControllerHelper;
+use App\Modules\ForgeRouter\Traits\ResponseHelper;
+use App\Modules\ForgeView\Traits\ViewHelper;
 
-#[Service]
-#[Middleware(['web', 'auth', 'hub-permissions'])]
+#[Routable(prefix: "/hub/queue-workers")]
+#[UseMiddleware(['web', 'auth', 'hub-permissions'])]
 final class QueueWorkerController
 {
-    use ControllerHelper;
+    use ResponseHelper;
+    use ViewHelper;
 
     public function __construct(
         private readonly QueueWorkerService $queueWorkerService
     ) {
     }
 
-    #[Route("/hub/queue-workers")]
+    #[Endpoint]
     #[Layout("ForgeHub:hub")]
     public function index(Request $request): Response
     {
@@ -53,7 +55,7 @@ final class QueueWorkerController
         return $this->view(view: "queue-workers", data: $data);
     }
 
-    #[Route("/hub/queue-workers", "POST")]
+    #[Endpoint(method: "POST")]
     public function create(Request $request): Response
     {
         $data = $request->json();
@@ -105,7 +107,7 @@ final class QueueWorkerController
         ]);
     }
 
-    #[Route("/hub/queue-workers/{id:[^/]+}", "PUT")]
+    #[Endpoint("/{id:[^/]+}", "PUT")]
     public function update(Request $request, string $id): Response
     {
         $data = $request->json();
@@ -176,7 +178,7 @@ final class QueueWorkerController
         ]);
     }
 
-    #[Route("/hub/queue-workers/{id:[^/]+}", "DELETE")]
+    #[Endpoint("/{id:[^/]+}", "DELETE")]
     public function delete(Request $request, string $id): Response
     {
         $success = $this->queueWorkerService->removeWorker($id);
@@ -193,7 +195,7 @@ final class QueueWorkerController
         ]);
     }
 
-    #[Route("/hub/queue-workers/{id:[^/]+}")]
+    #[Endpoint("/{id:[^/]+}")]
     public function show(Request $request, string $id): Response
     {
         $worker = $this->queueWorkerService->getWorker($id);
@@ -215,7 +217,7 @@ final class QueueWorkerController
         ]);
     }
 
-    #[Route("/hub/queue-workers/{id:[^/]+}/start", "POST")]
+    #[Endpoint("/{id:[^/]+}/start", "POST")]
     public function start(Request $request, string $id): Response
     {
         $worker = $this->queueWorkerService->getWorker($id);
@@ -252,7 +254,7 @@ final class QueueWorkerController
         ]);
     }
 
-    #[Route("/hub/queue-workers/{id:[^/]+}/stop", "POST")]
+    #[Endpoint("/{id:[^/]+}/stop", "POST")]
     public function stop(Request $request, string $id): Response
     {
         $worker = $this->queueWorkerService->getWorker($id);
@@ -288,7 +290,7 @@ final class QueueWorkerController
         ]);
     }
 
-    #[Route("/hub/queue-workers/{id:[^/]+}/output")]
+    #[Endpoint("/{id:[^/]+}/output")]
     public function getOutput(Request $request, string $id): Response
     {
         $worker = $this->queueWorkerService->getWorker($id);
@@ -312,7 +314,7 @@ final class QueueWorkerController
         ]);
     }
 
-    #[Route("/hub/queue-workers/{id:[^/]+}/output", "DELETE")]
+    #[Endpoint("/{id:[^/]+}/output", "DELETE")]
     public function clearOutput(Request $request, string $id): Response
     {
         $worker = $this->queueWorkerService->getWorker($id);

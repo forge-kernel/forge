@@ -4,31 +4,33 @@ declare(strict_types=1);
 namespace App\Modules\ForgeLanding\Controllers;
 
 use App\Modules\ForgeAuth\Contracts\UserContextInterface;
-use Forge\Core\DI\Attributes\Service;
-use App\Modules\ForgeRouter\Http\Attributes\Middleware;
+use App\Modules\ForgeRouter\Http\Attributes\UseMiddleware;
 use App\Modules\ForgeRouter\Http\Response;
 use App\Modules\ForgeRouter\Attributes\Layout;
-use App\Modules\ForgeRouter\Routing\Route;
-use App\Modules\ForgeRouter\Traits\ControllerHelper;
+use App\Modules\ForgeRouter\Routing\Endpoint;
+use App\Modules\ForgeRouter\Attributes\Routable;
+use App\Modules\ForgeRouter\Traits\ResponseHelper;
+use App\Modules\ForgeView\Traits\ViewHelper;
 
-#[Service]
-#[Middleware('web')]
+#[Routable]
+#[UseMiddleware('web')]
 final class LandingController
 {
-    use ControllerHelper;
+    use ResponseHelper;
+    use ViewHelper;
 
     public function __construct(
         private readonly UserContextInterface $userContext,
     ) {
     }
 
-    #[Route("/")]
+    #[Endpoint]
     #[Layout("ForgeComponents:public")]
     public function welcome(): Response
     {
         $user = $this->userContext->current();
 
-        return $this->view(view: "pages/welcome", data: [
+        return $this->view(view: "welcome", data: [
             'currentUser' => $user,
         ]);
     }

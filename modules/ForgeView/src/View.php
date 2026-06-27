@@ -31,11 +31,11 @@ final class View
             try {
                 $relViewPath = $structureResolver
                     ? $structureResolver->getAppPath("views")
-                    : "app/resources/views";
+                    : "app/UI/views";
 
                 $relCompPath = $structureResolver
                     ? $structureResolver->getAppPath("components")
-                    : "app/resources/components";
+                    : "app/UI/views/components";
 
                 if (str_starts_with($relViewPath, 'app/') && !is_dir(BASE_PATH . "/" . $relViewPath)) {
                     $altViewPath = 'src/' . substr($relViewPath, 4);
@@ -54,8 +54,8 @@ final class View
                 $this->viewPath ??= BASE_PATH . "/" . $relViewPath;
                 $this->componentPath ??= BASE_PATH . "/" . $relCompPath;
             } catch (\InvalidArgumentException $e) {
-                $this->viewPath ??= $basePath . "/app/resources/views";
-                $this->componentPath ??= $basePath . "/app/resources/components";
+                $this->viewPath ??= $basePath . "/app/UI/views";
+                $this->componentPath ??= $basePath . "/app/UI/views/components";
             }
         }
 

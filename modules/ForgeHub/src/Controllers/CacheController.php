@@ -8,22 +8,24 @@ use App\Modules\ForgeAuth\Enums\Permission;
 use App\Modules\ForgeAuth\Enums\Role;
 use App\Modules\ForgeHub\Services\CacheService;
 use App\Modules\ForgeHub\Services\EnhancedCacheService;
-use Forge\Core\DI\Attributes\Service;
-use App\Modules\ForgeRouter\Http\Attributes\Middleware;
+use App\Modules\ForgeRouter\Http\Attributes\UseMiddleware;
 use App\Modules\ForgeRouter\Http\Attributes\RequiresRole;
 use App\Modules\ForgeRouter\Http\Request;
 use App\Modules\ForgeRouter\Http\Response;
-use App\Modules\ForgeRouter\Routing\Route;
+use App\Modules\ForgeRouter\Routing\Endpoint;
+use App\Modules\ForgeRouter\Attributes\Routable;
 use App\Modules\ForgeRouter\Attributes\Layout;
-use App\Modules\ForgeRouter\Traits\ControllerHelper;
+use App\Modules\ForgeRouter\Traits\ResponseHelper;
+use App\Modules\ForgeView\Traits\ViewHelper;
 
-#[Service]
-#[Middleware(['web', 'auth', 'role', 'hub-permissions'])]
+#[Routable]
+#[UseMiddleware(['web', 'auth', 'role', 'hub-permissions'])]
 #[RequiresRole(Role::ADMIN->value)]
 
 final class CacheController
 {
-    use ControllerHelper;
+    use ResponseHelper;
+    use ViewHelper;
 
     public function __construct(
         private readonly CacheService $cacheService,
@@ -31,7 +33,7 @@ final class CacheController
     ) {
     }
 
-    #[Route(
+    #[Endpoint(
         path: "/hub/cache",
         permissions: [Permission::HUB_PERMISSIONS->value]
     )]
@@ -49,10 +51,10 @@ final class CacheController
             'tags' => $tags,
         ];
 
-        return $this->view(view: "pages/cache", data: $data);
+        return $this->view(view: "cache", data: $data);
     }
 
-    #[Route(
+    #[Endpoint(
         path: "/hub/cache/clear",
         method: "POST",
         permissions: [Permission::HUB_PERMISSIONS->value]
@@ -67,7 +69,7 @@ final class CacheController
         ]);
     }
 
-    #[Route(
+    #[Endpoint(
         path: "/hub/cache/clear-expired",
         method: "POST",
         permissions: [Permission::HUB_PERMISSIONS->value]
@@ -83,7 +85,7 @@ final class CacheController
         ]);
     }
 
-    #[Route(
+    #[Endpoint(
         path: "/hub/cache/clear-tag",
         method: "POST",
         permissions: [Permission::HUB_PERMISSIONS->value]

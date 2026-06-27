@@ -7,16 +7,21 @@ namespace App\Controllers;
 use App\Modules\ForgeWire\Attributes\Action;
 use App\Modules\ForgeWire\Attributes\Reactive;
 use App\Modules\ForgeWire\Attributes\State;
-use App\Modules\ForgeRouter\Http\Attributes\Middleware;
-use App\Modules\ForgeRouter\Traits\ControllerHelper;
-use App\Modules\ForgeRouter\Routing\Route;
+use App\Modules\ForgeRouter\Http\Attributes\UseMiddleware;
+use App\Modules\ForgeRouter\Traits\ResponseHelper;
+use App\Modules\ForgeView\Traits\ViewHelper;
+use App\Modules\ForgeRouter\Routing\Endpoint;
+use App\Modules\ForgeRouter\Attributes\Routable;
+use App\Modules\ForgeRouter\Attributes\Layout;
 use App\Modules\ForgeRouter\Http\Response;
 
-#[Middleware("web")]
+#[Routable]
+#[UseMiddleware("web")]
 #[Reactive]
 final class SettingsController
 {
-    use ControllerHelper;
+    use ResponseHelper;
+    use ViewHelper;
 
     #[State]
     public string $username = 'admin';
@@ -33,10 +38,11 @@ final class SettingsController
     #[State]
     public string $message = '';
 
-    #[Route("/examples/settings")]
+    #[Endpoint("/examples/settings")]
+    #[Layout('main')]
     public function index(): Response
     {
-        return $this->view("pages/examples/settings", [
+        return $this->view("examples/settings", [
             'username' => $this->username,
             'email' => $this->email,
             'bio' => $this->bio,

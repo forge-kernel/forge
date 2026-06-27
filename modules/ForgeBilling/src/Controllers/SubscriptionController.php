@@ -6,20 +6,22 @@ namespace App\Modules\ForgeBilling\Controllers;
 
 use App\Modules\ForgeBilling\Contracts\BillableResolverInterface;
 use App\Modules\ForgeBilling\Services\BillingSubscriptionService;
-use Forge\Core\DI\Attributes\Service;
 use Forge\Core\Helpers\Flash;
 use App\Modules\ForgeRouter\Helpers\Redirect;
-use App\Modules\ForgeRouter\Http\Attributes\Middleware;
+use App\Modules\ForgeRouter\Http\Attributes\UseMiddleware;
 use App\Modules\ForgeRouter\Http\Response;
-use App\Modules\ForgeRouter\Routing\Route;
+use App\Modules\ForgeRouter\Routing\Endpoint;
+use App\Modules\ForgeRouter\Attributes\Routable;
 use App\Modules\ForgeRouter\Attributes\Layout;
-use App\Modules\ForgeRouter\Traits\ControllerHelper;
+use App\Modules\ForgeRouter\Traits\ResponseHelper;
+use App\Modules\ForgeView\Traits\ViewHelper;
 
-#[Service]
-#[Middleware('web')]
+#[Routable(prefix: '/billing')]
+#[UseMiddleware('web')]
 final class SubscriptionController
 {
-    use ControllerHelper;
+    use ResponseHelper;
+    use ViewHelper;
 
     public function __construct(
         private readonly BillingSubscriptionService $billingSubscriptionService,
@@ -27,7 +29,7 @@ final class SubscriptionController
     ) {
     }
 
-    #[Route('/billing/subscription')]
+    #[Endpoint('/subscription')]
     #[Layout('ForgeBilling:billing')]
     public function show(): Response
     {
@@ -38,10 +40,10 @@ final class SubscriptionController
             'subscription' => $subscription,
         ];
 
-        return $this->view(view: "pages/billing/subscription", data: $data);
+        return $this->view(view: "billing/subscription", data: $data);
     }
 
-    #[Route('/billing/subscription/cancel', 'POST')]
+    #[Endpoint('/subscription/cancel', 'POST')]
     public function cancel(): Response
     {
         $tenantId = $this->billableResolver->resolve();

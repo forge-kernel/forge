@@ -12,23 +12,25 @@ use App\Modules\ForgeAppAuth\Validations\ResetPasswordValidation;
 use App\Modules\ForgeAuth\Exceptions\LoginException;
 use App\Modules\ForgeAuth\Services\ForgeAuthService;
 use App\Modules\ForgeRouter\Helpers\Redirect;
-use App\Modules\ForgeRouter\Http\Attributes\Middleware;
+use App\Modules\ForgeRouter\Http\Attributes\UseMiddleware;
 use App\Modules\ForgeRouter\Http\Request;
 use App\Modules\ForgeRouter\Http\Response;
 use App\Modules\ForgeRouter\Attributes\Layout;
-use App\Modules\ForgeRouter\Routing\Route;
-use App\Modules\ForgeRouter\Traits\ControllerHelper;
-use Forge\Core\DI\Attributes\Service;
+use App\Modules\ForgeRouter\Routing\Endpoint;
+use App\Modules\ForgeRouter\Attributes\Routable;
+use App\Modules\ForgeRouter\Traits\ResponseHelper;
+use App\Modules\ForgeView\Traits\ViewHelper;
 use Forge\Core\Helpers\Flash;
 use Forge\Core\Services\RedirectHandlerService;
 use Forge\Exceptions\ValidationException;
 use Forge\Traits\SecurityHelper;
 
-#[Service]
-#[Middleware('web')]
+#[Routable(prefix: '/auth')]
+#[UseMiddleware('web')]
 final class AuthController
 {
-    use ControllerHelper;
+    use ResponseHelper;
+    use ViewHelper;
     use SecurityHelper;
 
     public function __construct(
@@ -38,14 +40,14 @@ final class AuthController
     ) {
     }
 
-    #[Route("/auth/login")]
+    #[Endpoint("/login")]
     #[Layout("ForgeComponents:auth-split")]
     public function showLogin(): Response
     {
         return $this->view(view: "auth/login");
     }
 
-    #[Route("/auth/login", "POST")]
+    #[Endpoint("/login", "POST")]
     public function login(Request $request): Response
     {
         try {
@@ -60,14 +62,14 @@ final class AuthController
         }
     }
 
-    #[Route("/auth/register")]
+    #[Endpoint("/register")]
     #[Layout("ForgeComponents:auth-split")]
     public function showRegister(): Response
     {
         return $this->view(view: "auth/register");
     }
 
-    #[Route("/auth/register", "POST")]
+    #[Endpoint("/register", "POST")]
     public function register(Request $request): Response
     {
         try {
@@ -90,14 +92,14 @@ final class AuthController
         }
     }
 
-    #[Route("/auth/forgot-password")]
+    #[Endpoint("/forgot-password")]
     #[Layout("ForgeComponents:auth-split")]
     public function showForgotPassword(): Response
     {
         return $this->view(view: "auth/forgot-password");
     }
 
-    #[Route("/auth/forgot-password", "POST")]
+    #[Endpoint("/forgot-password", "POST")]
     public function sendResetLink(Request $request): Response
     {
         try {
@@ -114,7 +116,7 @@ final class AuthController
         }
     }
 
-    #[Route("/auth/reset-password")]
+    #[Endpoint("/reset-password")]
     #[Layout("ForgeComponents:auth-split")]
     public function showResetPassword(Request $request): Response
     {
@@ -128,7 +130,7 @@ final class AuthController
         return $this->view(view: "auth/reset-password", data: ['token' => $token]);
     }
 
-    #[Route("/auth/reset-password", "POST")]
+    #[Endpoint("/reset-password", "POST")]
     public function resetPassword(Request $request): Response
     {
         try {
@@ -155,7 +157,7 @@ final class AuthController
         }
     }
 
-    #[Route('/auth/logout', 'POST')]
+    #[Endpoint('/logout', 'POST')]
     public function logout(): Response
     {
         $this->forgeAuthService->logout();

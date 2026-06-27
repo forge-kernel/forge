@@ -9,21 +9,23 @@ use App\Modules\ForgeBilling\Enums\SubscriptionStatus;
 use App\Modules\ForgeBilling\Services\BillingPlanService;
 use App\Modules\ForgeBilling\Services\BillingSubscriptionService;
 use App\Modules\ForgeBilling\Services\PaymentMethodService;
-use Forge\Core\DI\Attributes\Service;
 use Forge\Core\Helpers\Flash;
 use App\Modules\ForgeRouter\Helpers\Redirect;
-use App\Modules\ForgeRouter\Http\Attributes\Middleware;
+use App\Modules\ForgeRouter\Http\Attributes\UseMiddleware;
 use App\Modules\ForgeRouter\Http\Request;
 use App\Modules\ForgeRouter\Http\Response;
-use App\Modules\ForgeRouter\Routing\Route;
+use App\Modules\ForgeRouter\Routing\Endpoint;
+use App\Modules\ForgeRouter\Attributes\Routable;
 use App\Modules\ForgeRouter\Attributes\Layout;
-use App\Modules\ForgeRouter\Traits\ControllerHelper;
+use App\Modules\ForgeRouter\Traits\ResponseHelper;
+use App\Modules\ForgeView\Traits\ViewHelper;
 
-#[Service]
-#[Middleware('web')]
+#[Routable(prefix: '/billing')]
+#[UseMiddleware('web')]
 final class PlanController
 {
-    use ControllerHelper;
+    use ResponseHelper;
+    use ViewHelper;
 
     public function __construct(
         private readonly BillingPlanService $billingPlanService,
@@ -33,7 +35,7 @@ final class PlanController
     ) {
     }
 
-    #[Route('/billing/plans')]
+    #[Endpoint('/plans')]
     #[Layout('ForgeBilling:billing')]
     public function index(): Response
     {
@@ -47,10 +49,10 @@ final class PlanController
             'subscription' => $subscription,
         ];
 
-        return $this->view(view: "pages/billing/plans", data: $data);
+        return $this->view(view: "billing/plans", data: $data);
     }
 
-    #[Route('/billing/plans/{id}/subscribe', 'POST')]
+    #[Endpoint('/plans/{id}/subscribe', 'POST')]
     public function subscribe(Request $request, string $id): Response
     {
         $tenantId = $this->billableResolver->resolve();

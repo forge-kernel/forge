@@ -7,16 +7,20 @@ namespace App\Modules\ForgeNexus\Controllers;
 use App\Modules\ForgeWire\Attributes\Action;
 use App\Modules\ForgeWire\Attributes\Reactive;
 use App\Modules\ForgeWire\Attributes\State;
-use App\Modules\ForgeRouter\Http\Attributes\Middleware;
+use App\Modules\ForgeRouter\Http\Attributes\UseMiddleware;
 use App\Modules\ForgeRouter\Http\Response;
-use App\Modules\ForgeRouter\Routing\Route;
-use App\Modules\ForgeRouter\Traits\ControllerHelper;
+use App\Modules\ForgeRouter\Routing\Endpoint;
+use App\Modules\ForgeRouter\Attributes\Routable;
+use App\Modules\ForgeRouter\Traits\ResponseHelper;
+use App\Modules\ForgeView\Traits\ViewHelper;
 
+#[Routable(prefix: '/nexus')]
 #[Reactive]
-#[Middleware('web')]
+#[UseMiddleware('web')]
 final class HomeController
 {
-    use ControllerHelper;
+    use ResponseHelper;
+    use ViewHelper;
 
     #[State]
     public int $usersCount = 3;
@@ -27,18 +31,18 @@ final class HomeController
         $this->usersCount = $this->usersCount * 2;
     }
 
-    #[Route("/nexus/auth/{otp}")]
+    #[Endpoint("/auth/{otp}")]
     public function index(string $otp): Response
     {
-        return $this->view(view: "pages/index");
+        return $this->view(view: "index");
     }
 
-    #[Route("/nexus/dashboard")]
+    #[Endpoint("/dashboard")]
     public function dashboard(): Response
     {
         $data = [
             'usersCount' => $this->usersCount
         ];
-        return $this->view(view: "pages/dashboard", data: $data);
+        return $this->view(view: "dashboard", data: $data);
     }
 }

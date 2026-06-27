@@ -4,27 +4,28 @@ declare(strict_types=1);
 namespace App\Modules\ForgeAdminConsole\Controllers;
 
 use App\Modules\ForgeAuth\Contracts\UserContextInterface;
-use Forge\Core\DI\Attributes\Service;
-use App\Modules\ForgeRouter\Http\Attributes\Middleware;
+use App\Modules\ForgeRouter\Http\Attributes\UseMiddleware;
 use App\Modules\ForgeRouter\Http\Response;
 use App\Modules\ForgeRouter\Attributes\Layout;
-use App\Modules\ForgeRouter\Routing\Route;
-use App\Modules\ForgeRouter\Traits\ControllerHelper;
+use App\Modules\ForgeRouter\Routing\Endpoint;
+use App\Modules\ForgeRouter\Attributes\Routable;
+use App\Modules\ForgeRouter\Traits\ResponseHelper;
+use App\Modules\ForgeView\Traits\ViewHelper;
 
-#[Service]
-#[Middleware('web')]
-#[Middleware('auth')]
+#[Routable]
+#[UseMiddleware(['web', 'auth'])]
 #[Layout("ForgeComponents:wrappers/admin-default")]
 final class DashboardController
 {
-    use ControllerHelper;
+    use ResponseHelper;
+    use ViewHelper;
 
     public function __construct(
         private readonly UserContextInterface $userContext,
     ) {
     }
 
-    #[Route(path: "/admin")]
+    #[Endpoint("/admin")]
     public function dashboard(): Response
     {
         $user = $this->userContext->current();
@@ -47,7 +48,7 @@ final class DashboardController
             ['label' => 'Edit Profile', 'href' => '/admin/profile', 'variant' => 'secondary', 'icon' => 'user'],
         ];
 
-        return $this->view(view: "pages/admin/dashboard", data: [
+        return $this->view(view: "admin/dashboard", data: [
             'stats' => $stats,
             'activities' => $activities,
             'quickActions' => $quickActions,

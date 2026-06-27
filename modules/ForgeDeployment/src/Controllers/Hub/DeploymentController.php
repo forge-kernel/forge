@@ -9,21 +9,21 @@ use App\Modules\ForgeDeployment\Services\DeploymentExecutionService;
 use App\Modules\ForgeDeployment\Services\DeploymentConfigReader;
 use Forge\Core\Config\Config;
 use Forge\Core\Config\Environment;
-use Forge\Core\DI\Attributes\Service;
-use App\Modules\ForgeRouter\Http\Attributes\Middleware;
+use App\Modules\ForgeRouter\Http\Attributes\UseMiddleware;
 use App\Modules\ForgeRouter\Http\Request;
 use App\Modules\ForgeRouter\Http\Response;
-use App\Modules\ForgeRouter\Routing\Route;
+use App\Modules\ForgeRouter\Routing\Endpoint;
+use App\Modules\ForgeRouter\Attributes\Routable;
 use App\Modules\ForgeRouter\Attributes\Layout;
-use App\Modules\ForgeRouter\Traits\ControllerHelper;
+use App\Modules\ForgeRouter\Traits\ResponseHelper;
+use App\Modules\ForgeView\Traits\ViewHelper;
 
-#[Service]
-#[Middleware("web")]
-#[Middleware("auth")]
-#[Middleware("hub-permissions")]
+#[Routable(prefix: '/hub/deployment')]
+#[UseMiddleware(["web", "auth", "hub-permissions"])]
 final class DeploymentController
 {
-    use ControllerHelper;
+    use ResponseHelper;
+    use ViewHelper;
 
     public function __construct(
         private readonly DeploymentHubService $deploymentHubService,
@@ -33,7 +33,7 @@ final class DeploymentController
     ) {
     }
 
-    #[Route("/hub/deployment")]
+    #[Endpoint]
     #[Layout("ForgeHub:hub")]
     public function index(Request $request): Response
     {
@@ -56,10 +56,10 @@ final class DeploymentController
             "is_production" => $isProduction,
         ];
 
-        return $this->view(view: "pages/hub/deployment", data: $data);
+        return $this->view(view: "hub/deployment", data: $data);
     }
 
-    #[Route("/hub/deployment/status", "GET")]
+    #[Endpoint("/status", "GET")]
     public function getStatus(Request $request): Response
     {
         $status = $this->deploymentHubService->getDeploymentStatus();
@@ -70,7 +70,7 @@ final class DeploymentController
         ]);
     }
 
-    #[Route("/hub/deployment/config", "GET")]
+    #[Endpoint("/config", "GET")]
     public function getConfig(Request $request): Response
     {
         $config = $this->deploymentHubService->getDeploymentConfig();
@@ -83,7 +83,7 @@ final class DeploymentController
         ]);
     }
 
-    #[Route("/hub/deployment/config", "POST")]
+    #[Endpoint("/config", "POST")]
     public function saveConfig(Request $request): Response
     {
         $data = $request->json();
@@ -298,7 +298,7 @@ final class DeploymentController
         ]);
     }
 
-    #[Route("/hub/deployment/deploy", "POST")]
+    #[Endpoint("/deploy", "POST")]
     public function deploy(Request $request): Response
     {
         $data = $request->json();
@@ -322,7 +322,7 @@ final class DeploymentController
         );
     }
 
-    #[Route("/hub/deployment/deploy-app", "POST")]
+    #[Endpoint("/deploy-app", "POST")]
     public function deployApp(Request $request): Response
     {
         $data = $request->json();
@@ -346,7 +346,7 @@ final class DeploymentController
         );
     }
 
-    #[Route("/hub/deployment/update", "POST")]
+    #[Endpoint("/update", "POST")]
     public function update(Request $request): Response
     {
         $data = $request->json();
@@ -370,7 +370,7 @@ final class DeploymentController
         );
     }
 
-    #[Route("/hub/deployment/rollback", "POST")]
+    #[Endpoint("/rollback", "POST")]
     public function rollback(Request $request): Response
     {
         $data = $request->json();
@@ -394,7 +394,7 @@ final class DeploymentController
         );
     }
 
-    #[Route("/hub/deployment/deploy-env", "POST")]
+    #[Endpoint("/deploy-env", "POST")]
     public function deployEnv(Request $request): Response
     {
         $data = $request->json();
@@ -418,7 +418,7 @@ final class DeploymentController
         );
     }
 
-    #[Route("/hub/deployment/delete-server", "POST")]
+    #[Endpoint("/delete-server", "POST")]
     public function deleteServer(Request $request): Response
     {
         $data = $request->json();
@@ -442,7 +442,7 @@ final class DeploymentController
         );
     }
 
-    #[Route("/hub/deployment/logs/{deploymentId}", "GET")]
+    #[Endpoint("/logs/{deploymentId}", "GET")]
     public function getLogs(Request $request, string $deploymentId): Response
     {
         $logs = $this->executionService->getDeploymentLog($deploymentId);
@@ -466,7 +466,7 @@ final class DeploymentController
         ]);
     }
 
-    #[Route("/hub/deployment/secrets", "GET")]
+    #[Endpoint("/secrets", "GET")]
     public function getSecrets(Request $request): Response
     {
         $secrets = [
@@ -487,7 +487,7 @@ final class DeploymentController
         ]);
     }
 
-    #[Route("/hub/deployment/secrets", "POST")]
+    #[Endpoint("/secrets", "POST")]
     public function updateSecrets(Request $request): Response
     {
         $data = $request->json();
@@ -615,7 +615,7 @@ final class DeploymentController
         return implode("\n", $lines);
     }
 
-    #[Route("/hub/deployment/php-binaries", "GET")]
+    #[Endpoint("/php-binaries", "GET")]
     public function getPhpBinaries(Request $request): Response
     {
         $binaries = $this->executionService->getAvailablePhpBinaries();
@@ -626,7 +626,7 @@ final class DeploymentController
         ]);
     }
 
-    #[Route("/hub/deployment/php-executable", "POST")]
+    #[Endpoint("/php-executable", "POST")]
     public function setPhpExecutable(Request $request): Response
     {
         $data = $request->json();

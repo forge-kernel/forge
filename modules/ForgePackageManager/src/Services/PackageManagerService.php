@@ -1685,7 +1685,7 @@ final class PackageManagerService implements PackageManagerInterface
 
     public function moduleHasAssets(string $module): bool
     {
-        return is_dir(BASE_PATH . "/modules/{$module}/src/Resources/assets") ||
+        return is_dir(BASE_PATH . "/modules/{$module}/src/UI/assets") ||
             is_dir(BASE_PATH . "/public/modules/{$module}");
     }
 
@@ -1716,13 +1716,13 @@ final class PackageManagerService implements PackageManagerInterface
             "tests",
             "Components/Ui",
             "Components/Wire",
-            "resources/assets/css",
-            "resources/assets/js",
-            "resources/components/shared",
-            "resources/components/ui",
-            "resources/components/wire",
-            "resources/views/layouts",
-            "resources/views/pages",
+            "UI/assets/css",
+            "UI/assets/js",
+            "UI/views/components/shared",
+            "UI/views/components/ui",
+            "UI/views/components/wire",
+            "UI/views/layouts",
+            "UI/views/pages",
         ];
 
         $createdCount = 0;

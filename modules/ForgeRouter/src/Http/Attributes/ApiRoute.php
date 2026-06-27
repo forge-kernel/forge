@@ -5,20 +5,21 @@ declare(strict_types=1);
 namespace App\Modules\ForgeRouter\Http\Attributes;
 
 use Attribute;
-use App\Modules\ForgeRouter\Routing\Route;
+use App\Modules\ForgeRouter\Routing\Endpoint;
 
 #[Attribute(Attribute::TARGET_METHOD)]
-final class ApiRoute extends Route
+final class ApiRoute extends Endpoint
 {
     public function __construct(
         string $path,
         string $method = 'GET',
-        public array $middleware = [],
+        array $middleware = [],
         string $prefix = 'api',
         string $version = 'v1',
-        public array $permissions = []
+        array $permissions = [],
+        bool $override = false,
     ) {
         $apiPath = "/{$prefix}/{$version}{$path}";
-        parent::__construct($apiPath, $method, $middleware, $permissions);
+        parent::__construct($apiPath, $method, $middleware, $permissions, $override);
     }
 }

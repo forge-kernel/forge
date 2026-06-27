@@ -6,14 +6,19 @@ namespace App\Modules\ForgeRouter\Routing;
 
 use Attribute;
 
+/**
+ * @deprecated Use #[Endpoint] instead
+ */
 #[Attribute(Attribute::TARGET_METHOD | Attribute::IS_REPEATABLE)]
-class Route
+class Route extends Endpoint
 {
     public function __construct(
-        public string $path,
-        public string $method = "GET",
-        public array $middleware = [],
-        public array $permissions = [],
-        public bool $preferred = false,
-    ) {}
+        string $path = '',
+        string $method = "GET",
+        array $middleware = [],
+        array $permissions = [],
+        bool $override = false,
+    ) {
+        parent::__construct($path, $method, $middleware, $permissions, $override);
+    }
 }

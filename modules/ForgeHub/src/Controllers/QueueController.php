@@ -14,17 +14,21 @@ use App\Modules\ForgeSqlOrm\ORM\Paginator;
 use App\Modules\ForgeWire\Attributes\Reactive;
 use App\Modules\ForgeWire\Attributes\State;
 use App\Modules\ForgeWire\Traits\WithWireResponse;
-use App\Modules\ForgeRouter\Http\Attributes\Middleware;
+use App\Modules\ForgeRouter\Http\Attributes\UseMiddleware;
 use App\Modules\ForgeRouter\Http\Response;
-use App\Modules\ForgeRouter\Routing\Route;
+use App\Modules\ForgeRouter\Routing\Endpoint;
+use App\Modules\ForgeRouter\Attributes\Routable;
 use App\Modules\ForgeRouter\Attributes\Layout;
-use App\Modules\ForgeRouter\Traits\ControllerHelper;
+use App\Modules\ForgeRouter\Traits\ResponseHelper;
+use App\Modules\ForgeView\Traits\ViewHelper;
 
+#[Routable(prefix: '/hub')]
 #[Reactive]
-#[Middleware(['web', 'auth', 'hub-permissions'])]
+#[UseMiddleware(['web', 'auth', 'hub-permissions'])]
 final class QueueController
 {
-    use ControllerHelper;
+    use ResponseHelper;
+    use ViewHelper;
     use WithWireResponse;
     use QueueJobActions;
     use QueueBulkActions;
@@ -75,7 +79,7 @@ final class QueueController
     ) {
     }
 
-    #[Route("/hub/queues")]
+    #[Endpoint("/queues")]
     #[Layout("ForgeHub:hub")]
     public function index(): Response
     {

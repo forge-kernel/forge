@@ -6,21 +6,23 @@ namespace App\Modules\ForgeBilling\Controllers;
 
 use App\Modules\ForgeBilling\Contracts\BillableResolverInterface;
 use App\Modules\ForgeBilling\Services\PaymentMethodService;
-use Forge\Core\DI\Attributes\Service;
 use Forge\Core\Helpers\Flash;
 use App\Modules\ForgeRouter\Helpers\Redirect;
-use App\Modules\ForgeRouter\Http\Attributes\Middleware;
+use App\Modules\ForgeRouter\Http\Attributes\UseMiddleware;
 use App\Modules\ForgeRouter\Http\Request;
 use App\Modules\ForgeRouter\Http\Response;
-use App\Modules\ForgeRouter\Routing\Route;
+use App\Modules\ForgeRouter\Routing\Endpoint;
+use App\Modules\ForgeRouter\Attributes\Routable;
 use App\Modules\ForgeRouter\Attributes\Layout;
-use App\Modules\ForgeRouter\Traits\ControllerHelper;
+use App\Modules\ForgeRouter\Traits\ResponseHelper;
+use App\Modules\ForgeView\Traits\ViewHelper;
 
-#[Service]
-#[Middleware('web')]
+#[Routable(prefix: '/billing')]
+#[UseMiddleware('web')]
 final class PaymentMethodController
 {
-    use ControllerHelper;
+    use ResponseHelper;
+    use ViewHelper;
 
     public function __construct(
         private readonly PaymentMethodService $paymentMethodService,
@@ -28,7 +30,7 @@ final class PaymentMethodController
     ) {
     }
 
-    #[Route('/billing/payment-methods')]
+    #[Endpoint('/payment-methods')]
     #[Layout('ForgeBilling:billing')]
     public function index(): Response
     {
@@ -40,10 +42,10 @@ final class PaymentMethodController
             'methods' => $methods,
         ];
 
-        return $this->view(view: "pages/billing/payment-methods", data: $data);
+        return $this->view(view: "billing/payment-methods", data: $data);
     }
 
-    #[Route('/billing/payment-methods', 'POST')]
+    #[Endpoint('/payment-methods', 'POST')]
     public function store(Request $request): Response
     {
         $tenantId = $this->billableResolver->resolve();
@@ -59,7 +61,7 @@ final class PaymentMethodController
         return Redirect::to('/billing/payment-methods');
     }
 
-    #[Route('/billing/payment-methods/{id}/delete', 'POST')]
+    #[Endpoint('/payment-methods/{id}/delete', 'POST')]
     public function destroy(string $id): Response
     {
         $tenantId = $this->billableResolver->resolve();

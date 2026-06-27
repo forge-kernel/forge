@@ -5,38 +5,33 @@ declare(strict_types=1);
 namespace App\Controllers;
 
 use App\Events\TestPageVisitedEvent;
-use App\Modules\ForgeEvents\Exceptions\EventException;
 use App\Modules\ForgeEvents\Services\EventDispatcher;
 use App\Modules\ForgeMultiTenant\Attributes\TenantScope;
-use Forge\Core\DI\Attributes\Service;
 use App\Modules\ForgeRouter\Http\CookieJar;
 use App\Modules\ForgeRouter\Http\Response;
-use App\Modules\ForgeRouter\Routing\Route;
+use App\Modules\ForgeRouter\Routing\Endpoint;
+use App\Modules\ForgeRouter\Attributes\Routable;
 use App\Modules\ForgeRouter\Http\Request;
 use Forge\Core\Session\SessionInterface;
-use App\Modules\ForgeRouter\Traits\ControllerHelper;
+use App\Modules\ForgeView\Traits\ViewHelper;
 use App\Modules\ForgeRouter\Traits\ResponseHelper;
 use App\Modules\ForgeRouter\Attributes\Layout;
 
-#[Service]
+#[Routable]
 #[TenantScope("central")]
 final class TestController
 {
-    use ControllerHelper;
     use ResponseHelper;
+    use ViewHelper;
 
     public function __construct(
         private readonly SessionInterface $session,
         private readonly CookieJar $cookies,
         private readonly EventDispatcher $dispatcher,
     ) {
-        //
     }
 
-    /**
-     * @throws EventException
-     */
-    #[Route("/test")]
+    #[Endpoint("/test")]
     #[Layout('main')]
     public function index(Request $request): Response
     {
@@ -61,12 +56,12 @@ final class TestController
             "userId" => $existingUserId ?? $this->session->get("test_user_id") ?? null,
         ];
 
-        return $this->view(view: "pages/test/index", data: $data)->withCookie(
+        return $this->view(view: "test/index", data: $data)->withCookie(
             $cookie,
         );
     }
 
-    #[Route("/test/failure")]
+    #[Endpoint("/test/failure")]
     public function failure(Request $request): Response
     {
         return $this->createErrorResponse($request, "Simulate failure", 500);

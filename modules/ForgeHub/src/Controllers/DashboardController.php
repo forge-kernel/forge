@@ -9,24 +9,26 @@ use App\Modules\ForgeAuth\Enums\Role;
 use App\Modules\ForgeHub\Services\HubItemRegistry;
 use App\Modules\ForgeHub\Services\LogService;
 use App\Modules\ForgeHub\Services\CacheService;
-use Forge\Core\DI\Attributes\Service;
 use Forge\Core\DI\Container;
 use Forge\Core\Helpers\Framework;
-use App\Modules\ForgeRouter\Http\Attributes\Middleware;
+use App\Modules\ForgeRouter\Http\Attributes\UseMiddleware;
 use App\Modules\ForgeRouter\Http\Attributes\RequiresRole;
 use App\Modules\ForgeRouter\Http\Response;
 use Forge\Core\Module\ModuleLoader\Loader;
-use App\Modules\ForgeRouter\Routing\Route;
+use App\Modules\ForgeRouter\Routing\Endpoint;
+use App\Modules\ForgeRouter\Attributes\Routable;
 use App\Modules\ForgeRouter\Attributes\Layout;
-use App\Modules\ForgeRouter\Traits\ControllerHelper;
+use App\Modules\ForgeRouter\Traits\ResponseHelper;
+use App\Modules\ForgeView\Traits\ViewHelper;
 
-#[Service]
-#[Middleware(['web', 'auth', 'role', 'hub-permissions'])]
+#[Routable(prefix: '/hub')]
+#[UseMiddleware(['web', 'auth', 'role', 'hub-permissions'])]
 #[RequiresRole(Role::ADMIN->value)]
 
 final class DashboardController
 {
-    use ControllerHelper;
+    use ResponseHelper;
+    use ViewHelper;
 
     public function __construct(
         private readonly HubItemRegistry $registry,
@@ -36,14 +38,10 @@ final class DashboardController
     ) {
     }
 
-    #[Route(
-        path: "/hub",
-        permissions: [Permission::HUB_PERMISSIONS->value]
-    )]
+    #[Endpoint(permissions: [Permission::HUB_PERMISSIONS->value])]
     #[Layout('ForgeHub:hub')]
     public function index(): Response
     {
-
         $modules = $this->loader->getSortedModuleRegistry();
         $hubItems = $this->registry->getHubItems();
         $logFiles = $this->logService->getLogFiles();
@@ -78,6 +76,6 @@ final class DashboardController
             'hubItems' => $hubItems,
         ];
 
-        return $this->view(view: "pages/dashboard", data: $data);
+        return $this->view(view: "dashboard", data: $data);
     }
 }

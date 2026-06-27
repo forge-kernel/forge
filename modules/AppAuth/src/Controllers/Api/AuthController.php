@@ -7,20 +7,20 @@ namespace App\Modules\AppAuth\Controllers\Api;
 use App\Modules\ForgeAuth\Exceptions\LoginException;
 use App\Modules\ForgeAuth\Services\ForgeAuthService;
 use App\Modules\ForgeAuth\Services\TokenManagerService;
-use Forge\Core\DI\Attributes\Service;
 use App\Modules\ForgeRouter\Http\Attributes\ApiRoute;
-use App\Modules\ForgeRouter\Http\Attributes\Middleware;
+use App\Modules\ForgeRouter\Attributes\Routable;
+use App\Modules\ForgeRouter\Http\Attributes\UseMiddleware;
 use App\Modules\ForgeRouter\Http\Request;
 use App\Modules\ForgeRouter\Http\Response;
 use Forge\Exceptions\ValidationException;
-use App\Modules\ForgeRouter\Traits\ControllerHelper;
+use App\Modules\ForgeRouter\Traits\ResponseHelper;
 use Forge\Traits\SecurityHelper;
 
-#[Service]
-#[Middleware('api')]
+#[Routable(prefix: '/auth')]
+#[UseMiddleware('api')]
 final class AuthController
 {
-    use ControllerHelper;
+    use ResponseHelper;
     use SecurityHelper;
 
     public function __construct(
@@ -29,7 +29,7 @@ final class AuthController
     ) {
     }
 
-    #[ApiRoute('/auth/login', 'POST')]
+    #[ApiRoute('/login', 'POST')]
     public function login(Request $request): Response
     {
         try {
@@ -54,7 +54,7 @@ final class AuthController
         }
     }
 
-    #[ApiRoute('/auth/refresh', 'POST')]
+    #[ApiRoute('/refresh', 'POST')]
     public function refresh(Request $request): Response
     {
         $data = $request->json() ?: $request->postData;

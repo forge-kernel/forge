@@ -7,24 +7,28 @@ namespace App\Controllers;
 use App\Modules\ForgeWire\Attributes\Action;
 use App\Modules\ForgeWire\Attributes\Reactive;
 use App\Modules\ForgeWire\Traits\WithWireResponse;
-use App\Modules\ForgeRouter\Http\Attributes\Middleware;
-use App\Modules\ForgeRouter\Traits\ControllerHelper;
-use App\Modules\ForgeRouter\Routing\Route;
+use App\Modules\ForgeRouter\Http\Attributes\UseMiddleware;
+use App\Modules\ForgeRouter\Traits\ResponseHelper;
+use App\Modules\ForgeView\Traits\ViewHelper;
+use App\Modules\ForgeRouter\Attributes\Routable;
+use App\Modules\ForgeRouter\Routing\Endpoint;
 use App\Modules\ForgeRouter\Http\Request;
 use App\Modules\ForgeRouter\Http\Response;
 
-#[Middleware("web")]
+#[Routable]
+#[UseMiddleware("web")]
 #[Reactive]
 final class ForgeWireBrowserActionsController
 {
-    use ControllerHelper;
+    use ResponseHelper;
+    use ViewHelper;
     use WithWireResponse;
 
-    #[Route("/forge-wire-browser-actions")]
+    #[Endpoint("/forge-wire-browser-actions")]
     #[Action]
     public function index(Request $request): Response|string
     {
-        return $this->view("pages/examples/browser-actions", []);
+        return $this->view("examples/browser-actions", []);
     }
 
     #[Action]

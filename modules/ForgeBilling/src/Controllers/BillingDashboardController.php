@@ -6,18 +6,20 @@ namespace App\Modules\ForgeBilling\Controllers;
 
 use App\Modules\ForgeBilling\Contracts\BillableResolverInterface;
 use App\Modules\ForgeBilling\Services\BillingPortalService;
-use Forge\Core\DI\Attributes\Service;
-use App\Modules\ForgeRouter\Http\Attributes\Middleware;
+use App\Modules\ForgeRouter\Http\Attributes\UseMiddleware;
 use App\Modules\ForgeRouter\Http\Response;
-use App\Modules\ForgeRouter\Routing\Route;
+use App\Modules\ForgeRouter\Routing\Endpoint;
+use App\Modules\ForgeRouter\Attributes\Routable;
 use App\Modules\ForgeRouter\Attributes\Layout;
-use App\Modules\ForgeRouter\Traits\ControllerHelper;
+use App\Modules\ForgeRouter\Traits\ResponseHelper;
+use App\Modules\ForgeView\Traits\ViewHelper;
 
-#[Service]
-#[Middleware('web')]
+#[Routable(prefix: '/billing')]
+#[UseMiddleware('web')]
 final class BillingDashboardController
 {
-    use ControllerHelper;
+    use ResponseHelper;
+    use ViewHelper;
 
     public function __construct(
         private readonly BillingPortalService $billingPortalService,
@@ -25,16 +27,13 @@ final class BillingDashboardController
     ) {
     }
 
-    #[Route('/billing')]
+    #[Endpoint]
     #[Layout('ForgeBilling:billing')]
     public function index(): Response
     {
         $tenantId = $this->billableResolver->resolve();
-
         $data = [];
-
         if (!$tenantId) {
-
             $data = [
                 'title' => 'Billing Overview',
                 'subscription' => null,
@@ -44,7 +43,7 @@ final class BillingDashboardController
                 'isActive' => false,
                 'onTrial' => false,
             ];
-            return $this->view(view: "pages/billing/dashboard", data: $data);
+            return $this->view(view: "billing/dashboard", data: $data);
         }
 
         $dataOverview = $this->billingPortalService->overview($tenantId);
@@ -53,6 +52,6 @@ final class BillingDashboardController
             'title' => 'Billing Overview',
             'data' => $dataOverview,
         ];
-        return $this->view(view: "pages/billing/dashboard", data: $data);
+        return $this->view(view: "billing/dashboard", data: $data);
     }
 }

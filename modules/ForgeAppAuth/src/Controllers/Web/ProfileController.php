@@ -6,22 +6,23 @@ namespace App\Modules\ForgeAppAuth\Controllers\Web;
 use App\Modules\ForgeAppAuth\Models\Profile;
 use App\Modules\ForgeAppAuth\Services\UserContext;
 use App\Modules\ForgeRouter\Helpers\Redirect;
-use App\Modules\ForgeRouter\Http\Attributes\Middleware;
+use App\Modules\ForgeRouter\Http\Attributes\UseMiddleware;
 use App\Modules\ForgeRouter\Http\Request;
 use App\Modules\ForgeRouter\Http\Response;
 use App\Modules\ForgeRouter\Attributes\Layout;
-use App\Modules\ForgeRouter\Routing\Route;
-use App\Modules\ForgeRouter\Traits\ControllerHelper;
-use Forge\Core\DI\Attributes\Service;
+use App\Modules\ForgeRouter\Routing\Endpoint;
+use App\Modules\ForgeRouter\Attributes\Routable;
+use App\Modules\ForgeRouter\Traits\ResponseHelper;
+use App\Modules\ForgeView\Traits\ViewHelper;
 use Forge\Core\Helpers\Flash;
 use Forge\Traits\SecurityHelper;
 
-#[Service]
-#[Middleware('web')]
-#[Middleware('auth')]
+#[Routable]
+#[UseMiddleware(['web', 'auth'])]
 final class ProfileController
 {
-    use ControllerHelper;
+    use ResponseHelper;
+    use ViewHelper;
     use SecurityHelper;
 
     public function __construct(
@@ -29,7 +30,7 @@ final class ProfileController
     ) {
     }
 
-    #[Route("/profile")]
+    #[Endpoint("/profile")]
     #[Layout("ForgeComponents:wrappers/admin-default")]
     public function editProfile(): Response
     {
@@ -56,7 +57,7 @@ final class ProfileController
         ]);
     }
 
-    #[Route("/profile", "POST")]
+    #[Endpoint("/profile", "POST")]
     public function saveProfile(Request $request): Response
     {
         $user = $this->userContext->current();

@@ -14,15 +14,15 @@ use Forge\Traits\StringHelper;
 
 #[CoreCommand]
 #[Cli(
-    command: 'generate:controller',
-    description: 'Create a new controller',
-    usage: 'generate:controller [--type=app|module] [--module=ModuleName] [--name=ControllerName]',
+    command: 'generate:endpoint',
+    description: 'Create a new endpoint',
+    usage: 'generate:endpoint [--type=app|module] [--module=ModuleName] [--name=EndpointName]',
     examples: [
-        'generate:controller --type=app --name=Auth',
-        'generate:controller --type=app --name=api/User',
-        'generate:controller --type=app --name=admin/Dashboard',
-        'generate:controller --type=module --module=Blog --name=Post',
-        'generate:controller   (starts wizard)',
+        'generate:endpoint --type=app --name=Auth',
+        'generate:endpoint --type=app --name=api/User',
+        'generate:endpoint --type=app --name=admin/Dashboard',
+        'generate:endpoint --type=module --module=Blog --name=Post',
+        'generate:endpoint   (starts wizard)',
     ]
 )]
 final class GenerateControllerCommand extends Command
@@ -36,12 +36,12 @@ final class GenerateControllerCommand extends Command
     #[Arg(name: 'module', description: 'Module name when type=module', required: false)]
     private ?string $module = null;
 
-    #[Arg(name: 'name', description: 'Controller name (e.g., User, api/User, admin/Dashboard)', validate: '/^[\w\/\s-]+$/')]
+    #[Arg(name: 'name', description: 'Endpoint name (e.g., User, api/User, admin/Dashboard)', validate: '/^[\w\/\s-]+$/')]
     private string $name;
 
     #[Arg(
         name: 'path',
-        description: 'Optional subfolder inside Controllers (e.g., Admin, Api/V1)',
+        description: 'Optional subfolder inside Endpoints (e.g., Admin, Api/V1)',
         default: '',
         required: false
     )]
@@ -81,7 +81,7 @@ final class GenerateControllerCommand extends Command
         $controllerFile = $this->controllerPath();
 
         $parsed = $this->parseFolderFilenameForClass($this->name);
-        $className = $this->toPascalCase($parsed['filename']) . 'Controller';
+        $className = $this->toPascalCase($parsed['filename']);
         $routeName = $this->toKebabCase($parsed['filename']);
 
         $viewName = $parsed['folder'] !== ''
@@ -93,7 +93,7 @@ final class GenerateControllerCommand extends Command
         $tokens = [
             '{{ controllerName }}' => $className,
             '{{ controllerRoute }}' => $routeName,
-            '{{ controllerView }}'  => $viewName,
+            '{{ controllerView }}' => $viewName,
             '{{ controllerNameSpace }}' => $this->controllerNamespace(),
         ];
 

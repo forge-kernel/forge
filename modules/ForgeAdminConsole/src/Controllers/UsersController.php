@@ -5,22 +5,23 @@ namespace App\Modules\ForgeAdminConsole\Controllers;
 
 use App\Modules\ForgeAdminConsole\Services\AdminUserService;
 use App\Modules\ForgeAuth\Contracts\UserContextInterface;
-use Forge\Core\DI\Attributes\Service;
 use Forge\Core\Helpers\Flash;
 use App\Modules\ForgeRouter\Helpers\Redirect;
-use App\Modules\ForgeRouter\Http\Attributes\Middleware;
+use App\Modules\ForgeRouter\Http\Attributes\UseMiddleware;
 use App\Modules\ForgeRouter\Http\Response;
 use App\Modules\ForgeRouter\Attributes\Layout;
-use App\Modules\ForgeRouter\Routing\Route;
-use App\Modules\ForgeRouter\Traits\ControllerHelper;
+use App\Modules\ForgeRouter\Routing\Endpoint;
+use App\Modules\ForgeRouter\Attributes\Routable;
+use App\Modules\ForgeRouter\Traits\ResponseHelper;
+use App\Modules\ForgeView\Traits\ViewHelper;
 
-#[Service]
-#[Middleware('web')]
-#[Middleware('auth')]
+#[Routable]
+#[UseMiddleware(['web', 'auth'])]
 #[Layout("ForgeComponents:wrappers/admin-default")]
 final class UsersController
 {
-    use ControllerHelper;
+    use ResponseHelper;
+    use ViewHelper;
 
     public function __construct(
         private readonly AdminUserService $userService,
@@ -28,19 +29,19 @@ final class UsersController
     ) {
     }
 
-    #[Route("/admin/users")]
+    #[Endpoint("/admin/users")]
     public function listUsers(): Response
     {
         $tableData = $this->userService->getUsersTableData();
 
-        return $this->view(view: "pages/admin/users/list", data: [
+        return $this->view(view: "admin/users/list", data: [
             'columns' => $tableData['columns'],
             'rows' => $tableData['rows'],
             'currentUser' => $this->userContext->current(),
         ]);
     }
 
-    #[Route("/admin/users/{id}")]
+    #[Endpoint("/admin/users/{id}")]
     public function viewUser(int $id): Response
     {
         $user = $this->userService->getUserDetails($id);
@@ -50,7 +51,7 @@ final class UsersController
             return Redirect::to('/admin/users');
         }
 
-        return $this->view(view: "pages/admin/users/user-detail", data: [
+        return $this->view(view: "admin/users/user-detail", data: [
             'user' => $user,
             'currentUser' => $this->userContext->current(),
         ]);

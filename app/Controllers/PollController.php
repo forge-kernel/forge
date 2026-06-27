@@ -7,17 +7,21 @@ namespace App\Controllers;
 use App\Modules\ForgeWire\Attributes\Action;
 use App\Modules\ForgeWire\Attributes\Reactive;
 use App\Modules\ForgeWire\Attributes\State;
-use App\Modules\ForgeRouter\Http\Attributes\Middleware;
-use App\Modules\ForgeRouter\Traits\ControllerHelper;
-use App\Modules\ForgeRouter\Routing\Route;
+use App\Modules\ForgeRouter\Http\Attributes\UseMiddleware;
+use App\Modules\ForgeRouter\Traits\ResponseHelper;
+use App\Modules\ForgeView\Traits\ViewHelper;
+use App\Modules\ForgeRouter\Routing\Endpoint;
+use App\Modules\ForgeRouter\Attributes\Routable;
 use App\Modules\ForgeRouter\Http\Response;
 use App\Modules\ForgeRouter\Attributes\Layout;
 
-#[Middleware("web")]
+#[Routable]
+#[UseMiddleware("web")]
 #[Reactive]
 final class PollController
 {
-    use ControllerHelper;
+    use ResponseHelper;
+    use ViewHelper;
 
     #[State]
     public array $votes = [
@@ -29,11 +33,11 @@ final class PollController
     #[State]
     public bool $hasVoted = false;
 
-    #[Route("/examples/poll")]
+    #[Endpoint("/examples/poll")]
     #[Layout('main')]
     public function index(): Response
     {
-        return $this->view("pages/examples/poll", [
+        return $this->view("examples/poll", [
             'votes' => $this->votes,
             'hasVoted' => $this->hasVoted,
             'total' => array_sum($this->votes)

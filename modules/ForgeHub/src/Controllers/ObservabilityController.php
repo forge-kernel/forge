@@ -7,20 +7,24 @@ namespace App\Modules\ForgeHub\Controllers;
 use App\Modules\AppAuth\Services\UserContext;
 use App\Modules\ForgeAuth\Enums\Role;
 use App\Modules\ForgeHub\Services\ObservabilityServiceInterface;
-use App\Modules\ForgeRouter\Http\Attributes\Middleware;
+use App\Modules\ForgeRouter\Http\Attributes\UseMiddleware;
 use App\Modules\ForgeRouter\Http\Attributes\RequiresRole;
 use App\Modules\ForgeRouter\Http\Request;
 use App\Modules\ForgeRouter\Http\Response;
-use App\Modules\ForgeRouter\Routing\Route;
+use App\Modules\ForgeRouter\Routing\Endpoint;
+use App\Modules\ForgeRouter\Attributes\Routable;
 use App\Modules\ForgeRouter\Attributes\Layout;
-use App\Modules\ForgeRouter\Traits\ControllerHelper;
+use App\Modules\ForgeRouter\Traits\ResponseHelper;
+use App\Modules\ForgeView\Traits\ViewHelper;
 
-#[Middleware(['web', 'auth', 'role', 'hub-permissions'])]
+#[Routable(prefix: '/hub')]
+#[UseMiddleware(['web', 'auth', 'role', 'hub-permissions'])]
 #[RequiresRole(Role::ADMIN->value)]
 #[Layout("ForgeComponents:admin-default")]
 final class ObservabilityController
 {
-    use ControllerHelper;
+    use ResponseHelper;
+    use ViewHelper;
 
     public function __construct(
         private readonly ObservabilityServiceInterface $observabilityService,
@@ -28,7 +32,7 @@ final class ObservabilityController
     ) {
     }
 
-    #[Route("/hub/observability")]
+    #[Endpoint("/observability")]
     public function dashboard(Request $request): Response
     {
         $stats = $this->observabilityService->getDashboardStats(hours: 24);
@@ -57,10 +61,10 @@ final class ObservabilityController
             'user' => $this->userContext->current(),
         ];
 
-        return $this->view(view: "pages/observability/index", data: $data);
+        return $this->view(view: "observability/index", data: $data);
     }
 
-    #[Route("/hub/observability/traces")]
+    #[Endpoint("/observability/traces")]
     public function traces(Request $request): Response
     {
         $page = (int) ($request->queryParams['page'] ?? 1);
@@ -86,15 +90,15 @@ final class ObservabilityController
             'user' => $this->userContext->current(),
         ];
 
-        return $this->view(view: "pages/observability/traces", data: $data);
+        return $this->view(view: "observability/traces", data: $data);
     }
 
-    #[Route("/hub/observability/traces/{id}")]
+    #[Endpoint("/observability/traces/{id}")]
     public function traceDetail(Request $request, string $id): Response
     {
         $trace = $this->observabilityService->getTraceDetail($id);
         if ($trace === null) {
-            return $this->view(view: "pages/observability/trace-detail", data: [
+            return $this->view(view: "observability/trace-detail", data: [
                 'title' => 'Trace Not Found',
                 'trace' => null,
                 'activeItem' => 'traces',
@@ -121,10 +125,10 @@ final class ObservabilityController
             'user' => $this->userContext->current(),
         ];
 
-        return $this->view(view: "pages/observability/trace-detail", data: $data);
+        return $this->view(view: "observability/trace-detail", data: $data);
     }
 
-    #[Route("/hub/observability/slow-queries")]
+    #[Endpoint("/observability/slow-queries")]
     public function slowQueries(Request $request): Response
     {
         $minDuration = (float) ($request->queryParams['min_duration'] ?? 100);
@@ -143,10 +147,10 @@ final class ObservabilityController
             'user' => $this->userContext->current(),
         ];
 
-        return $this->view(view: "pages/observability/slow-queries", data: $data);
+        return $this->view(view: "observability/slow-queries", data: $data);
     }
 
-    #[Route("/hub/observability/api/stats", "GET")]
+    #[Endpoint("/observability/api/stats", "GET")]
     public function stats(Request $request): Response
     {
         $hours = (int) ($request->queryParams['hours'] ?? 24);

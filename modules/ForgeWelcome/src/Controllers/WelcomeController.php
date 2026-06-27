@@ -4,23 +4,25 @@ declare(strict_types=1);
 
 namespace App\Modules\ForgeWelcome\Controllers;
 
-use Forge\Core\DI\Attributes\Service;
-use App\Modules\ForgeRouter\Http\Attributes\Middleware;
+use App\Modules\ForgeRouter\Http\Attributes\UseMiddleware;
 use App\Modules\ForgeRouter\Http\Response;
-use App\Modules\ForgeRouter\Routing\Route;
+use App\Modules\ForgeRouter\Routing\Endpoint;
+use App\Modules\ForgeRouter\Attributes\Routable;
 use App\Modules\ForgeRouter\Attributes\Layout;
-use App\Modules\ForgeRouter\Traits\ControllerHelper;
+use App\Modules\ForgeRouter\Traits\ResponseHelper;
+use App\Modules\ForgeView\Traits\ViewHelper;
 
-#[Service]
-#[Middleware('web')]
+#[Routable]
+#[UseMiddleware('web')]
 final class WelcomeController
 {
-    use ControllerHelper;
+    use ResponseHelper;
+    use ViewHelper;
 
-    #[Route("/")]
+    #[Endpoint]
     #[Layout("ForgeWelcome:main")]
     public function index(): Response
     {
-        return $this->view(view: "pages/index", data: []);
+        return $this->view(view: "index", data: []);
     }
 }

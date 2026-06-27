@@ -82,7 +82,7 @@ final class ViewFinder
     {
         $basePath = defined("BASE_PATH") ? BASE_PATH : dirname(__DIR__, 5);
 
-        $path = "app/resources/views";
+        $path = "app/UI/views";
         if ($this->structureResolver) {
             try {
                 $path = $this->structureResolver->getAppPath("views");
@@ -160,7 +160,7 @@ final class ViewFinder
             }
         }
 
-        foreach (["Resources", "resources"] as $res) {
+        foreach (["UI"] as $res) {
             $modulePath = BASE_PATH . "/modules/{$module}/src/{$res}/views/{$relative}.php";
             $fileCacheKey = "file_exists:" . $modulePath;
             if (!isset(self::$componentPathCache[$fileCacheKey])) {
@@ -209,7 +209,7 @@ final class ViewFinder
             }
         }
 
-        foreach (["Resources", "resources"] as $res) {
+        foreach (["UI"] as $res) {
             $paths[] = BASE_PATH . "/modules/{$module}/src/{$res}/{$type}/{$relative}.php";
 
             if ($type === "components") {

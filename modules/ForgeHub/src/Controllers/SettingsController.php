@@ -6,25 +6,27 @@ namespace App\Modules\ForgeHub\Controllers;
 
 use App\Modules\ForgeAuth\Enums\Role;
 use App\Modules\AppAuth\Services\UserContext;
-use Forge\Core\DI\Attributes\Service;
 use Forge\Core\Helpers\Flash;
 use App\Modules\ForgeRouter\Helpers\Redirect;
-use App\Modules\ForgeRouter\Http\Attributes\Middleware;
+use App\Modules\ForgeRouter\Http\Attributes\UseMiddleware;
 use App\Modules\ForgeRouter\Http\Attributes\RequiresRole;
 use App\Modules\ForgeRouter\Http\Request;
 use App\Modules\ForgeRouter\Http\Response;
-use App\Modules\ForgeRouter\Routing\Route;
+use App\Modules\ForgeRouter\Routing\Endpoint;
+use App\Modules\ForgeRouter\Attributes\Routable;
 use App\Modules\ForgeRouter\Attributes\Layout;
-use App\Modules\ForgeRouter\Traits\ControllerHelper;
+use App\Modules\ForgeRouter\Traits\ResponseHelper;
+use App\Modules\ForgeView\Traits\ViewHelper;
 use Forge\Traits\SecurityHelper;
 
-#[Service]
-#[Middleware(['web', 'auth', 'role', 'hub-permissions'])]
+#[Routable(prefix: '/hub')]
+#[UseMiddleware(['web', 'auth', 'role', 'hub-permissions'])]
 #[RequiresRole(Role::ADMIN->value)]
 
 final class SettingsController
 {
-    use ControllerHelper;
+    use ResponseHelper;
+    use ViewHelper;
     use SecurityHelper;
 
     public function __construct(
@@ -32,7 +34,7 @@ final class SettingsController
     ) {
     }
 
-    #[Route("/hub/settings")]
+    #[Endpoint("/settings")]
     #[Layout("ForgeHub:hub")]
     public function index(): Response
     {
@@ -47,10 +49,10 @@ final class SettingsController
             'user' => $user,
         ];
 
-        return $this->view(view: "pages/settings", data: $data);
+        return $this->view(view: "settings", data: $data);
     }
 
-    #[Route("/hub/settings/password", "POST")]
+    #[Endpoint("/settings/password", "POST")]
     public function updatePassword(Request $request): Response
     {
         $user = $this->userContext->current();

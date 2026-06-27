@@ -5,25 +5,28 @@ declare(strict_types=1);
 namespace App\Modules\ForgeDebugBar\Controllers\Hub;
 
 use App\Modules\ForgeDebugBar\Services\DebugBarHubService;
-use App\Modules\ForgeRouter\Http\Attributes\Middleware;
+use App\Modules\ForgeRouter\Http\Attributes\UseMiddleware;
 use App\Modules\ForgeRouter\Http\Request;
 use App\Modules\ForgeRouter\Http\Response;
-use App\Modules\ForgeRouter\Routing\Route;
+use App\Modules\ForgeRouter\Routing\Endpoint;
+use App\Modules\ForgeRouter\Attributes\Routable;
 use App\Modules\ForgeRouter\Attributes\Layout;
-use App\Modules\ForgeRouter\Traits\ControllerHelper;
+use App\Modules\ForgeRouter\Traits\ResponseHelper;
+use App\Modules\ForgeView\Traits\ViewHelper;
 
-#[Middleware('web')]
-#[Middleware('auth')]
+#[Routable(prefix: '/hub')]
+#[UseMiddleware(['web', 'auth'])]
 final class DebugBarController
 {
-    use ControllerHelper;
+    use ResponseHelper;
+    use ViewHelper;
 
     public function __construct(
         private readonly DebugBarHubService $hubService
     ) {
     }
 
-    #[Route(path: "/hub/debugbar")]
+    #[Endpoint(path: "/debugbar")]
     #[Layout("ForgeHub:hub")]
     public function index(Request $request): Response
     {
@@ -36,6 +39,6 @@ final class DebugBarController
             'hasData' => $latestData !== null,
         ];
 
-        return $this->view(view: "pages/hub/debugbar", data: $data);
+        return $this->view(view: "hub/debugbar", data: $data);
     }
 }

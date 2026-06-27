@@ -6,29 +6,31 @@ namespace App\Modules\ForgeHub\Controllers;
 
 use App\Modules\ForgeAuth\Enums\Role;
 use App\Modules\ForgeHub\Services\MonitoringService;
-use Forge\Core\DI\Attributes\Service;
-use App\Modules\ForgeRouter\Http\Attributes\Middleware;
+use App\Modules\ForgeRouter\Http\Attributes\UseMiddleware;
 use App\Modules\ForgeRouter\Http\Attributes\RequiresRole;
 use App\Modules\ForgeRouter\Http\Request;
 use App\Modules\ForgeRouter\Http\Response;
-use App\Modules\ForgeRouter\Routing\Route;
+use App\Modules\ForgeRouter\Routing\Endpoint;
+use App\Modules\ForgeRouter\Attributes\Routable;
 use App\Modules\ForgeRouter\Attributes\Layout;
-use App\Modules\ForgeRouter\Traits\ControllerHelper;
+use App\Modules\ForgeRouter\Traits\ResponseHelper;
+use App\Modules\ForgeView\Traits\ViewHelper;
 
-#[Service]
-#[Middleware(['web', 'auth', 'role', 'hub-permissions'])]
+#[Routable(prefix: '/hub')]
+#[UseMiddleware(['web', 'auth', 'role', 'hub-permissions'])]
 #[RequiresRole(Role::ADMIN->value)]
 
 final class MonitoringController
 {
-    use ControllerHelper;
+    use ResponseHelper;
+    use ViewHelper;
 
     public function __construct(
         private readonly MonitoringService $monitoringService
     ) {
     }
 
-    #[Route("/hub/monitoring")]
+    #[Endpoint("/monitoring")]
     #[Layout("ForgeHub:hub")]
     public function index(Request $request): Response
     {
@@ -39,10 +41,10 @@ final class MonitoringController
             'metrics' => $metrics,
         ];
 
-        return $this->view(view: "pages/monitoring", data: $data);
+        return $this->view(view: "monitoring", data: $data);
     }
 
-    #[Route("/hub/monitoring/refresh", "POST")]
+    #[Endpoint("/monitoring/refresh", "POST")]
     public function refresh(Request $request): Response
     {
         $metrics = $this->monitoringService->getAllMetrics();

@@ -6,18 +6,20 @@ namespace App\Modules\ForgeBilling\Controllers;
 
 use App\Modules\ForgeBilling\Contracts\BillableResolverInterface;
 use App\Modules\ForgeBilling\Services\InvoiceService;
-use Forge\Core\DI\Attributes\Service;
-use App\Modules\ForgeRouter\Http\Attributes\Middleware;
+use App\Modules\ForgeRouter\Http\Attributes\UseMiddleware;
 use App\Modules\ForgeRouter\Http\Response;
-use App\Modules\ForgeRouter\Routing\Route;
+use App\Modules\ForgeRouter\Routing\Endpoint;
+use App\Modules\ForgeRouter\Attributes\Routable;
 use App\Modules\ForgeRouter\Attributes\Layout;
-use App\Modules\ForgeRouter\Traits\ControllerHelper;
+use App\Modules\ForgeRouter\Traits\ResponseHelper;
+use App\Modules\ForgeView\Traits\ViewHelper;
 
-#[Service]
-#[Middleware('web')]
+#[Routable(prefix: '/billing')]
+#[UseMiddleware('web')]
 final class InvoiceController
 {
-    use ControllerHelper;
+    use ResponseHelper;
+    use ViewHelper;
 
     public function __construct(
         private readonly InvoiceService $invoiceService,
@@ -25,7 +27,7 @@ final class InvoiceController
     ) {
     }
 
-    #[Route('/billing/invoices')]
+    #[Endpoint('/invoices')]
     #[Layout('ForgeBilling:billing')]
     public function index(): Response
     {
@@ -37,10 +39,10 @@ final class InvoiceController
             'invoices' => $invoices,
         ];
 
-        return $this->view(view: "pages/billing/invoices", data: $data);
+        return $this->view(view: "billing/invoices", data: $data);
     }
 
-    #[Route('/billing/invoices/{id}')]
+    #[Endpoint('/invoices/{id}')]
     #[Layout('ForgeBilling:billing')]
     public function show(string $id): Response
     {
@@ -53,6 +55,6 @@ final class InvoiceController
             'items' => $items,
         ];
 
-        return $this->view(view: "pages/billing/invoice-detail", data: $data);
+        return $this->view(view: "billing/invoice-detail", data: $data);
     }
 }

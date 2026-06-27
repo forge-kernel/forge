@@ -5,8 +5,12 @@ declare(strict_types=1);
 
 namespace App\Modules\ForgeDatabaseSQL\DB\Seeders;
 
+use App\Modules\ForgeDatabaseSQL\DB\Seeders\Attributes\Seedable;
+use App\Modules\ForgeDatabaseSQL\DB\Seeders\Attributes\Seeder;
+use Forge\Core\Bootstrap\OptimizedDirectoryScanner;
 use Forge\Core\Contracts\Database\DatabaseConnectionInterface;
 use Forge\Core\Helpers\ModuleHelper;
+use Forge\Core\Services\AttributeDiscoveryService;
 use Forge\Core\Structure\StructureResolver;
 use Forge\Traits\StringHelper;
 use PDO;
@@ -20,6 +24,9 @@ final class SeederManager
 
     private const string SEEDERS_TABLE = 'forge_seeders';
     private const string MODULES_PATH = BASE_PATH . '/modules';
+
+    /** @var array<string>|null */
+    private ?array $attributeDiscoveredSeederFiles = null;
 
     public function __construct(
         private DatabaseConnectionInterface $connection,
@@ -73,12 +80,12 @@ final class SeederManager
         $ran = $this->getRanSeederNames();
 
         $paths = match ($type) {
-            'module' => $this->getModuleSeeders($module),
-            'app' => $this->getAppSeederFiles(),
-            'tenants' => $this->getTenantSeederFiles(),
+            'module' => $this->getAllModuleSeederFiles($module),
+            'app' => $this->getAllAppSeederFiles(),
+            'tenants' => $this->getAllTenantSeederFiles(),
             'all' => array_merge(
-                $this->getAppSeederFiles(),
-                $this->getModuleSeeders()
+                $this->getAllAppSeederFiles(),
+                $this->getAllModuleSeederFiles()
             ),
             default => [],
         };
@@ -180,6 +187,108 @@ final class SeederManager
     }
 
     /**
+     * @return array<string>
+     */
+    private function getAttributeDiscoveredSeederFiles(): array
+    {
+        if ($this->attributeDiscoveredSeederFiles !== null) {
+            return $this->attributeDiscoveredSeederFiles;
+        }
+
+        $basePaths = OptimizedDirectoryScanner::getAttributeDiscoveryPaths();
+        if (empty($basePaths)) {
+            $this->attributeDiscoveredSeederFiles = [];
+            return [];
+        }
+
+        $discoveryService = new AttributeDiscoveryService();
+        $classMap = $discoveryService->discover($basePaths, [Seedable::class, Seeder::class]);
+
+        $files = [];
+        foreach ($classMap as $className => $metadata) {
+            if (!in_array(Seedable::class, $metadata['attributes'] ?? [], true) && !in_array(Seeder::class, $metadata['attributes'] ?? [], true)) {
+                continue;
+            }
+
+            $file = $metadata['file'] ?? null;
+            if ($file === null || !is_subclass_of($className, Seeder::class)) {
+                continue;
+            }
+            $files[] = $file;
+        }
+
+        $this->attributeDiscoveredSeederFiles = $files;
+        return $files;
+    }
+
+    private function getAllAppSeederFiles(): array
+    {
+        $legacy = $this->getAppSeederFiles();
+        $appPath = $this->resolveAppSeedersPath();
+        if ($appPath === null) {
+            return $legacy;
+        }
+
+        $tenantDir = $appPath . '/Tenants';
+        $attribute = [];
+        foreach ($this->getAttributeDiscoveredSeederFiles() as $file) {
+            if (str_starts_with($file, $appPath . '/') && !str_starts_with($file, $tenantDir . '/')) {
+                $attribute[] = $file;
+            }
+        }
+
+        return array_values(array_unique(array_merge($attribute, $legacy)));
+    }
+
+    private function getAllTenantSeederFiles(): array
+    {
+        $legacy = $this->getTenantSeederFiles();
+        $appPath = $this->resolveAppSeedersPath();
+        if ($appPath === null) {
+            return $legacy;
+        }
+
+        $tenantDir = $appPath . '/Tenants';
+        $attribute = [];
+        foreach ($this->getAttributeDiscoveredSeederFiles() as $file) {
+            if (str_starts_with($file, $tenantDir . '/')) {
+                $attribute[] = $file;
+            }
+        }
+
+        return array_values(array_unique(array_merge($attribute, $legacy)));
+    }
+
+    private function getAllModuleSeederFiles(?string $target = null): array
+    {
+        $legacy = $this->getModuleSeeders($target);
+        $attribute = [];
+
+        foreach ($this->getAvailableModules() as $moduleName) {
+            if ($target && $moduleName !== $target) {
+                continue;
+            }
+
+            if (ModuleHelper::isModuleDisabled($moduleName)) {
+                continue;
+            }
+
+            $modulePath = $this->resolveModuleSeedersPath($moduleName);
+            if ($modulePath === null) {
+                continue;
+            }
+
+            foreach ($this->getAttributeDiscoveredSeederFiles() as $file) {
+                if (str_starts_with($file, $modulePath . '/')) {
+                    $attribute[] = $file;
+                }
+            }
+        }
+
+        return array_values(array_unique(array_merge($attribute, $legacy)));
+    }
+
+    /**
      * @throws ReflectionException
      */
     private function runSeeder(string $path): void
@@ -215,7 +324,13 @@ final class SeederManager
 
     private function getSeederClassName(string $path): string
     {
-        return preg_replace('/^\d{4}_\d{2}_\d{2}_\d{6}_/', '', basename($path, '.php'));
+        $contents = @file_get_contents($path);
+        $namespace = '';
+        if ($contents !== false && preg_match('/namespace\s+([^;]+);/', $contents, $match)) {
+            $namespace = trim($match[1]) . '\\';
+        }
+
+        return $namespace . preg_replace('/^\d{4}_\d{2}_\d{2}_\d{6}_/', '', basename($path, '.php'));
     }
 
     private function getNextBatchNumber(): int
@@ -276,8 +391,9 @@ final class SeederManager
     private function findSeederPath(string $filename): ?string
     {
         $paths = array_merge(
-            $this->getAppSeederFiles(),
-            $this->getModuleSeeders()
+            $this->getAllAppSeederFiles(),
+            $this->getAllTenantSeederFiles(),
+            $this->getAllModuleSeederFiles()
         );
 
         foreach ($paths as $path) {
@@ -323,58 +439,35 @@ final class SeederManager
 
     public function discoverSeeders(?string $type = null, ?string $module = null): array
     {
-        $paths = [];
+        $seeders = [];
 
         if ($type === null || $type === 'app' || $type === 'all') {
-            $dir = $this->resolveAppSeedersPath();
-            if ($dir !== null) {
-                $paths['app'] = [$dir];
+            foreach ($this->getAllAppSeederFiles() as $file) {
+                $seeders[] = [
+                    'name' => basename($file),
+                    'path' => $file,
+                    'source' => 'app',
+                ];
             }
         }
 
         if ($type === null || $type === 'tenants' || $type === 'all') {
-            $dir = $this->resolveAppSeedersPath();
-            if ($dir !== null) {
-                $tenantDir = $dir . '/Tenants';
-                if (is_dir($tenantDir)) {
-                    $paths['tenants'] = [$tenantDir];
-                }
+            foreach ($this->getAllTenantSeederFiles() as $file) {
+                $seeders[] = [
+                    'name' => basename($file),
+                    'path' => $file,
+                    'source' => 'tenants',
+                ];
             }
         }
 
         if ($type === null || $type === 'module' || $type === 'all') {
-            if ($module) {
-                $dir = $this->resolveModuleSeedersPath($module);
-                if ($dir !== null) {
-                    $paths['modules'][] = $dir;
-                }
-            } else {
-                foreach ($this->getAvailableModules() as $moduleName) {
-                    if (ModuleHelper::isModuleDisabled($moduleName)) {
-                        continue;
-                    }
-                    $dir = $this->resolveModuleSeedersPath($moduleName);
-                    if ($dir !== null) {
-                        $paths['modules'][] = $dir;
-                    }
-                }
-            }
-        }
-
-        $seeders = [];
-        foreach ($paths as $source => $dirs) {
-            $dirs = (array) $dirs;
-            foreach ($dirs as $dir) {
-                if (!is_dir($dir))
-                    continue;
-
-                foreach (glob("{$dir}/*.php") as $file) {
-                    $seeders[] = [
-                        'name' => basename($file),
-                        'path' => $file,
-                        'source' => $source,
-                    ];
-                }
+            foreach ($this->getAllModuleSeederFiles($module) as $file) {
+                $seeders[] = [
+                    'name' => basename($file),
+                    'path' => $file,
+                    'source' => 'modules',
+                ];
             }
         }
 

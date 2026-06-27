@@ -72,7 +72,10 @@ final class TestRunnerService
     {
         $this->__construct();
 
-        // Ensure TestCase is loaded so the Autoloader doesn't block parsing *Test classes
+        // Allow autoloader to load *Test classes (blocked by default during HTTP requests)
+        \Forge\Core\Autoloader::allowTestLoading();
+
+        // Ensure TestCase is loaded before parsing test classes
         if (!class_exists(TestCase::class)) {
             // Unreachable fallback
         }

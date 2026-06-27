@@ -8,10 +8,11 @@ use App\Modules\ForgeRouter\Contracts\RouteScopeFilterInterface;
 use Forge\Core\Debug\Metrics;
 use Forge\Core\DI\Container;
 use Forge\Core\Helpers\ModuleHelper;
-use App\Modules\ForgeRouter\Http\Attributes\Middleware;
+use App\Modules\ForgeRouter\Attributes\Layout;
+use App\Modules\ForgeRouter\Attributes\Routable;
 use App\Modules\ForgeRouter\Http\Attributes\ApiRoute;
 use App\Modules\ForgeRouter\Http\Attributes\RequiresRole;
-use App\Modules\ForgeRouter\Attributes\Layout;
+use App\Modules\ForgeRouter\Http\Attributes\UseMiddleware;
 use Forge\Exceptions\MissingServiceException;
 use ReflectionClass;
 use App\Modules\ForgeRouter\Http\Request;
@@ -24,11 +25,11 @@ final class Router
 
     private static ?self $instance = null;
     private array $middlewareGroups;
-    /** @var array<string, array{controller: class-string, method: string, handler: array, params: array, middleware: array, permissions: array, roles: array, layout: ?string, preferred: bool}> */
+    /** @var array<string, array{controller: class-string, method: string, handler: array, params: array, middleware: array, permissions: array, roles: array, layout: ?string, override: bool}> */
     private array $routes = [];
-    /** @var array<string, array{controller: class-string, method: string, handler: array, params: array, middleware: array, permissions: array, roles: array, layout: ?string, preferred: bool}> */
+    /** @var array<string, array{controller: class-string, method: string, handler: array, params: array, middleware: array, permissions: array, roles: array, layout: ?string, override: bool}> */
     private array $staticRoutes = [];
-    /** @var array<string, array{controller: class-string, method: string, handler: array, params: array, middleware: array, permissions: array, roles: array, layout: ?string, preferred: bool, regex: string}> */
+    /** @var array<string, array{controller: class-string, method: string, handler: array, params: array, middleware: array, permissions: array, roles: array, layout: ?string, override: bool, regex: string}> */
     private array $dynamicRoutes = [];
     private Container $container;
     private ?array $currentRoute = null;
@@ -180,6 +181,7 @@ final class Router
         string $controllerClass,
     ): array {
         $routeAttributes = array_merge(
+            $method->getAttributes(Endpoint::class),
             $method->getAttributes(Route::class),
             $method->getAttributes(ApiRoute::class),
         );
@@ -189,9 +191,17 @@ final class Router
         }
 
         $reflectionClass = new ReflectionClass($controllerClass);
+
+        $routablePrefix = '';
+        $routableAttributes = $reflectionClass->getAttributes(Routable::class);
+        if (!empty($routableAttributes)) {
+            $routablePrefix = $routableAttributes[0]->newInstance()->prefix;
+        }
+        $basePath = $routablePrefix === '' ? '' : rtrim($routablePrefix, '/');
+
         $middlewareAttributes = array_merge(
-            $reflectionClass->getAttributes(Middleware::class),
-            $method->getAttributes(Middleware::class),
+            $reflectionClass->getAttributes(UseMiddleware::class),
+            $method->getAttributes(UseMiddleware::class),
         );
 
         $roleAttributes = array_merge(
@@ -228,12 +238,20 @@ final class Router
 
         $infos = [];
         foreach ($routeAttributes as $attr) {
+            $usesDeprecatedRoute = $attr->getName() === Route::class;
             $route = $attr->newInstance();
             $routeMiddlewares = $this->resolveMiddlewareGroups(
                 $route->middleware,
             );
             $allMiddleware = array_merge($middleware, $routeMiddlewares);
             $permissions = $route->permissions;
+
+            $routePath = $route->path;
+            $path = $routePath === '' ? '' : (str_starts_with($routePath, '/') ? $routePath : '/' . $routePath);
+            $fullPath = $basePath . $path;
+            if ($fullPath === '') {
+                $fullPath = '/';
+            }
 
             $paramNames = [];
             $pattern = preg_replace_callback(
@@ -251,7 +269,7 @@ final class Router
                     }
                     return "([a-zA-Z0-9_-]+)";
                 },
-                $route->path,
+                $fullPath,
             );
             $regex = "#^{$pattern}/?$#";
 
@@ -264,12 +282,13 @@ final class Router
                 "permissions" => $permissions,
                 "roles" => $roles,
                 "layout" => $layout,
-                "preferred" => $route->preferred,
+                "override" => $route->override,
+                "usesDeprecatedRoute" => $usesDeprecatedRoute,
             ];
 
             $infos[] = [
                 'httpMethod' => $route->method,
-                'path' => $route->path,
+                'path' => $fullPath,
                 'regex' => $regex,
                 'routeData' => $routeData,
             ];
@@ -293,8 +312,8 @@ final class Router
             $staticKey = $httpMethod . ":" . $path;
             if (isset($this->staticRoutes[$staticKey])) {
                 if (
-                    !empty($this->staticRoutes[$staticKey]["preferred"]) &&
-                    !$routeData["preferred"]
+                    !empty($this->staticRoutes[$staticKey]["override"]) &&
+                    !$routeData["override"]
                 ) {
                     return;
                 }
@@ -312,10 +331,10 @@ final class Router
                 if (
                     !empty(
                         $this->dynamicRoutes[$httpMethod][$regex][
-                            "preferred"
+                            "override"
                         ]
                     ) &&
-                    !$routeData["preferred"]
+                    !$routeData["override"]
                 ) {
                     return;
                 }
@@ -451,6 +470,13 @@ final class Router
             $errorCode = 404;
             require_once BASE_PATH . "/modules/ForgeRouter/src/Templates/error_page.php";
             return $this->createErrorResponse($request, "", (int) $errorCode);
+        }
+
+        if (!empty($route["usesDeprecatedRoute"])) {
+            trigger_error(
+                'This route uses the deprecated #[Route] attribute. Use #[Endpoint] instead.',
+                E_USER_DEPRECATED
+            );
         }
 
         $globalMiddlewares = $this->middlewareGroups["global"] ?? [];
