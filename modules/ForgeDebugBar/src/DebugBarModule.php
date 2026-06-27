@@ -30,7 +30,7 @@ use Forge\Core\Config\Config;
 
 #[Module(
     name: 'ForgeDebugBar',
-    version: '1.3.4',
+    version: '1.3.5',
     description: 'A debug bar by Forge',
     order: 3,
     author: 'Forge Team',
