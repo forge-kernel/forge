@@ -16,6 +16,7 @@ use Forge\CLI\Traits\OutputHelper;
 use Forge\Core\Cache\Attributes\NoCache;
 use Forge\Core\Config\Environment;
 use Forge\Core\Contracts\Database\QueryBuilderInterface;
+use Forge\Core\Contracts\EventDispatcherInterface;
 use Forge\Core\DI\Attributes\Service;
 use Forge\Core\DI\Container;
 use Forge\Core\Module\Attributes\Provides;
@@ -30,7 +31,7 @@ use Throwable;
 #[Service(singleton: true)]
 #[Provides(EventDispatcher::class, version: '0.2.1')]
 #[NoCache(reason: 'Contains unserializable database connections')]
-final class EventDispatcher
+final class EventDispatcher implements EventDispatcherInterface
 {
     use OutputHelper;
     use TimeTrait;
