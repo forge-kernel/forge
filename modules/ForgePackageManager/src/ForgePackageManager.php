@@ -7,7 +7,6 @@ namespace App\Modules\ForgePackageManager;
 use App\Modules\ForgePackageManager\Contracts\PackageManagerInterface;
 use App\Modules\ForgePackageManager\Services\PackageManagerService;
 use Forge\Core\Config\Config;
-use Forge\Core\DI\Attributes\Service;
 use Forge\Core\DI\Container;
 use Forge\Core\Module\Attributes\Compatibility;
 use Forge\Core\Module\Attributes\ConfigDefaults;
@@ -16,7 +15,7 @@ use Forge\Core\Module\Attributes\Repository;
 
 #[Module(
     name: 'ForgePackageManager',
-    version: '3.3.16',
+    version: '3.3.17',
     description: 'A Package Manager By Forge',
     order: 1,
     isCli: true,
@@ -25,7 +24,6 @@ use Forge\Core\Module\Attributes\Repository;
     type: 'management',
     tags: ['management', 'package', 'dependency', 'installer']
 )]
-#[Service]
 #[Compatibility(framework: '>=0.1.0', php: '>=8.3')]
 #[Repository(type: 'git', url: 'https://github.com/forge-kernel/kernel-module-registry')]
 #[ConfigDefaults(defaults: [
