@@ -10,7 +10,7 @@ use Forge\Core\Module\Attributes\Repository;
 
 #[Module(
     name: "ForgeEvents",
-    version: "1.4.5",
+    version: "1.4.6",
     description: "An Event Queue system by forge",
     order: 99,
     author: 'Forge Team',
