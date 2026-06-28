@@ -64,7 +64,7 @@ return array (
         ),
       ),
     ),
-    'mtime' => 1782534676,
+    'mtime' => 1782576296,
     'modulePath' => '/Users/acidlake/Development/UPPER/Forge/repos/forge-v3/modules/ForgeDebugBar',
   ),
   'App\\Modules\\ForgeSaas\\ForgeSaasModule' => 
@@ -186,7 +186,7 @@ return array (
         ),
       ),
     ),
-    'mtime' => 1782533560,
+    'mtime' => 1782576285,
     'modulePath' => '/Users/acidlake/Development/UPPER/Forge/repos/forge-v3/modules/ForgeHub',
   ),
   'App\\Modules\\ForgeLanguage\\ForgeLanguageModule' => 
@@ -276,7 +276,7 @@ return array (
     'hubItems' => 
     array (
     ),
-    'mtime' => 1782533553,
+    'mtime' => 1782666259,
     'modulePath' => '/Users/acidlake/Development/UPPER/Forge/repos/forge-v3/modules/ForgeEvents',
   ),
   'App\\Modules\\ForgeNotification\\ForgeNotificationModule' => 
@@ -340,7 +340,7 @@ return array (
     'hubItems' => 
     array (
     ),
-    'mtime' => 1782536018,
+    'mtime' => 1782667053,
     'modulePath' => '/Users/acidlake/Development/UPPER/Forge/repos/forge-v3/modules/ForgeRouter',
   ),
   'App\\Modules\\ForgeStaticGen\\ForgeStaticGenModule' => 
