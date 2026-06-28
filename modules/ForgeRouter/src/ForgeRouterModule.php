@@ -6,7 +6,6 @@ namespace App\Modules\ForgeRouter;
 
 use App\Modules\ForgeRouter\Bootstrap\RouterSetup;
 use App\Modules\ForgeRouter\Contracts\ErrorHandlerInterface;
-use App\Modules\ForgeRouter\Events\RouterHookAttribute;
 use App\Modules\ForgeRouter\Events\RouterHookManager;
 use App\Modules\ForgeRouter\Events\RouterHookName;
 use App\Modules\ForgeRouter\Http\Kernel;
@@ -26,7 +25,7 @@ use Throwable;
 #[Module(name: "ForgeRouter",
     description: "Forge Router and Http",
     author: "Forge Team",
-    version: '1.0.7',
+    version: '1.0.8',
     type: "core",
     license: "MIT",
     tags: ["router", "http"],
