@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace App\Modules\ForgeStorage;
+namespace Modules\ForgeStorage;
 
-use App\Modules\ForgeStorage\Contracts\StorageDriverInterface;
-use App\Modules\ForgeStorage\Services\ProviderResolver;
+use Modules\ForgeStorage\Contracts\StorageDriverInterface;
+use Modules\ForgeStorage\Services\ProviderResolver;
 use Forge\Core\Config\Config;
 use Forge\Core\DI\Attributes\Service;
 use Forge\Core\DI\Container;
@@ -18,7 +18,7 @@ use Forge\Core\Module\Attributes\Repository;
 
 #[Module(
     name: 'ForgeStorage',
-    version: '1.3.2',
+    version: '1.3.3',
     description: 'Simple file upload storage module with multiple provider support',
     author: 'Forge Team',
     license: 'MIT',
