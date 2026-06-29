@@ -1,0 +1,17 @@
+<?php
+
+return [
+    "global" => [
+        \App\Modules\ForgeRouter\Http\Middlewares\RateLimitMiddleware::class,
+        \App\Modules\ForgeRouter\Http\Middlewares\CircuitBreakerMiddleware::class,
+        \App\Modules\ForgeRouter\Http\Middlewares\CorsMiddleware::class,
+        \App\Modules\ForgeRouter\Http\Middlewares\CompressionMiddleware::class,
+    ],
+    "web" => [
+        \App\Modules\ForgeRouter\Http\Middlewares\SessionMiddleware::class,
+        \App\Modules\ForgeRouter\Http\Middlewares\CsrfMiddleware::class,
+    ],
+    "api" => [
+        \App\Modules\ForgeRouter\Http\Middlewares\ApiMiddleware::class,
+    ],
+];
