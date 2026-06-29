@@ -2,14 +2,14 @@
 
 declare(strict_types=1);
 
-namespace App\Modules\ForgeLanguage;
+namespace Modules\ForgeLanguage;
 
 use Forge\Core\DI\Container;
-use App\Modules\ForgeRouter\Http\Request;
+use Modules\ForgeRouter\Http\Request;
 use Forge\Core\Module\Attributes\Compatibility;
 use Forge\Core\Module\Attributes\ConfigDefaults;
-use App\Modules\ForgeRouter\Events\RouterHookAttribute;
-use App\Modules\ForgeRouter\Events\RouterHookName;
+use Modules\ForgeRouter\Events\RouterHookAttribute;
+use Modules\ForgeRouter\Events\RouterHookName;
 use Forge\Core\Module\Attributes\Module;
 use Forge\Core\Module\Attributes\Repository;
 use Forge\Core\DI\Attributes\Service;
@@ -34,7 +34,7 @@ use Forge\Core\Module\Attributes\Structure;
 
 
 #[Service]
-#[Module(name: 'ForgeLanguage', version: '0.2.2', description: 'Multi language support to extend Forge Kernel', order: 40, author: 'Your Name', license: 'MIT', tags: [])]
+#[Module(name: 'ForgeLanguage', version: '0.2.3', description: 'Multi language support to extend Forge Kernel', order: 40, author: 'Your Name', license: 'MIT', tags: [])]
 #[Compatibility(framework: '>=0.1.0', php: '>=8.3')]
 #[Repository(type: 'git', url: 'https://github.com/forge-kernel/kernel-module-registry')]
 #[ConfigDefaults(defaults: [
