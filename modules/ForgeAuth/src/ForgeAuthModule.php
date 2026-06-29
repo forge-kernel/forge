@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Modules\ForgeAuth;
+namespace Modules\ForgeAuth;
 
 use Forge\Core\Config\Config;
 use Forge\Core\DI\Container;
@@ -12,14 +12,14 @@ use Forge\Core\Module\Attributes\Module;
 use Forge\Core\Module\Attributes\PostInstall;
 use Forge\Core\Module\Attributes\PostUninstall;
 use Forge\Core\Module\Attributes\Repository;
-use App\Modules\ForgeAuth\Contracts\ForgeAuthInterface;
-use App\Modules\ForgeAuth\Services\ForgeAuthService;
+use Modules\ForgeAuth\Contracts\ForgeAuthInterface;
+use Modules\ForgeAuth\Services\ForgeAuthService;
 use Forge\CLI\Traits\OutputHelper;
 use Forge\Core\Module\Attributes\Structure;
 use Forge\Core\Module\Attributes\Requires;
 
 #[Module(name: 'ForgeAuth',
-    version: '2.0.6',
+    version: '2.0.7',
     description: 'An Auth module by forge.',
     order: 99,
     author: 'Forge Team',
