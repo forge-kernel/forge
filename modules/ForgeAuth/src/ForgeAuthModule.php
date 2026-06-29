@@ -15,11 +15,11 @@ use Forge\Core\Module\Attributes\Repository;
 use App\Modules\ForgeAuth\Contracts\ForgeAuthInterface;
 use App\Modules\ForgeAuth\Services\ForgeAuthService;
 use Forge\CLI\Traits\OutputHelper;
-use Forge\Core\Module\ModuleLoader\Loader;
 use Forge\Core\Module\Attributes\Structure;
+use Forge\Core\Module\Attributes\Requires;
 
 #[Module(name: 'ForgeAuth',
-    version: '2.0.5',
+    version: '2.0.6',
     description: 'An Auth module by forge.',
     order: 99,
     author: 'Forge Team',
@@ -27,6 +27,8 @@ use Forge\Core\Module\Attributes\Structure;
     type: 'auth',
     tags: ['auth', 'authentication', 'authorization', 'authentication-system', 'authentication-library', 'authentication-framework']
 )]
+#[Requires(module: "forge-database-sql", version: ">=0.9.12")]
+#[Requires(module: "forge-sql-orm", version: ">=0.6.5")]
 #[Compatibility(framework: '>=4.15.10', php: '>=8.3')]
 #[Repository(type: 'git', url: 'https://github.com/forge-kernel/kernel-module-registry')]
 #[ConfigDefaults(defaults: [
