@@ -2,14 +2,14 @@
 
 declare(strict_types=1);
 
-namespace App\Modules\ForgeRouter;
+namespace Modules\ForgeRouter;
 
-use App\Modules\ForgeRouter\Bootstrap\RouterSetup;
-use App\Modules\ForgeRouter\Contracts\ErrorHandlerInterface;
-use App\Modules\ForgeRouter\Events\RouterHookManager;
-use App\Modules\ForgeRouter\Events\RouterHookName;
-use App\Modules\ForgeRouter\Http\Kernel;
-use App\Modules\ForgeRouter\Http\Request;
+use Modules\ForgeRouter\Bootstrap\RouterSetup;
+use Modules\ForgeRouter\Contracts\ErrorHandlerInterface;
+use Modules\ForgeRouter\Events\RouterHookManager;
+use Modules\ForgeRouter\Events\RouterHookName;
+use Modules\ForgeRouter\Http\Kernel;
+use Modules\ForgeRouter\Http\Request;
 use Forge\Core\Debug\Metrics;
 use Forge\Core\DI\Container;
 use Forge\Core\Module\Attributes\ConfigDefaults;
@@ -25,7 +25,7 @@ use Throwable;
 #[Module(name: "ForgeRouter",
     description: "Forge Router and Http",
     author: "Forge Team",
-    version: '1.0.11',
+    version: '1.0.12',
     type: "core",
     license: "MIT",
     tags: ["router", "http"],
