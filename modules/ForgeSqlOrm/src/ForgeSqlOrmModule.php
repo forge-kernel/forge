@@ -14,11 +14,9 @@ use Forge\Core\Module\Attributes\Compatibility;
 use Forge\Core\Module\Attributes\ConfigDefaults;
 use Forge\Core\Module\Attributes\Module;
 use Forge\Core\Module\Attributes\Repository;
-use Forge\Core\DI\Attributes\Service;
 use Forge\CLI\Traits\OutputHelper;
 
-#[Module(name: 'ForgeSqlOrm', version: '0.6.5', description: 'SQL ORM Support (SQLite, MySQL, PostgreSQL)', order: 1, author: 'Forge Team', license: 'MIT', type: 'core', tags: ['database', 'sql', 'orm'])]
-#[Service]
+#[Module(name: 'ForgeSqlOrm', version: '0.6.6', description: 'SQL ORM Support (SQLite, MySQL, PostgreSQL)', order: 1, author: 'Forge Team', license: 'MIT', type: 'core', tags: ['database', 'sql', 'orm'])]
 #[Compatibility(framework: '>=0.1.0', php: '>=8.3')]
 #[Repository(type: 'git', url: 'https://github.com/forge-kernel/kernel-module-registry')]
 #[ConfigDefaults(defaults: [
