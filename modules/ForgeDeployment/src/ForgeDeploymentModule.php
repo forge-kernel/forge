@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Modules\ForgeDeployment;
+namespace Modules\ForgeDeployment;
 
 use Forge\Core\Config\Config;
 use Forge\Core\DI\Container;
@@ -17,7 +17,7 @@ use Forge\CLI\Traits\OutputHelper;
 
 #[Module(
     name: 'ForgeDeployment',
-    version: '2.5.4',
+    version: '2.5.5',
     description: 'Deploy applications to cloud providers with automated provisioning',
     order: 99,
     author: 'Forge Team',
