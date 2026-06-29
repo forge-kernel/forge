@@ -2,21 +2,21 @@
 
 declare(strict_types=1);
 
-namespace App\Modules\ForgeErrorHandler;
+namespace Modules\ForgeErrorHandler;
 
-use App\Modules\ForgeRouter\Contracts\ErrorHandlerInterface;
+use Modules\ForgeRouter\Contracts\ErrorHandlerInterface;
 use Forge\Core\DI\Container;
 use Forge\Core\Module\Attributes\Compatibility;
 use Forge\Core\Module\Attributes\ConfigDefaults;
 use Forge\Core\Module\Attributes\Module;
 use Forge\Core\Module\Attributes\Repository;
-use App\Modules\ForgeErrorHandler\Services\ForgeErrorHandlerService;
+use Modules\ForgeErrorHandler\Services\ForgeErrorHandlerService;
 use Forge\Core\DI\Attributes\Service;
 use Forge\CLI\Traits\OutputHelper;
 
 #[Module(
     name: 'ForgeErrorHandler',
-    version: '1.2.2',
+    version: '1.2.3',
     description: 'An error handler by Forge',
     order: 2,
     core: true,
