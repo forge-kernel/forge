@@ -377,8 +377,6 @@ final class PackageManagerService implements PackageManagerInterface
                 continue;
             }
 
-            $this->updateForgeJson($moduleName, $versionToInstall);
-
             $moduleSrcPath = $moduleInstallPath . '/src';
             if (is_dir($moduleSrcPath)) {
                 \Forge\Core\Autoloader::addPath(
@@ -388,6 +386,14 @@ final class PackageManagerService implements PackageManagerInterface
             }
 
             $modulePascalName = $this->toPascalCase($moduleName);
+
+            $this->resolveModuleDependencies(
+                $moduleInstallPath,
+                $moduleName,
+            );
+
+            $this->updateForgeJson($moduleName, $versionToInstall);
+
             $postInstallCommands = $this->detectPostInstallCommands(
                 $moduleInstallPath,
                 $modulePascalName,
@@ -1001,7 +1007,8 @@ final class PackageManagerService implements PackageManagerInterface
 
     private function resolveModuleDependencies(string $stagingPath, string $moduleName): void
     {
-        $ref = $this->findModuleReflection($stagingPath, $moduleName);
+        $modulePascalName = $this->toPascalCase($moduleName);
+        $ref = $this->findModuleReflection($stagingPath, $modulePascalName);
         if ($ref === null) {
             return;
         }
