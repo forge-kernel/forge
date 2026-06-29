@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 
-namespace App\Modules\ForgeAdminConsole;
+namespace Modules\ForgeAdminConsole;
 
 use Forge\Core\DI\Attributes\Service;
 use Forge\Core\Module\Attributes\Compatibility;
@@ -30,7 +30,7 @@ use Forge\Core\Module\Attributes\Structure;
 #[Service]
 #[Module(
     name: 'ForgeAdminConsole',
-    version: '0.1.1',
+    version: '0.1.2',
     description: 'Protected admin console with dashboard, account, profile, and user management',
     order: 55,
     author: 'Forge Team',
