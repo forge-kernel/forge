@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace App\Modules\ForgeMultiTenant;
+namespace Modules\ForgeMultiTenant;
 
-use App\Modules\ForgeMultiTenant\Services\RouteScopeFilter;
-use App\Modules\ForgeMultiTenant\Services\TenantManager;
-use App\Modules\ForgeRouter\Contracts\RouteScopeFilterInterface;
+use Modules\ForgeMultiTenant\Services\RouteScopeFilter;
+use Modules\ForgeMultiTenant\Services\TenantManager;
+use Modules\ForgeRouter\Contracts\RouteScopeFilterInterface;
 use Forge\Core\DI\Container;
 use Forge\Core\Module\Attributes\Compatibility;
 use Forge\Core\Module\Attributes\ConfigDefaults;
@@ -19,7 +19,7 @@ use Forge\CLI\Traits\OutputHelper;
 
 #[Module(
     name: 'ForgeMultiTenant',
-    version: '0.3.4',
+    version: '0.3.5',
     description: 'A Multi Tenant Module by Forge',
     order: 2,
     author: 'Forge Team',
