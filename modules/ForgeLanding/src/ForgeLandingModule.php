@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 
-namespace App\Modules\ForgeLanding;
+namespace Modules\ForgeLanding;
 
 use Forge\Core\DI\Attributes\Service;
 use Forge\Core\Module\Attributes\Compatibility;
@@ -30,7 +30,7 @@ use Forge\Core\Module\Attributes\Structure;
 #[Service]
 #[Module(
     name: 'ForgeLanding',
-    version: '0.1.1',
+    version: '0.1.2',
     description: 'Public-facing landing page with navigation to auth flows',
     order: 50,
     author: 'Forge Team',
