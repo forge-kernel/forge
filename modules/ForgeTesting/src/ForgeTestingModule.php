@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Modules\ForgeTesting;
+namespace Modules\ForgeTesting;
 
 use Forge\Core\Module\Attributes\Compatibility;
 use Forge\Core\Module\Attributes\Module;
@@ -10,7 +10,7 @@ use Forge\Core\Module\Attributes\Repository;
 
 #[Module(
     name: "ForgeTesting",
-    version: "0.4.2",
+    version: "0.4.3",
     description: "A Test Suite Module By Forge",
     order: 9999,
     isCli: true,
