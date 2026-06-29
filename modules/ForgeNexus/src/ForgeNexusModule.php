@@ -2,20 +2,20 @@
 
 declare(strict_types=1);
 
-namespace App\Modules\ForgeNexus;
+namespace Modules\ForgeNexus;
 
 use Forge\Core\DI\Container;
 use Forge\Core\Module\Attributes\Compatibility;
 use Forge\Core\Module\Attributes\Module;
 use Forge\Core\Module\Attributes\Repository;
-use App\Modules\ForgeNexus\Contracts\ForgeNexusInterface;
-use App\Modules\ForgeNexus\Services\ForgeNexusService;
+use Modules\ForgeNexus\Contracts\ForgeNexusInterface;
+use Modules\ForgeNexus\Services\ForgeNexusService;
 use Forge\Core\DI\Attributes\Service;
 use Forge\CLI\Traits\OutputHelper;
 
 #[Module(
     name: 'ForgeNexus',
-    version: '0.2.2',
+    version: '0.2.3',
     description: 'CMS for Forge Framework',
     author: 'Forge Team',
     license: 'MIT',
