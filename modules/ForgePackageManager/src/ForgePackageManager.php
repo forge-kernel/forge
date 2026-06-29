@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace App\Modules\ForgePackageManager;
+namespace Modules\ForgePackageManager;
 
-use App\Modules\ForgePackageManager\Contracts\PackageManagerInterface;
-use App\Modules\ForgePackageManager\Services\PackageManagerService;
+use Modules\ForgePackageManager\Contracts\PackageManagerInterface;
+use Modules\ForgePackageManager\Services\PackageManagerService;
 use Forge\Core\Config\Config;
 use Forge\Core\DI\Container;
 use Forge\Core\Module\Attributes\Compatibility;
@@ -15,7 +15,7 @@ use Forge\Core\Module\Attributes\Repository;
 
 #[Module(
     name: 'ForgePackageManager',
-    version: '3.3.20',
+    version: '3.3.21',
     description: 'A Package Manager By Forge',
     order: 1,
     isCli: true,
