@@ -1,32 +1,32 @@
 <?php
 
-namespace App\Modules\ForgeDebugBar;
+namespace Modules\ForgeDebugBar;
 
-use App\Modules\ForgeDebugBar\Collectors\MemoryCollector;
-use App\Modules\ForgeDebugBar\Collectors\MessageCollector;
-use App\Modules\ForgeDebugBar\Collectors\RequestCollector;
-use App\Modules\ForgeDebugBar\Collectors\RouteCollector;
-use App\Modules\ForgeDebugBar\Collectors\SessionCollector;
-use App\Modules\ForgeDebugBar\Collectors\TimeCollector;
-use App\Modules\ForgeRouter\Collectors\DatabaseCollector;
-use App\Modules\ForgeRouter\Collectors\ExceptionCollector;
-use App\Modules\ForgeRouter\Collectors\TimelineCollector;
-use App\Modules\ForgeRouter\Collectors\ViewCollector;
+use Modules\ForgeDebugBar\Collectors\MemoryCollector;
+use Modules\ForgeDebugBar\Collectors\MessageCollector;
+use Modules\ForgeDebugBar\Collectors\RequestCollector;
+use Modules\ForgeDebugBar\Collectors\RouteCollector;
+use Modules\ForgeDebugBar\Collectors\SessionCollector;
+use Modules\ForgeDebugBar\Collectors\TimeCollector;
+use Modules\ForgeRouter\Collectors\DatabaseCollector;
+use Modules\ForgeRouter\Collectors\ExceptionCollector;
+use Modules\ForgeRouter\Collectors\TimelineCollector;
+use Modules\ForgeRouter\Collectors\ViewCollector;
 use Forge\Core\DI\Container;
-use App\Modules\ForgeRouter\Http\Request;
-use App\Modules\ForgeRouter\Http\Response;
+use Modules\ForgeRouter\Http\Request;
+use Modules\ForgeRouter\Http\Response;
 use Forge\Core\Module\Attributes\Compatibility;
 use Forge\Core\Module\Attributes\ConfigDefaults;
 use Forge\Core\Module\Attributes\HubItem;
-use App\Modules\ForgeRouter\Events\RouterHookAttribute;
-use App\Modules\ForgeRouter\Events\RouterHookName;
+use Modules\ForgeRouter\Events\RouterHookAttribute;
+use Modules\ForgeRouter\Events\RouterHookName;
 use Forge\Core\Module\Attributes\Module;
 use Forge\Core\Module\Attributes\PostInstall;
 use Forge\Core\Module\Attributes\PostUninstall;
 use Forge\Core\Module\Attributes\Structure;
 use Forge\Core\Module\ForgeIcon;
 use Forge\Traits\InjectsAssets;
-use \App\Modules\ForgeDebugBar\DebugBar;
+use \Modules\ForgeDebugBar\DebugBar;
 use Forge\Core\Config\Config;
 
 #[Structure(structure: [
@@ -38,7 +38,7 @@ use Forge\Core\Config\Config;
 ])]
 #[Module(
     name: 'ForgeDebugBar',
-    version: '1.3.6',
+    version: '1.3.7',
     description: 'A debug bar by Forge',
     order: 3,
     author: 'Forge Team',
@@ -156,8 +156,8 @@ class DebugBarModule
     {
         try {
             $container = Container::getInstance();
-            if ($container->has(\App\Modules\ForgeDebugBar\Services\DebugBarHubService::class)) {
-                $hubService = $container->get(\App\Modules\ForgeDebugBar\Services\DebugBarHubService::class);
+            if ($container->has(\Modules\ForgeDebugBar\Services\DebugBarHubService::class)) {
+                $hubService = $container->get(\Modules\ForgeDebugBar\Services\DebugBarHubService::class);
                 $hubService->storeLatestData();
             }
         } catch (\Throwable) {
