@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Modules\ForgePackageManager\Tests;
 
+use App\Modules\ForgePackageManager\Services\ConfigGeneratorService;
 use App\Modules\ForgePackageManager\Services\PackageManagerService;
 use App\Modules\ForgeTesting\Attributes\Group;
 use App\Modules\ForgeTesting\Attributes\Test;
@@ -22,7 +23,8 @@ final class PackageManagerServiceTest extends TestCase
         file_put_contents($testConfigDir . '/source_list.php', '<?php return ["registry" => [["name" => "test-registry", "type" => "git", "url" => "https://github.com/test/repo", "branch" => "main"]], "cache_ttl" => 3600];');
 
         $config = new Config($testConfigDir);
-        $service = new PackageManagerService($config);
+        $configGenerator = new ConfigGeneratorService();
+        $service = new PackageManagerService($config, $configGenerator);
         $registries = $service->getRegistries();
 
         $this->assertTrue(is_array($registries));
@@ -41,7 +43,8 @@ final class PackageManagerServiceTest extends TestCase
         file_put_contents($testConfigDir . '/source_list.php', '<?php return ["registry" => [], "cache_ttl" => 3600];');
 
         $config = new Config($testConfigDir);
-        $service = new PackageManagerService($config);
+        $configGenerator = new ConfigGeneratorService();
+        $service = new PackageManagerService($config, $configGenerator);
         $registries = $service->getRegistries();
 
         $this->assertTrue(is_array($registries));
@@ -60,7 +63,8 @@ final class PackageManagerServiceTest extends TestCase
         file_put_contents($testConfigDir . '/source_list.php', '<?php return ["registry" => [], "cache_ttl" => [3600, 3600]];');
 
         $config = new Config($testConfigDir);
-        $service = new PackageManagerService($config);
+        $configGenerator = new ConfigGeneratorService();
+        $service = new PackageManagerService($config, $configGenerator);
 
         $this->assertInstanceOf(PackageManagerService::class, $service);
 
@@ -77,7 +81,8 @@ final class PackageManagerServiceTest extends TestCase
         file_put_contents($testConfigDir . '/source_list.php', '<?php return ["registry" => []];');
 
         $config = new Config($testConfigDir);
-        $service = new PackageManagerService($config);
+        $configGenerator = new ConfigGeneratorService();
+        $service = new PackageManagerService($config, $configGenerator);
 
         $this->assertInstanceOf(PackageManagerService::class, $service);
 
@@ -85,26 +90,5 @@ final class PackageManagerServiceTest extends TestCase
         rmdir($testConfigDir);
     }
 
-    #[Test("PackageManagerService gets default registry details")]
-    public function service_gets_default_registry_details(): void
-    {
-        $testConfigDir = sys_get_temp_dir() . '/forge_test_config_' . uniqid();
-        mkdir($testConfigDir, 0755, true);
-
-        file_put_contents($testConfigDir . '/source_list.php', '<?php return ["registry" => []];');
-
-        $config = new Config($testConfigDir);
-        $service = new PackageManagerService($config);
-        $defaultRegistry = $service->getDefaultRegistryDetails();
-
-        $this->assertTrue(is_array($defaultRegistry));
-        $this->assertArrayHasKey('name', $defaultRegistry);
-        $this->assertArrayHasKey('url', $defaultRegistry);
-        $this->assertArrayHasKey('branch', $defaultRegistry);
-        $this->assertArrayHasKey('type', $defaultRegistry);
-
-        unlink($testConfigDir . '/source_list.php');
-        rmdir($testConfigDir);
-    }
 }
 

@@ -9,7 +9,7 @@ use App\Modules\ForgePackageManager\Sources\SourceFactory;
 use App\Modules\ForgePackageManager\Sources\SourceInterface;
 use Forge\CLI\Traits\OutputHelper;
 use Forge\Core\Config\Config;
-use Forge\Core\DI\Attributes\Service;
+use Forge\Core\DI\Attributes\Injectable;
 use Forge\Core\Module\Attributes\Module;
 use Forge\Core\Structure\StructureResolver;
 use Forge\Core\Module\Attributes\PostInstall;
@@ -22,9 +22,8 @@ use ReflectionClass;
 use ReflectionException;
 use ZipArchive;
 
-#[Service]
-#[Provides(interface: PackageManagerInterface::class, version: "1.0.0")]
-#[Requires]
+#[Injectable]
+#[Provides(interface: PackageManagerInterface::class, version: "3.3.18")]
 final class PackageManagerService implements PackageManagerInterface
 {
     use OutputHelper;
@@ -41,6 +40,7 @@ final class PackageManagerService implements PackageManagerInterface
     private string $integrityHash;
     private string $trustedSourcesPath;
     private bool $debugEnabled = false;
+    private array $resolvingDependencies = [];
 
     public function __construct(
         private readonly Config $config,
@@ -993,6 +993,58 @@ final class PackageManagerService implements PackageManagerInterface
     /**
      * @throws ReflectionException
      */
+    private function isModuleInstalled(string $moduleName): bool
+    {
+        $moduleDirName = $this->generateModuleInstallFolderName($moduleName);
+        return is_dir($this->getModulesPath() . $moduleDirName);
+    }
+
+    private function resolveModuleDependencies(string $stagingPath, string $moduleName): void
+    {
+        $ref = $this->findModuleReflection($stagingPath, $moduleName);
+        if ($ref === null) {
+            return;
+        }
+
+        $requiresAttrs = $ref->getAttributes(Requires::class);
+        foreach ($requiresAttrs as $attr) {
+            $instance = $attr->newInstance();
+            if ($instance->module === null) {
+                continue;
+            }
+
+            $requiredModule = $instance->module;
+
+            if (in_array($requiredModule, $this->resolvingDependencies, true)) {
+                throw new \RuntimeException(
+                    "Circular dependency detected: module '{$moduleName}' requires '{$requiredModule}' which is already being resolved. Chain: "
+                    . implode(' → ', $this->resolvingDependencies) . " → {$requiredModule}"
+                );
+            }
+
+            if ($this->isModuleInstalled($requiredModule)) {
+                $this->info("Dependency '{$requiredModule}' required by '{$moduleName}' is already installed.");
+                continue;
+            }
+
+            $this->resolvingDependencies[] = $requiredModule;
+            $this->info("Module '{$moduleName}' requires '{$requiredModule}'. Installing dependency...");
+
+            try {
+                $this->installModule($requiredModule, null, null, null, true, null);
+            } catch (\Throwable $e) {
+                array_pop($this->resolvingDependencies);
+                throw new \RuntimeException(
+                    "Failed to install dependency '{$requiredModule}' required by '{$moduleName}': " . $e->getMessage(),
+                    0,
+                    $e
+                );
+            }
+
+            array_pop($this->resolvingDependencies);
+        }
+    }
+
     public function installModule(
         string $moduleName,
         ?string $version = null,
@@ -1140,6 +1192,8 @@ final class PackageManagerService implements PackageManagerInterface
         if (is_dir($stagingSrcPath)) {
             \Forge\Core\Autoloader::addPath($moduleNamespacePrefix, $stagingSrcPath);
         }
+
+        $this->resolveModuleDependencies($stagingPath, $moduleName);
 
         $postInstallCommands = $this->detectPostInstallCommands(
             $stagingPath,

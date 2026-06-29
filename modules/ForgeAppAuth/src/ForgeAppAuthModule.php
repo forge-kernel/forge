@@ -41,7 +41,9 @@ use Forge\Core\Module\Attributes\Structure;
     type: 'generic',
     tags: ['auth', 'authentication', 'login', 'register', 'password-reset'],
 )]
-#[Requires(module: "ForgeAuth", version: ">=2.0.5")]
+#[Requires(module: "forge-router", version: ">=1.0.8")]
+#[Requires(module: "forge-view", version: ">=0.1.2")]
+#[Requires(module: "forge-auth", version: ">=2.0.5")]
 #[Compatibility(framework: '>=4.15.13', php: '>=8.3')]
 #[Repository(type: 'git', url: 'https://github.com/forge-kernel/kernel-module-registry')]
 #[ConfigDefaults(defaults: [

@@ -2,15 +2,13 @@
 
 namespace App\Modules\ForgeSqlOrm\Traits;
 
-use App\Modules\ForgeRouter\Traits\PaginationHelper;
 use Forge\Core\Contracts\Database\QueryBuilderInterface;
 use Forge\Core\DI\Container;
 use Forge\Core\Dto\BaseDto;
+use Forge\Core\Helpers\Url;
 
 trait RepositoryTrait
 {
-    use PaginationHelper;
-
     /** @return static[]|BaseDto[] */
     public static function findAll(): array
     {
@@ -163,5 +161,36 @@ trait RepositoryTrait
                 )
             ]
         ];
+    }
+
+    private static function getPaginationLinks(
+        int $page,
+        int $perPage,
+        int $totalPages,
+        ?string $sortColumn = 'created_at',
+        ?string $sortDirection = 'ASC',
+        ?string $search = ''
+    ): array {
+        $baseUrl = Url::baseUrl();
+        $links = [];
+        $queryParams = http_build_query([
+            'per_page' => $perPage,
+            'sort' => $sortColumn,
+            'direction' => $sortDirection,
+            'search' => $search
+        ]);
+        $links['self'] = "$baseUrl?page=$page&$queryParams";
+
+        if ($page > 1) {
+            $links['first'] = "$baseUrl?page=1&$queryParams";
+            $links['prev'] = "$baseUrl?page=" . ($page - 1) . "&$queryParams";
+        }
+
+        if ($page < $totalPages) {
+            $links['next'] = "$baseUrl?page=" . ($page + 1) . "&$queryParams";
+            $links['last'] = "$baseUrl?page=$totalPages&$queryParams";
+        }
+
+        return $links;
     }
 }
