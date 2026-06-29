@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace App\Modules\ForgeSaas;
+namespace Modules\ForgeSaas;
 
-use App\Modules\ForgeSaas\Contracts\SubscriptionManagerInterface;
-use App\Modules\ForgeSaas\Services\SubscriptionManager;
+use Modules\ForgeSaas\Contracts\SubscriptionManagerInterface;
+use Modules\ForgeSaas\Services\SubscriptionManager;
 use Forge\Core\Contracts\Database\CentralQueryBuilderInterface;
 use Forge\Core\DI\Attributes\Service;
 use Forge\Core\DI\Container;
@@ -29,7 +29,7 @@ use Forge\Core\Module\Attributes\Structure;
 #[Service]
 #[Module(
     name: 'ForgeSaas',
-    version: '0.1.3',
+    version: '0.1.4',
     description: 'SaaS plans, subscriptions, and feature gating for Forge Kernel',
     order: 4,
     author: 'Forge Team',
