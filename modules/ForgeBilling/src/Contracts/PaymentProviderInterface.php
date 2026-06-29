@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace App\Modules\ForgeBilling\Contracts;
+namespace Modules\ForgeBilling\Contracts;
 
-use App\Modules\ForgeBilling\Dto\ChargeRequest;
-use App\Modules\ForgeBilling\Dto\ChargeResult;
-use App\Modules\ForgeBilling\Dto\RefundResult;
+use Modules\ForgeBilling\Dto\ChargeRequest;
+use Modules\ForgeBilling\Dto\ChargeResult;
+use Modules\ForgeBilling\Dto\RefundResult;
 
 interface PaymentProviderInterface
 {

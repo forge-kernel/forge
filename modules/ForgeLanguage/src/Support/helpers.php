@@ -1,5 +1,5 @@
 <?php
-use App\Modules\ForgeLanguage\Services\LanguageService;
+use Modules\ForgeLanguage\Services\LanguageService;
 use Forge\Core\DI\Container;
 
 if (!function_exists('languageTerm')) {

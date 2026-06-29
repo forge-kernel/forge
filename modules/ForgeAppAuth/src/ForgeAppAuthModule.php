@@ -1,12 +1,12 @@
 <?php
 declare(strict_types=1);
 
-namespace App\Modules\ForgeAppAuth;
+namespace Modules\ForgeAppAuth;
 
-use App\Modules\ForgeAppAuth\Repositories\UserRepository;
-use App\Modules\ForgeAppAuth\Services\UserContext;
-use App\Modules\ForgeAuth\Contracts\UserContextInterface;
-use App\Modules\ForgeAuth\Contracts\UserProviderInterface;
+use Modules\ForgeAppAuth\Repositories\UserRepository;
+use Modules\ForgeAppAuth\Services\UserContext;
+use Modules\ForgeAuth\Contracts\UserContextInterface;
+use Modules\ForgeAuth\Contracts\UserProviderInterface;
 use Forge\Core\Module\Attributes\Requires;
 use Forge\Core\DI\Container;
 use Forge\Core\Module\Attributes\Compatibility;

@@ -1,6 +1,6 @@
 <?php
-use App\Modules\ForgeComponents\Definitions\Admin\TableDefinition;
-use App\Modules\ForgeComponents\Definitions\Admin\TableColumnDefinition;
+use Modules\ForgeComponents\Definitions\Admin\TableDefinition;
+use Modules\ForgeComponents\Definitions\Admin\TableColumnDefinition;
 /** @var array<string, mixed> $props */
 $columns = $props['columns'] ?? [];
 $rows = $props['rows'] ?? [];

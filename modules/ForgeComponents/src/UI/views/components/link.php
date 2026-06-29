@@ -1,5 +1,5 @@
 <?php
-use App\Modules\ForgeComponents\Definitions\LinkDefinition;
+use Modules\ForgeComponents\Definitions\LinkDefinition;
 /** @var LinkDefinition $props */
 ?>
 <a href="<?= e($props->href) ?>" class="fc-link fc-link--<?= $props->variant ?> fc-link--<?= $props->size ?>">

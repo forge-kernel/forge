@@ -2,14 +2,14 @@
 
 declare(strict_types=1);
 
-namespace App\Modules\ForgeRouter\Http\Middlewares;
+namespace Modules\ForgeRouter\Http\Middlewares;
 
 use Forge\Core\DI\Attributes\Service;
 use Forge\Core\Observability\ObservabilityManager;
-use App\Modules\ForgeRouter\Http\Middleware;
-use App\Modules\ForgeRouter\Http\Request;
-use App\Modules\ForgeRouter\Http\Response;
-use App\Modules\ForgeRouter\Middleware\Attributes\RegisterMiddleware;
+use Modules\ForgeRouter\Http\Middleware;
+use Modules\ForgeRouter\Http\Request;
+use Modules\ForgeRouter\Http\Response;
+use Modules\ForgeRouter\Middleware\Attributes\RegisterMiddleware;
 
 #[Service]
 #[RegisterMiddleware(group: "global", order: -1, allowDuplicate: false, overrideClass: null, enabled: true)]

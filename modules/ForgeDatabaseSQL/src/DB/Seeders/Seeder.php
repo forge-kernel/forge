@@ -1,9 +1,9 @@
 <?php
 declare(strict_types=1);
 
-namespace App\Modules\ForgeDatabaseSQL\DB\Seeders;
+namespace Modules\ForgeDatabaseSQL\DB\Seeders;
 
-use App\Modules\ForgeDatabaseSQL\DB\Seeders\Attributes\AutoRollback;
+use Modules\ForgeDatabaseSQL\DB\Seeders\Attributes\AutoRollback;
 use Forge\Core\Contracts\Database\DatabaseConnectionInterface;
 use ReflectionClass;
 

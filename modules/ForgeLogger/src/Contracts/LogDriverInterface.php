@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Modules\ForgeLogger\Contracts;
+namespace Modules\ForgeLogger\Contracts;
 
 interface LogDriverInterface
 {

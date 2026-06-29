@@ -6,18 +6,18 @@
  */
 $currentUser = $data['currentUser'] ?? null;
 
-use App\Modules\ForgeComponents\Definitions\Admin\BreadcrumbsDefinition;
-use App\Modules\ForgeComponents\Definitions\Admin\BreadcrumbItemDefinition;
-use App\Modules\ForgeComponents\Definitions\Admin\SidebarDefinition;
-use App\Modules\ForgeComponents\Definitions\Admin\NavGroupDefinition;
-use App\Modules\ForgeComponents\Definitions\Admin\NavItemDefinition;
-use App\Modules\ForgeComponents\Definitions\Admin\IconDefinition;
-use App\Modules\ForgeComponents\Definitions\Admin\UserDropdownDefinition;
-use App\Modules\ForgeComponents\Definitions\Admin\DropdownItemDefinition;
-use App\Modules\ForgeComponents\Definitions\InputDefinition;
-use App\Modules\ForgeComponents\Definitions\ButtonDefinition;
-use App\Modules\ForgeComponents\Enums\InputType;
-use App\Modules\ForgeComponents\Enums\ButtonVariant;
+use Modules\ForgeComponents\Definitions\Admin\BreadcrumbsDefinition;
+use Modules\ForgeComponents\Definitions\Admin\BreadcrumbItemDefinition;
+use Modules\ForgeComponents\Definitions\Admin\SidebarDefinition;
+use Modules\ForgeComponents\Definitions\Admin\NavGroupDefinition;
+use Modules\ForgeComponents\Definitions\Admin\NavItemDefinition;
+use Modules\ForgeComponents\Definitions\Admin\IconDefinition;
+use Modules\ForgeComponents\Definitions\Admin\UserDropdownDefinition;
+use Modules\ForgeComponents\Definitions\Admin\DropdownItemDefinition;
+use Modules\ForgeComponents\Definitions\InputDefinition;
+use Modules\ForgeComponents\Definitions\ButtonDefinition;
+use Modules\ForgeComponents\Enums\InputType;
+use Modules\ForgeComponents\Enums\ButtonVariant;
 
 $layoutSections = array_merge($layoutSections ?? [], [
     'head_end' => ($layoutSections['head_end'] ?? '') .

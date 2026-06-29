@@ -2,19 +2,19 @@
 
 declare(strict_types=1);
 
-namespace App\Modules\ForgeStorage\Controllers;
+namespace Modules\ForgeStorage\Controllers;
 
-use App\Modules\ForgeStorage\Services\UploadService;
-use App\Modules\ForgeStorage\Utils\UploadSignature;
-use App\Modules\ForgeRouter\Http\Attributes\UseMiddleware;
-use App\Modules\ForgeRouter\Http\Request;
-use App\Modules\ForgeRouter\Http\Response;
-use App\Modules\ForgeRouter\Http\UploadedFile;
-use App\Modules\ForgeRouter\Routing\Endpoint;
-use App\Modules\ForgeRouter\Attributes\Routable;
+use Modules\ForgeStorage\Services\UploadService;
+use Modules\ForgeStorage\Utils\UploadSignature;
+use Modules\ForgeRouter\Http\Attributes\UseMiddleware;
+use Modules\ForgeRouter\Http\Request;
+use Modules\ForgeRouter\Http\Response;
+use Modules\ForgeRouter\Http\UploadedFile;
+use Modules\ForgeRouter\Routing\Endpoint;
+use Modules\ForgeRouter\Attributes\Routable;
 use Forge\Core\Session\SessionInterface;
-use App\Modules\ForgeRouter\Traits\ResponseHelper;
-use App\Modules\ForgeView\Traits\ViewHelper;
+use Modules\ForgeRouter\Traits\ResponseHelper;
+use Modules\ForgeView\Traits\ViewHelper;
 
 #[Routable]
 #[UseMiddleware('web')]

@@ -1,11 +1,11 @@
 <?php
 declare(strict_types=1);
 
-namespace App\Modules\ForgeSqlOrm\ORM;
+namespace Modules\ForgeSqlOrm\ORM;
 
-use App\Modules\ForgeSqlOrm\ORM\Values\Relate;
-use App\Modules\ForgeSqlOrm\ORM\Values\Relation;
-use App\Modules\ForgeSqlOrm\ORM\Values\RelationKind;
+use Modules\ForgeSqlOrm\ORM\Values\Relate;
+use Modules\ForgeSqlOrm\ORM\Values\Relation;
+use Modules\ForgeSqlOrm\ORM\Values\RelationKind;
 use LogicException;
 use ReflectionException;
 use ReflectionMethod;

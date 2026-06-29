@@ -1,5 +1,5 @@
 <?php
-use App\Modules\ForgeComponents\Definitions\CheckboxDefinition;
+use Modules\ForgeComponents\Definitions\CheckboxDefinition;
 /** @var CheckboxDefinition $props */
 ?>
 <div class="fc-checkbox-group">

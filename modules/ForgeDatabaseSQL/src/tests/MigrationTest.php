@@ -2,18 +2,18 @@
 
 declare(strict_types=1);
 
-namespace App\Modules\ForgeDatabaseSQL\Tests;
+namespace Modules\ForgeDatabaseSQL\Tests;
 
-use App\Modules\ForgeDatabaseSQL\DB\Enums\ColumnType;
-use App\Modules\ForgeDatabaseSQL\DB\Migrations\Migration;
-use App\Modules\ForgeDatabaseSQL\DB\Schema\FormatterInterface;
-use App\Modules\ForgeDatabaseSQL\DB\Schema\MySqlFormatter;
-use App\Modules\ForgeDatabaseSQL\DB\Schema\PostgreSqlFormatter;
-use App\Modules\ForgeDatabaseSQL\DB\Schema\SqliteFormatter;
-use App\Modules\ForgeTesting\Attributes\BeforeEach;
-use App\Modules\ForgeTesting\Attributes\Group;
-use App\Modules\ForgeTesting\Attributes\Test;
-use App\Modules\ForgeTesting\TestCase;
+use Modules\ForgeDatabaseSQL\DB\Enums\ColumnType;
+use Modules\ForgeDatabaseSQL\DB\Migrations\Migration;
+use Modules\ForgeDatabaseSQL\DB\Schema\FormatterInterface;
+use Modules\ForgeDatabaseSQL\DB\Schema\MySqlFormatter;
+use Modules\ForgeDatabaseSQL\DB\Schema\PostgreSqlFormatter;
+use Modules\ForgeDatabaseSQL\DB\Schema\SqliteFormatter;
+use Modules\ForgeTesting\Attributes\BeforeEach;
+use Modules\ForgeTesting\Attributes\Group;
+use Modules\ForgeTesting\Attributes\Test;
+use Modules\ForgeTesting\TestCase;
 use Forge\Core\Contracts\Database\DatabaseConnectionInterface;
 use PDO;
 

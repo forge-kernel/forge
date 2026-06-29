@@ -1,6 +1,6 @@
 <?php
 
-use App\Modules\ForgeUi\DesignTokens;
+use Modules\ForgeUi\DesignTokens;
 
 $id = $id ?? 'fw-dropdown-' . uniqid();
 $placement = $placement ?? 'bottom-start';

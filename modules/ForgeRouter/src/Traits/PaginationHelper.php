@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace App\Modules\ForgeRouter\Traits;
+namespace Modules\ForgeRouter\Traits;
 
-use App\Modules\ForgeRouter\Http\Request;
+use Modules\ForgeRouter\Http\Request;
 use Forge\Core\Helpers\Url;
 
 trait PaginationHelper

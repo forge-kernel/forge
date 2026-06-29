@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace App\Modules\ForgeEvents\Attributes;
+namespace Modules\ForgeEvents\Attributes;
 
-use App\Modules\ForgeEvents\Enums\QueuePriority;
+use Modules\ForgeEvents\Enums\QueuePriority;
 use Attribute;
 
 #[Attribute(Attribute::TARGET_CLASS|Attribute::IS_REPEATABLE)]

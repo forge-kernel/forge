@@ -1,10 +1,10 @@
 <?php
 declare(strict_types=1);
 
-namespace App\Modules\ForgeAuth\Traits;
+namespace Modules\ForgeAuth\Traits;
 
-use App\Modules\ForgeAuth\Contracts\AuthUserInterface;
-use App\Modules\ForgeAuth\Contracts\UserProviderInterface;
+use Modules\ForgeAuth\Contracts\AuthUserInterface;
+use Modules\ForgeAuth\Contracts\UserProviderInterface;
 
 trait HasCurrentUser
 {

@@ -14,30 +14,30 @@
  * AVAILABLE KERNEL MIDDLEWARES:
  *
  * Global Group (applies to all routes):
- * - \App\Modules\ForgeRouter\Http\Middlewares\ObservabilityMiddleware::class (order: -1) - Request tracing and observability
- * - \App\Modules\ForgeRouter\Http\Middlewares\RateLimitMiddleware::class (order: 0) - Rate limiting
- * - \App\Modules\ForgeRouter\Http\Middlewares\CircuitBreakerMiddleware::class (order: 1) - Circuit breaker
- * - \App\Modules\ForgeRouter\Http\Middlewares\CorsMiddleware::class (order: 2) - CORS headers
- * - \App\Modules\ForgeRouter\Http\Middlewares\SanitizeInputMiddleware::class (order: 3, disabled by default) - Input sanitization
- * - \App\Modules\ForgeRouter\Http\Middlewares\CompressionMiddleware::class (order: 4) - Response compression
+ * - \Modules\ForgeRouter\Http\Middlewares\ObservabilityMiddleware::class (order: -1) - Request tracing and observability
+ * - \Modules\ForgeRouter\Http\Middlewares\RateLimitMiddleware::class (order: 0) - Rate limiting
+ * - \Modules\ForgeRouter\Http\Middlewares\CircuitBreakerMiddleware::class (order: 1) - Circuit breaker
+ * - \Modules\ForgeRouter\Http\Middlewares\CorsMiddleware::class (order: 2) - CORS headers
+ * - \Modules\ForgeRouter\Http\Middlewares\SanitizeInputMiddleware::class (order: 3, disabled by default) - Input sanitization
+ * - \Modules\ForgeRouter\Http\Middlewares\CompressionMiddleware::class (order: 4) - Response compression
  *
  * Web Group (applies to web routes):
- * - \App\Modules\ForgeRouter\Http\Middlewares\SessionMiddleware::class (order: 0) - Session management
- * - \App\Modules\ForgeRouter\Http\Middlewares\CsrfMiddleware::class (order: 1) - CSRF protection
- * - \App\Modules\ForgeRouter\Http\Middlewares\RelaxSecurityHeadersMiddleware::class (order: 3) - Security headers
+ * - \Modules\ForgeRouter\Http\Middlewares\SessionMiddleware::class (order: 0) - Session management
+ * - \Modules\ForgeRouter\Http\Middlewares\CsrfMiddleware::class (order: 1) - CSRF protection
+ * - \Modules\ForgeRouter\Http\Middlewares\RelaxSecurityHeadersMiddleware::class (order: 3) - Security headers
  *
  * API Group (applies to API routes):
- * - \App\Modules\ForgeRouter\Http\Middlewares\IpWhiteListMiddleware::class (order: 0) - IP whitelist
- * - \App\Modules\ForgeRouter\Http\Middlewares\ApiKeyMiddleware::class (order: 1) - API key auth
- * - \App\Modules\ForgeRouter\Http\Middlewares\CookieMiddleware::class (order: 2) - Cookie handling
- * - \App\Modules\ForgeRouter\Http\Middlewares\ApiMiddleware::class (order: 2) - API response formatting
+ * - \Modules\ForgeRouter\Http\Middlewares\IpWhiteListMiddleware::class (order: 0) - IP whitelist
+ * - \Modules\ForgeRouter\Http\Middlewares\ApiKeyMiddleware::class (order: 1) - API key auth
+ * - \Modules\ForgeRouter\Http\Middlewares\CookieMiddleware::class (order: 2) - Cookie handling
+ * - \Modules\ForgeRouter\Http\Middlewares\ApiMiddleware::class (order: 2) - API response formatting
  *
  * EXAMPLE: Explicitly control kernel middleware order
  * 'global' => [
- *     \App\Modules\ForgeRouter\Http\Middlewares\RateLimitMiddleware::class,
- *     \App\Modules\ForgeRouter\Http\Middlewares\CircuitBreakerMiddleware::class,
+ *     \Modules\ForgeRouter\Http\Middlewares\RateLimitMiddleware::class,
+ *     \Modules\ForgeRouter\Http\Middlewares\CircuitBreakerMiddleware::class,
  *     // Omit SanitizeInputMiddleware to remove it
- *     \App\Modules\ForgeRouter\Http\Middlewares\CompressionMiddleware::class,
+ *     \Modules\ForgeRouter\Http\Middlewares\CompressionMiddleware::class,
  *     // Your custom middleware
  *     \App\Middlewares\CustomMiddleware::class,
  * ],
@@ -45,33 +45,28 @@
 
 return [
     "global" => [
-        \App\Modules\ForgeRouter\Http\Middlewares\ObservabilityMiddleware::class,
-        \App\Modules\ForgeRouter\Http\Middlewares\RateLimitMiddleware::class,
-        \App\Modules\ForgeRouter\Http\Middlewares\CircuitBreakerMiddleware::class,
-        \App\Modules\ForgeRouter\Http\Middlewares\CorsMiddleware::class,
-        \App\Modules\ForgeRouter\Http\Middlewares\SanitizeInputMiddleware::class,
-        \App\Modules\ForgeRouter\Http\Middlewares\CompressionMiddleware::class,
+        \Modules\ForgeRouter\Http\Middlewares\ObservabilityMiddleware::class,
+        \Modules\ForgeRouter\Http\Middlewares\SanitizeInputMiddleware::class,
     ],
     "web" => [
-        \App\Modules\ForgeRouter\Http\Middlewares\SessionMiddleware::class,
-        \App\Modules\ForgeRouter\Http\Middlewares\CsrfMiddleware::class,
-        \App\Modules\ForgeRouter\Http\Middlewares\RelaxSecurityHeadersMiddleware::class,
-        \App\Modules\ForgeWire\Middlewares\ForgeWireMiddleware::class,
+        \Modules\ForgeRouter\Http\Middlewares\SessionMiddleware::class,
+        \Modules\ForgeRouter\Http\Middlewares\CsrfMiddleware::class,
+        \Modules\ForgeWire\Middlewares\ForgeWireMiddleware::class,
     ],
     "api" => [
-        \App\Modules\ForgeRouter\Http\Middlewares\IpWhiteListMiddleware::class,
-        \App\Modules\ForgeRouter\Http\Middlewares\CookieMiddleware::class,
-        \App\Modules\ForgeRouter\Http\Middlewares\ApiMiddleware::class,
+        \Modules\ForgeRouter\Http\Middlewares\IpWhiteListMiddleware::class,
+        \Modules\ForgeRouter\Http\Middlewares\CookieMiddleware::class,
+        \Modules\ForgeRouter\Http\Middlewares\ApiMiddleware::class,
     ],
     "api-auth" => [],
-    "auth" => [\App\Modules\AppAuth\Middlewares\AuthMiddleware::class],
+    "auth" => [\Modules\AppAuth\Middlewares\AuthMiddleware::class],
     "role" => [
-        \App\Modules\ForgeAuth\Middlewares\RoleMiddleware::class,
+        \Modules\ForgeAuth\Middlewares\RoleMiddleware::class,
     ],
     "permission" => [
-        \App\Modules\ForgeAuth\Middlewares\PermissionMiddleware::class,
+        \Modules\ForgeAuth\Middlewares\PermissionMiddleware::class,
     ],
     "hub-permissions" => [
-        \App\Modules\ForgeHub\Middlewares\HubPermissionMiddleware::class,
+        \Modules\ForgeHub\Middlewares\HubPermissionMiddleware::class,
     ],
 ];

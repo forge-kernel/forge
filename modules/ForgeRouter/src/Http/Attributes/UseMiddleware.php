@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Modules\ForgeRouter\Http\Attributes;
+namespace Modules\ForgeRouter\Http\Attributes;
 
 use Attribute;
 

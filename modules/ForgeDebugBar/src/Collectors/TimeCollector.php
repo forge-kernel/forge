@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Modules\ForgeDebugBar\Collectors;
+namespace Modules\ForgeDebugBar\Collectors;
 
 class TimeCollector implements CollectorInterface
 {

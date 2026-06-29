@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Modules\ForgeView;
+namespace Modules\ForgeView;
 
 use Forge\Core\Helpers\ModuleHelper;
 use Forge\Core\Structure\StructureResolver;

@@ -2,12 +2,12 @@
 
 declare(strict_types=1);
 
-namespace App\Modules\ForgeAuth\Middlewares;
+namespace Modules\ForgeAuth\Middlewares;
 
-use App\Modules\ForgeAuth\Services\ApiKeyService;
+use Modules\ForgeAuth\Services\ApiKeyService;
 use Forge\Core\DI\Attributes\Service;
-use App\Modules\ForgeRouter\Http\Request;
-use App\Modules\ForgeRouter\Http\Response;
+use Modules\ForgeRouter\Http\Request;
+use Modules\ForgeRouter\Http\Response;
 use Forge\Core\DI\Container;
 
 #[Service]

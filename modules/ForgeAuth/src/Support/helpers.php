@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-use App\Modules\ForgeAuth\Contracts\AuthUserInterface;
-use App\Modules\ForgeAuth\Services\RoleService;
-use App\Modules\ForgeAuth\Services\PermissionService;
-use App\Modules\ForgeAuth\Enums\Permission;
-use App\Modules\ForgeAuth\Enums\Role;
+use Modules\ForgeAuth\Contracts\AuthUserInterface;
+use Modules\ForgeAuth\Services\RoleService;
+use Modules\ForgeAuth\Services\PermissionService;
+use Modules\ForgeAuth\Enums\Permission;
+use Modules\ForgeAuth\Enums\Role;
 use Forge\Core\DI\Container;
 
 if (!function_exists("isOwner")) {

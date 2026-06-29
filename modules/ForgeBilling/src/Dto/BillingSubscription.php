@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace App\Modules\ForgeBilling\Dto;
+namespace Modules\ForgeBilling\Dto;
 
-use App\Modules\ForgeBilling\Enums\SubscriptionStatus;
+use Modules\ForgeBilling\Enums\SubscriptionStatus;
 
 final readonly class BillingSubscription
 {

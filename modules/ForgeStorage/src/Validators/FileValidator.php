@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace App\Modules\ForgeStorage\Validators;
+namespace Modules\ForgeStorage\Validators;
 
 use Forge\Core\Config\Config;
 use Forge\Core\DI\Attributes\Service;
-use App\Modules\ForgeRouter\Http\UploadedFile;
+use Modules\ForgeRouter\Http\UploadedFile;
 use RuntimeException;
 
 #[Service]

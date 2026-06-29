@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 
-namespace App\Modules\ForgeMultiTenant\Attributes;
+namespace Modules\ForgeMultiTenant\Attributes;
 
 use Attribute;
 

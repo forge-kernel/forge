@@ -1,5 +1,5 @@
 <?php
-use App\Modules\ForgeView\View;
+use Modules\ForgeView\View;
 
 View::layout(name: "nexus", loadFromModule: true);
 ?>

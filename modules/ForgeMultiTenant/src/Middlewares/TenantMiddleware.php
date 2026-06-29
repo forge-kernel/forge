@@ -1,24 +1,24 @@
 <?php
 declare(strict_types=1);
 
-namespace App\Modules\ForgeMultiTenant\Middlewares;
+namespace Modules\ForgeMultiTenant\Middlewares;
 
-use App\Modules\ForgeMultiTenant\Services\CentralDomain;
-use App\Modules\ForgeMultiTenant\Services\TenantConnectionFactory;
-use App\Modules\ForgeMultiTenant\Services\TenantQueryRewriter;
-use App\Modules\ForgeMultiTenant\Services\TenantSessionProxy;
-use App\Modules\ForgeMultiTenant\Services\TenantCacheProxy;
-use App\Modules\ForgeSqlOrm\ORM\QueryBuilder;
+use Modules\ForgeMultiTenant\Services\CentralDomain;
+use Modules\ForgeMultiTenant\Services\TenantConnectionFactory;
+use Modules\ForgeMultiTenant\Services\TenantQueryRewriter;
+use Modules\ForgeMultiTenant\Services\TenantSessionProxy;
+use Modules\ForgeMultiTenant\Services\TenantCacheProxy;
+use Modules\ForgeSqlOrm\ORM\QueryBuilder;
 use Forge\Core\Contracts\Database\DatabaseConnectionInterface;
 use Forge\Core\Contracts\Database\QueryBuilderInterface;
 use Forge\Core\DI\Container;
-use App\Modules\ForgeRouter\Http\Middleware;
-use App\Modules\ForgeRouter\Http\Request;
-use App\Modules\ForgeRouter\Http\Response;
-use App\Modules\ForgeRouter\Middleware\Attributes\RegisterMiddleware;
+use Modules\ForgeRouter\Http\Middleware;
+use Modules\ForgeRouter\Http\Request;
+use Modules\ForgeRouter\Http\Response;
+use Modules\ForgeRouter\Middleware\Attributes\RegisterMiddleware;
 use Forge\Core\Session\SessionInterface;
 use Forge\Core\Cache\CacheManager;
-use App\Modules\ForgeMultiTenant\Services\TenantManager;
+use Modules\ForgeMultiTenant\Services\TenantManager;
 use Forge\Exceptions\MissingServiceException;
 use Forge\Exceptions\ResolveParameterException;
 use PDO;

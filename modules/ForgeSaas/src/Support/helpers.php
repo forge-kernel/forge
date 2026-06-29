@@ -1,7 +1,7 @@
 <?php
 
-use App\Modules\ForgeSaas\Contracts\SubscriptionManagerInterface;
-use App\Modules\ForgeSaas\Dto\SaasPlan;
+use Modules\ForgeSaas\Contracts\SubscriptionManagerInterface;
+use Modules\ForgeSaas\Dto\SaasPlan;
 use Forge\Core\DI\Container;
 
 if (!function_exists('saas_manager')) {

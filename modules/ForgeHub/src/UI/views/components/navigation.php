@@ -1,6 +1,6 @@
 <?php
 
-use App\Modules\ForgeHub\Services\HubItemRegistry;
+use Modules\ForgeHub\Services\HubItemRegistry;
 use Forge\Core\DI\Container;
 
 /**
@@ -13,17 +13,17 @@ $hubItems = $registry ? $registry->getHubItems() : [];
 $currentPath = $_SERVER['REQUEST_URI'] ?? '/';
 
 
-$hasAuth = $container->has(\App\Modules\ForgeAuth\Contracts\UserContextInterface::class);
+$hasAuth = $container->has(\Modules\ForgeAuth\Contracts\UserContextInterface::class);
 $user = null;
 $userPermissions = [];
 if ($hasAuth) {
     try {
-        $authService = $container->get(\App\Modules\ForgeAuth\Contracts\UserContextInterface::class);
+        $authService = $container->get(\Modules\ForgeAuth\Contracts\UserContextInterface::class);
         $user = $authService->current();
 
-        if ($user !== null && $container->has(\App\Modules\ForgeAuth\Services\PermissionService::class)) {
+        if ($user !== null && $container->has(\Modules\ForgeAuth\Services\PermissionService::class)) {
             try {
-                $permissionService = $container->get(\App\Modules\ForgeAuth\Services\PermissionService::class);
+                $permissionService = $container->get(\Modules\ForgeAuth\Services\PermissionService::class);
                 $userPermissions = $permissionService->getUserPermissions($user);
             } catch (\Throwable) {
             }
@@ -55,7 +55,7 @@ foreach ($hubItems as $item) {
 
 $groupedItems = [];
 foreach ($filteredHubItems as $item) {
-    $group = $item['module'] === 'App\\Modules\\ForgeHub\\ForgeHubModule' ? 'Platform' : 'Settings';
+    $group = $item['module'] === 'Modules\\ForgeHub\\ForgeHubModule' ? 'Platform' : 'Settings';
     if (!isset($groupedItems[$group])) {
         $groupedItems[$group] = [];
     }

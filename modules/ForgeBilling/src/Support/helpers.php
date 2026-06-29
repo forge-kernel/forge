@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-use App\Modules\ForgeBilling\Services\BillingSubscriptionService;
+use Modules\ForgeBilling\Services\BillingSubscriptionService;
 use Forge\Core\DI\Container;
 
 if (!function_exists('billing_subscription')) {
-    function billing_subscription(): ?\App\Modules\ForgeBilling\Dto\BillingSubscription
+    function billing_subscription(): ?\Modules\ForgeBilling\Dto\BillingSubscription
     {
         return Container::getInstance()->get(BillingSubscriptionService::class)->current();
     }

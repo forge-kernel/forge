@@ -2,15 +2,15 @@
 
 declare(strict_types=1);
 
-namespace App\Modules\ForgeDeployment\Commands;
+namespace Modules\ForgeDeployment\Commands;
 
-use App\Modules\ForgeDeployment\Dto\ProvisionConfig;
-use App\Modules\ForgeDeployment\Services\DatabaseProvisioner;
-use App\Modules\ForgeDeployment\Services\NginxProvisioner;
-use App\Modules\ForgeDeployment\Services\PhpProvisioner;
-use App\Modules\ForgeDeployment\Services\SshKeyManager;
-use App\Modules\ForgeDeployment\Services\SshService;
-use App\Modules\ForgeDeployment\Services\SystemProvisioner;
+use Modules\ForgeDeployment\Dto\ProvisionConfig;
+use Modules\ForgeDeployment\Services\DatabaseProvisioner;
+use Modules\ForgeDeployment\Services\NginxProvisioner;
+use Modules\ForgeDeployment\Services\PhpProvisioner;
+use Modules\ForgeDeployment\Services\SshKeyManager;
+use Modules\ForgeDeployment\Services\SshService;
+use Modules\ForgeDeployment\Services\SystemProvisioner;
 use Forge\CLI\Attributes\Arg;
 use Forge\CLI\Attributes\Cli;
 use Forge\CLI\Command;

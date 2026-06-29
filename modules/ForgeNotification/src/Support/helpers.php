@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-use App\Modules\ForgeNotification\Services\ForgeNotificationService;
+use Modules\ForgeNotification\Services\ForgeNotificationService;
 use Forge\Core\DI\Container;
 use Forge\Exceptions\MissingServiceException;
 

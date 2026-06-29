@@ -1,7 +1,7 @@
 <?php
 
 use App\Models\Post;
-use App\Modules\ForgeView\View;
+use Modules\ForgeView\View;
 
 /**
  * @var string $title

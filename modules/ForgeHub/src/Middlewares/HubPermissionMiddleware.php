@@ -2,16 +2,16 @@
 
 declare(strict_types=1);
 
-namespace App\Modules\ForgeHub\Middlewares;
+namespace Modules\ForgeHub\Middlewares;
 
-use App\Modules\ForgeAuth\Contracts\UserContextInterface;
-use App\Modules\ForgeAuth\Services\PermissionService;
+use Modules\ForgeAuth\Contracts\UserContextInterface;
+use Modules\ForgeAuth\Services\PermissionService;
 use Forge\Core\DI\Attributes\Service;
 use Forge\Core\Helpers\Flash;
-use App\Modules\ForgeRouter\Helpers\Redirect;
-use App\Modules\ForgeRouter\Http\Middleware;
-use App\Modules\ForgeRouter\Http\Request;
-use App\Modules\ForgeRouter\Http\Response;
+use Modules\ForgeRouter\Helpers\Redirect;
+use Modules\ForgeRouter\Http\Middleware;
+use Modules\ForgeRouter\Http\Request;
+use Modules\ForgeRouter\Http\Response;
 
 #[Service]
 final class HubPermissionMiddleware extends Middleware

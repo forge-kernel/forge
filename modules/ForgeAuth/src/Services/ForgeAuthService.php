@@ -2,12 +2,12 @@
 
 declare(strict_types=1);
 
-namespace App\Modules\ForgeAuth\Services;
+namespace Modules\ForgeAuth\Services;
 
-use App\Modules\ForgeAuth\Contracts\AuthUserInterface;
-use App\Modules\ForgeAuth\Contracts\ForgeAuthInterface;
-use App\Modules\ForgeAuth\Contracts\UserProviderInterface;
-use App\Modules\ForgeAuth\Exceptions\LoginException;
+use Modules\ForgeAuth\Contracts\AuthUserInterface;
+use Modules\ForgeAuth\Contracts\ForgeAuthInterface;
+use Modules\ForgeAuth\Contracts\UserProviderInterface;
+use Modules\ForgeAuth\Exceptions\LoginException;
 use Forge\Core\Config\Config;
 use Forge\Core\DI\Attributes\Service;
 use Forge\Core\Module\Attributes\Provides;

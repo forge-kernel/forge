@@ -2,14 +2,14 @@
 
 declare(strict_types=1);
 
-namespace App\Modules\ForgeDatabaseSQL\DB;
+namespace Modules\ForgeDatabaseSQL\DB;
 
-use App\Modules\ForgeDatabaseSQL\DB\Attributes\GroupMigration;
-use App\Modules\ForgeDatabaseSQL\DB\Migrations\Migration;
-use App\Modules\ForgeDatabaseSQL\Services\MigrationPathResolverService;
-use App\Modules\ForgeDatabaseSQL\DB\Schema\MySqlFormatter;
-use App\Modules\ForgeDatabaseSQL\DB\Schema\PostgreSqlFormatter;
-use App\Modules\ForgeDatabaseSQL\DB\Schema\SqliteFormatter;
+use Modules\ForgeDatabaseSQL\DB\Attributes\GroupMigration;
+use Modules\ForgeDatabaseSQL\DB\Migrations\Migration;
+use Modules\ForgeDatabaseSQL\Services\MigrationPathResolverService;
+use Modules\ForgeDatabaseSQL\DB\Schema\MySqlFormatter;
+use Modules\ForgeDatabaseSQL\DB\Schema\PostgreSqlFormatter;
+use Modules\ForgeDatabaseSQL\DB\Schema\SqliteFormatter;
 use Forge\Core\Contracts\Database\DatabaseConnectionInterface;
 use Forge\Core\DI\Attributes\Migration as MigrationAttribute;
 use Forge\Core\DI\Container;

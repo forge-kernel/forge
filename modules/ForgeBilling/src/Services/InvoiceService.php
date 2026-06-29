@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace App\Modules\ForgeBilling\Services;
+namespace Modules\ForgeBilling\Services;
 
-use App\Modules\ForgeBilling\Dto\Invoice;
-use App\Modules\ForgeBilling\Dto\InvoiceItem;
-use App\Modules\ForgeBilling\Enums\InvoiceStatus;
+use Modules\ForgeBilling\Dto\Invoice;
+use Modules\ForgeBilling\Dto\InvoiceItem;
+use Modules\ForgeBilling\Enums\InvoiceStatus;
 use Forge\Core\Contracts\Database\QueryBuilderInterface;
 use Forge\Core\Helpers\UUID;
 use Forge\Core\DI\Attributes\Service;

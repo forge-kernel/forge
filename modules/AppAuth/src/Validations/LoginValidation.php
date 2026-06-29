@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Modules\AppAuth\Validations;
+namespace Modules\AppAuth\Validations;
 
 use Forge\Traits\ValidatorHelper;
 use Forge\Core\Validation\ValidationDefinition;

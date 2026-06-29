@@ -1,10 +1,10 @@
 <?php
 declare(strict_types=1);
 
-namespace App\Modules\ForgeMultiTenant\Commands;
+namespace Modules\ForgeMultiTenant\Commands;
 
-use App\Modules\ForgeMultiTenant\DTO\Tenant;
-use App\Modules\ForgeMultiTenant\Services\TenantManager;
+use Modules\ForgeMultiTenant\DTO\Tenant;
+use Modules\ForgeMultiTenant\Services\TenantManager;
 use Forge\CLI\Attributes\Cli;
 use Forge\CLI\Command;
 use Forge\CLI\Traits\OutputHelper;

@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace App\Modules\ForgeAuth\Contracts;
+namespace Modules\ForgeAuth\Contracts;
 
-use App\Modules\ForgeSqlOrm\ORM\Paginator;
+use Modules\ForgeSqlOrm\ORM\Paginator;
 
 interface UserProviderInterface
 {

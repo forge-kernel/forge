@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Modules\ForgeDeployment\Dto;
+namespace Modules\ForgeDeployment\Dto;
 
 final class ServerConfig
 {

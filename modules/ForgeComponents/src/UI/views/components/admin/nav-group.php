@@ -1,6 +1,6 @@
 <?php
 
-/** @var \App\Modules\ForgeComponents\Definitions\Admin\NavGroupDefinition $props */
+/** @var \Modules\ForgeComponents\Definitions\Admin\NavGroupDefinition $props */
 
 ?>
 <div class="fc-admin-nav-group">

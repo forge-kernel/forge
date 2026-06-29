@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace App\Modules\ForgeRouter\Traits;
+namespace Modules\ForgeRouter\Traits;
 
-use App\Modules\ForgeRouter\Http\ApiResponse;
-use App\Modules\ForgeRouter\Http\Request;
-use App\Modules\ForgeRouter\Http\Response;
+use Modules\ForgeRouter\Http\ApiResponse;
+use Modules\ForgeRouter\Http\Request;
+use Modules\ForgeRouter\Http\Response;
 
 trait ResponseHelper
 {

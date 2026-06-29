@@ -2,13 +2,13 @@
 
 declare(strict_types=1);
 
-namespace App\Modules\ForgeAuth\Middlewares;
+namespace Modules\ForgeAuth\Middlewares;
 
-use App\Modules\ForgeAuth\Services\RoleService;
-use App\Modules\ForgeAuth\Traits\HasCurrentUser;
+use Modules\ForgeAuth\Services\RoleService;
+use Modules\ForgeAuth\Traits\HasCurrentUser;
 use Forge\Core\DI\Attributes\Service;
-use App\Modules\ForgeRouter\Http\Request;
-use App\Modules\ForgeRouter\Http\Response;
+use Modules\ForgeRouter\Http\Request;
+use Modules\ForgeRouter\Http\Response;
 
 #[Service]
 final class RoleMiddleware

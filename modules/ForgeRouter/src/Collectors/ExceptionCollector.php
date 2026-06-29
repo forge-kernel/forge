@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace App\Modules\ForgeRouter\Collectors;
+namespace Modules\ForgeRouter\Collectors;
 
-use App\Modules\ForgeRouter\Contracts\RequestCollectorInterface;
+use Modules\ForgeRouter\Contracts\RequestCollectorInterface;
 use Forge\Core\DI\Attributes\Service;
-use App\Modules\ForgeRouter\Http\Request;
+use Modules\ForgeRouter\Http\Request;
 use Forge\Core\Module\Attributes\Provides;
 use Throwable;
 

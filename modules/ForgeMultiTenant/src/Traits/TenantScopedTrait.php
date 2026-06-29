@@ -1,9 +1,9 @@
 <?php
 declare(strict_types=1);
 
-namespace App\Modules\ForgeMultiTenant\Traits;
+namespace Modules\ForgeMultiTenant\Traits;
 
-use App\Modules\ForgeMultiTenant\Services\TenantQueryRewriter;
+use Modules\ForgeMultiTenant\Services\TenantQueryRewriter;
 use Forge\Core\Contracts\Database\QueryBuilderInterface;
 
 trait TenantScopedTrait

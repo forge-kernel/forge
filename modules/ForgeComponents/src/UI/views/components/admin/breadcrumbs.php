@@ -1,6 +1,6 @@
 <?php
 
-/** @var \App\Modules\ForgeComponents\Definitions\Admin\BreadcrumbsDefinition $props */
+/** @var \Modules\ForgeComponents\Definitions\Admin\BreadcrumbsDefinition $props */
 
 ?>
 <nav aria-label="Breadcrumb">

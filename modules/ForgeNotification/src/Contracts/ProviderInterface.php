@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace App\Modules\ForgeNotification\Contracts;
+namespace Modules\ForgeNotification\Contracts;
 
-use App\Modules\ForgeNotification\Dto\NotificationDto;
+use Modules\ForgeNotification\Dto\NotificationDto;
 
 /**
  * Interface for notification providers (Twilio, SMTP, SendGrid, etc.).

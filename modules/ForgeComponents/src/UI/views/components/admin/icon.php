@@ -1,7 +1,7 @@
 <?php
 
 /**
- * @var \App\Modules\ForgeComponents\Definitions\Admin\IconDefinition $props
+ * @var \Modules\ForgeComponents\Definitions\Admin\IconDefinition $props
  */
 
 $paths = [

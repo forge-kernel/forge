@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Modules\ForgeDeployment\Commands;
+namespace Modules\ForgeDeployment\Commands;
 
 use Forge\CLI\Attributes\Cli;
 use Forge\CLI\Command;

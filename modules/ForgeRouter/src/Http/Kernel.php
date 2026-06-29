@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace App\Modules\ForgeRouter\Http;
+namespace Modules\ForgeRouter\Http;
 
-use App\Modules\ForgeRouter\Routing\Router;
+use Modules\ForgeRouter\Routing\Router;
 use Throwable;
 
 final readonly class Kernel

@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Modules\ForgeDeployment\Contracts;
+namespace Modules\ForgeDeployment\Contracts;
 
 interface ProviderInterface
 {

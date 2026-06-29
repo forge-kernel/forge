@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Modules\AppAuth\Dto;
+namespace Modules\AppAuth\Dto;
 
 use Forge\Core\Dto\BaseDto;
 

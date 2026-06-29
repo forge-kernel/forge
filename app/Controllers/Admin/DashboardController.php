@@ -4,19 +4,19 @@ declare(strict_types=1);
 
 namespace App\Controllers\Admin;
 
-use App\Modules\AppAuth\Services\UserContext;
-use App\Modules\ForgeMultiTenant\Attributes\TenantScope;
-use App\Modules\ForgeSaas\Attributes\RequiresFeature;
-use App\Modules\ForgeSaas\Attributes\RequiresPlan;
-use App\Modules\ForgeSaas\Attributes\WithinLimit;
-use App\Modules\ForgeRouter\Http\Attributes\UseMiddleware;
-use App\Modules\ForgeRouter\Http\Request;
-use App\Modules\ForgeRouter\Http\Response;
-use App\Modules\ForgeRouter\Attributes\Layout;
-use App\Modules\ForgeRouter\Routing\Endpoint;
-use App\Modules\ForgeRouter\Attributes\Routable;
-use App\Modules\ForgeRouter\Traits\ResponseHelper;
-use App\Modules\ForgeView\Traits\ViewHelper;
+use Modules\AppAuth\Services\UserContext;
+use Modules\ForgeMultiTenant\Attributes\TenantScope;
+use Modules\ForgeSaas\Attributes\RequiresFeature;
+use Modules\ForgeSaas\Attributes\RequiresPlan;
+use Modules\ForgeSaas\Attributes\WithinLimit;
+use Modules\ForgeRouter\Http\Attributes\UseMiddleware;
+use Modules\ForgeRouter\Http\Request;
+use Modules\ForgeRouter\Http\Response;
+use Modules\ForgeRouter\Attributes\Layout;
+use Modules\ForgeRouter\Routing\Endpoint;
+use Modules\ForgeRouter\Attributes\Routable;
+use Modules\ForgeRouter\Traits\ResponseHelper;
+use Modules\ForgeView\Traits\ViewHelper;
 use Forge\Traits\SecurityHelper;
 
 #[Routable]

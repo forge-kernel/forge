@@ -2,15 +2,15 @@
 
 declare(strict_types=1);
 
-namespace App\Modules\ForgeTesting;
+namespace Modules\ForgeTesting;
 
-use App\Modules\ForgeTesting\Attributes\AfterEach;
-use App\Modules\ForgeTesting\Attributes\BeforeEach;
-use App\Modules\ForgeTesting\Traits\Assertions;
-use App\Modules\ForgeTesting\Traits\CacheTesting;
-use App\Modules\ForgeTesting\Traits\DatabaseTesting;
-// use App\Modules\ForgeTesting\Traits\HttpTesting; // Temporarily disabled
-use App\Modules\ForgeTesting\Traits\PerformanceTesting;
+use Modules\ForgeTesting\Attributes\AfterEach;
+use Modules\ForgeTesting\Attributes\BeforeEach;
+use Modules\ForgeTesting\Traits\Assertions;
+use Modules\ForgeTesting\Traits\CacheTesting;
+use Modules\ForgeTesting\Traits\DatabaseTesting;
+// use Modules\ForgeTesting\Traits\HttpTesting; // Temporarily disabled
+use Modules\ForgeTesting\Traits\PerformanceTesting;
 use RuntimeException;
 
 abstract class TestCase

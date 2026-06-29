@@ -1,12 +1,12 @@
 <?php
 
-namespace App\Modules\ForgeStaticHtml;
+namespace Modules\ForgeStaticHtml;
 
 use Forge\Core\Helpers\FileExistenceCache;
 use Forge\Core\DI\Container;
-use App\Modules\ForgeRouter\Http\Request;
-use App\Modules\ForgeRouter\Http\Response;
-use App\Modules\ForgeRouter\Routing\Router;
+use Modules\ForgeRouter\Http\Request;
+use Modules\ForgeRouter\Http\Response;
+use Modules\ForgeRouter\Routing\Router;
 
 class StaticGenerator
 {

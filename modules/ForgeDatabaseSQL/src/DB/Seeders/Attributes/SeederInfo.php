@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Modules\ForgeDatabaseSQL\DB\Seeders\Attributes;
+namespace Modules\ForgeDatabaseSQL\DB\Seeders\Attributes;
 
 use Attribute;
 

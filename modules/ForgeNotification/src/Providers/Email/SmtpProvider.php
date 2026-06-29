@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace App\Modules\ForgeNotification\Providers\Email;
+namespace Modules\ForgeNotification\Providers\Email;
 
-use App\Modules\ForgeNotification\Contracts\ProviderInterface;
-use App\Modules\ForgeNotification\Dto\EmailNotificationDto;
-use App\Modules\ForgeNotification\Dto\NotificationDto;
+use Modules\ForgeNotification\Contracts\ProviderInterface;
+use Modules\ForgeNotification\Dto\EmailNotificationDto;
+use Modules\ForgeNotification\Dto\NotificationDto;
 use Forge\Core\Config\Config;
 use Forge\Core\DI\Attributes\Service;
 

@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 
-namespace App\Modules\ForgeMultiTenant\Enums;
+namespace Modules\ForgeMultiTenant\Enums;
 
 enum Strategy: string
 {

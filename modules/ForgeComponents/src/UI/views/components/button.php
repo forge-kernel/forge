@@ -1,5 +1,5 @@
 <?php
-use App\Modules\ForgeComponents\Definitions\ButtonDefinition;
+use Modules\ForgeComponents\Definitions\ButtonDefinition;
 /** @var ButtonDefinition $props */
 ?>
 <button type="<?= $props->type ?>"

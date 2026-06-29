@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace App\Modules\ForgePackageManager\Services;
+namespace Modules\ForgePackageManager\Services;
 
-use App\Modules\ForgePackageManager\Contracts\PackageManagerInterface;
-use App\Modules\ForgePackageManager\Sources\SourceFactory;
-use App\Modules\ForgePackageManager\Sources\SourceInterface;
+use Modules\ForgePackageManager\Contracts\PackageManagerInterface;
+use Modules\ForgePackageManager\Sources\SourceFactory;
+use Modules\ForgePackageManager\Sources\SourceInterface;
 use Forge\CLI\Traits\OutputHelper;
 use Forge\Core\Config\Config;
 use Forge\Core\DI\Attributes\Injectable;
@@ -380,7 +380,7 @@ final class PackageManagerService implements PackageManagerInterface
             $moduleSrcPath = $moduleInstallPath . '/src';
             if (is_dir($moduleSrcPath)) {
                 \Forge\Core\Autoloader::addPath(
-                    'App\\Modules\\' . $moduleInstallFolderName . '\\',
+                    'Modules\\' . $moduleInstallFolderName . '\\',
                     $moduleSrcPath,
                 );
             }
@@ -1194,7 +1194,7 @@ final class PackageManagerService implements PackageManagerInterface
         $registryName = $registryDetails["name"] ?? "unknown";
         $modulePascalName = $this->toPascalCase($moduleName);
 
-        $moduleNamespacePrefix = 'App\\Modules\\' . $moduleInstallFolderName . '\\';
+        $moduleNamespacePrefix = 'Modules\\' . $moduleInstallFolderName . '\\';
         $stagingSrcPath = $stagingPath . '/src';
         if (is_dir($stagingSrcPath)) {
             \Forge\Core\Autoloader::addPath($moduleNamespacePrefix, $stagingSrcPath);

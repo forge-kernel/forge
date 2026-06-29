@@ -1,10 +1,10 @@
 <?php
 declare(strict_types=1);
 
-namespace App\Modules\ForgeMultiTenant\Commands;
+namespace Modules\ForgeMultiTenant\Commands;
 
-use App\Modules\ForgeMultiTenant\Services\TenantManager;
-use App\Modules\ForgeMultiTenant\Services\TenantConnectionFactory;
+use Modules\ForgeMultiTenant\Services\TenantManager;
+use Modules\ForgeMultiTenant\Services\TenantConnectionFactory;
 use Forge\CLI\Attributes\Arg;
 use Forge\CLI\Attributes\Cli;
 use Forge\CLI\Command;

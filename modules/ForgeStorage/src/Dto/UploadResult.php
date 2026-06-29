@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Modules\ForgeStorage\Dto;
+namespace Modules\ForgeStorage\Dto;
 
 final class UploadResult
 {

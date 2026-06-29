@@ -1,10 +1,10 @@
 <?php
 declare(strict_types=1);
 
-namespace App\Modules\ForgeSqlOrm\ORM;
+namespace Modules\ForgeSqlOrm\ORM;
 
-use App\Modules\ForgeSqlOrm\ORM\Attributes\Hidden;
-use App\Modules\ForgeSqlOrm\ORM\Values\Cast;
+use Modules\ForgeSqlOrm\ORM\Attributes\Hidden;
+use Modules\ForgeSqlOrm\ORM\Values\Cast;
 use BackedEnum;
 use DateTimeImmutable;
 use Exception;
@@ -12,10 +12,10 @@ use Forge\Core\Helpers\UUID;
 use JsonException;
 use ReflectionNamedType;
 use RuntimeException;
-use function App\Modules\ForgeSqlOrm\ORM\Values\cast;
-use App\Modules\ForgeSqlOrm\ORM\Attributes\Column;
-use App\Modules\ForgeSqlOrm\ORM\Attributes\ProtectedFields;
-use App\Modules\ForgeSqlOrm\ORM\Attributes\Table;
+use function Modules\ForgeSqlOrm\ORM\Values\cast;
+use Modules\ForgeSqlOrm\ORM\Attributes\Column;
+use Modules\ForgeSqlOrm\ORM\Attributes\ProtectedFields;
+use Modules\ForgeSqlOrm\ORM\Attributes\Table;
 use Forge\Core\DI\Attributes\Service;
 use Forge\Core\Dto\BaseDto;
 use JsonSerializable;

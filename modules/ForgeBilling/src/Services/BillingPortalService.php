@@ -2,12 +2,12 @@
 
 declare(strict_types=1);
 
-namespace App\Modules\ForgeBilling\Services;
+namespace Modules\ForgeBilling\Services;
 
-use App\Modules\ForgeBilling\Dto\BillingPlan;
-use App\Modules\ForgeBilling\Dto\BillingSubscription;
-use App\Modules\ForgeBilling\Dto\Invoice;
-use App\Modules\ForgeBilling\Dto\PaymentMethod;
+use Modules\ForgeBilling\Dto\BillingPlan;
+use Modules\ForgeBilling\Dto\BillingSubscription;
+use Modules\ForgeBilling\Dto\Invoice;
+use Modules\ForgeBilling\Dto\PaymentMethod;
 use Forge\Core\DI\Attributes\Service;
 
 final class BillingPortalService

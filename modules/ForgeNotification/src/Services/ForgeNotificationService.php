@@ -2,19 +2,19 @@
 
 declare(strict_types=1);
 
-namespace App\Modules\ForgeNotification\Services;
+namespace Modules\ForgeNotification\Services;
 
-use App\Modules\ForgeEvents\Exceptions\EventException;
-use App\Modules\ForgeEvents\Services\EventDispatcher;
-use App\Modules\ForgeNotification\Channels\EmailChannel;
-use App\Modules\ForgeNotification\Channels\PushChannel;
-use App\Modules\ForgeNotification\Channels\SmsChannel;
-use App\Modules\ForgeNotification\Dto\EmailNotificationDto;
-use App\Modules\ForgeNotification\Dto\PushNotificationDto;
-use App\Modules\ForgeNotification\Dto\SmsNotificationDto;
-use App\Modules\ForgeNotification\Events\EmailNotificationEvent;
-use App\Modules\ForgeNotification\Events\PushNotificationEvent;
-use App\Modules\ForgeNotification\Events\SmsNotificationEvent;
+use Modules\ForgeEvents\Exceptions\EventException;
+use Modules\ForgeEvents\Services\EventDispatcher;
+use Modules\ForgeNotification\Channels\EmailChannel;
+use Modules\ForgeNotification\Channels\PushChannel;
+use Modules\ForgeNotification\Channels\SmsChannel;
+use Modules\ForgeNotification\Dto\EmailNotificationDto;
+use Modules\ForgeNotification\Dto\PushNotificationDto;
+use Modules\ForgeNotification\Dto\SmsNotificationDto;
+use Modules\ForgeNotification\Events\EmailNotificationEvent;
+use Modules\ForgeNotification\Events\PushNotificationEvent;
+use Modules\ForgeNotification\Events\SmsNotificationEvent;
 use Forge\Core\Contracts\NotificationInterface;
 use Forge\Core\DI\Attributes\Service;
 use Forge\Core\Module\Attributes\Provides;

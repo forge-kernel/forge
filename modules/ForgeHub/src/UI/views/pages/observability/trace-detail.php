@@ -1,9 +1,9 @@
 <?php
 
-use App\Modules\ForgeComponents\Definitions\Admin\StatCardDefinition;
-use App\Modules\ForgeComponents\Definitions\Admin\TraceTimelineDefinition;
-use App\Modules\ForgeComponents\HtmlString;
-use App\Modules\ForgeHub\Layouts\AdminLayout;
+use Modules\ForgeComponents\Definitions\Admin\StatCardDefinition;
+use Modules\ForgeComponents\Definitions\Admin\TraceTimelineDefinition;
+use Modules\ForgeComponents\HtmlString;
+use Modules\ForgeHub\Layouts\AdminLayout;
 
 /** @var string $title */
 /** @var array<string, mixed>|null $trace */
@@ -20,7 +20,7 @@ $layoutSlots = $adminLayout['layoutSlots'];
     <?php if ($trace === null): ?>
             <div class="fc-alert fc-alert--error">
                 <div class="fc-alert__icon">
-                    <?= component(name: 'ForgeComponents:admin/icon', props: new \App\Modules\ForgeComponents\Definitions\Admin\IconDefinition(name: 'exclamation-triangle')) ?>
+                    <?= component(name: 'ForgeComponents:admin/icon', props: new \Modules\ForgeComponents\Definitions\Admin\IconDefinition(name: 'exclamation-triangle')) ?>
                 </div>
                 <div class="fc-alert__content">
                     <div class="fc-alert__title">Trace not found</div>

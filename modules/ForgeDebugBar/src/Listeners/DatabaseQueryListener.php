@@ -1,8 +1,8 @@
 <?php
 
-namespace App\Modules\ForgeDebugBar\Listeners;
+namespace Modules\ForgeDebugBar\Listeners;
 
-use App\Modules\ForgeRouter\Contracts\DebugBarInterface;
+use Modules\ForgeRouter\Contracts\DebugBarInterface;
 
 class DatabaseQueryListener
 {

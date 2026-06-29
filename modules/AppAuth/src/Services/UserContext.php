@@ -2,13 +2,13 @@
 
 declare(strict_types=1);
 
-namespace App\Modules\AppAuth\Services;
+namespace Modules\AppAuth\Services;
 
 use Forge\Core\DI\Attributes\Service;
 use Forge\Core\Module\Attributes\Requires;
-use App\Modules\AppAuth\Repositories\UserRepository;
-use App\Modules\ForgeAuth\Contracts\AuthUserInterface;
-use App\Modules\ForgeAuth\Contracts\UserContextInterface;
+use Modules\AppAuth\Repositories\UserRepository;
+use Modules\ForgeAuth\Contracts\AuthUserInterface;
+use Modules\ForgeAuth\Contracts\UserContextInterface;
 use Forge\Core\Config\Config;
 use Forge\Core\Session\SessionInterface;
 

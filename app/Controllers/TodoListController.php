@@ -4,18 +4,18 @@ declare(strict_types=1);
 
 namespace App\Controllers;
 
-use App\Modules\ForgeWire\Attributes\Action;
-use App\Modules\ForgeWire\Attributes\Reactive;
-use App\Modules\ForgeWire\Attributes\State;
-use App\Modules\ForgeWire\Attributes\Validate;
-use App\Modules\ForgeRouter\Http\Attributes\UseMiddleware;
-use App\Modules\ForgeRouter\Traits\ResponseHelper;
-use App\Modules\ForgeView\Traits\ViewHelper;
-use App\Modules\ForgeRouter\Routing\Endpoint;
-use App\Modules\ForgeRouter\Attributes\Routable;
-use App\Modules\ForgeRouter\Http\Request;
-use App\Modules\ForgeRouter\Http\Response;
-use App\Modules\ForgeRouter\Attributes\Layout;
+use Modules\ForgeWire\Attributes\Action;
+use Modules\ForgeWire\Attributes\Reactive;
+use Modules\ForgeWire\Attributes\State;
+use Modules\ForgeWire\Attributes\Validate;
+use Modules\ForgeRouter\Http\Attributes\UseMiddleware;
+use Modules\ForgeRouter\Traits\ResponseHelper;
+use Modules\ForgeView\Traits\ViewHelper;
+use Modules\ForgeRouter\Routing\Endpoint;
+use Modules\ForgeRouter\Attributes\Routable;
+use Modules\ForgeRouter\Http\Request;
+use Modules\ForgeRouter\Http\Response;
+use Modules\ForgeRouter\Attributes\Layout;
 
 #[Routable]
 #[Reactive]

@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Modules\ForgeStaticGen;
+namespace Modules\ForgeStaticGen;
 
 use Forge\Core\Helpers\FileExistenceCache;
 

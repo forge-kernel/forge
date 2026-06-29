@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Modules\ForgeAuth\Contracts;
+namespace Modules\ForgeAuth\Contracts;
 
 /**
  * Interface for modules to specify custom redirect URLs after login.

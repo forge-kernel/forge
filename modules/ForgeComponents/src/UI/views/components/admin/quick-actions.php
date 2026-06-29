@@ -1,5 +1,5 @@
 <?php
-use App\Modules\ForgeComponents\Definitions\Admin\QuickActionDefinition;
+use Modules\ForgeComponents\Definitions\Admin\QuickActionDefinition;
 /** @var array<string, mixed> $props */
 $actions = $props['actions'] ?? [];
 $columns = $props['columns'] ?? 2;
@@ -16,7 +16,7 @@ $columns = $props['columns'] ?? 2;
   ?>
   <a href="<?= e($a->href) ?>" class="fc-btn fc-btn--<?= $a->variant ?> fc-quick-action">
     <?php if ($a->icon): ?>
-          <?= component(name: 'ForgeComponents:admin/icon', props: new \App\Modules\ForgeComponents\Definitions\Admin\IconDefinition(name: $a->icon)) ?>
+          <?= component(name: 'ForgeComponents:admin/icon', props: new \Modules\ForgeComponents\Definitions\Admin\IconDefinition(name: $a->icon)) ?>
     <?php endif; ?>
     <span><?= e($a->label) ?></span>
   </a>

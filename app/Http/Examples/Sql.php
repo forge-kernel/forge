@@ -4,14 +4,14 @@ declare(strict_types=1);
 
 namespace App\Http\Examples;
 
-use App\Modules\ForgeMultiTenant\Attributes\TenantScope;
-use App\Modules\ForgeSqlOrm\ORM\QueryBuilder;
+use Modules\ForgeMultiTenant\Attributes\TenantScope;
+use Modules\ForgeSqlOrm\ORM\QueryBuilder;
 use Forge\Core\Contracts\Database\DatabaseConnectionInterface;
-use App\Modules\ForgeRouter\Http\Attributes\UseMiddleware;
-use App\Modules\ForgeRouter\Http\Response;
-use App\Modules\ForgeRouter\Routing\Endpoint;
-use App\Modules\ForgeRouter\Attributes\Routable;
-use App\Modules\ForgeRouter\Traits\ResponseHelper;
+use Modules\ForgeRouter\Http\Attributes\UseMiddleware;
+use Modules\ForgeRouter\Http\Response;
+use Modules\ForgeRouter\Routing\Endpoint;
+use Modules\ForgeRouter\Attributes\Routable;
+use Modules\ForgeRouter\Traits\ResponseHelper;
 use Forge\Traits\SecurityHelper;
 use Exception;
 

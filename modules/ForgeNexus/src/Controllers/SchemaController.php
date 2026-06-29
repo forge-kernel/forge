@@ -2,14 +2,14 @@
 
 declare(strict_types=1);
 
-namespace App\Modules\ForgeNexus\Controllers;
+namespace Modules\ForgeNexus\Controllers;
 
-use App\Modules\ForgeRouter\Http\Attributes\UseMiddleware;
-use App\Modules\ForgeRouter\Http\Response;
-use App\Modules\ForgeRouter\Routing\Endpoint;
-use App\Modules\ForgeRouter\Attributes\Routable;
-use App\Modules\ForgeRouter\Traits\ResponseHelper;
-use App\Modules\ForgeView\Traits\ViewHelper;
+use Modules\ForgeRouter\Http\Attributes\UseMiddleware;
+use Modules\ForgeRouter\Http\Response;
+use Modules\ForgeRouter\Routing\Endpoint;
+use Modules\ForgeRouter\Attributes\Routable;
+use Modules\ForgeRouter\Traits\ResponseHelper;
+use Modules\ForgeView\Traits\ViewHelper;
 
 #[Routable(prefix: '/nexus')]
 #[UseMiddleware('web')]

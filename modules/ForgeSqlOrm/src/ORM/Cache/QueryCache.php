@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace App\Modules\ForgeSqlOrm\ORM\Cache;
+namespace Modules\ForgeSqlOrm\ORM\Cache;
 
-use App\Modules\ForgeSqlOrm\Contracts\CacheInterface;
+use Modules\ForgeSqlOrm\Contracts\CacheInterface;
 use Forge\Core\DI\Attributes\Service;
 
 #[Service]

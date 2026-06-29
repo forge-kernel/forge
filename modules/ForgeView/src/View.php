@@ -2,12 +2,12 @@
 
 declare(strict_types=1);
 
-namespace App\Modules\ForgeView;
+namespace Modules\ForgeView;
 
 use Forge\Core\DI\Container;
 use Forge\Core\Debug\Metrics;
 use Forge\Core\Structure\StructureResolver;
-use App\Modules\ForgeView\ViewState;
+use Modules\ForgeView\ViewState;
 use RuntimeException;
 
 final class View

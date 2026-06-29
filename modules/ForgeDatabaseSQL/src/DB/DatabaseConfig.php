@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Modules\ForgeDatabaseSQL\DB;
+namespace Modules\ForgeDatabaseSQL\DB;
 
 use Forge\Core\Contracts\Database\DatabaseConfigInterface;
 use InvalidArgumentException;

@@ -2,13 +2,13 @@
 
 declare(strict_types=1);
 
-namespace App\Modules\ForgeSaas\Services;
+namespace Modules\ForgeSaas\Services;
 
-use App\Modules\ForgeSaas\Contracts\SubscriptionManagerInterface;
-use App\Modules\ForgeSaas\Dto\SaasPlan;
-use App\Modules\ForgeSaas\Dto\SaasSubscription;
-use App\Modules\ForgeSaas\Enums\SubscriptionStatus;
-use App\Modules\ForgeMultiTenant\DTO\Tenant;
+use Modules\ForgeSaas\Contracts\SubscriptionManagerInterface;
+use Modules\ForgeSaas\Dto\SaasPlan;
+use Modules\ForgeSaas\Dto\SaasSubscription;
+use Modules\ForgeSaas\Enums\SubscriptionStatus;
+use Modules\ForgeMultiTenant\DTO\Tenant;
 use Forge\Core\Contracts\Database\QueryBuilderInterface;
 use Forge\Core\Helpers\UUID;
 

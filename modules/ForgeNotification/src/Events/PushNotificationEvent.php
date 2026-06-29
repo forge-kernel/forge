@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace App\Modules\ForgeNotification\Events;
+namespace Modules\ForgeNotification\Events;
 
-use App\Modules\ForgeEvents\Attributes\Event;
-use App\Modules\ForgeEvents\Enums\QueuePriority;
-use App\Modules\ForgeNotification\Dto\PushNotificationDto;
+use Modules\ForgeEvents\Attributes\Event;
+use Modules\ForgeEvents\Enums\QueuePriority;
+use Modules\ForgeNotification\Dto\PushNotificationDto;
 
 /**
  * Event for queued push notifications.

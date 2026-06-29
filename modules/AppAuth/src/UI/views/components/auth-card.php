@@ -1,6 +1,6 @@
 <?php
 
-/** @var \App\Modules\AppAuth\Definitions\AuthCardDefinition $props */
+/** @var \Modules\AppAuth\Definitions\AuthCardDefinition $props */
 
 ?>
 <div class="fc-auth-card">

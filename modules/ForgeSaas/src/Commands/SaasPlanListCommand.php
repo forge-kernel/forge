@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace App\Modules\ForgeSaas\Commands;
+namespace Modules\ForgeSaas\Commands;
 
-use App\Modules\ForgeSaas\Contracts\SubscriptionManagerInterface;
-use App\Modules\ForgeSaas\Dto\SaasPlan;
+use Modules\ForgeSaas\Contracts\SubscriptionManagerInterface;
+use Modules\ForgeSaas\Dto\SaasPlan;
 use Forge\CLI\Attributes\Cli;
 use Forge\CLI\Command;
 use Forge\CLI\Traits\OutputHelper;

@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 
-namespace App\Modules\ForgeSqlOrm\Contracts;
+namespace Modules\ForgeSqlOrm\Contracts;
 
 interface CacheInterface
 {

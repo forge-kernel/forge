@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace App\Modules\ForgeAuth\Services;
+namespace Modules\ForgeAuth\Services;
 
-use App\Modules\ForgeAuth\Repositories\RoleRepository;
-use App\Modules\ForgeAuth\Repositories\PermissionRepository;
+use Modules\ForgeAuth\Repositories\RoleRepository;
+use Modules\ForgeAuth\Repositories\PermissionRepository;
 use Forge\Core\DI\Attributes\Service;
 use Forge\Core\Services\TemplateGenerator;
 
@@ -150,7 +150,7 @@ final class EnumGeneratorService
 
         return "<?php\n\n" .
             "declare(strict_types=1);\n\n" .
-            "namespace App\\Modules\\ForgeAuth\\Enums;\n\n" .
+            "namespace Modules\\ForgeAuth\\Enums;\n\n" .
             "enum {$enumName} : string\n" .
             "{\n" .
             $casesString .

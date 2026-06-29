@@ -1,10 +1,10 @@
 <?php
 
-namespace App\Modules\ForgeStaticGen;
+namespace Modules\ForgeStaticGen;
 
-use App\Modules\ForgeMarkDown\Contracts\ForgeMarkDownInterface;
-use App\Modules\ForgeMarkDown\ForgeMarkDown;
-use App\Modules\ForgeStaticGen\Contracts\ForgeStaticGenInterface;
+use Modules\ForgeMarkDown\Contracts\ForgeMarkDownInterface;
+use Modules\ForgeMarkDown\ForgeMarkDown;
+use Modules\ForgeStaticGen\Contracts\ForgeStaticGenInterface;
 use Forge\CLI\Traits\OutputHelper;
 
 class ForgeStaticGen implements ForgeStaticGenInterface

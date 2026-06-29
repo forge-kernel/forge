@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace App\Modules\ForgeHub\Services;
+namespace Modules\ForgeHub\Services;
 
-use App\Modules\ForgeHub\Models\LogEntry;
+use Modules\ForgeHub\Models\LogEntry;
 use Forge\Core\DI\Attributes\Service;
 use Forge\Core\Helpers\FileExistenceCache;
 use Forge\Core\Module\Attributes\Requires;

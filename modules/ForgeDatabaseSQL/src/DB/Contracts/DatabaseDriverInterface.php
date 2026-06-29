@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Modules\ForgeDatabaseSQL\DB\Contracts;
+namespace Modules\ForgeDatabaseSQL\DB\Contracts;
 
 use PDO;
 

@@ -2,14 +2,14 @@
 
 declare(strict_types=1);
 
-namespace App\Modules\ForgeDeployment\Commands;
+namespace Modules\ForgeDeployment\Commands;
 
-use App\Modules\ForgeDeployment\Services\DeploymentConfigReader;
-use App\Modules\ForgeDeployment\Services\DeploymentService;
-use App\Modules\ForgeDeployment\Services\DeploymentStateService;
-use App\Modules\ForgeDeployment\Services\GitDiffService;
-use App\Modules\ForgeDeployment\Services\IncrementalUploadService;
-use App\Modules\ForgeDeployment\Services\SshService;
+use Modules\ForgeDeployment\Services\DeploymentConfigReader;
+use Modules\ForgeDeployment\Services\DeploymentService;
+use Modules\ForgeDeployment\Services\DeploymentStateService;
+use Modules\ForgeDeployment\Services\GitDiffService;
+use Modules\ForgeDeployment\Services\IncrementalUploadService;
+use Modules\ForgeDeployment\Services\SshService;
 use Forge\CLI\Attributes\Arg;
 use Forge\CLI\Attributes\Cli;
 use Forge\CLI\Command;
@@ -85,7 +85,7 @@ final class UpdateCommand extends Command
       $deploymentConfig = null;
 
       if ($fileConfig !== null && isset($fileConfig['deployment'])) {
-        $deploymentConfig = \App\Modules\ForgeDeployment\Dto\DeploymentConfig::fromArray($fileConfig['deployment']);
+        $deploymentConfig = \Modules\ForgeDeployment\Dto\DeploymentConfig::fromArray($fileConfig['deployment']);
       } else {
         $this->error('No deployment configuration found. Please create a forge-deployment.php file.');
         return 1;

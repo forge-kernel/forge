@@ -2,15 +2,15 @@
 
 declare(strict_types=1);
 
-namespace App\Modules\ForgeStorage\Services;
+namespace Modules\ForgeStorage\Services;
 
-use App\Modules\ForgeStorage\Contracts\StorageDriverInterface;
-use App\Modules\ForgeStorage\Dto\UploadResult;
-use App\Modules\ForgeStorage\Validators\FileValidator;
+use Modules\ForgeStorage\Contracts\StorageDriverInterface;
+use Modules\ForgeStorage\Dto\UploadResult;
+use Modules\ForgeStorage\Validators\FileValidator;
 use Forge\Core\Config\Config;
 use Forge\Core\DI\Attributes\Service;
 use Forge\Core\Helpers\UUID;
-use App\Modules\ForgeRouter\Http\UploadedFile;
+use Modules\ForgeRouter\Http\UploadedFile;
 
 #[Service]
 final class UploadService

@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace App\Modules\ForgeDatabaseSQL\DB;
+namespace Modules\ForgeDatabaseSQL\DB;
 
-use App\Modules\ForgeSqlOrm\ORM\QueryBuilder;
+use Modules\ForgeSqlOrm\ORM\QueryBuilder;
 use Forge\Core\Config\Environment;
 use Forge\Core\Contracts\Database\CentralQueryBuilderInterface;
 use Forge\Core\Contracts\Database\DatabaseConfigInterface;

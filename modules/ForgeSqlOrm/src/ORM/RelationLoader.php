@@ -1,9 +1,9 @@
 <?php
 declare(strict_types=1);
 
-namespace App\Modules\ForgeSqlOrm\ORM;
+namespace Modules\ForgeSqlOrm\ORM;
 
-use App\Modules\ForgeSqlOrm\ORM\Values\RelationKind;
+use Modules\ForgeSqlOrm\ORM\Values\RelationKind;
 use ReflectionException;
 
 final class RelationLoader

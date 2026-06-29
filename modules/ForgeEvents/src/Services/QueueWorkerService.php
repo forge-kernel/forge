@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Modules\ForgeEvents\Services;
+namespace Modules\ForgeEvents\Services;
 
 use Forge\Core\DI\Attributes\Service;
 use Forge\Core\Helpers\FileExistenceCache;

@@ -2,17 +2,17 @@
 
 declare(strict_types=1);
 
-namespace App\Modules\ForgeBilling\Controllers;
+namespace Modules\ForgeBilling\Controllers;
 
-use App\Modules\ForgeBilling\Contracts\BillableResolverInterface;
-use App\Modules\ForgeBilling\Services\InvoiceService;
-use App\Modules\ForgeRouter\Http\Attributes\UseMiddleware;
-use App\Modules\ForgeRouter\Http\Response;
-use App\Modules\ForgeRouter\Routing\Endpoint;
-use App\Modules\ForgeRouter\Attributes\Routable;
-use App\Modules\ForgeRouter\Attributes\Layout;
-use App\Modules\ForgeRouter\Traits\ResponseHelper;
-use App\Modules\ForgeView\Traits\ViewHelper;
+use Modules\ForgeBilling\Contracts\BillableResolverInterface;
+use Modules\ForgeBilling\Services\InvoiceService;
+use Modules\ForgeRouter\Http\Attributes\UseMiddleware;
+use Modules\ForgeRouter\Http\Response;
+use Modules\ForgeRouter\Routing\Endpoint;
+use Modules\ForgeRouter\Attributes\Routable;
+use Modules\ForgeRouter\Attributes\Layout;
+use Modules\ForgeRouter\Traits\ResponseHelper;
+use Modules\ForgeView\Traits\ViewHelper;
 
 #[Routable(prefix: '/billing')]
 #[UseMiddleware('web')]

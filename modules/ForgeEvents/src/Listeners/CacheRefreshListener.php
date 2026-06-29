@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace App\Modules\ForgeEvents\Listeners;
+namespace Modules\ForgeEvents\Listeners;
 
-use App\Modules\ForgeEvents\Attributes\EventListener;
-use App\Modules\ForgeEvents\Events\CacheRefreshEvent;
+use Modules\ForgeEvents\Attributes\EventListener;
+use Modules\ForgeEvents\Events\CacheRefreshEvent;
 use Forge\Core\Cache\CacheManager;
 use Forge\Core\DI\Attributes\Service;
 

@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Modules\ForgeMultiTenant\Contracts;
+namespace Modules\ForgeMultiTenant\Contracts;
 
 interface ForgeMultiTenantInterface
 {

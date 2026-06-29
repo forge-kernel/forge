@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace App\Modules\ForgeLogger\Drivers;
+namespace Modules\ForgeLogger\Drivers;
 
-use App\Modules\ForgeLogger\Contracts\LogDriverInterface;
+use Modules\ForgeLogger\Contracts\LogDriverInterface;
 use Forge\Core\Helpers\FileExistenceCache;
 
 final class FileDriver implements LogDriverInterface

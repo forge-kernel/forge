@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Modules\ForgeRouter\Events;
+namespace Modules\ForgeRouter\Events;
 
 enum RouterHookName: string
 {

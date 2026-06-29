@@ -1,6 +1,6 @@
 <?php
 
-use App\Modules\ForgeUi\DesignTokens;
+use Modules\ForgeUi\DesignTokens;
 
 $size = $size ?? 'md';
 $shape = $shape ?? 'rounded';

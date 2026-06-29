@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace App\Modules\ForgeHub\Controllers\Traits;
+namespace Modules\ForgeHub\Controllers\Traits;
 
-use App\Modules\ForgeEvents\Services\QueueHubService;
-use App\Modules\ForgeWire\Attributes\Action;
+use Modules\ForgeEvents\Services\QueueHubService;
+use Modules\ForgeWire\Attributes\Action;
 
 trait QueueJobActions
 {

@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Modules\ForgeLogger\Commands;
+namespace Modules\ForgeLogger\Commands;
 
 use Forge\CLI\Attributes\Cli;
 use Forge\CLI\Command;

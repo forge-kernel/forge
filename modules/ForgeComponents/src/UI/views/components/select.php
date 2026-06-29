@@ -1,5 +1,5 @@
 <?php
-use App\Modules\ForgeComponents\Definitions\SelectDefinition;
+use Modules\ForgeComponents\Definitions\SelectDefinition;
 /** @var SelectDefinition $props */
 ?>
 <div class="fc-input-group">

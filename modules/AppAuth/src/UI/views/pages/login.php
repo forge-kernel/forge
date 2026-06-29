@@ -1,6 +1,6 @@
 <?php
 
-use App\Modules\AppAuth\Definitions\AuthCardDefinition;
+use Modules\AppAuth\Definitions\AuthCardDefinition;
 
 ?>
 

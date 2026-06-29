@@ -1,12 +1,12 @@
 <?php
 declare(strict_types=1);
 
-namespace App\Modules\ForgeMultiTenant\Middlewares;
+namespace Modules\ForgeMultiTenant\Middlewares;
 
-use App\Modules\ForgeMultiTenant\Attributes\TenantScope;
-use App\Modules\ForgeRouter\Traits\ResponseHelper;
-use App\Modules\ForgeRouter\Http\{Middleware, Request, Response};
-use App\Modules\ForgeRouter\Middleware\Attributes\RegisterMiddleware;
+use Modules\ForgeMultiTenant\Attributes\TenantScope;
+use Modules\ForgeRouter\Traits\ResponseHelper;
+use Modules\ForgeRouter\Http\{Middleware, Request, Response};
+use Modules\ForgeRouter\Middleware\Attributes\RegisterMiddleware;
 use ReflectionException;
 
 #[RegisterMiddleware(group: 'web', order: 2)]

@@ -1,8 +1,8 @@
 <?php
 
-namespace App\Modules\ForgeDebugBar\Collectors;
+namespace Modules\ForgeDebugBar\Collectors;
 
-use App\Modules\ForgeRouter\Routing\Router;
+use Modules\ForgeRouter\Routing\Router;
 
 class RouteCollector implements CollectorInterface
 {

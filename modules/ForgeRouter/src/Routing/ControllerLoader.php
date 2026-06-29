@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 
-namespace App\Modules\ForgeRouter\Routing;
+namespace Modules\ForgeRouter\Routing;
 
 use FilesystemIterator;
 use Forge\Core\DI\Container;
@@ -96,7 +96,7 @@ final readonly class ControllerLoader
               $namespaceParts = explode('/', $namespacePath);
               $namespaceParts = array_filter($namespaceParts);
               $namespaceParts = array_map(fn($part) => ucfirst($part), $namespaceParts);
-              $namespacePrefix = "App\\Modules\\{$moduleName}\\" . implode('\\', $namespaceParts);
+              $namespacePrefix = "Modules\\{$moduleName}\\" . implode('\\', $namespaceParts);
               return "$namespacePrefix\\$class";
             }
           } catch (\InvalidArgumentException $e) {
@@ -113,7 +113,7 @@ final readonly class ControllerLoader
         if (ModuleHelper::isModuleDisabled($moduleName)) {
           return null;
         }
-        return "App\\Modules\\{$moduleName}\\Controllers\\$class";
+        return "Modules\\{$moduleName}\\Controllers\\$class";
       }
     }
 

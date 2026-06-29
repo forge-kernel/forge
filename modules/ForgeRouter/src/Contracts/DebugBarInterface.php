@@ -1,9 +1,9 @@
 <?php
 
-namespace App\Modules\ForgeRouter\Contracts;
+namespace Modules\ForgeRouter\Contracts;
 
 use Forge\Core\DI\Container;
-use App\Modules\ForgeRouter\Http\Response;
+use Modules\ForgeRouter\Http\Response;
 
 interface DebugBarInterface
 {

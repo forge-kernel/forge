@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Modules\ForgeUi;
+namespace Modules\ForgeUi;
 
 final class DesignTokens
 {

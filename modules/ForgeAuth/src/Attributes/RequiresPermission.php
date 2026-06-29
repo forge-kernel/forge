@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Modules\ForgeAuth\Attributes;
+namespace Modules\ForgeAuth\Attributes;
 
 use Attribute;
 

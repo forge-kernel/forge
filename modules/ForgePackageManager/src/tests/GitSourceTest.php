@@ -2,12 +2,12 @@
 
 declare(strict_types=1);
 
-namespace App\Modules\ForgePackageManager\Tests;
+namespace Modules\ForgePackageManager\Tests;
 
-use App\Modules\ForgePackageManager\Sources\GitSource;
-use App\Modules\ForgeTesting\Attributes\Group;
-use App\Modules\ForgeTesting\Attributes\Test;
-use App\Modules\ForgeTesting\TestCase;
+use Modules\ForgePackageManager\Sources\GitSource;
+use Modules\ForgeTesting\Attributes\Group;
+use Modules\ForgeTesting\Attributes\Test;
+use Modules\ForgeTesting\TestCase;
 
 #[Group("package-manager")]
 final class GitSourceTest extends TestCase

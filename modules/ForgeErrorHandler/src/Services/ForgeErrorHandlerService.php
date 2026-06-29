@@ -1,12 +1,12 @@
 <?php
 declare(strict_types=1);
 
-namespace App\Modules\ForgeErrorHandler\Services;
+namespace Modules\ForgeErrorHandler\Services;
 
-use App\Modules\ForgeRouter\Contracts\ErrorHandlerInterface;
+use Modules\ForgeRouter\Contracts\ErrorHandlerInterface;
 use Forge\Core\DI\Attributes\Service;
 use Forge\Core\Module\Attributes\Provides;
-use App\Modules\ForgeRouter\Http\{Request, Response};
+use Modules\ForgeRouter\Http\{Request, Response};
 use Forge\Core\Config\Environment;
 use Forge\Traits\PathHelper;
 use Throwable;

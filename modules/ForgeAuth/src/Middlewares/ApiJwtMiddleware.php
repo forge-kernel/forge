@@ -2,18 +2,18 @@
 
 declare(strict_types=1);
 
-namespace App\Modules\ForgeAuth\Middlewares;
+namespace Modules\ForgeAuth\Middlewares;
 
-use App\Modules\ForgeAuth\Exceptions\JwtTokenExpiredException;
-use App\Modules\ForgeAuth\Exceptions\JwtTokenInvalidException;
-use App\Modules\ForgeAuth\Exceptions\JwtTokenMissingException;
-use App\Modules\ForgeAuth\Contracts\UserContextInterface;
-use App\Modules\ForgeAuth\Services\TokenManagerService;
+use Modules\ForgeAuth\Exceptions\JwtTokenExpiredException;
+use Modules\ForgeAuth\Exceptions\JwtTokenInvalidException;
+use Modules\ForgeAuth\Exceptions\JwtTokenMissingException;
+use Modules\ForgeAuth\Contracts\UserContextInterface;
+use Modules\ForgeAuth\Services\TokenManagerService;
 use Forge\Core\DI\Attributes\Service;
-use App\Modules\ForgeRouter\Http\ApiResponse;
-use App\Modules\ForgeRouter\Http\Middleware;
-use App\Modules\ForgeRouter\Http\Request;
-use App\Modules\ForgeRouter\Http\Response;
+use Modules\ForgeRouter\Http\ApiResponse;
+use Modules\ForgeRouter\Http\Middleware;
+use Modules\ForgeRouter\Http\Request;
+use Modules\ForgeRouter\Http\Response;
 
 #[Service]
 final class ApiJwtMiddleware extends Middleware

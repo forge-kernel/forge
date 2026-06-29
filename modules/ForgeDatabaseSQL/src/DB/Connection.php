@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace App\Modules\ForgeDatabaseSQL\DB;
+namespace Modules\ForgeDatabaseSQL\DB;
 
-use App\Modules\ForgeRouter\Collectors\DatabaseCollector;
+use Modules\ForgeRouter\Collectors\DatabaseCollector;
 use Forge\Core\Contracts\Database\DatabaseConfigInterface;
 use Forge\Core\Contracts\Database\DatabaseConnectionInterface;
 use Forge\Core\DI\Container;

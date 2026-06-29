@@ -1,22 +1,22 @@
 <?php
 declare(strict_types=1);
 
-namespace App\Modules\ForgeSqlOrm\Tests;
+namespace Modules\ForgeSqlOrm\Tests;
 
-use App\Modules\ForgeTesting\Attributes\BeforeEach;
-use App\Modules\ForgeTesting\Attributes\Group;
-use App\Modules\ForgeTesting\Attributes\Test;
-use App\Modules\ForgeTesting\TestCase;
-use App\Modules\ForgeSqlOrm\ORM\Attributes\Column;
-use App\Modules\ForgeSqlOrm\ORM\Attributes\Table;
-use App\Modules\ForgeSqlOrm\ORM\Model;
-use App\Modules\ForgeSqlOrm\ORM\RelationLoader;
-use App\Modules\ForgeSqlOrm\ORM\Values\Relate;
-use App\Modules\ForgeSqlOrm\ORM\Values\RelationKind;
+use Modules\ForgeTesting\Attributes\BeforeEach;
+use Modules\ForgeTesting\Attributes\Group;
+use Modules\ForgeTesting\Attributes\Test;
+use Modules\ForgeTesting\TestCase;
+use Modules\ForgeSqlOrm\ORM\Attributes\Column;
+use Modules\ForgeSqlOrm\ORM\Attributes\Table;
+use Modules\ForgeSqlOrm\ORM\Model;
+use Modules\ForgeSqlOrm\ORM\RelationLoader;
+use Modules\ForgeSqlOrm\ORM\Values\Relate;
+use Modules\ForgeSqlOrm\ORM\Values\RelationKind;
 use Forge\Core\Contracts\Database\DatabaseConnectionInterface;
 use Forge\Core\Contracts\Database\QueryBuilderInterface;
 use Forge\Core\DI\Container;
-use App\Modules\ForgeSqlOrm\ORM\QueryBuilder;
+use Modules\ForgeSqlOrm\ORM\QueryBuilder;
 
 #[Group("forgesql-relations")]
 final class RelationLoaderTest extends TestCase

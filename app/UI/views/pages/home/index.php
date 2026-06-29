@@ -1,5 +1,5 @@
 <?php
-use App\Modules\ForgeLanguage\Definitions\LanguageSwitcherDefinition;
+use Modules\ForgeLanguage\Definitions\LanguageSwitcherDefinition;
 
 /** @var LanguageSwitcherDefinition $definition */
 $layoutProps = ['title' => $data['title']];

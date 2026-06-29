@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Modules\ForgeDatabaseSQL\Services;
+namespace Modules\ForgeDatabaseSQL\Services;
 
 use Forge\Core\Contracts\Database\DatabaseConnectionInterface;
 use Forge\Core\DI\Attributes\Service;

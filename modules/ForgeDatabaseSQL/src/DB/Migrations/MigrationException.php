@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Modules\ForgeDatabaseSQL\DB\Migrations;
+namespace Modules\ForgeDatabaseSQL\DB\Migrations;
 
 class MigrationException extends \RuntimeException
 {

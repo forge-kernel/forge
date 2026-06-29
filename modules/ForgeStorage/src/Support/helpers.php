@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-use App\Modules\ForgeStorage\Utils\UploadSignature;
+use Modules\ForgeStorage\Utils\UploadSignature;
 use Forge\Core\Config\Config;
 use Forge\Core\DI\Container;
 use Forge\Core\Session\SessionInterface;

@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Modules\ForgeNotification\Contracts;
+namespace Modules\ForgeNotification\Contracts;
 
 interface NotificationDriverInterface
 {

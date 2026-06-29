@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-use App\Modules\ForgeRouter\Collectors\DatabaseCollector;
-use App\Modules\ForgeRouter\Collectors\ExceptionCollector;
-use App\Modules\ForgeRouter\Collectors\TimelineCollector;
-use App\Modules\ForgeRouter\Collectors\ViewCollector;
-use App\Modules\ForgeRouter\Http\Request;
+use Modules\ForgeRouter\Collectors\DatabaseCollector;
+use Modules\ForgeRouter\Collectors\ExceptionCollector;
+use Modules\ForgeRouter\Collectors\TimelineCollector;
+use Modules\ForgeRouter\Collectors\ViewCollector;
+use Modules\ForgeRouter\Http\Request;
 use Forge\Core\DI\Container;
 use Forge\Core\Services\TokenManager;
 

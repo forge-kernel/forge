@@ -2,12 +2,12 @@
 
 declare(strict_types=1);
 
-namespace App\Modules\ForgeNotification\Services;
+namespace Modules\ForgeNotification\Services;
 
-use App\Modules\ForgeNotification\Channels\EmailChannel;
-use App\Modules\ForgeNotification\Channels\PushChannel;
-use App\Modules\ForgeNotification\Channels\SmsChannel;
-use App\Modules\ForgeNotification\Contracts\ChannelInterface;
+use Modules\ForgeNotification\Channels\EmailChannel;
+use Modules\ForgeNotification\Channels\PushChannel;
+use Modules\ForgeNotification\Channels\SmsChannel;
+use Modules\ForgeNotification\Contracts\ChannelInterface;
 use Forge\Core\DI\Attributes\Service;
 use Forge\Core\DI\Container;
 use RuntimeException;

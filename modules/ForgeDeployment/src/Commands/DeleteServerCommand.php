@@ -2,13 +2,13 @@
 
 declare(strict_types=1);
 
-namespace App\Modules\ForgeDeployment\Commands;
+namespace Modules\ForgeDeployment\Commands;
 
-  use App\Modules\ForgeDeployment\Contracts\ProviderInterface;
-use App\Modules\ForgeDeployment\Dto\DeploymentState;
-use App\Modules\ForgeDeployment\Providers\DigitalOceanProvider;
-use App\Modules\ForgeDeployment\Services\CloudflareService;
-use App\Modules\ForgeDeployment\Services\DeploymentStateService;
+  use Modules\ForgeDeployment\Contracts\ProviderInterface;
+use Modules\ForgeDeployment\Dto\DeploymentState;
+use Modules\ForgeDeployment\Providers\DigitalOceanProvider;
+use Modules\ForgeDeployment\Services\CloudflareService;
+use Modules\ForgeDeployment\Services\DeploymentStateService;
 use Forge\CLI\Attributes\Cli;
 use Forge\CLI\Command;
 use Forge\CLI\Traits\OutputHelper;

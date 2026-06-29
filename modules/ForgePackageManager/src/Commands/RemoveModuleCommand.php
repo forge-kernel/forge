@@ -1,9 +1,9 @@
 <?php
 declare(strict_types=1);
 
-namespace App\Modules\ForgePackageManager\Commands;
+namespace Modules\ForgePackageManager\Commands;
 
-use App\Modules\ForgePackageManager\Services\PackageManagerService;
+use Modules\ForgePackageManager\Services\PackageManagerService;
 use Forge\CLI\Attributes\Cli;
 use Forge\CLI\Attributes\Arg;
 use Forge\CLI\Command;

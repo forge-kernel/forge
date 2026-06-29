@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace App\Modules\ForgeRouter\Http\Attributes;
+namespace Modules\ForgeRouter\Http\Attributes;
 
 use Attribute;
-use App\Modules\ForgeRouter\Routing\Endpoint;
+use Modules\ForgeRouter\Routing\Endpoint;
 
 #[Attribute(Attribute::TARGET_METHOD)]
 final class ApiRoute extends Endpoint

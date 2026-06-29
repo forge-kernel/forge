@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Modules\ForgeNotification\Dto;
+namespace Modules\ForgeNotification\Dto;
 
 use Forge\Core\Dto\BaseDto;
 use Forge\Traits\DTOHelper;

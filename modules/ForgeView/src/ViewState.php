@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Modules\ForgeView;
+namespace Modules\ForgeView;
 
 final class ViewState
 {

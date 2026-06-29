@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 
-namespace App\Modules\ForgeWelcome\Commands;
+namespace Modules\ForgeWelcome\Commands;
 
 use Forge\CLI\Command as CommandBase;
 use Forge\CLI\Attributes\Command;

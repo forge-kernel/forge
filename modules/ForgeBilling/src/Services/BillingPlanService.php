@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace App\Modules\ForgeBilling\Services;
+namespace Modules\ForgeBilling\Services;
 
-use App\Modules\ForgeBilling\Dto\BillingPlan;
+use Modules\ForgeBilling\Dto\BillingPlan;
 use Forge\Core\Contracts\Database\QueryBuilderInterface;
 use Forge\Core\Helpers\UUID;
 use Forge\Core\DI\Attributes\Service;

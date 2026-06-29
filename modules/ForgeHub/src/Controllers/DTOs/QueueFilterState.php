@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Modules\ForgeHub\Controllers\DTOs;
+namespace Modules\ForgeHub\Controllers\DTOs;
 
 final class QueueFilterState
 {

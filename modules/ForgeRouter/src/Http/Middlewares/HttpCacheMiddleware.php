@@ -2,13 +2,13 @@
 
 declare(strict_types=1);
 
-namespace App\Modules\ForgeRouter\Http\Middlewares;
+namespace Modules\ForgeRouter\Http\Middlewares;
 
-use App\Modules\ForgeRouter\Contracts\MiddlewareInterface;
+use Modules\ForgeRouter\Contracts\MiddlewareInterface;
 use Forge\Core\Helpers\FileExistenceCache;
-use App\Modules\ForgeRouter\Http\Request;
-use App\Modules\ForgeRouter\Http\Response;
-use App\Modules\ForgeRouter\Middleware\Attributes\RegisterMiddleware;
+use Modules\ForgeRouter\Http\Request;
+use Modules\ForgeRouter\Http\Response;
+use Modules\ForgeRouter\Middleware\Attributes\RegisterMiddleware;
 
 /**
  * HTTP caching middleware with ETag and conditional request support.

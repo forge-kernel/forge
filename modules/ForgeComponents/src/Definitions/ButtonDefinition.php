@@ -1,10 +1,10 @@
 <?php
 declare(strict_types=1);
 
-namespace App\Modules\ForgeComponents\Definitions;
+namespace Modules\ForgeComponents\Definitions;
 
-use App\Modules\ForgeComponents\Enums\ButtonSize;
-use App\Modules\ForgeComponents\Enums\ButtonVariant;
+use Modules\ForgeComponents\Enums\ButtonSize;
+use Modules\ForgeComponents\Enums\ButtonVariant;
 
 final readonly class ButtonDefinition
 {

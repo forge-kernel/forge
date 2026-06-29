@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Modules\ForgeRouter\Security;
+namespace Modules\ForgeRouter\Security;
 
 final class InputSanitizer
 {

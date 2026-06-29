@@ -2,19 +2,19 @@
 
 declare(strict_types=1);
 
-namespace App\Modules\AppAuth\Controllers\Api;
+namespace Modules\AppAuth\Controllers\Api;
 
-use App\Modules\ForgeAuth\Enums\Permission;
-use App\Modules\AppAuth\Models\User;
-use App\Modules\ForgeRouter\Http\Attributes\ApiRoute;
-use App\Modules\ForgeRouter\Http\Attributes\UseMiddleware;
-use App\Modules\ForgeRouter\Http\Request;
-use App\Modules\ForgeRouter\Http\Response;
-use App\Modules\ForgeRouter\Attributes\Routable;
+use Modules\ForgeAuth\Enums\Permission;
+use Modules\AppAuth\Models\User;
+use Modules\ForgeRouter\Http\Attributes\ApiRoute;
+use Modules\ForgeRouter\Http\Attributes\UseMiddleware;
+use Modules\ForgeRouter\Http\Request;
+use Modules\ForgeRouter\Http\Response;
+use Modules\ForgeRouter\Attributes\Routable;
 use Forge\Exceptions\UserNotFoundException;
-use App\Modules\ForgeRouter\Traits\AuthorizeRequests;
-use App\Modules\ForgeRouter\Traits\ResponseHelper;
-use App\Modules\ForgeRouter\Traits\PaginationHelper;
+use Modules\ForgeRouter\Traits\AuthorizeRequests;
+use Modules\ForgeRouter\Traits\ResponseHelper;
+use Modules\ForgeRouter\Traits\PaginationHelper;
 
 #[Routable]
 #[UseMiddleware("api")]

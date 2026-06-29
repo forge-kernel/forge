@@ -1,5 +1,5 @@
 <?php
-use App\Modules\ForgeComponents\Definitions\FooterDefinition;
+use Modules\ForgeComponents\Definitions\FooterDefinition;
 /** @var FooterDefinition $props */
 ?>
 <footer class="fc-footer">

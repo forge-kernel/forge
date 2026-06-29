@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Modules\ForgeAuth\Services;
+namespace Modules\ForgeAuth\Services;
 
 use Forge\Core\Contracts\Cache\CacheWarmerInterface;
 use Forge\Core\DI\Attributes\Service;
@@ -36,7 +36,7 @@ final class RolePermissionCacheService implements CacheWarmerInterface
     {
         $container = \Forge\Core\DI\Container::getInstance();
         $roleRepository = $container->get(
-            \App\Modules\ForgeAuth\Repositories\RoleRepository::class,
+            \Modules\ForgeAuth\Repositories\RoleRepository::class,
         );
         $roles = $roleRepository->getAllRoles();
 
@@ -57,7 +57,7 @@ final class RolePermissionCacheService implements CacheWarmerInterface
     {
         $container = \Forge\Core\DI\Container::getInstance();
         $permissionRepository = $container->get(
-            \App\Modules\ForgeAuth\Repositories\PermissionRepository::class,
+            \Modules\ForgeAuth\Repositories\PermissionRepository::class,
         );
         $permissions = $permissionRepository->getAll();
 

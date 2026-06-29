@@ -1,9 +1,9 @@
 <?php
 
-namespace App\Modules\ForgeTesting\Traits;
+namespace Modules\ForgeTesting\Traits;
 
 use Forge\Core\Helpers\FileExistenceCache;
-use App\Modules\ForgeRouter\Http\Response;
+use Modules\ForgeRouter\Http\Response;
 use RuntimeException;
 
 trait Assertions

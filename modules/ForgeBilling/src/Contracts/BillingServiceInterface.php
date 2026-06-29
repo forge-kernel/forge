@@ -2,13 +2,13 @@
 
 declare(strict_types=1);
 
-namespace App\Modules\ForgeBilling\Contracts;
+namespace Modules\ForgeBilling\Contracts;
 
-use App\Modules\ForgeBilling\Dto\BillingPlan;
-use App\Modules\ForgeBilling\Dto\BillingSubscription;
-use App\Modules\ForgeBilling\Dto\Invoice;
-use App\Modules\ForgeBilling\Dto\PaymentMethod;
-use App\Modules\ForgeBilling\Enums\SubscriptionStatus;
+use Modules\ForgeBilling\Dto\BillingPlan;
+use Modules\ForgeBilling\Dto\BillingSubscription;
+use Modules\ForgeBilling\Dto\Invoice;
+use Modules\ForgeBilling\Dto\PaymentMethod;
+use Modules\ForgeBilling\Enums\SubscriptionStatus;
 
 interface BillingServiceInterface
 {

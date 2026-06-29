@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace App\Modules\ForgeDeployment\Commands;
+namespace Modules\ForgeDeployment\Commands;
 
-use App\Modules\ForgeDeployment\Services\LetsEncryptService;
-use App\Modules\ForgeDeployment\Services\SshKeyManager;
-use App\Modules\ForgeDeployment\Services\SshService;
+use Modules\ForgeDeployment\Services\LetsEncryptService;
+use Modules\ForgeDeployment\Services\SshKeyManager;
+use Modules\ForgeDeployment\Services\SshService;
 use Forge\CLI\Attributes\Arg;
 use Forge\CLI\Attributes\Cli;
 use Forge\CLI\Command;

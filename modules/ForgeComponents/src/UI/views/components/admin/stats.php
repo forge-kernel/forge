@@ -1,5 +1,5 @@
 <?php
-use App\Modules\ForgeComponents\Definitions\Admin\StatCardDefinition;
+use Modules\ForgeComponents\Definitions\Admin\StatCardDefinition;
 /** @var array<string, mixed> $props */
 $stats = $props['stats'] ?? [];
 $columns = $props['columns'] ?? 4;
@@ -17,7 +17,7 @@ $columns = $props['columns'] ?? 4;
   ?>
   <div class="fc-stat-card fc-stat-card--<?= $s->variant ?>">
     <?php if ($s->icon): ?>
-          <div class="fc-stat-card__icon"><?= component(name: 'ForgeComponents:admin/icon', props: new \App\Modules\ForgeComponents\Definitions\Admin\IconDefinition(name: $s->icon)) ?></div>
+          <div class="fc-stat-card__icon"><?= component(name: 'ForgeComponents:admin/icon', props: new \Modules\ForgeComponents\Definitions\Admin\IconDefinition(name: $s->icon)) ?></div>
     <?php endif; ?>
     <div class="fc-stat-card__content">
       <span class="fc-stat-card__value"><?= e($s->value) ?></span>

@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace App\Modules\ForgeDatabaseSQL\DB\Attributes;
+namespace Modules\ForgeDatabaseSQL\DB\Attributes;
 
-use App\Modules\ForgeDatabaseSQL\DB\Enums\ColumnType;
+use Modules\ForgeDatabaseSQL\DB\Enums\ColumnType;
 use Attribute;
 use InvalidArgumentException;
 

@@ -2,21 +2,21 @@
 
 declare(strict_types=1);
 
-namespace App\Modules\ForgeDeployment\Commands;
+namespace Modules\ForgeDeployment\Commands;
 
-use App\Modules\ForgeDeployment\Contracts\ProviderInterface;
-use App\Modules\ForgeDeployment\Dto\DeploymentConfig;
-use App\Modules\ForgeDeployment\Dto\DeploymentState;
-use App\Modules\ForgeDeployment\Dto\ProvisionConfig;
-use App\Modules\ForgeDeployment\Dto\ServerConfig;
-use App\Modules\ForgeDeployment\Providers\DigitalOceanProvider;
-use App\Modules\ForgeDeployment\Services\DeploymentConfigReader;
-use App\Modules\ForgeDeployment\Services\DeploymentService;
-use App\Modules\ForgeDeployment\Services\DeploymentStateService;
-use App\Modules\ForgeDeployment\Services\ForgeDeploymentService;
-use App\Modules\ForgeDeployment\Services\GitDiffService;
-use App\Modules\ForgeDeployment\Services\LetsEncryptService;
-use App\Modules\ForgeDeployment\Services\SshKeyManager;
+use Modules\ForgeDeployment\Contracts\ProviderInterface;
+use Modules\ForgeDeployment\Dto\DeploymentConfig;
+use Modules\ForgeDeployment\Dto\DeploymentState;
+use Modules\ForgeDeployment\Dto\ProvisionConfig;
+use Modules\ForgeDeployment\Dto\ServerConfig;
+use Modules\ForgeDeployment\Providers\DigitalOceanProvider;
+use Modules\ForgeDeployment\Services\DeploymentConfigReader;
+use Modules\ForgeDeployment\Services\DeploymentService;
+use Modules\ForgeDeployment\Services\DeploymentStateService;
+use Modules\ForgeDeployment\Services\ForgeDeploymentService;
+use Modules\ForgeDeployment\Services\GitDiffService;
+use Modules\ForgeDeployment\Services\LetsEncryptService;
+use Modules\ForgeDeployment\Services\SshKeyManager;
 use Forge\CLI\Attributes\Arg;
 use Forge\CLI\Attributes\Cli;
 use Forge\CLI\Command;
@@ -192,7 +192,7 @@ final class DeployCommand extends Command
       $sshPrivateKeyPath = $this->expandPath($sshPrivateKeyPath);
 
       $this->info('Connecting to server...');
-      $sshService = new \App\Modules\ForgeDeployment\Services\SshService();
+      $sshService = new \Modules\ForgeDeployment\Services\SshService();
       $connected = $sshService->connect(
         $serverInfo['ipv4'],
         22,
@@ -222,7 +222,7 @@ final class DeployCommand extends Command
 
       if ($resume && $state !== null && $state->isStepCompleted('ssh_connected')) {
         $this->info('Reconnecting SSH for provisioning...');
-        $sshService = new \App\Modules\ForgeDeployment\Services\SshService();
+        $sshService = new \Modules\ForgeDeployment\Services\SshService();
         $reconnected = $sshService->connect(
           $serverInfo['ipv4'],
           22,
@@ -262,7 +262,7 @@ final class DeployCommand extends Command
         }
 
         if (!empty($cloudflareToken)) {
-          $cloudflareService = new \App\Modules\ForgeDeployment\Services\CloudflareService($cloudflareToken);
+          $cloudflareService = new \Modules\ForgeDeployment\Services\CloudflareService($cloudflareToken);
           $zoneId = $cloudflareService->getZoneId($deploymentConfig->domain);
           if ($zoneId !== null) {
             $success = $cloudflareService->addDnsRecord($zoneId, $deploymentConfig->domain, $serverInfo['ipv4']);
@@ -336,7 +336,7 @@ final class DeployCommand extends Command
       if (!empty($deploymentConfig->postDeploymentCommands)) {
         if ($state === null || !$state->isStepCompleted('post_deployment_completed')) {
           $this->info('Running post-deployment commands...');
-          $sshService = new \App\Modules\ForgeDeployment\Services\SshService();
+          $sshService = new \Modules\ForgeDeployment\Services\SshService();
           $connected = $sshService->connect(
             $serverInfo['ipv4'],
             22,

@@ -1,10 +1,10 @@
 <?php
 declare(strict_types=1);
 
-namespace App\Modules\ForgeMultiTenant;
+namespace Modules\ForgeMultiTenant;
 
 
-use App\Modules\ForgeDatabaseSQL\DB\Connection;
+use Modules\ForgeDatabaseSQL\DB\Connection;
 use PDO;
 
 final class LazyTenantConnection extends Connection

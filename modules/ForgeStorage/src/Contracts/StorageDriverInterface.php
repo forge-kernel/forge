@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Modules\ForgeStorage\Contracts;
+namespace Modules\ForgeStorage\Contracts;
 
 interface StorageDriverInterface
 {

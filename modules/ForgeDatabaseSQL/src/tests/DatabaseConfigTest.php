@@ -2,12 +2,12 @@
 
 declare(strict_types=1);
 
-namespace App\Modules\ForgeDatabaseSQL\Tests;
+namespace Modules\ForgeDatabaseSQL\Tests;
 
-use App\Modules\ForgeDatabaseSQL\DB\DatabaseConfig;
-use App\Modules\ForgeTesting\Attributes\Group;
-use App\Modules\ForgeTesting\Attributes\Test;
-use App\Modules\ForgeTesting\TestCase;
+use Modules\ForgeDatabaseSQL\DB\DatabaseConfig;
+use Modules\ForgeTesting\Attributes\Group;
+use Modules\ForgeTesting\Attributes\Test;
+use Modules\ForgeTesting\TestCase;
 use InvalidArgumentException;
 
 #[Group("forgedatabase-config")]

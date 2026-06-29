@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Modules\ForgePackageManager\Sources;
+namespace Modules\ForgePackageManager\Sources;
 
 final class LocalNetworkSource extends AbstractSource
 {

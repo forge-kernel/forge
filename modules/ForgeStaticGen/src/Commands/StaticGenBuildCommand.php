@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace App\Modules\ForgeStaticGen\Commands;
+namespace Modules\ForgeStaticGen\Commands;
 
-use App\Modules\ForgeStaticGen\Contracts\ForgeStaticGenInterface;
+use Modules\ForgeStaticGen\Contracts\ForgeStaticGenInterface;
 use Forge\CLI\Attributes\Cli;
 use Forge\CLI\Attributes\Arg;
 use Forge\CLI\Command;

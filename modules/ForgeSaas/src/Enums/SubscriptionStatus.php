@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Modules\ForgeSaas\Enums;
+namespace Modules\ForgeSaas\Enums;
 
 enum SubscriptionStatus: string
 {

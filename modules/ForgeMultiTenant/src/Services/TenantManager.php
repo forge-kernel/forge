@@ -1,10 +1,10 @@
 <?php
 declare(strict_types=1);
 
-namespace App\Modules\ForgeMultiTenant\Services;
+namespace Modules\ForgeMultiTenant\Services;
 
-use App\Modules\ForgeMultiTenant\DTO\Tenant;
-use App\Modules\ForgeMultiTenant\Enums\Strategy;
+use Modules\ForgeMultiTenant\DTO\Tenant;
+use Modules\ForgeMultiTenant\Enums\Strategy;
 use Forge\Core\Contracts\Database\QueryBuilderInterface;
 use Forge\Core\DI\Attributes\Service;
 use Forge\Core\DI\Container;

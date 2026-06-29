@@ -2,15 +2,15 @@
 
 declare(strict_types=1);
 
-namespace App\Modules\AppAuth\Repositories;
+namespace Modules\AppAuth\Repositories;
 
-use App\Modules\AppAuth\Dto\CreateUserData;
-use App\Modules\AppAuth\Dto\UserMetadataDto;
-use App\Modules\AppAuth\Models\User;
-use App\Modules\ForgeAuth\Contracts\AuthUserInterface;
-use App\Modules\ForgeAuth\Contracts\UserProviderInterface;
-use App\Modules\ForgeSqlOrm\ORM\Paginator;
-use App\Modules\ForgeSqlOrm\ORM\RecordRepository;
+use Modules\AppAuth\Dto\CreateUserData;
+use Modules\AppAuth\Dto\UserMetadataDto;
+use Modules\AppAuth\Models\User;
+use Modules\ForgeAuth\Contracts\AuthUserInterface;
+use Modules\ForgeAuth\Contracts\UserProviderInterface;
+use Modules\ForgeSqlOrm\ORM\Paginator;
+use Modules\ForgeSqlOrm\ORM\RecordRepository;
 use Forge\Core\Cache\Attributes\NoCache;
 use Forge\Core\DI\Container;
 use Forge\Core\Contracts\Database\QueryBuilderInterface;

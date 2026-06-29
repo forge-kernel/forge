@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace App\Modules\ForgeRouter\Warmers;
+namespace Modules\ForgeRouter\Warmers;
 
-use App\Modules\ForgeRouter\Middleware\MiddlewareLoader;
+use Modules\ForgeRouter\Middleware\MiddlewareLoader;
 use Forge\Core\Contracts\Cache\CacheWarmerInterface;
 use Forge\Core\DI\Attributes\Injectable;
 use Forge\Core\DI\Container;

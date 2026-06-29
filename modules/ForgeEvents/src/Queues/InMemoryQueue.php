@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace App\Modules\ForgeEvents\Queues;
+namespace Modules\ForgeEvents\Queues;
 
-use App\Modules\ForgeEvents\Contracts\Queueinterface;
-use App\Modules\ForgeEvents\Enums\QueuePriority;
+use Modules\ForgeEvents\Contracts\Queueinterface;
+use Modules\ForgeEvents\Enums\QueuePriority;
 use SplPriorityQueue;
 
 final class InMemoryQueue implements Queueinterface

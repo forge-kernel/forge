@@ -2,23 +2,23 @@
 
 declare(strict_types=1);
 
-namespace App\Modules\AppAuth\Controllers\Web;
+namespace Modules\AppAuth\Controllers\Web;
 
-use App\Modules\AppAuth\Requeriments\PasswordRequeriments;
-use App\Modules\AppAuth\Validations\RegisterValidation;
-use App\Modules\ForgeAuth\Services\ForgeAuthService;
+use Modules\AppAuth\Requeriments\PasswordRequeriments;
+use Modules\AppAuth\Validations\RegisterValidation;
+use Modules\ForgeAuth\Services\ForgeAuthService;
 use Forge\Core\Helpers\Flash;
-use App\Modules\ForgeRouter\Helpers\Redirect;
-use App\Modules\ForgeRouter\Http\Attributes\UseMiddleware;
-use App\Modules\ForgeRouter\Http\Request;
-use App\Modules\ForgeRouter\Http\Response;
-use App\Modules\ForgeRouter\Attributes\Layout;
-use App\Modules\ForgeRouter\Routing\Endpoint;
-use App\Modules\ForgeRouter\Attributes\Routable;
+use Modules\ForgeRouter\Helpers\Redirect;
+use Modules\ForgeRouter\Http\Attributes\UseMiddleware;
+use Modules\ForgeRouter\Http\Request;
+use Modules\ForgeRouter\Http\Response;
+use Modules\ForgeRouter\Attributes\Layout;
+use Modules\ForgeRouter\Routing\Endpoint;
+use Modules\ForgeRouter\Attributes\Routable;
 use Forge\Core\Services\RedirectHandlerService;
 use Forge\Exceptions\ValidationException;
-use App\Modules\ForgeRouter\Traits\ResponseHelper;
-use App\Modules\ForgeView\Traits\ViewHelper;
+use Modules\ForgeRouter\Traits\ResponseHelper;
+use Modules\ForgeView\Traits\ViewHelper;
 use Forge\Traits\SecurityHelper;
 
 #[Routable(prefix: '/auth')]

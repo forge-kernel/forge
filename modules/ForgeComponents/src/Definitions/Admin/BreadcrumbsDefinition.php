@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 
-namespace App\Modules\ForgeComponents\Definitions\Admin;
+namespace Modules\ForgeComponents\Definitions\Admin;
 
 final readonly class BreadcrumbsDefinition
 {

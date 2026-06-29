@@ -1,6 +1,6 @@
 <?php
 
-use App\Modules\ForgeStaticGen\LayoutBuilder;
+use Modules\ForgeStaticGen\LayoutBuilder;
 
 /**
  * @var array $meta

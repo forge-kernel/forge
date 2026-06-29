@@ -1,5 +1,5 @@
 <?php
-use App\Modules\ForgeComponents\Definitions\NavbarDefinition;
+use Modules\ForgeComponents\Definitions\NavbarDefinition;
 /** @var NavbarDefinition $props */
 ?>
 <nav class="fc-navbar">

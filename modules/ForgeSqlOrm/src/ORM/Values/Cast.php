@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 
-namespace App\Modules\ForgeSqlOrm\ORM\Values;
+namespace Modules\ForgeSqlOrm\ORM\Values;
 
 use BackedEnum;
 use DateMalformedStringException;

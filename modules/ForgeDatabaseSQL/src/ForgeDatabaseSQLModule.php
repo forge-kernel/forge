@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace App\Modules\ForgeDatabaseSQL;
+namespace Modules\ForgeDatabaseSQL;
 
-use App\Modules\ForgeDatabaseSQL\DB\DatabaseSetup;
+use Modules\ForgeDatabaseSQL\DB\DatabaseSetup;
 use Forge\Core\Config\Environment;
 use Forge\Core\Contracts\Database\DatabaseConnectionInterface;
 use Forge\Core\DI\Container;
@@ -21,7 +21,7 @@ use Forge\CLI\Traits\OutputHelper;
 
 #[Module(
     name: 'ForgeDatabaseSQL',
-    version: '0.9.12',
+    version: '0.9.13',
     description: 'SQL database support (SQLite, MySQL, PostgreSQL)',
     order: 0,
     author: 'Forge Team',

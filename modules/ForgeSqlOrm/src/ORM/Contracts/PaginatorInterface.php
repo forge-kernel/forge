@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 
-namespace App\Modules\ForgeSqlOrm\ORM\Contracts;
+namespace Modules\ForgeSqlOrm\ORM\Contracts;
 
 interface PaginatorInterface
 {

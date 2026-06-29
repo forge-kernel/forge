@@ -2,15 +2,15 @@
 
 declare(strict_types=1);
 
-namespace App\Modules\ForgeLogger\Services;
+namespace Modules\ForgeLogger\Services;
 
 use Forge\Core\DI\Attributes\Service;
 use Forge\Core\Module\Attributes\Provides;
-use App\Modules\ForgeLogger\Contracts\ForgeLoggerInterface;
-use App\Modules\ForgeLogger\Contracts\LogDriverInterface;
-use App\Modules\ForgeLogger\Drivers\FileDriver;
-use App\Modules\ForgeLogger\Drivers\NullDriver;
-use App\Modules\ForgeLogger\Drivers\SysLogDriver;
+use Modules\ForgeLogger\Contracts\ForgeLoggerInterface;
+use Modules\ForgeLogger\Contracts\LogDriverInterface;
+use Modules\ForgeLogger\Drivers\FileDriver;
+use Modules\ForgeLogger\Drivers\NullDriver;
+use Modules\ForgeLogger\Drivers\SysLogDriver;
 use Forge\Core\Config\Config;
 
 #[Service]

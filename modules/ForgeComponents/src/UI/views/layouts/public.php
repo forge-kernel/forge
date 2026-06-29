@@ -6,8 +6,8 @@
  * @var array<string, mixed> $layoutSlots
  * @var string $parentLayout
  */
-use App\Modules\ForgeComponents\Definitions\NavbarDefinition;
-use App\Modules\ForgeComponents\Definitions\FooterDefinition;
+use Modules\ForgeComponents\Definitions\NavbarDefinition;
+use Modules\ForgeComponents\Definitions\FooterDefinition;
 
 $parentLayout = 'ForgeComponents:root';
 

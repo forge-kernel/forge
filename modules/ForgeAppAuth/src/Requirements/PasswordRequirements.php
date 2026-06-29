@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 
-namespace App\Modules\ForgeAppAuth\Requirements;
+namespace Modules\ForgeAppAuth\Requirements;
 
 use Forge\Exceptions\ValidationException;
 

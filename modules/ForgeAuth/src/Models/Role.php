@@ -2,14 +2,14 @@
 
 declare(strict_types=1);
 
-namespace App\Modules\ForgeAuth\Models;
+namespace Modules\ForgeAuth\Models;
 
-use App\Modules\ForgeSqlOrm\ORM\Values\Cast;
-use App\Modules\ForgeSqlOrm\Traits\HasTimeStamps;
-use App\Modules\ForgeSqlOrm\ORM\Attributes\{Table, Column};
+use Modules\ForgeSqlOrm\ORM\Values\Cast;
+use Modules\ForgeSqlOrm\Traits\HasTimeStamps;
+use Modules\ForgeSqlOrm\ORM\Attributes\{Table, Column};
 
 #[Table("roles")]
-class Role extends \App\Modules\ForgeSqlOrm\ORM\Model
+class Role extends \Modules\ForgeSqlOrm\ORM\Model
 {
     use HasTimeStamps;
 

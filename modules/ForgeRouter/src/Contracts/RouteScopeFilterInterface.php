@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Modules\ForgeRouter\Contracts;
+namespace Modules\ForgeRouter\Contracts;
 
 use ReflectionClass;
 use ReflectionMethod;

@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace App\Modules\ForgeRouter\Contracts;
+namespace Modules\ForgeRouter\Contracts;
 
-use App\Modules\ForgeRouter\Http\Request;
+use Modules\ForgeRouter\Http\Request;
 
 /**
  * Interface for request preprocessors that can modify requests

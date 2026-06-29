@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace App\Modules\ForgeBilling\Events;
+namespace Modules\ForgeBilling\Events;
 
-use App\Modules\ForgeEvents\Attributes\Event;
-use App\Modules\ForgeEvents\Enums\QueuePriority;
+use Modules\ForgeEvents\Attributes\Event;
+use Modules\ForgeEvents\Enums\QueuePriority;
 
 #[Event(
     queue: "billing",

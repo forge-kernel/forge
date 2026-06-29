@@ -2,17 +2,17 @@
 
 declare(strict_types=1);
 
-namespace App\Modules\AppAuth\Controllers\Web;
+namespace Modules\AppAuth\Controllers\Web;
 
-use App\Modules\AppAuth\Models\User;
-use App\Modules\ForgeRouter\Http\Attributes\UseMiddleware;
-use App\Modules\ForgeRouter\Http\Request;
-use App\Modules\ForgeRouter\Http\Response;
-use App\Modules\ForgeRouter\Routing\Endpoint;
-use App\Modules\ForgeRouter\Attributes\Routable;
+use Modules\AppAuth\Models\User;
+use Modules\ForgeRouter\Http\Attributes\UseMiddleware;
+use Modules\ForgeRouter\Http\Request;
+use Modules\ForgeRouter\Http\Response;
+use Modules\ForgeRouter\Routing\Endpoint;
+use Modules\ForgeRouter\Attributes\Routable;
 use Forge\Exceptions\UserNotFoundException;
-use App\Modules\ForgeRouter\Traits\ResponseHelper;
-use App\Modules\ForgeRouter\Traits\PaginationHelper;
+use Modules\ForgeRouter\Traits\ResponseHelper;
+use Modules\ForgeRouter\Traits\PaginationHelper;
 
 #[Routable]
 #[UseMiddleware('web')]

@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Modules\ForgeEvents\Attributes;
+namespace Modules\ForgeEvents\Attributes;
 
 use Attribute;
 

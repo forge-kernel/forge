@@ -1,15 +1,15 @@
 <?php
 declare(strict_types=1);
 
-namespace App\Modules\ForgeMultiTenant\Migration;
+namespace Modules\ForgeMultiTenant\Migration;
 
-use App\Modules\ForgeMultiTenant\Enums\Strategy;
+use Modules\ForgeMultiTenant\Enums\Strategy;
 
 final class TenantSchema
 {
     public static function addTenantColumn(array &$columns): void
     {
-        if (!class_exists(\App\Modules\ForgeMultiTenant\ForgeMultiTenantModule::class)) {
+        if (!class_exists(\Modules\ForgeMultiTenant\ForgeMultiTenantModule::class)) {
             return;
         }
         $tenant = tenant();

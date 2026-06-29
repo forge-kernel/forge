@@ -1,8 +1,8 @@
 <?php
 
 
-use App\Modules\ForgeMultiTenant\DTO\Tenant;
-use App\Modules\ForgeMultiTenant\Services\TenantManager;
+use Modules\ForgeMultiTenant\DTO\Tenant;
+use Modules\ForgeMultiTenant\Services\TenantManager;
 use Forge\Core\DI\Container;
 
 if (!function_exists('tenant')) {

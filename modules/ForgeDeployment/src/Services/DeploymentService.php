@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Modules\ForgeDeployment\Services;
+namespace Modules\ForgeDeployment\Services;
 
 use Forge\Core\DI\Attributes\Service;
 

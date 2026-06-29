@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace App\Modules\ForgeBilling\Commands;
+namespace Modules\ForgeBilling\Commands;
 
-use App\Modules\ForgeBilling\Events\GenerateInvoiceEvent;
-use App\Modules\ForgeBilling\Services\BillingPlanService;
+use Modules\ForgeBilling\Events\GenerateInvoiceEvent;
+use Modules\ForgeBilling\Services\BillingPlanService;
 use Forge\CLI\Attributes\Cli;
 use Forge\CLI\Command;
 use Forge\CLI\Traits\OutputHelper;
@@ -28,7 +28,7 @@ final class BillingGenerateInvoicesCommand extends Command
     public function __construct(
         private readonly CentralQueryBuilderInterface $centralQueryBuilder,
         private readonly BillingPlanService $planService,
-        private readonly \App\Modules\ForgeEvents\Services\EventDispatcher $eventDispatcher,
+        private readonly \Modules\ForgeEvents\Services\EventDispatcher $eventDispatcher,
     ) {
     }
 

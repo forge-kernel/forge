@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Modules\ForgeDatabaseSQL\DB\Enums;
+namespace Modules\ForgeDatabaseSQL\DB\Enums;
 
 enum ColumnType: string
 {

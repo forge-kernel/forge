@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Modules\ForgeNotification\Dto;
+namespace Modules\ForgeNotification\Dto;
 
 /**
  * Email notification DTO with email-specific fields.

@@ -2,12 +2,12 @@
 
 declare(strict_types=1);
 
-namespace App\Modules\ForgeAuth\Services;
+namespace Modules\ForgeAuth\Services;
 
-use App\Modules\ForgeAuth\Contracts\AuthUserInterface;
-use App\Modules\ForgeAuth\Models\Role;
-use App\Modules\ForgeAuth\Models\Permission;
-use App\Modules\ForgeAuth\Repositories\RoleRepository;
+use Modules\ForgeAuth\Contracts\AuthUserInterface;
+use Modules\ForgeAuth\Models\Role;
+use Modules\ForgeAuth\Models\Permission;
+use Modules\ForgeAuth\Repositories\RoleRepository;
 use Forge\Core\DI\Attributes\Service;
 use Forge\Core\Contracts\Database\QueryBuilderInterface;
 

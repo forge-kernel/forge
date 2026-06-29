@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 
-namespace App\Modules\ForgeTesting\Traits;
+namespace Modules\ForgeTesting\Traits;
 
 trait CacheTesting
 {

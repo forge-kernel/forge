@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace App\Modules\ForgeBilling\Services;
+namespace Modules\ForgeBilling\Services;
 
-use App\Modules\ForgeBilling\Contracts\BillableResolverInterface;
+use Modules\ForgeBilling\Contracts\BillableResolverInterface;
 use Forge\Core\DI\Container;
 
 final class BillableResolver implements BillableResolverInterface

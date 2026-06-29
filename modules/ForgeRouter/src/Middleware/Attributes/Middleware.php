@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 
-namespace App\Modules\ForgeRouter\Middleware\Attributes;
+namespace Modules\ForgeRouter\Middleware\Attributes;
 
 use Attribute;
 

@@ -1,6 +1,6 @@
 <?php
 
-use App\Modules\ForgeUi\DesignTokens;
+use Modules\ForgeUi\DesignTokens;
 
 $variant = $variant ?? 'default';
 $size = $size ?? 'md';

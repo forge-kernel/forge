@@ -2,24 +2,24 @@
 
 declare(strict_types=1);
 
-namespace App\Modules\ForgeDatabaseSQL\DB\Migrations;
+namespace Modules\ForgeDatabaseSQL\DB\Migrations;
 
-use App\Modules\ForgeDatabaseSQL\DB\Attributes\AddColumn;
-use App\Modules\ForgeDatabaseSQL\DB\Attributes\Column;
-use App\Modules\ForgeDatabaseSQL\DB\Attributes\DropColumn;
-use App\Modules\ForgeDatabaseSQL\DB\Attributes\Index;
-use App\Modules\ForgeDatabaseSQL\DB\Attributes\MetaData;
-use App\Modules\ForgeDatabaseSQL\DB\Attributes\Relations\BelongsTo;
-use App\Modules\ForgeDatabaseSQL\DB\Attributes\Relations\HasOne;
-use App\Modules\ForgeDatabaseSQL\DB\Attributes\Relations\HasMany;
-use App\Modules\ForgeDatabaseSQL\DB\Attributes\Relations\ManyToMany;
-use App\Modules\ForgeDatabaseSQL\DB\Attributes\RenameColumn;
-use App\Modules\ForgeDatabaseSQL\DB\Attributes\SoftDelete;
-use App\Modules\ForgeDatabaseSQL\DB\Attributes\Status;
-use App\Modules\ForgeDatabaseSQL\DB\Attributes\Table;
-use App\Modules\ForgeDatabaseSQL\DB\Attributes\Timestamps;
-use App\Modules\ForgeDatabaseSQL\DB\Enums\ColumnType;
-use App\Modules\ForgeDatabaseSQL\DB\Schema\FormatterInterface;
+use Modules\ForgeDatabaseSQL\DB\Attributes\AddColumn;
+use Modules\ForgeDatabaseSQL\DB\Attributes\Column;
+use Modules\ForgeDatabaseSQL\DB\Attributes\DropColumn;
+use Modules\ForgeDatabaseSQL\DB\Attributes\Index;
+use Modules\ForgeDatabaseSQL\DB\Attributes\MetaData;
+use Modules\ForgeDatabaseSQL\DB\Attributes\Relations\BelongsTo;
+use Modules\ForgeDatabaseSQL\DB\Attributes\Relations\HasOne;
+use Modules\ForgeDatabaseSQL\DB\Attributes\Relations\HasMany;
+use Modules\ForgeDatabaseSQL\DB\Attributes\Relations\ManyToMany;
+use Modules\ForgeDatabaseSQL\DB\Attributes\RenameColumn;
+use Modules\ForgeDatabaseSQL\DB\Attributes\SoftDelete;
+use Modules\ForgeDatabaseSQL\DB\Attributes\Status;
+use Modules\ForgeDatabaseSQL\DB\Attributes\Table;
+use Modules\ForgeDatabaseSQL\DB\Attributes\Timestamps;
+use Modules\ForgeDatabaseSQL\DB\Enums\ColumnType;
+use Modules\ForgeDatabaseSQL\DB\Schema\FormatterInterface;
 use Forge\Core\Contracts\Database\DatabaseConnectionInterface;
 use Forge\Core\Helpers\FileExistenceCache;
 use Forge\Traits\StringHelper;

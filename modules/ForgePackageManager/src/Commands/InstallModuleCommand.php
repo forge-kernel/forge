@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace App\Modules\ForgePackageManager\Commands;
+namespace Modules\ForgePackageManager\Commands;
 
-use App\Modules\ForgePackageManager\Services\PackageManagerService;
-use App\Modules\ForgePackageManager\Services\ModuleFileComparisonService;
+use Modules\ForgePackageManager\Services\PackageManagerService;
+use Modules\ForgePackageManager\Services\ModuleFileComparisonService;
 use Forge\CLI\Attributes\Cli;
 use Forge\CLI\Attributes\Arg;
 use Forge\CLI\Attributes\CoreCommand;
@@ -780,7 +780,7 @@ final class InstallModuleCommand extends Command
       $sourceConfig['type'] = $sourceType;
       $sourceConfig['debug'] = false;
 
-      $source = \App\Modules\ForgePackageManager\Sources\SourceFactory::create($sourceConfig);
+      $source = \Modules\ForgePackageManager\Sources\SourceFactory::create($sourceConfig);
       $integrityHash = $source->downloadModule($moduleDownloadPathInRepo, $moduleCachePath, $version);
 
       if (!$integrityHash || !file_exists($moduleCachePath)) {

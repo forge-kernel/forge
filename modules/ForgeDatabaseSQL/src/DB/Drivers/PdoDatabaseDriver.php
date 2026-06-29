@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace App\Modules\ForgeDatabaseSQL\DB\Drivers;
+namespace Modules\ForgeDatabaseSQL\DB\Drivers;
 
-use App\Modules\ForgeDatabaseSQL\DB\Contracts\DatabaseDriverInterface;
+use Modules\ForgeDatabaseSQL\DB\Contracts\DatabaseDriverInterface;
 use PDO;
 use PDOException;
 use InvalidArgumentException;

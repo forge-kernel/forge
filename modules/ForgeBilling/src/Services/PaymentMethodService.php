@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace App\Modules\ForgeBilling\Services;
+namespace Modules\ForgeBilling\Services;
 
-use App\Modules\ForgeBilling\Dto\PaymentMethod;
-use App\Modules\ForgeBilling\Enums\PaymentMethodType;
+use Modules\ForgeBilling\Dto\PaymentMethod;
+use Modules\ForgeBilling\Enums\PaymentMethodType;
 use Forge\Core\Contracts\Database\QueryBuilderInterface;
 use Forge\Core\Helpers\UUID;
 

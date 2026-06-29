@@ -5,17 +5,17 @@ declare(strict_types=1);
 namespace App\Controllers;
 
 use App\Events\TestPageVisitedEvent;
-use App\Modules\ForgeEvents\Services\EventDispatcher;
-use App\Modules\ForgeMultiTenant\Attributes\TenantScope;
-use App\Modules\ForgeRouter\Http\CookieJar;
-use App\Modules\ForgeRouter\Http\Response;
-use App\Modules\ForgeRouter\Routing\Endpoint;
-use App\Modules\ForgeRouter\Attributes\Routable;
-use App\Modules\ForgeRouter\Http\Request;
+use Modules\ForgeEvents\Services\EventDispatcher;
+use Modules\ForgeMultiTenant\Attributes\TenantScope;
+use Modules\ForgeRouter\Http\CookieJar;
+use Modules\ForgeRouter\Http\Response;
+use Modules\ForgeRouter\Routing\Endpoint;
+use Modules\ForgeRouter\Attributes\Routable;
+use Modules\ForgeRouter\Http\Request;
 use Forge\Core\Session\SessionInterface;
-use App\Modules\ForgeView\Traits\ViewHelper;
-use App\Modules\ForgeRouter\Traits\ResponseHelper;
-use App\Modules\ForgeRouter\Attributes\Layout;
+use Modules\ForgeView\Traits\ViewHelper;
+use Modules\ForgeRouter\Traits\ResponseHelper;
+use Modules\ForgeRouter\Attributes\Layout;
 
 #[Routable]
 #[TenantScope("central")]

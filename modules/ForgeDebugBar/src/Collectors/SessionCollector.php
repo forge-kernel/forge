@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Modules\ForgeDebugBar\Collectors;
+namespace Modules\ForgeDebugBar\Collectors;
 
 use Forge\Core\DI\Container;
 use Forge\Core\Session\SessionInterface;

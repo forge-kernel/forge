@@ -2,16 +2,16 @@
 
 declare(strict_types=1);
 
-namespace App\Modules\ForgeNotification\Listeners;
+namespace Modules\ForgeNotification\Listeners;
 
-use App\Modules\ForgeEvents\Attributes\EventListener;
-use App\Modules\ForgeNotification\Channels\EmailChannel;
-use App\Modules\ForgeNotification\Channels\PushChannel;
-use App\Modules\ForgeNotification\Channels\SmsChannel;
-use App\Modules\ForgeNotification\Events\EmailNotificationEvent;
-use App\Modules\ForgeNotification\Events\PushNotificationEvent;
-use App\Modules\ForgeNotification\Events\SmsNotificationEvent;
-use App\Modules\ForgeNotification\Services\ChannelManager;
+use Modules\ForgeEvents\Attributes\EventListener;
+use Modules\ForgeNotification\Channels\EmailChannel;
+use Modules\ForgeNotification\Channels\PushChannel;
+use Modules\ForgeNotification\Channels\SmsChannel;
+use Modules\ForgeNotification\Events\EmailNotificationEvent;
+use Modules\ForgeNotification\Events\PushNotificationEvent;
+use Modules\ForgeNotification\Events\SmsNotificationEvent;
+use Modules\ForgeNotification\Services\ChannelManager;
 use Forge\Core\DI\Attributes\Service;
 
 /**

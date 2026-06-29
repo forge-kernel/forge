@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace App\Modules\ForgeNotification\Services;
+namespace Modules\ForgeNotification\Services;
 
-use App\Modules\ForgeNotification\Contracts\ProviderInterface;
+use Modules\ForgeNotification\Contracts\ProviderInterface;
 use Forge\Core\Config\Config;
 use Forge\Core\DI\Attributes\Service;
 use Forge\Core\DI\Container;
@@ -43,17 +43,17 @@ final class ProviderResolver
 
     $this->providerMap = [
       'email' => [
-        'smtp' => \App\Modules\ForgeNotification\Providers\Email\SmtpProvider::class,
-        'sendgrid' => \App\Modules\ForgeNotification\Providers\Email\SendGridProvider::class,
-        'mailgun' => \App\Modules\ForgeNotification\Providers\Email\MailgunProvider::class,
+        'smtp' => \Modules\ForgeNotification\Providers\Email\SmtpProvider::class,
+        'sendgrid' => \Modules\ForgeNotification\Providers\Email\SendGridProvider::class,
+        'mailgun' => \Modules\ForgeNotification\Providers\Email\MailgunProvider::class,
       ],
       'sms' => [
-        'twilio' => \App\Modules\ForgeNotification\Providers\Sms\TwilioProvider::class,
-        'vonage' => \App\Modules\ForgeNotification\Providers\Sms\VonageProvider::class,
+        'twilio' => \Modules\ForgeNotification\Providers\Sms\TwilioProvider::class,
+        'vonage' => \Modules\ForgeNotification\Providers\Sms\VonageProvider::class,
       ],
       'push' => [
-        'firebase' => \App\Modules\ForgeNotification\Providers\Push\FirebaseProvider::class,
-        'onesignal' => \App\Modules\ForgeNotification\Providers\Push\OneSignalProvider::class,
+        'firebase' => \Modules\ForgeNotification\Providers\Push\FirebaseProvider::class,
+        'onesignal' => \Modules\ForgeNotification\Providers\Push\OneSignalProvider::class,
       ],
     ];
   }

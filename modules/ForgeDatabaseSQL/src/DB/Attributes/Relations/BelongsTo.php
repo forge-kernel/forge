@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Modules\ForgeDatabaseSQL\DB\Attributes\Relations;
+namespace Modules\ForgeDatabaseSQL\DB\Attributes\Relations;
 
 use Attribute;
 

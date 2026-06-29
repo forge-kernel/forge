@@ -1,11 +1,11 @@
 <?php
 
-namespace App\Modules\ForgeDebugBar;
+namespace Modules\ForgeDebugBar;
 
 use Forge\Core\Config\Config;
-use App\Modules\ForgeRouter\Contracts\DebugBarInterface;
+use Modules\ForgeRouter\Contracts\DebugBarInterface;
 use Forge\Core\DI\Container;
-use App\Modules\ForgeRouter\Http\Response;
+use Modules\ForgeRouter\Http\Response;
 
 class DebugBar implements DebugBarInterface
 {

@@ -2,17 +2,17 @@
 
 declare(strict_types=1);
 
-namespace App\Modules\ForgeTesting\Services;
+namespace Modules\ForgeTesting\Services;
 
-use App\Modules\ForgeTesting\Attributes\AfterEach;
-use App\Modules\ForgeTesting\Attributes\BeforeEach;
-use App\Modules\ForgeTesting\Attributes\DataProvider;
-use App\Modules\ForgeTesting\Attributes\Depends;
-use App\Modules\ForgeTesting\Attributes\Group;
-use App\Modules\ForgeTesting\Attributes\Incomplete;
-use App\Modules\ForgeTesting\Attributes\Skip;
-use App\Modules\ForgeTesting\Attributes\Test;
-use App\Modules\ForgeTesting\TestCase;
+use Modules\ForgeTesting\Attributes\AfterEach;
+use Modules\ForgeTesting\Attributes\BeforeEach;
+use Modules\ForgeTesting\Attributes\DataProvider;
+use Modules\ForgeTesting\Attributes\Depends;
+use Modules\ForgeTesting\Attributes\Group;
+use Modules\ForgeTesting\Attributes\Incomplete;
+use Modules\ForgeTesting\Attributes\Skip;
+use Modules\ForgeTesting\Attributes\Test;
+use Modules\ForgeTesting\TestCase;
 use Forge\CLI\Traits\OutputHelper;
 use Forge\Core\DI\Attributes\Service;
 use Forge\Core\DI\Container;

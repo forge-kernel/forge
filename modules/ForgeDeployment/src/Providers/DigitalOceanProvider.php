@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace App\Modules\ForgeDeployment\Providers;
+namespace Modules\ForgeDeployment\Providers;
 
-use App\Modules\ForgeDeployment\Contracts\ProviderInterface;
+use Modules\ForgeDeployment\Contracts\ProviderInterface;
 use Forge\Core\DI\Attributes\Service;
 
 #[Service]

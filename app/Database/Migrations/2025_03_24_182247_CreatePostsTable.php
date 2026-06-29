@@ -2,14 +2,14 @@
 
 declare(strict_types=1);
 
-use App\Modules\AppAuth\Models\User;
-use App\Modules\ForgeDatabaseSQL\DB\Attributes\Column;
-use App\Modules\ForgeDatabaseSQL\DB\Attributes\GroupMigration;
-use App\Modules\ForgeDatabaseSQL\DB\Attributes\Index;
-use App\Modules\ForgeDatabaseSQL\DB\Attributes\Relations\BelongsTo;
-use App\Modules\ForgeDatabaseSQL\DB\Attributes\Table;
-use App\Modules\ForgeDatabaseSQL\DB\Migrations\Migration;
-use App\Modules\ForgeDatabaseSQL\DB\Enums\ColumnType;
+use Modules\AppAuth\Models\User;
+use Modules\ForgeDatabaseSQL\DB\Attributes\Column;
+use Modules\ForgeDatabaseSQL\DB\Attributes\GroupMigration;
+use Modules\ForgeDatabaseSQL\DB\Attributes\Index;
+use Modules\ForgeDatabaseSQL\DB\Attributes\Relations\BelongsTo;
+use Modules\ForgeDatabaseSQL\DB\Attributes\Table;
+use Modules\ForgeDatabaseSQL\DB\Migrations\Migration;
+use Modules\ForgeDatabaseSQL\DB\Enums\ColumnType;
 
 #[GroupMigration('tenants')]
 #[Table(name: 'posts')]

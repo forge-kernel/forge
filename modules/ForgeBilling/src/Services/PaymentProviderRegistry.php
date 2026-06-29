@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace App\Modules\ForgeBilling\Services;
+namespace Modules\ForgeBilling\Services;
 
-use App\Modules\ForgeBilling\Contracts\PaymentProviderInterface;
+use Modules\ForgeBilling\Contracts\PaymentProviderInterface;
 use Forge\Core\DI\Attributes\Service;
 use RuntimeException;
 

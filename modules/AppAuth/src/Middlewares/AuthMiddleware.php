@@ -2,14 +2,14 @@
 
 declare(strict_types=1);
 
-namespace App\Modules\AppAuth\Middlewares;
+namespace Modules\AppAuth\Middlewares;
 
-use App\Modules\AppAuth\Services\UserContext;
+use Modules\AppAuth\Services\UserContext;
 use Forge\Core\DI\Attributes\Service;
-use App\Modules\ForgeRouter\Helpers\Redirect;
-use App\Modules\ForgeRouter\Http\Middleware;
-use App\Modules\ForgeRouter\Http\Request;
-use App\Modules\ForgeRouter\Http\Response;
+use Modules\ForgeRouter\Helpers\Redirect;
+use Modules\ForgeRouter\Http\Middleware;
+use Modules\ForgeRouter\Http\Request;
+use Modules\ForgeRouter\Http\Response;
 use Forge\Core\Services\RedirectHandlerService;
 
 #[Service]

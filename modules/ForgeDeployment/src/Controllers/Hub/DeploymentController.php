@@ -2,21 +2,21 @@
 
 declare(strict_types=1);
 
-namespace App\Modules\ForgeDeployment\Controllers\Hub;
+namespace Modules\ForgeDeployment\Controllers\Hub;
 
-use App\Modules\ForgeDeployment\Services\DeploymentHubService;
-use App\Modules\ForgeDeployment\Services\DeploymentExecutionService;
-use App\Modules\ForgeDeployment\Services\DeploymentConfigReader;
+use Modules\ForgeDeployment\Services\DeploymentHubService;
+use Modules\ForgeDeployment\Services\DeploymentExecutionService;
+use Modules\ForgeDeployment\Services\DeploymentConfigReader;
 use Forge\Core\Config\Config;
 use Forge\Core\Config\Environment;
-use App\Modules\ForgeRouter\Http\Attributes\UseMiddleware;
-use App\Modules\ForgeRouter\Http\Request;
-use App\Modules\ForgeRouter\Http\Response;
-use App\Modules\ForgeRouter\Routing\Endpoint;
-use App\Modules\ForgeRouter\Attributes\Routable;
-use App\Modules\ForgeRouter\Attributes\Layout;
-use App\Modules\ForgeRouter\Traits\ResponseHelper;
-use App\Modules\ForgeView\Traits\ViewHelper;
+use Modules\ForgeRouter\Http\Attributes\UseMiddleware;
+use Modules\ForgeRouter\Http\Request;
+use Modules\ForgeRouter\Http\Response;
+use Modules\ForgeRouter\Routing\Endpoint;
+use Modules\ForgeRouter\Attributes\Routable;
+use Modules\ForgeRouter\Attributes\Layout;
+use Modules\ForgeRouter\Traits\ResponseHelper;
+use Modules\ForgeView\Traits\ViewHelper;
 
 #[Routable(prefix: '/hub/deployment')]
 #[UseMiddleware(["web", "auth", "hub-permissions"])]

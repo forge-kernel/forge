@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Modules\ForgeStaticGen\Contracts;
+namespace Modules\ForgeStaticGen\Contracts;
 
 interface ForgeStaticGenInterface
 {

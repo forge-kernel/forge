@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Modules\ForgeDatabaseSQL\Services;
+namespace Modules\ForgeDatabaseSQL\Services;
 
 use Forge\Core\Contracts\Database\DatabaseConnectionInterface;
 use Forge\Core\DI\Attributes\Service;
@@ -196,7 +196,7 @@ final class MigrationConflictHandlerService
             
             if (class_exists($className)) {
                 $reflection = new \ReflectionClass($className);
-                $attributes = $reflection->getAttributes(\App\Modules\ForgeDatabaseSQL\DB\Attributes\GroupMigration::class);
+                $attributes = $reflection->getAttributes(\Modules\ForgeDatabaseSQL\DB\Attributes\GroupMigration::class);
                 
                 if (!empty($attributes)) {
                     $instance = $attributes[0]->newInstance();

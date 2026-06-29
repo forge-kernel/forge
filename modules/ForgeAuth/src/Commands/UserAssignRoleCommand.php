@@ -2,12 +2,12 @@
 
 declare(strict_types=1);
 
-namespace App\Modules\ForgeAuth\Commands;
+namespace Modules\ForgeAuth\Commands;
 
-use App\Modules\ForgeAuth\Contracts\AuthUserInterface;
-use App\Modules\ForgeAuth\Contracts\UserProviderInterface;
-use App\Modules\ForgeAuth\Repositories\RoleRepository;
-use App\Modules\ForgeAuth\Services\RoleService;
+use Modules\ForgeAuth\Contracts\AuthUserInterface;
+use Modules\ForgeAuth\Contracts\UserProviderInterface;
+use Modules\ForgeAuth\Repositories\RoleRepository;
+use Modules\ForgeAuth\Services\RoleService;
 use Forge\CLI\Attributes\Arg;
 use Forge\CLI\Attributes\Cli;
 use Forge\CLI\Command;

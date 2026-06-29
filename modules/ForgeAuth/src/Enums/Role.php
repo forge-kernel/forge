@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Modules\ForgeAuth\Enums;
+namespace Modules\ForgeAuth\Enums;
 
 enum Role: string
 {

@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Modules\ForgeHub\Services;
+namespace Modules\ForgeHub\Services;
 
 interface ObservabilityServiceInterface
 {

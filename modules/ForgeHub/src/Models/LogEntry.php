@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Modules\ForgeHub\Models;
+namespace Modules\ForgeHub\Models;
 
 use DateTimeImmutable;
 

@@ -1,5 +1,5 @@
 <?php
-/** @var \App\Modules\ForgeAppAuth\Definitions\AuthCardDefinition $props */
+/** @var \Modules\ForgeAppAuth\Definitions\AuthCardDefinition $props */
 ?>
 <div class="fc-auth-card">
   <div class="fc-auth-card__header">

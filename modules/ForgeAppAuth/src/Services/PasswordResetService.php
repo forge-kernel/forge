@@ -1,11 +1,11 @@
 <?php
 declare(strict_types=1);
 
-namespace App\Modules\ForgeAppAuth\Services;
+namespace Modules\ForgeAppAuth\Services;
 
-use App\Modules\ForgeAppAuth\Repositories\UserRepository;
-use App\Modules\ForgeAuth\Contracts\AuthUserInterface;
-use App\Modules\ForgeNotification\Services\ForgeNotificationService;
+use Modules\ForgeAppAuth\Repositories\UserRepository;
+use Modules\ForgeAuth\Contracts\AuthUserInterface;
+use Modules\ForgeNotification\Services\ForgeNotificationService;
 use Forge\Core\Config\Config;
 use Forge\Core\Contracts\Database\QueryBuilderInterface;
 use Forge\Core\DI\Attributes\Service;

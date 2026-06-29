@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace App\Modules\ForgeNotification\Providers\Sms;
+namespace Modules\ForgeNotification\Providers\Sms;
 
-use App\Modules\ForgeNotification\Contracts\ProviderInterface;
-use App\Modules\ForgeNotification\Dto\NotificationDto;
-use App\Modules\ForgeNotification\Dto\SmsNotificationDto;
+use Modules\ForgeNotification\Contracts\ProviderInterface;
+use Modules\ForgeNotification\Dto\NotificationDto;
+use Modules\ForgeNotification\Dto\SmsNotificationDto;
 use Forge\Core\Config\Config;
 use Forge\Core\DI\Attributes\Service;
 

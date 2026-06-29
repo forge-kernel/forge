@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Modules\ForgeSaas\Dto;
+namespace Modules\ForgeSaas\Dto;
 
 final readonly class SaasPlan
 {

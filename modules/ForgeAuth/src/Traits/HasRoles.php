@@ -2,12 +2,12 @@
 
 declare(strict_types=1);
 
-namespace App\Modules\ForgeAuth\Traits;
+namespace Modules\ForgeAuth\Traits;
 
-use App\Modules\ForgeAuth\Contracts\AuthUserInterface;
-use App\Modules\ForgeAuth\Services\RoleService;
+use Modules\ForgeAuth\Contracts\AuthUserInterface;
+use Modules\ForgeAuth\Services\RoleService;
 use Forge\Core\DI\Container;
-use App\Modules\ForgeRouter\Http\Response;
+use Modules\ForgeRouter\Http\Response;
 
 trait HasRoles
 {

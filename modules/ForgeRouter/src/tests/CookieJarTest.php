@@ -2,13 +2,13 @@
 
 declare(strict_types=1);
 
-namespace App\Modules\ForgeRouter\Tests;
+namespace Modules\ForgeRouter\Tests;
 
-use App\Modules\ForgeTesting\Attributes\Group;
-use App\Modules\ForgeTesting\Attributes\Test;
-use App\Modules\ForgeTesting\TestCase;
-use App\Modules\ForgeRouter\Http\Cookie;
-use App\Modules\ForgeRouter\Http\CookieJar;
+use Modules\ForgeTesting\Attributes\Group;
+use Modules\ForgeTesting\Attributes\Test;
+use Modules\ForgeTesting\TestCase;
+use Modules\ForgeRouter\Http\Cookie;
+use Modules\ForgeRouter\Http\CookieJar;
 
 #[Group('http')]
 final class CookieJarTest extends TestCase

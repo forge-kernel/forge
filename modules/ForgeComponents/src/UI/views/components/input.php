@@ -1,5 +1,5 @@
 <?php
-use App\Modules\ForgeComponents\Definitions\InputDefinition;
+use Modules\ForgeComponents\Definitions\InputDefinition;
 /** @var InputDefinition $props */
 ?>
 <div class="fc-input-group">

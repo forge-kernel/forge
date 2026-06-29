@@ -2,18 +2,18 @@
 
 declare(strict_types=1);
 
-namespace App\Modules\AppAuth\Controllers\Api;
+namespace Modules\AppAuth\Controllers\Api;
 
-use App\Modules\ForgeAuth\Exceptions\LoginException;
-use App\Modules\ForgeAuth\Services\ForgeAuthService;
-use App\Modules\ForgeAuth\Services\TokenManagerService;
-use App\Modules\ForgeRouter\Http\Attributes\ApiRoute;
-use App\Modules\ForgeRouter\Attributes\Routable;
-use App\Modules\ForgeRouter\Http\Attributes\UseMiddleware;
-use App\Modules\ForgeRouter\Http\Request;
-use App\Modules\ForgeRouter\Http\Response;
+use Modules\ForgeAuth\Exceptions\LoginException;
+use Modules\ForgeAuth\Services\ForgeAuthService;
+use Modules\ForgeAuth\Services\TokenManagerService;
+use Modules\ForgeRouter\Http\Attributes\ApiRoute;
+use Modules\ForgeRouter\Attributes\Routable;
+use Modules\ForgeRouter\Http\Attributes\UseMiddleware;
+use Modules\ForgeRouter\Http\Request;
+use Modules\ForgeRouter\Http\Response;
 use Forge\Exceptions\ValidationException;
-use App\Modules\ForgeRouter\Traits\ResponseHelper;
+use Modules\ForgeRouter\Traits\ResponseHelper;
 use Forge\Traits\SecurityHelper;
 
 #[Routable(prefix: '/auth')]

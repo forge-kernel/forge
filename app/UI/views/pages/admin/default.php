@@ -1,9 +1,9 @@
 <?php
 
 $layoutSections = [
-    'breadcrumbs' => component(name: 'ForgeComponents:admin/breadcrumbs', props: new \App\Modules\ForgeComponents\Definitions\Admin\BreadcrumbsDefinition(items: [
-        new \App\Modules\ForgeComponents\Definitions\Admin\BreadcrumbItemDefinition(label: 'Home', href: '/dashboard'),
-        new \App\Modules\ForgeComponents\Definitions\Admin\BreadcrumbItemDefinition(label: 'Dashboard', active: true),
+    'breadcrumbs' => component(name: 'ForgeComponents:admin/breadcrumbs', props: new \Modules\ForgeComponents\Definitions\Admin\BreadcrumbsDefinition(items: [
+        new \Modules\ForgeComponents\Definitions\Admin\BreadcrumbItemDefinition(label: 'Home', href: '/dashboard'),
+        new \Modules\ForgeComponents\Definitions\Admin\BreadcrumbItemDefinition(label: 'Dashboard', active: true),
     ]))
 ];
 ?>

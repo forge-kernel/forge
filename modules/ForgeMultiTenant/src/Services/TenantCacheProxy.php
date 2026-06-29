@@ -1,10 +1,10 @@
 <?php
 declare(strict_types=1);
 
-namespace App\Modules\ForgeMultiTenant\Services;
+namespace Modules\ForgeMultiTenant\Services;
 
 use Forge\Core\Cache\CacheManager;
-use App\Modules\ForgeMultiTenant\DTO\Tenant;
+use Modules\ForgeMultiTenant\DTO\Tenant;
 
 final class TenantCacheProxy extends CacheManager
 {

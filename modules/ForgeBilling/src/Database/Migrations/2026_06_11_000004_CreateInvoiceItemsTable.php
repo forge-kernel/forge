@@ -2,13 +2,13 @@
 
 declare(strict_types=1);
 
-use App\Modules\ForgeDatabaseSQL\DB\Attributes\Column;
-use App\Modules\ForgeDatabaseSQL\DB\Attributes\GroupMigration;
-use App\Modules\ForgeDatabaseSQL\DB\Attributes\Index;
-use App\Modules\ForgeDatabaseSQL\DB\Attributes\Table;
-use App\Modules\ForgeDatabaseSQL\DB\Attributes\Timestamps;
-use App\Modules\ForgeDatabaseSQL\DB\Enums\ColumnType;
-use App\Modules\ForgeDatabaseSQL\DB\Migrations\Migration;
+use Modules\ForgeDatabaseSQL\DB\Attributes\Column;
+use Modules\ForgeDatabaseSQL\DB\Attributes\GroupMigration;
+use Modules\ForgeDatabaseSQL\DB\Attributes\Index;
+use Modules\ForgeDatabaseSQL\DB\Attributes\Table;
+use Modules\ForgeDatabaseSQL\DB\Attributes\Timestamps;
+use Modules\ForgeDatabaseSQL\DB\Enums\ColumnType;
+use Modules\ForgeDatabaseSQL\DB\Migrations\Migration;
 
 #[GroupMigration('central')]
 #[Table(name: 'invoice_items')]

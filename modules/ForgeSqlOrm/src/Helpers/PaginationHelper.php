@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace App\Modules\ForgeSqlOrm\Helpers;
+namespace Modules\ForgeSqlOrm\Helpers;
 
-use App\Modules\ForgeSqlOrm\ORM\Paginator;
+use Modules\ForgeSqlOrm\ORM\Paginator;
 
 class PaginationHelper
 {

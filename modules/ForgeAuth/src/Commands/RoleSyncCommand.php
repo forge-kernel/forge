@@ -2,20 +2,20 @@
 
 declare(strict_types=1);
 
-namespace App\Modules\ForgeAuth\Commands;
+namespace Modules\ForgeAuth\Commands;
 
-use App\Modules\ForgeAuth\Repositories\RoleRepository;
-use App\Modules\ForgeAuth\Repositories\PermissionRepository;
-use App\Modules\ForgeAuth\Services\RoleService;
-use App\Modules\ForgeAuth\Services\EnumGeneratorService;
-use App\Modules\ForgeAuth\Services\RolePermissionCacheService;
+use Modules\ForgeAuth\Repositories\RoleRepository;
+use Modules\ForgeAuth\Repositories\PermissionRepository;
+use Modules\ForgeAuth\Services\RoleService;
+use Modules\ForgeAuth\Services\EnumGeneratorService;
+use Modules\ForgeAuth\Services\RolePermissionCacheService;
 use Forge\CLI\Attributes\Cli;
 use Forge\CLI\Attributes\Arg;
 use Forge\CLI\Command;
 use Forge\CLI\Traits\Wizard;
 use Forge\Core\Services\TemplateGenerator;
-use App\Modules\ForgeLogger\Services\ForgeLoggerService;
-use App\Modules\ForgeDatabaseSQL\DB\Migrator;
+use Modules\ForgeLogger\Services\ForgeLoggerService;
+use Modules\ForgeDatabaseSQL\DB\Migrator;
 use Throwable;
 
 #[
@@ -209,7 +209,7 @@ final class RoleSyncCommand extends Command
     private function getCurrentEnumRoles(): array
     {
         $roleEnumPath =
-            \App\Modules\ForgeAuth\Services\EnumGeneratorService::ROLE_ENUM_PATH;
+            \Modules\ForgeAuth\Services\EnumGeneratorService::ROLE_ENUM_PATH;
         if (!file_exists($roleEnumPath)) {
             return [];
         }
@@ -239,7 +239,7 @@ final class RoleSyncCommand extends Command
     private function getCurrentEnumPermissions(): array
     {
         $permissionEnumPath =
-            \App\Modules\ForgeAuth\Services\EnumGeneratorService::PERMISSION_ENUM_PATH;
+            \Modules\ForgeAuth\Services\EnumGeneratorService::PERMISSION_ENUM_PATH;
         if (!file_exists($permissionEnumPath)) {
             return [];
         }

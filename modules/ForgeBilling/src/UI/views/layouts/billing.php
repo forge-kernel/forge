@@ -1,6 +1,6 @@
 <?php
 
-use App\Modules\ForgeRouter\Http\Request;
+use Modules\ForgeRouter\Http\Request;
 use Forge\Core\DI\Container;
 
 /**

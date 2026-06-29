@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace App\Listeners;
 
 use App\Events\TestPageVisitedEvent;
-use App\Modules\ForgeEvents\Attributes\EventListener;
+use Modules\ForgeEvents\Attributes\EventListener;
 use Forge\Core\DI\Attributes\Service;
 
 #[Service]

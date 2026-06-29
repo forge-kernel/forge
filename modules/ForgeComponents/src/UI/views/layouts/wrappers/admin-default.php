@@ -13,12 +13,12 @@ $layoutProps = array_merge($layoutProps ?? [], [
     'bodyClass' => 'fc-admin',
 ]);
 
-use App\Modules\ForgeComponents\Definitions\Admin\SidebarDefinition;
-use App\Modules\ForgeComponents\Definitions\Admin\NavGroupDefinition;
-use App\Modules\ForgeComponents\Definitions\Admin\NavItemDefinition;
-use App\Modules\ForgeComponents\Definitions\Admin\IconDefinition;
-use App\Modules\ForgeComponents\Definitions\Admin\UserDropdownDefinition;
-use App\Modules\ForgeComponents\Definitions\Admin\DropdownItemDefinition;
+use Modules\ForgeComponents\Definitions\Admin\SidebarDefinition;
+use Modules\ForgeComponents\Definitions\Admin\NavGroupDefinition;
+use Modules\ForgeComponents\Definitions\Admin\NavItemDefinition;
+use Modules\ForgeComponents\Definitions\Admin\IconDefinition;
+use Modules\ForgeComponents\Definitions\Admin\UserDropdownDefinition;
+use Modules\ForgeComponents\Definitions\Admin\DropdownItemDefinition;
 
 $sidebar = $layoutProps['sidebar'] ?? new SidebarDefinition(
     brand: 'Admin',

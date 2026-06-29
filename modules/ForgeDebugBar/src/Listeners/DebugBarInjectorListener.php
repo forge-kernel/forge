@@ -1,8 +1,8 @@
 <?php
 
-namespace App\Modules\ForgeDebugbar\Listeners;
+namespace Modules\ForgeDebugbar\Listeners;
 
-use App\Modules\ForgeRouter\Contracts\DebugBarInterface;
+use Modules\ForgeRouter\Contracts\DebugBarInterface;
 
 class DebugBarInjectorListener
 {

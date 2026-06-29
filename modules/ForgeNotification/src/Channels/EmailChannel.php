@@ -2,16 +2,16 @@
 
 declare(strict_types=1);
 
-namespace App\Modules\ForgeNotification\Channels;
+namespace Modules\ForgeNotification\Channels;
 
-use App\Modules\ForgeEvents\Exceptions\EventException;
-use App\Modules\ForgeEvents\Services\EventDispatcher;
-use App\Modules\ForgeNotification\Contracts\ChannelInterface;
-use App\Modules\ForgeNotification\Contracts\ProviderInterface;
-use App\Modules\ForgeNotification\Dto\EmailNotificationDto;
-use App\Modules\ForgeNotification\Dto\NotificationDto;
-use App\Modules\ForgeNotification\Events\EmailNotificationEvent;
-use App\Modules\ForgeNotification\Services\ProviderResolver;
+use Modules\ForgeEvents\Exceptions\EventException;
+use Modules\ForgeEvents\Services\EventDispatcher;
+use Modules\ForgeNotification\Contracts\ChannelInterface;
+use Modules\ForgeNotification\Contracts\ProviderInterface;
+use Modules\ForgeNotification\Dto\EmailNotificationDto;
+use Modules\ForgeNotification\Dto\NotificationDto;
+use Modules\ForgeNotification\Events\EmailNotificationEvent;
+use Modules\ForgeNotification\Services\ProviderResolver;
 use Forge\Core\Config\Config;
 use Forge\Core\DI\Attributes\Service;
 

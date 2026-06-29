@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace App\Modules\ForgeDatabaseSQL\Commands;
+namespace Modules\ForgeDatabaseSQL\Commands;
 
-use App\Modules\ForgeDatabaseSQL\DB\Migrator;
+use Modules\ForgeDatabaseSQL\DB\Migrator;
 use Exception;
 use Forge\CLI\Attributes\Arg;
 use Forge\CLI\Attributes\Cli;

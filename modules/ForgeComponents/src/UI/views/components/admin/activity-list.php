@@ -1,5 +1,5 @@
 <?php
-use App\Modules\ForgeComponents\Definitions\Admin\ActivityItemDefinition;
+use Modules\ForgeComponents\Definitions\Admin\ActivityItemDefinition;
 /** @var array<string, mixed> $props */
 $activities = $props['activities'] ?? [];
 ?>
@@ -19,7 +19,7 @@ $activities = $props['activities'] ?? [];
             <?php if (str_starts_with($a->icon, '<svg')): ?>
               <?= $a->icon ?>
             <?php else: ?>
-              <?= component(name: 'ForgeComponents:admin/icon', props: new \App\Modules\ForgeComponents\Definitions\Admin\IconDefinition(name: $a->icon)) ?>
+              <?= component(name: 'ForgeComponents:admin/icon', props: new \Modules\ForgeComponents\Definitions\Admin\IconDefinition(name: $a->icon)) ?>
             <?php endif; ?>
           </span>
     <?php endif; ?>

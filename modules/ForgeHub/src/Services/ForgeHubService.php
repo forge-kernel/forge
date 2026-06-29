@@ -2,12 +2,12 @@
 
 declare(strict_types=1);
 
-namespace App\Modules\ForgeHub\Services;
+namespace Modules\ForgeHub\Services;
 
 use Forge\Core\DI\Attributes\Service;
 use Forge\Core\Module\Attributes\Provides;
 use Forge\Core\Module\Attributes\Requires;
-use App\Modules\ForgeHub\Contracts\ForgeHubInterface;
+use Modules\ForgeHub\Contracts\ForgeHubInterface;
 
 #[Service]
 #[Provides(interface: ForgeHubInterface::class, version: '0.1.0')]

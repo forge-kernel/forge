@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace App\Modules\ForgeBilling\Commands;
+namespace Modules\ForgeBilling\Commands;
 
-use App\Modules\ForgeBilling\Services\BillingPlanService;
+use Modules\ForgeBilling\Services\BillingPlanService;
 use Forge\CLI\Attributes\Arg;
 use Forge\CLI\Attributes\Cli;
 use Forge\CLI\Command;

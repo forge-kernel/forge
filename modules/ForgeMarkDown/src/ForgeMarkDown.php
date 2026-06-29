@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Modules\ForgeMarkDown;
+namespace Modules\ForgeMarkDown;
 
 class ForgeMarkDown
 {

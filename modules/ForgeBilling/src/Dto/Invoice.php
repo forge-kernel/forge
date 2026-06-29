@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace App\Modules\ForgeBilling\Dto;
+namespace Modules\ForgeBilling\Dto;
 
-use App\Modules\ForgeBilling\Enums\InvoiceStatus;
+use Modules\ForgeBilling\Enums\InvoiceStatus;
 
 final readonly class Invoice
 {

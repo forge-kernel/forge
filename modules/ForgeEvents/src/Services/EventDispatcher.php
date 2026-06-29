@@ -2,16 +2,16 @@
 
 declare(strict_types=1);
 
-namespace App\Modules\ForgeEvents\Services;
+namespace Modules\ForgeEvents\Services;
 
-use App\Modules\ForgeEvents\Attributes\Event;
-use App\Modules\ForgeEvents\Attributes\EventListener;
-use App\Modules\ForgeEvents\Contracts\Queueinterface;
-use App\Modules\ForgeEvents\Enums\QueuePriority;
-use App\Modules\ForgeEvents\Exceptions\EventException;
-use App\Modules\ForgeEvents\Queues\DatabaseQueue;
-use App\Modules\ForgeEvents\Queues\FileQueue;
-use App\Modules\ForgeEvents\Queues\InMemoryQueue;
+use Modules\ForgeEvents\Attributes\Event;
+use Modules\ForgeEvents\Attributes\EventListener;
+use Modules\ForgeEvents\Contracts\Queueinterface;
+use Modules\ForgeEvents\Enums\QueuePriority;
+use Modules\ForgeEvents\Exceptions\EventException;
+use Modules\ForgeEvents\Queues\DatabaseQueue;
+use Modules\ForgeEvents\Queues\FileQueue;
+use Modules\ForgeEvents\Queues\InMemoryQueue;
 use Forge\CLI\Traits\OutputHelper;
 use Forge\Core\Cache\Attributes\NoCache;
 use Forge\Core\Config\Environment;

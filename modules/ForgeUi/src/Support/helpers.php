@@ -30,9 +30,9 @@ if (!function_exists('modal')) {
             'cancelAction' => $options['cancelAction'],
         ];
         
-        if (class_exists('\App\Modules\ForgeWire\Response\ForgeWireResponse')) {
-            $context = \App\Modules\ForgeWire\Response\ForgeWireResponse::getContext(
-                \App\Modules\ForgeWire\Response\ForgeWireResponse::getCurrentContextId()
+        if (class_exists('\Modules\ForgeWire\Response\ForgeWireResponse')) {
+            $context = \Modules\ForgeWire\Response\ForgeWireResponse::getContext(
+                \Modules\ForgeWire\Response\ForgeWireResponse::getCurrentContextId()
             );
             if ($context) {
                 $context->addEvent('openModal', $data);
@@ -49,9 +49,9 @@ if (!function_exists('close_modal')) {
     {
         $data = $id ? ['id' => $id] : [];
         
-        if (class_exists('\App\Modules\ForgeWire\Response\ForgeWireResponse')) {
-            $context = \App\Modules\ForgeWire\Response\ForgeWireResponse::getContext(
-                \App\Modules\ForgeWire\Response\ForgeWireResponse::getCurrentContextId()
+        if (class_exists('\Modules\ForgeWire\Response\ForgeWireResponse')) {
+            $context = \Modules\ForgeWire\Response\ForgeWireResponse::getContext(
+                \Modules\ForgeWire\Response\ForgeWireResponse::getCurrentContextId()
             );
             if ($context) {
                 $context->addEvent('closeModal', $data);
@@ -72,9 +72,9 @@ if (!function_exists('notification')) {
             'duration' => $duration,
         ];
         
-        if (class_exists('\App\Modules\ForgeWire\Response\ForgeWireResponse')) {
-            $context = \App\Modules\ForgeWire\Response\ForgeWireResponse::getContext(
-                \App\Modules\ForgeWire\Response\ForgeWireResponse::getCurrentContextId()
+        if (class_exists('\Modules\ForgeWire\Response\ForgeWireResponse')) {
+            $context = \Modules\ForgeWire\Response\ForgeWireResponse::getContext(
+                \Modules\ForgeWire\Response\ForgeWireResponse::getCurrentContextId()
             );
             if ($context) {
                 $context->addEvent('showNotification', $data);
@@ -105,9 +105,9 @@ if (!function_exists('tooltip')) {
             'trigger' => $options['trigger'],
         ];
         
-        if (class_exists('\App\Modules\ForgeWire\Response\ForgeWireResponse')) {
-            $context = \App\Modules\ForgeWire\Response\ForgeWireResponse::getContext(
-                \App\Modules\ForgeWire\Response\ForgeWireResponse::getCurrentContextId()
+        if (class_exists('\Modules\ForgeWire\Response\ForgeWireResponse')) {
+            $context = \Modules\ForgeWire\Response\ForgeWireResponse::getContext(
+                \Modules\ForgeWire\Response\ForgeWireResponse::getCurrentContextId()
             );
             if ($context) {
                 $context->addEvent('showTooltip', $data);
@@ -124,9 +124,9 @@ if (!function_exists('hide_tooltip')) {
     {
         $data = $target ? ['target' => $target] : [];
         
-        if (class_exists('\App\Modules\ForgeWire\Response\ForgeWireResponse')) {
-            $context = \App\Modules\ForgeWire\Response\ForgeWireResponse::getContext(
-                \App\Modules\ForgeWire\Response\ForgeWireResponse::getCurrentContextId()
+        if (class_exists('\Modules\ForgeWire\Response\ForgeWireResponse')) {
+            $context = \Modules\ForgeWire\Response\ForgeWireResponse::getContext(
+                \Modules\ForgeWire\Response\ForgeWireResponse::getCurrentContextId()
             );
             if ($context) {
                 $context->addEvent('hideTooltip', $data);
@@ -147,9 +147,9 @@ if (!function_exists('dropdown')) {
             ...$options,
         ];
         
-        if (class_exists('\App\Modules\ForgeWire\Response\ForgeWireResponse')) {
-            $context = \App\Modules\ForgeWire\Response\ForgeWireResponse::getContext(
-                \App\Modules\ForgeWire\Response\ForgeWireResponse::getCurrentContextId()
+        if (class_exists('\Modules\ForgeWire\Response\ForgeWireResponse')) {
+            $context = \Modules\ForgeWire\Response\ForgeWireResponse::getContext(
+                \Modules\ForgeWire\Response\ForgeWireResponse::getCurrentContextId()
             );
             if ($context) {
                 $context->addEvent('createDropdown', $data);
@@ -166,9 +166,9 @@ if (!function_exists('open_dropdown')) {
     {
         $data = ['id' => $id, 'target' => $target];
         
-        if (class_exists('\App\Modules\ForgeWire\Response\ForgeWireResponse')) {
-            $context = \App\Modules\ForgeWire\Response\ForgeWireResponse::getContext(
-                \App\Modules\ForgeWire\Response\ForgeWireResponse::getCurrentContextId()
+        if (class_exists('\Modules\ForgeWire\Response\ForgeWireResponse')) {
+            $context = \Modules\ForgeWire\Response\ForgeWireResponse::getContext(
+                \Modules\ForgeWire\Response\ForgeWireResponse::getCurrentContextId()
             );
             if ($context) {
                 $context->addEvent('openDropdown', $data);
@@ -185,9 +185,9 @@ if (!function_exists('close_dropdown')) {
     {
         $data = $id ? ['id' => $id] : [];
         
-        if (class_exists('\App\Modules\ForgeWire\Response\ForgeWireResponse')) {
-            $context = \App\Modules\ForgeWire\Response\ForgeWireResponse::getContext(
-                \App\Modules\ForgeWire\Response\ForgeWireResponse::getCurrentContextId()
+        if (class_exists('\Modules\ForgeWire\Response\ForgeWireResponse')) {
+            $context = \Modules\ForgeWire\Response\ForgeWireResponse::getContext(
+                \Modules\ForgeWire\Response\ForgeWireResponse::getCurrentContextId()
             );
             if ($context) {
                 $context->addEvent('closeDropdown', $data);
@@ -216,9 +216,9 @@ if (!function_exists('tabs')) {
             'defaultActive' => $options['defaultActive'],
         ];
         
-        if (class_exists('\App\Modules\ForgeWire\Response\ForgeWireResponse')) {
-            $context = \App\Modules\ForgeWire\Response\ForgeWireResponse::getContext(
-                \App\Modules\ForgeWire\Response\ForgeWireResponse::getCurrentContextId()
+        if (class_exists('\Modules\ForgeWire\Response\ForgeWireResponse')) {
+            $context = \Modules\ForgeWire\Response\ForgeWireResponse::getContext(
+                \Modules\ForgeWire\Response\ForgeWireResponse::getCurrentContextId()
             );
             if ($context) {
                 $context->addEvent('createTabs', $data);
@@ -235,9 +235,9 @@ if (!function_exists('switch_tab')) {
     {
         $data = ['id' => $id, 'index' => $index];
         
-        if (class_exists('\App\Modules\ForgeWire\Response\ForgeWireResponse')) {
-            $context = \App\Modules\ForgeWire\Response\ForgeWireResponse::getContext(
-                \App\Modules\ForgeWire\Response\ForgeWireResponse::getCurrentContextId()
+        if (class_exists('\Modules\ForgeWire\Response\ForgeWireResponse')) {
+            $context = \Modules\ForgeWire\Response\ForgeWireResponse::getContext(
+                \Modules\ForgeWire\Response\ForgeWireResponse::getCurrentContextId()
             );
             if ($context) {
                 $context->addEvent('switchTab', $data);
@@ -266,9 +266,9 @@ if (!function_exists('accordion')) {
             'openItems' => $options['openItems'],
         ];
         
-        if (class_exists('\App\Modules\ForgeWire\Response\ForgeWireResponse')) {
-            $context = \App\Modules\ForgeWire\Response\ForgeWireResponse::getContext(
-                \App\Modules\ForgeWire\Response\ForgeWireResponse::getCurrentContextId()
+        if (class_exists('\Modules\ForgeWire\Response\ForgeWireResponse')) {
+            $context = \Modules\ForgeWire\Response\ForgeWireResponse::getContext(
+                \Modules\ForgeWire\Response\ForgeWireResponse::getCurrentContextId()
             );
             if ($context) {
                 $context->addEvent('createAccordion', $data);
@@ -285,9 +285,9 @@ if (!function_exists('toggle_accordion')) {
     {
         $data = ['id' => $id, 'index' => $index];
         
-        if (class_exists('\App\Modules\ForgeWire\Response\ForgeWireResponse')) {
-            $context = \App\Modules\ForgeWire\Response\ForgeWireResponse::getContext(
-                \App\Modules\ForgeWire\Response\ForgeWireResponse::getCurrentContextId()
+        if (class_exists('\Modules\ForgeWire\Response\ForgeWireResponse')) {
+            $context = \Modules\ForgeWire\Response\ForgeWireResponse::getContext(
+                \Modules\ForgeWire\Response\ForgeWireResponse::getCurrentContextId()
             );
             if ($context) {
                 $context->addEvent('toggleAccordion', $data);
@@ -319,9 +319,9 @@ if (!function_exists('show_loading')) {
             'message' => $options['message'],
         ];
         
-        if (class_exists('\App\Modules\ForgeWire\Response\ForgeWireResponse')) {
-            $context = \App\Modules\ForgeWire\Response\ForgeWireResponse::getContext(
-                \App\Modules\ForgeWire\Response\ForgeWireResponse::getCurrentContextId()
+        if (class_exists('\Modules\ForgeWire\Response\ForgeWireResponse')) {
+            $context = \Modules\ForgeWire\Response\ForgeWireResponse::getContext(
+                \Modules\ForgeWire\Response\ForgeWireResponse::getCurrentContextId()
             );
             if ($context) {
                 $context->addEvent('showLoading', $data);
@@ -338,9 +338,9 @@ if (!function_exists('hide_loading')) {
     {
         $data = $id ? ['id' => $id] : [];
         
-        if (class_exists('\App\Modules\ForgeWire\Response\ForgeWireResponse')) {
-            $context = \App\Modules\ForgeWire\Response\ForgeWireResponse::getContext(
-                \App\Modules\ForgeWire\Response\ForgeWireResponse::getCurrentContextId()
+        if (class_exists('\Modules\ForgeWire\Response\ForgeWireResponse')) {
+            $context = \Modules\ForgeWire\Response\ForgeWireResponse::getContext(
+                \Modules\ForgeWire\Response\ForgeWireResponse::getCurrentContextId()
             );
             if ($context) {
                 $context->addEvent('hideLoading', $data);
@@ -373,9 +373,9 @@ if (!function_exists('progress')) {
             'color' => $options['color'],
         ];
         
-        if (class_exists('\App\Modules\ForgeWire\Response\ForgeWireResponse')) {
-            $context = \App\Modules\ForgeWire\Response\ForgeWireResponse::getContext(
-                \App\Modules\ForgeWire\Response\ForgeWireResponse::getCurrentContextId()
+        if (class_exists('\Modules\ForgeWire\Response\ForgeWireResponse')) {
+            $context = \Modules\ForgeWire\Response\ForgeWireResponse::getContext(
+                \Modules\ForgeWire\Response\ForgeWireResponse::getCurrentContextId()
             );
             if ($context) {
                 $context->addEvent('createProgress', $data);
@@ -392,9 +392,9 @@ if (!function_exists('update_progress')) {
     {
         $data = ['id' => $id, 'value' => $value];
         
-        if (class_exists('\App\Modules\ForgeWire\Response\ForgeWireResponse')) {
-            $context = \App\Modules\ForgeWire\Response\ForgeWireResponse::getContext(
-                \App\Modules\ForgeWire\Response\ForgeWireResponse::getCurrentContextId()
+        if (class_exists('\Modules\ForgeWire\Response\ForgeWireResponse')) {
+            $context = \Modules\ForgeWire\Response\ForgeWireResponse::getContext(
+                \Modules\ForgeWire\Response\ForgeWireResponse::getCurrentContextId()
             );
             if ($context) {
                 $context->addEvent('updateProgress', $data);
@@ -415,9 +415,9 @@ if (!function_exists('toast')) {
             'duration' => $duration,
         ];
         
-        if (class_exists('\App\Modules\ForgeWire\Response\ForgeWireResponse')) {
-            $context = \App\Modules\ForgeWire\Response\ForgeWireResponse::getContext(
-                \App\Modules\ForgeWire\Response\ForgeWireResponse::getCurrentContextId()
+        if (class_exists('\Modules\ForgeWire\Response\ForgeWireResponse')) {
+            $context = \Modules\ForgeWire\Response\ForgeWireResponse::getContext(
+                \Modules\ForgeWire\Response\ForgeWireResponse::getCurrentContextId()
             );
             if ($context) {
                 $context->addEvent('showToast', $data);
@@ -450,9 +450,9 @@ if (!function_exists('drawer')) {
             'title' => $options['title'],
         ];
         
-        if (class_exists('\App\Modules\ForgeWire\Response\ForgeWireResponse')) {
-            $context = \App\Modules\ForgeWire\Response\ForgeWireResponse::getContext(
-                \App\Modules\ForgeWire\Response\ForgeWireResponse::getCurrentContextId()
+        if (class_exists('\Modules\ForgeWire\Response\ForgeWireResponse')) {
+            $context = \Modules\ForgeWire\Response\ForgeWireResponse::getContext(
+                \Modules\ForgeWire\Response\ForgeWireResponse::getCurrentContextId()
             );
             if ($context) {
                 $context->addEvent('openDrawer', $data);
@@ -469,9 +469,9 @@ if (!function_exists('close_drawer')) {
     {
         $data = $id ? ['id' => $id] : [];
         
-        if (class_exists('\App\Modules\ForgeWire\Response\ForgeWireResponse')) {
-            $context = \App\Modules\ForgeWire\Response\ForgeWireResponse::getContext(
-                \App\Modules\ForgeWire\Response\ForgeWireResponse::getCurrentContextId()
+        if (class_exists('\Modules\ForgeWire\Response\ForgeWireResponse')) {
+            $context = \Modules\ForgeWire\Response\ForgeWireResponse::getContext(
+                \Modules\ForgeWire\Response\ForgeWireResponse::getCurrentContextId()
             );
             if ($context) {
                 $context->addEvent('closeDrawer', $data);
@@ -500,9 +500,9 @@ if (!function_exists('popover')) {
             'trigger' => $options['trigger'],
         ];
         
-        if (class_exists('\App\Modules\ForgeWire\Response\ForgeWireResponse')) {
-            $context = \App\Modules\ForgeWire\Response\ForgeWireResponse::getContext(
-                \App\Modules\ForgeWire\Response\ForgeWireResponse::getCurrentContextId()
+        if (class_exists('\Modules\ForgeWire\Response\ForgeWireResponse')) {
+            $context = \Modules\ForgeWire\Response\ForgeWireResponse::getContext(
+                \Modules\ForgeWire\Response\ForgeWireResponse::getCurrentContextId()
             );
             if ($context) {
                 $context->addEvent('showPopover', $data);

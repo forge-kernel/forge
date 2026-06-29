@@ -2,18 +2,18 @@
 
 declare(strict_types=1);
 
-namespace App\Modules\ForgeAuth\Commands;
+namespace Modules\ForgeAuth\Commands;
 
-use App\Modules\ForgeAuth\Repositories\RoleRepository;
-use App\Modules\ForgeAuth\Repositories\PermissionRepository;
-use App\Modules\ForgeAuth\Services\RoleService;
-use App\Modules\ForgeAuth\Services\EnumGeneratorService;
+use Modules\ForgeAuth\Repositories\RoleRepository;
+use Modules\ForgeAuth\Repositories\PermissionRepository;
+use Modules\ForgeAuth\Services\RoleService;
+use Modules\ForgeAuth\Services\EnumGeneratorService;
 use Forge\CLI\Attributes\Cli;
 use Forge\CLI\Attributes\Arg;
 use Forge\CLI\Command;
 use Forge\CLI\Traits\Wizard;
 use Forge\Core\Services\TemplateGenerator;
-use App\Modules\ForgeLogger\Services\ForgeLoggerService;
+use Modules\ForgeLogger\Services\ForgeLoggerService;
 use Throwable;
 
 #[

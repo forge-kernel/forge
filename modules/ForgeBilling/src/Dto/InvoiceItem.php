@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Modules\ForgeBilling\Dto;
+namespace Modules\ForgeBilling\Dto;
 
 final readonly class InvoiceItem
 {

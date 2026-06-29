@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 
-namespace App\Modules\ForgeAppAuth\Definitions;
+namespace Modules\ForgeAppAuth\Definitions;
 
 final readonly class AuthCardDefinition
 {

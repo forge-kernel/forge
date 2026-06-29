@@ -3,10 +3,10 @@
 
 declare(strict_types=1);
 
-namespace App\Modules\ForgeDatabaseSQL\DB\Seeders;
+namespace Modules\ForgeDatabaseSQL\DB\Seeders;
 
-use App\Modules\ForgeDatabaseSQL\DB\Seeders\Attributes\Seedable;
-use App\Modules\ForgeDatabaseSQL\DB\Seeders\Attributes\Seeder;
+use Modules\ForgeDatabaseSQL\DB\Seeders\Attributes\Seedable;
+use Modules\ForgeDatabaseSQL\DB\Seeders\Attributes\Seeder;
 use Forge\Core\Bootstrap\OptimizedDirectoryScanner;
 use Forge\Core\Contracts\Database\DatabaseConnectionInterface;
 use Forge\Core\Helpers\ModuleHelper;

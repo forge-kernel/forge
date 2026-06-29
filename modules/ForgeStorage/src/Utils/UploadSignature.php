@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Modules\ForgeStorage\Utils;
+namespace Modules\ForgeStorage\Utils;
 
 use Forge\Core\Config\Config;
 use Forge\Core\DI\Attributes\Service;

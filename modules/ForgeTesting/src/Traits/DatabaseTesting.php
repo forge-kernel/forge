@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Modules\ForgeTesting\Traits;
+namespace Modules\ForgeTesting\Traits;
 
 use Forge\Core\Contracts\Database\QueryBuilderInterface;
 use Forge\Core\DI\Container;

@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace App\Modules\ForgeSaas\Commands;
+namespace Modules\ForgeSaas\Commands;
 
-use App\Modules\ForgeSaas\Contracts\SubscriptionManagerInterface;
+use Modules\ForgeSaas\Contracts\SubscriptionManagerInterface;
 use Forge\CLI\Attributes\Arg;
 use Forge\CLI\Attributes\Cli;
 use Forge\CLI\Command;

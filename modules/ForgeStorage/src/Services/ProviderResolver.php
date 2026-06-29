@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace App\Modules\ForgeStorage\Services;
+namespace Modules\ForgeStorage\Services;
 
-use App\Modules\ForgeStorage\Contracts\StorageDriverInterface;
-use App\Modules\ForgeStorage\Drivers\LocalDriver;
-use App\Modules\ForgeStorage\Drivers\S3Driver;
+use Modules\ForgeStorage\Contracts\StorageDriverInterface;
+use Modules\ForgeStorage\Drivers\LocalDriver;
+use Modules\ForgeStorage\Drivers\S3Driver;
 use Forge\Core\Config\Config;
 use Forge\Core\DI\Attributes\Service;
 use Forge\Core\DI\Container;

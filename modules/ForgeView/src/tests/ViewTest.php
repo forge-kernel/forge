@@ -2,14 +2,14 @@
 
 declare(strict_types=1);
 
-namespace App\Modules\ForgeView\tests;
+namespace Modules\ForgeView\tests;
 
-use App\Modules\ForgeTesting\Attributes\AfterEach;
-use App\Modules\ForgeTesting\Attributes\BeforeEach;
-use App\Modules\ForgeTesting\Attributes\Group;
-use App\Modules\ForgeTesting\Attributes\Test;
-use App\Modules\ForgeTesting\TestCase;
-use App\Modules\ForgeView\View;
+use Modules\ForgeTesting\Attributes\AfterEach;
+use Modules\ForgeTesting\Attributes\BeforeEach;
+use Modules\ForgeTesting\Attributes\Group;
+use Modules\ForgeTesting\Attributes\Test;
+use Modules\ForgeTesting\TestCase;
+use Modules\ForgeView\View;
 use Forge\Core\DI\Container;
 
 #[Group('view')]
@@ -60,8 +60,8 @@ final class ViewTest extends TestCase
     #[Test('renders view with layout and sections')]
     public function renders_with_layout_and_sections(): void
     {
-        file_put_contents($this->tmpDir . '/layouts/app.php', '<html><head><title><?= \App\Modules\ForgeView\View::section("title") ?></title></head><body><?= $content ?></body></html>');
-        file_put_contents($this->tmpDir . '/page.php', "<?php \App\Modules\ForgeView\View::layout('app'); \App\Modules\ForgeView\View::startSection('title'); ?>My Page<?php \App\Modules\ForgeView\View::endSection(); ?><h1>Page content</h1>");
+        file_put_contents($this->tmpDir . '/layouts/app.php', '<html><head><title><?= \Modules\ForgeView\View::section("title") ?></title></head><body><?= $content ?></body></html>');
+        file_put_contents($this->tmpDir . '/page.php', "<?php \Modules\ForgeView\View::layout('app'); \Modules\ForgeView\View::startSection('title'); ?>My Page<?php \Modules\ForgeView\View::endSection(); ?><h1>Page content</h1>");
 
         $view = new View(Container::getInstance(), $this->tmpDir, $this->tmpDir . '/components');
         $content = $view->render('page');
@@ -72,7 +72,7 @@ final class ViewTest extends TestCase
     #[Test('suppressLayout ignores layout directive')]
     public function suppress_layout_ignores_directive(): void
     {
-        file_put_contents($this->tmpDir . '/page2.php', "<?php \App\Modules\ForgeView\View::layout('app'); ?>only content");
+        file_put_contents($this->tmpDir . '/page2.php', "<?php \Modules\ForgeView\View::layout('app'); ?>only content");
 
         View::suppressLayout(true);
         $view = new View(Container::getInstance(), $this->tmpDir, $this->tmpDir . '/components');

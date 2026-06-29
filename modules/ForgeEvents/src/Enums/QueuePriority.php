@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Modules\ForgeEvents\Enums;
+namespace Modules\ForgeEvents\Enums;
 
 enum QueuePriority: int
 {

@@ -2,21 +2,21 @@
 
 declare(strict_types=1);
 
-namespace App\Modules\ForgeRouter\Routing;
+namespace Modules\ForgeRouter\Routing;
 
-use App\Modules\ForgeRouter\Contracts\RouteScopeFilterInterface;
+use Modules\ForgeRouter\Contracts\RouteScopeFilterInterface;
 use Forge\Core\Debug\Metrics;
 use Forge\Core\DI\Container;
 use Forge\Core\Helpers\ModuleHelper;
-use App\Modules\ForgeRouter\Attributes\Layout;
-use App\Modules\ForgeRouter\Attributes\Routable;
-use App\Modules\ForgeRouter\Http\Attributes\ApiRoute;
-use App\Modules\ForgeRouter\Http\Attributes\RequiresRole;
-use App\Modules\ForgeRouter\Http\Attributes\UseMiddleware;
+use Modules\ForgeRouter\Attributes\Layout;
+use Modules\ForgeRouter\Attributes\Routable;
+use Modules\ForgeRouter\Http\Attributes\ApiRoute;
+use Modules\ForgeRouter\Http\Attributes\RequiresRole;
+use Modules\ForgeRouter\Http\Attributes\UseMiddleware;
 use Forge\Exceptions\MissingServiceException;
 use ReflectionClass;
-use App\Modules\ForgeRouter\Http\Request;
-use App\Modules\ForgeRouter\Traits\ResponseHelper;
+use Modules\ForgeRouter\Http\Request;
+use Modules\ForgeRouter\Traits\ResponseHelper;
 use ReflectionMethod;
 
 final class Router

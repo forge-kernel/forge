@@ -1,6 +1,6 @@
 <?php
 
-/** @var \App\Modules\ForgeComponents\Definitions\Admin\SidebarDefinition $props */
+/** @var \Modules\ForgeComponents\Definitions\Admin\SidebarDefinition $props */
 
 $abbr = '';
 if ($props->brand) {
@@ -67,7 +67,7 @@ if ($props->brand) {
           <?php endif; ?>
         </div>
         <span class="fc-admin__sidebar-context-chevron">
-          <?= component(name: 'ForgeComponents:admin/icon', props: new \App\Modules\ForgeComponents\Definitions\Admin\IconDefinition(name: 'chevron-right')) ?>
+          <?= component(name: 'ForgeComponents:admin/icon', props: new \Modules\ForgeComponents\Definitions\Admin\IconDefinition(name: 'chevron-right')) ?>
         </span>
       </div>
     <?php endif; ?>

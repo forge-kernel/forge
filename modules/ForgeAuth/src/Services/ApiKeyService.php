@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace App\Modules\ForgeAuth\Services;
+namespace Modules\ForgeAuth\Services;
 
-use App\Modules\ForgeAuth\Contracts\AuthUserInterface;
-use App\Modules\ForgeAuth\Repositories\PermissionRepository;
-use App\Modules\ForgeAuth\Repositories\ApiKeyRepository;
+use Modules\ForgeAuth\Contracts\AuthUserInterface;
+use Modules\ForgeAuth\Repositories\PermissionRepository;
+use Modules\ForgeAuth\Repositories\ApiKeyRepository;
 use Forge\Core\DI\Attributes\Service;
 
 #[Service]

@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace App\Modules\ForgeTesting\Commands;
+namespace Modules\ForgeTesting\Commands;
 
-use App\Modules\ForgeTesting\Services\TestRunnerService;
+use Modules\ForgeTesting\Services\TestRunnerService;
 use Forge\CLI\Command;
 use Forge\CLI\Attributes\Cli;
 use Forge\CLI\Attributes\Arg;

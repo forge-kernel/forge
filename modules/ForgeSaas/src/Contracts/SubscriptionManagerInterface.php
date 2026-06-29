@@ -2,12 +2,12 @@
 
 declare(strict_types=1);
 
-namespace App\Modules\ForgeSaas\Contracts;
+namespace Modules\ForgeSaas\Contracts;
 
-use App\Modules\ForgeSaas\Dto\SaasPlan;
-use App\Modules\ForgeSaas\Dto\SaasSubscription;
-use App\Modules\ForgeSaas\Enums\SubscriptionStatus;
-use App\Modules\ForgeMultiTenant\DTO\Tenant;
+use Modules\ForgeSaas\Dto\SaasPlan;
+use Modules\ForgeSaas\Dto\SaasSubscription;
+use Modules\ForgeSaas\Enums\SubscriptionStatus;
+use Modules\ForgeMultiTenant\DTO\Tenant;
 
 interface SubscriptionManagerInterface
 {

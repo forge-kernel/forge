@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace App\Modules\ForgeAuth\Services;
+namespace Modules\ForgeAuth\Services;
 
-use App\Modules\ForgeAuth\Exceptions\JwtTokenExpiredException;
-use App\Modules\ForgeAuth\Exceptions\JwtTokenInvalidException;
+use Modules\ForgeAuth\Exceptions\JwtTokenExpiredException;
+use Modules\ForgeAuth\Exceptions\JwtTokenInvalidException;
 use Forge\Core\Config\Config;
 use Forge\Core\DI\Attributes\Service;
 

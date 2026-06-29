@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace App\Modules\ForgeRouter\Http;
+namespace Modules\ForgeRouter\Http;
 
-use App\Modules\ForgeRouter\Http\UploadedFile;
+use Modules\ForgeRouter\Http\UploadedFile;
 
 final class Request
 {
@@ -384,7 +384,7 @@ final class Request
      * Gets an uploaded file by key.
      *
      * @param string $key The name of the uploaded file
-     * @return \App\Modules\ForgeRouter\Http\UploadedFile|null The UploadedFile object or null if not found
+     * @return \Modules\ForgeRouter\Http\UploadedFile|null The UploadedFile object or null if not found
      */
     public function getFile(string $key): ?UploadedFile
     {

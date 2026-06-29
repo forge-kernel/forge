@@ -1,5 +1,5 @@
 <?php
-use App\Modules\ForgeComponents\Definitions\TextareaDefinition;
+use Modules\ForgeComponents\Definitions\TextareaDefinition;
 /** @var TextareaDefinition $props */
 ?>
 <div class="fc-input-group">

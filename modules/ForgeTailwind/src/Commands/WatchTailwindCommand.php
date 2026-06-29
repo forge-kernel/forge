@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Modules\ForgeTailwind\Commands;
+namespace Modules\ForgeTailwind\Commands;
 
 use Forge\CLI\Command;
 use Forge\CLI\Attributes\Cli;

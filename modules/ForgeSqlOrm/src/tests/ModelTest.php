@@ -1,19 +1,19 @@
 <?php
 declare(strict_types=1);
 
-namespace App\Modules\ForgeSqlOrm\Tests;
+namespace Modules\ForgeSqlOrm\Tests;
 
-use App\Modules\ForgeTesting\Attributes\BeforeEach;
-use App\Modules\ForgeTesting\Attributes\Group;
-use App\Modules\ForgeTesting\Attributes\Test;
-use App\Modules\ForgeTesting\TestCase;
-use App\Modules\ForgeSqlOrm\ORM\Attributes\Column;
-use App\Modules\ForgeSqlOrm\ORM\Attributes\Hidden;
-use App\Modules\ForgeSqlOrm\ORM\Attributes\ProtectedFields;
-use App\Modules\ForgeSqlOrm\ORM\Attributes\Table;
-use App\Modules\ForgeSqlOrm\ORM\Model;
-use App\Modules\ForgeSqlOrm\ORM\Traits\SoftDeletes;
-use App\Modules\ForgeSqlOrm\ORM\Values\Cast;
+use Modules\ForgeTesting\Attributes\BeforeEach;
+use Modules\ForgeTesting\Attributes\Group;
+use Modules\ForgeTesting\Attributes\Test;
+use Modules\ForgeTesting\TestCase;
+use Modules\ForgeSqlOrm\ORM\Attributes\Column;
+use Modules\ForgeSqlOrm\ORM\Attributes\Hidden;
+use Modules\ForgeSqlOrm\ORM\Attributes\ProtectedFields;
+use Modules\ForgeSqlOrm\ORM\Attributes\Table;
+use Modules\ForgeSqlOrm\ORM\Model;
+use Modules\ForgeSqlOrm\ORM\Traits\SoftDeletes;
+use Modules\ForgeSqlOrm\ORM\Values\Cast;
 use DateTimeImmutable;
 
 #[Group("forgesql-model")]

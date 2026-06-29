@@ -2,12 +2,12 @@
 
 declare(strict_types=1);
 
-namespace App\Modules\ForgeDeployment\Services;
+namespace Modules\ForgeDeployment\Services;
 
-use App\Modules\ForgeDeployment\Dto\DeploymentConfig;
-use App\Modules\ForgeDeployment\Dto\DeploymentState;
-use App\Modules\ForgeDeployment\Dto\ProvisionConfig;
-use App\Modules\ForgeDeployment\Dto\ServerConfig;
+use Modules\ForgeDeployment\Dto\DeploymentConfig;
+use Modules\ForgeDeployment\Dto\DeploymentState;
+use Modules\ForgeDeployment\Dto\ProvisionConfig;
+use Modules\ForgeDeployment\Dto\ServerConfig;
 use Forge\Core\DI\Attributes\Service;
 
 #[Service]

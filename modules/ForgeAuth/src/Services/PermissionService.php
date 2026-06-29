@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace App\Modules\ForgeAuth\Services;
+namespace Modules\ForgeAuth\Services;
 
-use App\Modules\ForgeAuth\Contracts\AuthUserInterface;
+use Modules\ForgeAuth\Contracts\AuthUserInterface;
 use Forge\Core\DI\Attributes\Service;
 use Forge\Core\Contracts\Database\QueryBuilderInterface;
 

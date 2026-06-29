@@ -1,12 +1,12 @@
 <?php
 declare(strict_types=1);
 
-namespace App\Modules\ForgeMultiTenant\Services;
+namespace Modules\ForgeMultiTenant\Services;
 
-use App\Modules\ForgeDatabaseSQL\DB\Connection;
-use App\Modules\ForgeDatabaseSQL\DB\DatabaseConfig;
-use App\Modules\ForgeMultiTenant\DTO\Tenant;
-use App\Modules\ForgeMultiTenant\Enums\Strategy;
+use Modules\ForgeDatabaseSQL\DB\Connection;
+use Modules\ForgeDatabaseSQL\DB\DatabaseConfig;
+use Modules\ForgeMultiTenant\DTO\Tenant;
+use Modules\ForgeMultiTenant\Enums\Strategy;
 use Forge\Core\Contracts\Database\DatabaseConfigInterface;
 use Forge\Core\Contracts\Database\DatabaseConnectionInterface;
 use Forge\Core\DI\Container;

@@ -13,9 +13,9 @@ $layoutProps = array_merge($layoutProps ?? [], [
     'bodyClass' => 'fc-admin',
 ]);
 
-use App\Modules\ForgeComponents\Definitions\Admin\UserDropdownDefinition;
-use App\Modules\ForgeComponents\Definitions\Admin\DropdownItemDefinition;
-use App\Modules\ForgeComponents\Definitions\Admin\IconDefinition;
+use Modules\ForgeComponents\Definitions\Admin\UserDropdownDefinition;
+use Modules\ForgeComponents\Definitions\Admin\DropdownItemDefinition;
+use Modules\ForgeComponents\Definitions\Admin\IconDefinition;
 ?>
 <div class="fc-admin__layout">
   <div class="fc-admin__main">

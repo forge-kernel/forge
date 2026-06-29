@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Modules\ForgeMarkDown\Contracts;
+namespace Modules\ForgeMarkDown\Contracts;
 
 interface ForgeMarkDownInterface
 {

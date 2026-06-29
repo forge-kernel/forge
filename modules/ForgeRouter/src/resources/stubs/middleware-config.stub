@@ -2,16 +2,16 @@
 
 return [
     "global" => [
-        \App\Modules\ForgeRouter\Http\Middlewares\RateLimitMiddleware::class,
-        \App\Modules\ForgeRouter\Http\Middlewares\CircuitBreakerMiddleware::class,
-        \App\Modules\ForgeRouter\Http\Middlewares\CorsMiddleware::class,
-        \App\Modules\ForgeRouter\Http\Middlewares\CompressionMiddleware::class,
+        \Modules\ForgeRouter\Http\Middlewares\RateLimitMiddleware::class,
+        \Modules\ForgeRouter\Http\Middlewares\CircuitBreakerMiddleware::class,
+        \Modules\ForgeRouter\Http\Middlewares\CorsMiddleware::class,
+        \Modules\ForgeRouter\Http\Middlewares\CompressionMiddleware::class,
     ],
     "web" => [
-        \App\Modules\ForgeRouter\Http\Middlewares\SessionMiddleware::class,
-        \App\Modules\ForgeRouter\Http\Middlewares\CsrfMiddleware::class,
+        \Modules\ForgeRouter\Http\Middlewares\SessionMiddleware::class,
+        \Modules\ForgeRouter\Http\Middlewares\CsrfMiddleware::class,
     ],
     "api" => [
-        \App\Modules\ForgeRouter\Http\Middlewares\ApiMiddleware::class,
+        \Modules\ForgeRouter\Http\Middlewares\ApiMiddleware::class,
     ],
 ];

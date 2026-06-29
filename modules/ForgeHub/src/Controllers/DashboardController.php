@@ -2,24 +2,24 @@
 
 declare(strict_types=1);
 
-namespace App\Modules\ForgeHub\Controllers;
+namespace Modules\ForgeHub\Controllers;
 
-use App\Modules\ForgeAuth\Enums\Permission;
-use App\Modules\ForgeAuth\Enums\Role;
-use App\Modules\ForgeHub\Services\HubItemRegistry;
-use App\Modules\ForgeHub\Services\LogService;
-use App\Modules\ForgeHub\Services\CacheService;
+use Modules\ForgeAuth\Enums\Permission;
+use Modules\ForgeAuth\Enums\Role;
+use Modules\ForgeHub\Services\HubItemRegistry;
+use Modules\ForgeHub\Services\LogService;
+use Modules\ForgeHub\Services\CacheService;
 use Forge\Core\DI\Container;
 use Forge\Core\Helpers\Framework;
-use App\Modules\ForgeRouter\Http\Attributes\UseMiddleware;
-use App\Modules\ForgeRouter\Http\Attributes\RequiresRole;
-use App\Modules\ForgeRouter\Http\Response;
+use Modules\ForgeRouter\Http\Attributes\UseMiddleware;
+use Modules\ForgeRouter\Http\Attributes\RequiresRole;
+use Modules\ForgeRouter\Http\Response;
 use Forge\Core\Module\ModuleLoader\Loader;
-use App\Modules\ForgeRouter\Routing\Endpoint;
-use App\Modules\ForgeRouter\Attributes\Routable;
-use App\Modules\ForgeRouter\Attributes\Layout;
-use App\Modules\ForgeRouter\Traits\ResponseHelper;
-use App\Modules\ForgeView\Traits\ViewHelper;
+use Modules\ForgeRouter\Routing\Endpoint;
+use Modules\ForgeRouter\Attributes\Routable;
+use Modules\ForgeRouter\Attributes\Layout;
+use Modules\ForgeRouter\Traits\ResponseHelper;
+use Modules\ForgeView\Traits\ViewHelper;
 
 #[Routable(prefix: '/hub')]
 #[UseMiddleware(['web', 'auth', 'role', 'hub-permissions'])]
@@ -56,9 +56,9 @@ final class DashboardController
         }
 
         $queueStats = null;
-        if ($this->container->has(\App\Modules\ForgeEvents\Services\QueueHubService::class)) {
+        if ($this->container->has(\Modules\ForgeEvents\Services\QueueHubService::class)) {
             try {
-                $queueService = $this->container->get(\App\Modules\ForgeEvents\Services\QueueHubService::class);
+                $queueService = $this->container->get(\Modules\ForgeEvents\Services\QueueHubService::class);
                 $queueStats = $queueService->getStats();
             } catch (\Throwable) {
             }

@@ -1,12 +1,12 @@
 <?php
 declare(strict_types=1);
 
-namespace App\Modules\ForgeWelcome\Services;
+namespace Modules\ForgeWelcome\Services;
 
 use Forge\Core\DI\Attributes\Service;
 use Forge\Core\Module\Attributes\Provides;
 use Forge\Core\Module\Attributes\Requires;
-use App\Modules\ForgeWelcome\Contracts\ForgeWelcomeInterface;
+use Modules\ForgeWelcome\Contracts\ForgeWelcomeInterface;
 
 #[Service]
 #[Provides(interface: ForgeWelcomeInterface::class, version: '0.1.5')]

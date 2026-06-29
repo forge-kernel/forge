@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace App\Modules\ForgeEvents\Events;
+namespace Modules\ForgeEvents\Events;
 
-use App\Modules\ForgeEvents\Attributes\Event;
-use App\Modules\ForgeEvents\Enums\QueuePriority;
+use Modules\ForgeEvents\Attributes\Event;
+use Modules\ForgeEvents\Enums\QueuePriority;
 
 #[Event(queue: 'cache_refresh', maxRetries: 3, delay: '0s', priority: QueuePriority::LOW)]
 final class CacheRefreshEvent

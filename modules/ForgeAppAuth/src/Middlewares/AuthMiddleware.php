@@ -1,14 +1,14 @@
 <?php
 declare(strict_types=1);
 
-namespace App\Modules\ForgeAppAuth\Middlewares;
+namespace Modules\ForgeAppAuth\Middlewares;
 
-use App\Modules\ForgeAppAuth\Services\UserContext;
-use App\Modules\ForgeRouter\Helpers\Redirect;
-use App\Modules\ForgeRouter\Http\Middleware;
-use App\Modules\ForgeRouter\Http\Request;
-use App\Modules\ForgeRouter\Http\Response;
-use App\Modules\ForgeRouter\Middleware\Attributes\RegisterMiddleware;
+use Modules\ForgeAppAuth\Services\UserContext;
+use Modules\ForgeRouter\Helpers\Redirect;
+use Modules\ForgeRouter\Http\Middleware;
+use Modules\ForgeRouter\Http\Request;
+use Modules\ForgeRouter\Http\Response;
+use Modules\ForgeRouter\Middleware\Attributes\RegisterMiddleware;
 use Forge\Core\DI\Attributes\Service;
 use Forge\Core\Services\RedirectHandlerService;
 

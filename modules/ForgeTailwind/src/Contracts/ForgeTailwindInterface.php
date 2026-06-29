@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Modules\ForgeTailwind\Contracts;
+namespace Modules\ForgeTailwind\Contracts;
 
 interface ForgeTailwindInterface
 {

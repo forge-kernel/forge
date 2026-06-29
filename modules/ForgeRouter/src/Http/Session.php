@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 
-namespace App\Modules\ForgeRouter\Http;
+namespace Modules\ForgeRouter\Http;
 
 final class Session
 {

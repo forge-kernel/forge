@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace App\Modules\ForgeEvents\Queues;
+namespace Modules\ForgeEvents\Queues;
 
-use App\Modules\ForgeEvents\Contracts\QueueInterface;
-use App\Modules\ForgeEvents\Enums\QueuePriority;
+use Modules\ForgeEvents\Contracts\QueueInterface;
+use Modules\ForgeEvents\Enums\QueuePriority;
 use Forge\Core\Helpers\FileExistenceCache;
 use Forge\Traits\FileHelper;
 

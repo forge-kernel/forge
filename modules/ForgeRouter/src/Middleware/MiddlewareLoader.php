@@ -2,15 +2,15 @@
 
 declare(strict_types=1);
 
-namespace App\Modules\ForgeRouter\Middleware;
+namespace Modules\ForgeRouter\Middleware;
 
 use Forge\Core\Bootstrap\OptimizedDirectoryScanner;
 use Forge\Core\Helpers\FileExistenceCache;
 use Forge\Core\Helpers\ModuleHelper;
 use Forge\Core\Services\AttributeDiscoveryService;
 use Forge\Core\Structure\StructureResolver;
-use App\Modules\ForgeRouter\Middleware\Attributes\Middleware;
-use App\Modules\ForgeRouter\Middleware\Attributes\RegisterMiddleware;
+use Modules\ForgeRouter\Middleware\Attributes\Middleware;
+use Modules\ForgeRouter\Middleware\Attributes\RegisterMiddleware;
 use ReflectionClass;
 use ReflectionException;
 use RecursiveDirectoryIterator;
@@ -449,12 +449,12 @@ final class MiddlewareLoader
         }
 
         if (preg_match('#modules/([^/]+)/src/Middlewares/(.*)\.php#', $relativePath, $matches)) {
-            return "App\\Modules\\{$matches[1]}\\Middlewares\\{$matches[2]}";
+            return "Modules\\{$matches[1]}\\Middlewares\\{$matches[2]}";
         }
 
         if (preg_match('#modules/([^/]+)/(.*)/Middlewares/(.*)\.php#', $relativePath, $matches)) {
             $namespacePath = str_replace('/', '\\', $matches[2]);
-            return "App\\Modules\\{$matches[1]}\\{$namespacePath}\\Middlewares\\{$matches[3]}";
+            return "Modules\\{$matches[1]}\\{$namespacePath}\\Middlewares\\{$matches[3]}";
         }
 
         return $class;

@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 
-namespace App\Modules\ForgeSqlOrm\ORM\Attributes;
+namespace Modules\ForgeSqlOrm\ORM\Attributes;
 
 use Attribute;
 

@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace App\Modules\ForgeRouter\Commands;
+namespace Modules\ForgeRouter\Commands;
 
-use App\Modules\ForgeRouter\Events\RouterHookManager;
+use Modules\ForgeRouter\Events\RouterHookManager;
 use Forge\CLI\Attributes\Arg;
 use Forge\CLI\Attributes\Cli;
 use Forge\CLI\Attributes\CoreCommand;

@@ -1,14 +1,14 @@
 <?php
 declare(strict_types=1);
 
-namespace App\Modules\ForgeAppAuth\Repositories;
+namespace Modules\ForgeAppAuth\Repositories;
 
-use App\Modules\ForgeAppAuth\Dto\CreateUserData;
-use App\Modules\ForgeAppAuth\Models\User;
-use App\Modules\ForgeAuth\Contracts\AuthUserInterface;
-use App\Modules\ForgeAuth\Contracts\UserProviderInterface;
-use App\Modules\ForgeSqlOrm\ORM\Paginator;
-use App\Modules\ForgeSqlOrm\Repositories\RecordRepository;
+use Modules\ForgeAppAuth\Dto\CreateUserData;
+use Modules\ForgeAppAuth\Models\User;
+use Modules\ForgeAuth\Contracts\AuthUserInterface;
+use Modules\ForgeAuth\Contracts\UserProviderInterface;
+use Modules\ForgeSqlOrm\ORM\Paginator;
+use Modules\ForgeSqlOrm\Repositories\RecordRepository;
 use Forge\Core\DI\Attributes\NoCache;
 
 #[NoCache]

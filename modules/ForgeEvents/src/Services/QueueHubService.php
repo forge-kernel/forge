@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace App\Modules\ForgeEvents\Services;
+namespace Modules\ForgeEvents\Services;
 
-use App\Modules\ForgeEvents\Queues\DatabaseQueue;
-use App\Modules\ForgeSqlOrm\ORM\Paginator;
+use Modules\ForgeEvents\Queues\DatabaseQueue;
+use Modules\ForgeSqlOrm\ORM\Paginator;
 use Forge\Core\Contracts\Database\QueryBuilderInterface;
 use Forge\Core\DI\Attributes\Service;
 use Forge\Core\Helpers\Url;

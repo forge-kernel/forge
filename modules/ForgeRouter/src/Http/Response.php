@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Modules\ForgeRouter\Http;
+namespace Modules\ForgeRouter\Http;
 
 /**
  * HTTP Response class for building and sending HTTP responses.

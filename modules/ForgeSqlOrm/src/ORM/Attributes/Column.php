@@ -1,9 +1,9 @@
 <?php
 declare(strict_types=1);
 
-namespace App\Modules\ForgeSqlOrm\ORM\Attributes;
+namespace Modules\ForgeSqlOrm\ORM\Attributes;
 
-use App\Modules\ForgeSqlOrm\ORM\Values\Cast;
+use Modules\ForgeSqlOrm\ORM\Values\Cast;
 use Attribute;
 
 #[Attribute(Attribute::TARGET_PROPERTY)]

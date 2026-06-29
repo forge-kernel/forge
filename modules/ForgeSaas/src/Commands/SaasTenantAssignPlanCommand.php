@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace App\Modules\ForgeSaas\Commands;
+namespace Modules\ForgeSaas\Commands;
 
-use App\Modules\ForgeSaas\Contracts\SubscriptionManagerInterface;
-use App\Modules\ForgeSaas\Enums\SubscriptionStatus;
+use Modules\ForgeSaas\Contracts\SubscriptionManagerInterface;
+use Modules\ForgeSaas\Enums\SubscriptionStatus;
 use Forge\CLI\Attributes\Arg;
 use Forge\CLI\Attributes\Cli;
 use Forge\CLI\Command;

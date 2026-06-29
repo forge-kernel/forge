@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace App\Modules\ForgeSaas\Dto;
+namespace Modules\ForgeSaas\Dto;
 
-use App\Modules\ForgeSaas\Enums\SubscriptionStatus;
+use Modules\ForgeSaas\Enums\SubscriptionStatus;
 
 final readonly class SaasSubscription
 {

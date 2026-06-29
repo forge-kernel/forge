@@ -1,7 +1,7 @@
 <?php
-use App\Modules\ForgeComponents\Definitions\Admin\StatCardDefinition;
-use App\Modules\ForgeComponents\HtmlString;
-use App\Modules\ForgeHub\Layouts\AdminLayout;
+use Modules\ForgeComponents\Definitions\Admin\StatCardDefinition;
+use Modules\ForgeComponents\HtmlString;
+use Modules\ForgeHub\Layouts\AdminLayout;
 
 /** @var string $title */
 /** @var array<string, mixed> $stats */

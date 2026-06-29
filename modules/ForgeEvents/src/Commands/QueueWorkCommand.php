@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace App\Modules\ForgeEvents\Commands;
+namespace Modules\ForgeEvents\Commands;
 
-use App\Modules\ForgeEvents\Services\EventDispatcher;
+use Modules\ForgeEvents\Services\EventDispatcher;
 use Forge\CLI\Attributes\Arg;
 use Forge\CLI\Attributes\Cli;
 use Forge\CLI\Command;

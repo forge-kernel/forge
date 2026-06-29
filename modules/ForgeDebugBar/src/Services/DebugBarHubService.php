@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace App\Modules\ForgeDebugBar\Services;
+namespace Modules\ForgeDebugBar\Services;
 
-use App\Modules\ForgeDebugBar\DebugBar;
+use Modules\ForgeDebugBar\DebugBar;
 use Forge\Core\DI\Attributes\Service;
 
 #[Service]

@@ -2,19 +2,19 @@
 
 declare(strict_types=1);
 
-namespace App\Modules\AppAuth\Models;
+namespace Modules\AppAuth\Models;
 
-use App\Modules\AppAuth\Dto\UserMetadataDto;
-use App\Modules\ForgeAuth\Contracts\AuthUserInterface;
-use App\Modules\ForgeAuth\Traits\HasRoles;
-use App\Modules\ForgeSqlOrm\ORM\CanLoadRelations;
-use App\Modules\ForgeSqlOrm\ORM\Values\Cast;
-use App\Modules\ForgeSqlOrm\ORM\Values\Relate;
-use App\Modules\ForgeSqlOrm\ORM\Values\Relation;
-use App\Modules\ForgeSqlOrm\ORM\Values\RelationKind;
-use App\Modules\ForgeSqlOrm\Traits\{HasTimeStamps};
-use App\Modules\ForgeSqlOrm\ORM\Attributes\{Table, Column, ProtectedFields};
-use App\Modules\ForgeSqlOrm\ORM\Model;
+use Modules\AppAuth\Dto\UserMetadataDto;
+use Modules\ForgeAuth\Contracts\AuthUserInterface;
+use Modules\ForgeAuth\Traits\HasRoles;
+use Modules\ForgeSqlOrm\ORM\CanLoadRelations;
+use Modules\ForgeSqlOrm\ORM\Values\Cast;
+use Modules\ForgeSqlOrm\ORM\Values\Relate;
+use Modules\ForgeSqlOrm\ORM\Values\Relation;
+use Modules\ForgeSqlOrm\ORM\Values\RelationKind;
+use Modules\ForgeSqlOrm\Traits\{HasTimeStamps};
+use Modules\ForgeSqlOrm\ORM\Attributes\{Table, Column, ProtectedFields};
+use Modules\ForgeSqlOrm\ORM\Model;
 
 #[Table("users")]
 #[ProtectedFields(["password"])]

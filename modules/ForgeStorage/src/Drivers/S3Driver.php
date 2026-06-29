@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace App\Modules\ForgeStorage\Drivers;
+namespace Modules\ForgeStorage\Drivers;
 
-use App\Modules\ForgeStorage\Contracts\StorageDriverInterface;
+use Modules\ForgeStorage\Contracts\StorageDriverInterface;
 use Forge\Core\Config\Config;
 
 class S3Driver implements StorageDriverInterface

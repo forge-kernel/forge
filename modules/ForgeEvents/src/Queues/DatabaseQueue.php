@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace App\Modules\ForgeEvents\Queues;
+namespace Modules\ForgeEvents\Queues;
 
-use App\Modules\ForgeEvents\Contracts\QueueInterface;
+use Modules\ForgeEvents\Contracts\QueueInterface;
 use Forge\Core\Contracts\Database\QueryBuilderInterface;
 use Forge\Core\DI\Attributes\Service;
 use PDO;

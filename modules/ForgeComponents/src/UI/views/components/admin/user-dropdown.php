@@ -1,6 +1,6 @@
 <?php
 
-/** @var \App\Modules\ForgeComponents\Definitions\Admin\UserDropdownDefinition $props */
+/** @var \Modules\ForgeComponents\Definitions\Admin\UserDropdownDefinition $props */
 
 $initials = '';
 if ($props->name) {
@@ -22,7 +22,7 @@ if ($props->name) {
       <span class="fc-user-dropdown__name"><?= e($props->name) ?></span>
       <span class="fc-user-dropdown__email"><?= e($props->email) ?></span>
     </div>
-    <span class="fc-user-dropdown__chevron"><?= component(name: 'ForgeComponents:admin/icon', props: new \App\Modules\ForgeComponents\Definitions\Admin\IconDefinition(name: 'chevron-down')) ?></span>
+    <span class="fc-user-dropdown__chevron"><?= component(name: 'ForgeComponents:admin/icon', props: new \Modules\ForgeComponents\Definitions\Admin\IconDefinition(name: 'chevron-down')) ?></span>
   </button>
 
   <div class="fc-user-dropdown__menu">

@@ -2,13 +2,13 @@
 
 declare(strict_types=1);
 
-namespace App\Modules\ForgePackageManager\Tests;
+namespace Modules\ForgePackageManager\Tests;
 
-use App\Modules\ForgePackageManager\Services\ConfigGeneratorService;
-use App\Modules\ForgePackageManager\Services\PackageManagerService;
-use App\Modules\ForgeTesting\Attributes\Group;
-use App\Modules\ForgeTesting\Attributes\Test;
-use App\Modules\ForgeTesting\TestCase;
+use Modules\ForgePackageManager\Services\ConfigGeneratorService;
+use Modules\ForgePackageManager\Services\PackageManagerService;
+use Modules\ForgeTesting\Attributes\Group;
+use Modules\ForgeTesting\Attributes\Test;
+use Modules\ForgeTesting\TestCase;
 use Forge\Core\Config\Config;
 
 #[Group("package-manager")]

@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Modules\ForgeAuth\Exceptions;
+namespace Modules\ForgeAuth\Exceptions;
 
 use Forge\Exceptions\BaseException;
 

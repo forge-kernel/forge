@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace App\Services;
 
-use App\Modules\AppAuth\Models\User;
-use App\Modules\ForgeSqlOrm\ORM\Model;
+use Modules\AppAuth\Models\User;
+use Modules\ForgeSqlOrm\ORM\Model;
 use Forge\Core\Cache\Attributes\Cache;
 use Forge\Core\DI\Attributes\Service;
 use Forge\Traits\CacheLifecycleHooks;

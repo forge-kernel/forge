@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Modules\ForgeRouter\Bootstrap;
+namespace Modules\ForgeRouter\Bootstrap;
 
 use Forge\Core\Bootstrap\OptimizedDirectoryScanner;
 use Forge\Core\Config\Config;
@@ -10,13 +10,13 @@ use Forge\Core\Debug\Metrics;
 use Forge\Core\DI\Container;
 use Forge\Core\Helpers\FileExistenceCache;
 use Forge\Core\Helpers\ModuleHelper;
-use App\Modules\ForgeRouter\Middleware\EngineMiddlewareRegistry;
-use App\Modules\ForgeRouter\Middleware\MiddlewareLoader;
-use App\Modules\ForgeRouter\Routing\ControllerLoader;
-use App\Modules\ForgeRouter\Routing\Router;
+use Modules\ForgeRouter\Middleware\EngineMiddlewareRegistry;
+use Modules\ForgeRouter\Middleware\MiddlewareLoader;
+use Modules\ForgeRouter\Routing\ControllerLoader;
+use Modules\ForgeRouter\Routing\Router;
 use Forge\Core\Services\AttributeDiscoveryService;
 use Forge\Core\Structure\StructureResolver;
-use App\Modules\ForgeRouter\Attributes\Routable;
+use Modules\ForgeRouter\Attributes\Routable;
 use Forge\Exceptions\MissingServiceException;
 use ReflectionException;
 

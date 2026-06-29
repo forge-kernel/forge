@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 
-namespace App\Modules\AppAuth\Definitions;
+namespace Modules\AppAuth\Definitions;
 
 final readonly class AuthCardDefinition
 {

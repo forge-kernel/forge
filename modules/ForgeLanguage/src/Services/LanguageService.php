@@ -2,12 +2,12 @@
 
 declare(strict_types=1);
 
-namespace App\Modules\ForgeLanguage\Services;
+namespace Modules\ForgeLanguage\Services;
 
 use Forge\Core\Config\Config;
 use Forge\Core\DI\Attributes\Service;
 use Forge\Core\DI\Container;
-use App\Modules\ForgeRouter\Http\Request;
+use Modules\ForgeRouter\Http\Request;
 use Forge\Core\Session\SessionInterface;
 use Forge\Core\Structure\StructureResolver;
 use Forge\Core\Module\ModuleResourceResolver;

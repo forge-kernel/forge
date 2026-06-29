@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Modules\ForgeHub\Contracts;
+namespace Modules\ForgeHub\Contracts;
 
 interface ForgeHubInterface
 {

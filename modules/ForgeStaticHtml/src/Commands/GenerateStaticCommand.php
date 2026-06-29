@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace App\Modules\ForgeStaticHtml\Commands;
+namespace Modules\ForgeStaticHtml\Commands;
 
-use App\Modules\ForgeStaticHtml\StaticGenerator;
+use Modules\ForgeStaticHtml\StaticGenerator;
 use Forge\CLI\Attributes\Cli;
 use Forge\CLI\Attributes\Arg;
 use Forge\CLI\Command;

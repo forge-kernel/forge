@@ -1,6 +1,6 @@
 <?php
 
-/** @var \App\Modules\ForgeComponents\Definitions\Admin\TraceTimelineDefinition $props */
+/** @var \Modules\ForgeComponents\Definitions\Admin\TraceTimelineDefinition $props */
 
 $spans = $props->spans;
 $totalDuration = $props->totalDuration;

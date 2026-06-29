@@ -4,12 +4,12 @@ declare(strict_types=1);
 
 namespace App\Models;
 
-use App\Modules\ForgeSqlOrm\ORM\Attributes\Column;
-use App\Modules\ForgeSqlOrm\ORM\Attributes\Table;
-use App\Modules\ForgeSqlOrm\ORM\Model;
-use App\Modules\ForgeSqlOrm\ORM\Values\Cast;
-use App\Modules\ForgeSqlOrm\Traits\HasMetaData;
-use App\Modules\ForgeSqlOrm\Traits\HasTimeStamps;
+use Modules\ForgeSqlOrm\ORM\Attributes\Column;
+use Modules\ForgeSqlOrm\ORM\Attributes\Table;
+use Modules\ForgeSqlOrm\ORM\Model;
+use Modules\ForgeSqlOrm\ORM\Values\Cast;
+use Modules\ForgeSqlOrm\Traits\HasMetaData;
+use Modules\ForgeSqlOrm\Traits\HasTimeStamps;
 
 #[Table("posts")]
 class Post extends Model

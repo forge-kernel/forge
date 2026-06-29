@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Modules\ForgeBilling\Contracts;
+namespace Modules\ForgeBilling\Contracts;
 
 interface BillableResolverInterface
 {

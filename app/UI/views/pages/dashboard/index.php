@@ -1,6 +1,6 @@
 <?php
 
-use App\Modules\AppAuth\Models\User;
+use Modules\AppAuth\Models\User;
 
 /**
  * @var string $title

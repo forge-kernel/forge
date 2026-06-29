@@ -2,20 +2,20 @@
 
 declare(strict_types=1);
 
-namespace App\Modules\ForgeHub\Controllers;
+namespace Modules\ForgeHub\Controllers;
 
-use App\Modules\AppAuth\Services\UserContext;
-use App\Modules\ForgeAuth\Enums\Role;
-use App\Modules\ForgeHub\Services\ObservabilityServiceInterface;
-use App\Modules\ForgeRouter\Http\Attributes\UseMiddleware;
-use App\Modules\ForgeRouter\Http\Attributes\RequiresRole;
-use App\Modules\ForgeRouter\Http\Request;
-use App\Modules\ForgeRouter\Http\Response;
-use App\Modules\ForgeRouter\Routing\Endpoint;
-use App\Modules\ForgeRouter\Attributes\Routable;
-use App\Modules\ForgeRouter\Attributes\Layout;
-use App\Modules\ForgeRouter\Traits\ResponseHelper;
-use App\Modules\ForgeView\Traits\ViewHelper;
+use Modules\AppAuth\Services\UserContext;
+use Modules\ForgeAuth\Enums\Role;
+use Modules\ForgeHub\Services\ObservabilityServiceInterface;
+use Modules\ForgeRouter\Http\Attributes\UseMiddleware;
+use Modules\ForgeRouter\Http\Attributes\RequiresRole;
+use Modules\ForgeRouter\Http\Request;
+use Modules\ForgeRouter\Http\Response;
+use Modules\ForgeRouter\Routing\Endpoint;
+use Modules\ForgeRouter\Attributes\Routable;
+use Modules\ForgeRouter\Attributes\Layout;
+use Modules\ForgeRouter\Traits\ResponseHelper;
+use Modules\ForgeView\Traits\ViewHelper;
 
 #[Routable(prefix: '/hub')]
 #[UseMiddleware(['web', 'auth', 'role', 'hub-permissions'])]

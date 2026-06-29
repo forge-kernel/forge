@@ -1,6 +1,6 @@
 <?php
 
-use App\Modules\ForgeAppAuth\Definitions\AuthCardDefinition;
+use Modules\ForgeAppAuth\Definitions\AuthCardDefinition;
 
 ?>
 

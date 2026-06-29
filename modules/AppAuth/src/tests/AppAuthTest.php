@@ -2,15 +2,15 @@
 
 declare(strict_types=1);
 
-namespace App\Modules\AppAuth\Tests;
+namespace Modules\AppAuth\Tests;
 
-use App\Modules\AppAuth\Models\User;
-use App\Modules\ForgeTesting\Attributes\DataProvider;
-use App\Modules\ForgeTesting\Attributes\Group;
-use App\Modules\ForgeTesting\Attributes\Incomplete;
-use App\Modules\ForgeTesting\Attributes\Skip;
-use App\Modules\ForgeTesting\Attributes\Test;
-use App\Modules\ForgeTesting\TestCase;
+use Modules\AppAuth\Models\User;
+use Modules\ForgeTesting\Attributes\DataProvider;
+use Modules\ForgeTesting\Attributes\Group;
+use Modules\ForgeTesting\Attributes\Incomplete;
+use Modules\ForgeTesting\Attributes\Skip;
+use Modules\ForgeTesting\Attributes\Test;
+use Modules\ForgeTesting\TestCase;
 use Forge\Core\Contracts\Database\QueryBuilderInterface;
 use Forge\Core\DI\Container;
 

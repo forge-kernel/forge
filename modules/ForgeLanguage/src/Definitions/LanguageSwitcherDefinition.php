@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Modules\ForgeLanguage\Definitions;
+namespace Modules\ForgeLanguage\Definitions;
 
 final readonly class LanguageSwitcherDefinition
 {

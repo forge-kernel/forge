@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Modules\ForgeAuth\Contracts;
+namespace Modules\ForgeAuth\Contracts;
 
 interface ForgeAuthInterface
 {

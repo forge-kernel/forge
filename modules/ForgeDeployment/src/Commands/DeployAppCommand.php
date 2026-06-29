@@ -2,15 +2,15 @@
 
 declare(strict_types=1);
 
-namespace App\Modules\ForgeDeployment\Commands;
+namespace Modules\ForgeDeployment\Commands;
 
-use App\Modules\ForgeDeployment\Dto\DeploymentConfig;
-use App\Modules\ForgeDeployment\Services\DeploymentService;
-use App\Modules\ForgeDeployment\Services\DeploymentConfigReader;
-use App\Modules\ForgeDeployment\Services\GitDiffService;
-use App\Modules\ForgeDeployment\Services\NginxProvisioner;
-use App\Modules\ForgeDeployment\Services\SshKeyManager;
-use App\Modules\ForgeDeployment\Services\SshService;
+use Modules\ForgeDeployment\Dto\DeploymentConfig;
+use Modules\ForgeDeployment\Services\DeploymentService;
+use Modules\ForgeDeployment\Services\DeploymentConfigReader;
+use Modules\ForgeDeployment\Services\GitDiffService;
+use Modules\ForgeDeployment\Services\NginxProvisioner;
+use Modules\ForgeDeployment\Services\SshKeyManager;
+use Modules\ForgeDeployment\Services\SshService;
 use Forge\CLI\Attributes\Arg;
 use Forge\CLI\Attributes\Cli;
 use Forge\CLI\Command;

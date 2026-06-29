@@ -1,10 +1,10 @@
 <?php
 
-use App\Modules\ForgeComponents\Definitions\ButtonDefinition;
-use App\Modules\ForgeComponents\Definitions\InputDefinition;
-use App\Modules\ForgeComponents\Enums\ButtonSize;
-use App\Modules\ForgeComponents\Enums\ButtonVariant;
-use App\Modules\ForgeComponents\Enums\InputType;
+use Modules\ForgeComponents\Definitions\ButtonDefinition;
+use Modules\ForgeComponents\Definitions\InputDefinition;
+use Modules\ForgeComponents\Enums\ButtonSize;
+use Modules\ForgeComponents\Enums\ButtonVariant;
+use Modules\ForgeComponents\Enums\InputType;
 
 /** @var array $props */
 ?>

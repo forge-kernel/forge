@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace App\Modules\ForgeAuth\Repositories;
+namespace Modules\ForgeAuth\Repositories;
 
-use App\Modules\ForgeAuth\Models\Permission;
-use App\Modules\ForgeSqlOrm\ORM\Paginator;
-use App\Modules\ForgeSqlOrm\ORM\RecordRepository;
+use Modules\ForgeAuth\Models\Permission;
+use Modules\ForgeSqlOrm\ORM\Paginator;
+use Modules\ForgeSqlOrm\ORM\RecordRepository;
 use Forge\Core\Cache\Attributes\Cache;
 use Forge\Core\Cache\Attributes\NoCache;
 use Forge\Traits\CacheLifecycleHooks;

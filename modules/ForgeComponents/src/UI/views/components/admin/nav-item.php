@@ -1,6 +1,6 @@
 <?php
 
-/** @var \App\Modules\ForgeComponents\Definitions\Admin\NavItemDefinition $props */
+/** @var \Modules\ForgeComponents\Definitions\Admin\NavItemDefinition $props */
 
 $hasChildren = !empty($props->children);
 

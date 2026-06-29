@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace App\Modules\ForgeDatabaseSQL\Services;
+namespace Modules\ForgeDatabaseSQL\Services;
 
-use App\Modules\ForgeDatabaseSQL\DB\Attributes\GroupMigration;
+use Modules\ForgeDatabaseSQL\DB\Attributes\GroupMigration;
 use Forge\CLI\Traits\OutputHelper;
 use Forge\Core\Contracts\Database\DatabaseConnectionInterface;
 use Forge\Core\DI\Attributes\Migration as MigrationAttribute;

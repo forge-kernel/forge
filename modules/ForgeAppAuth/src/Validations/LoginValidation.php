@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 
-namespace App\Modules\ForgeAppAuth\Validations;
+namespace Modules\ForgeAppAuth\Validations;
 
 use Forge\Traits\ValidatorHelper;
 use Forge\Core\Validation\ValidationDefinition;

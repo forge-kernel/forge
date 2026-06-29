@@ -1,16 +1,16 @@
 <?php
 declare(strict_types=1);
 
-namespace App\Modules\ForgeAdminConsole\Controllers;
+namespace Modules\ForgeAdminConsole\Controllers;
 
-use App\Modules\ForgeAuth\Contracts\UserContextInterface;
-use App\Modules\ForgeRouter\Http\Attributes\UseMiddleware;
-use App\Modules\ForgeRouter\Http\Response;
-use App\Modules\ForgeRouter\Attributes\Layout;
-use App\Modules\ForgeRouter\Routing\Endpoint;
-use App\Modules\ForgeRouter\Attributes\Routable;
-use App\Modules\ForgeRouter\Traits\ResponseHelper;
-use App\Modules\ForgeView\Traits\ViewHelper;
+use Modules\ForgeAuth\Contracts\UserContextInterface;
+use Modules\ForgeRouter\Http\Attributes\UseMiddleware;
+use Modules\ForgeRouter\Http\Response;
+use Modules\ForgeRouter\Attributes\Layout;
+use Modules\ForgeRouter\Routing\Endpoint;
+use Modules\ForgeRouter\Attributes\Routable;
+use Modules\ForgeRouter\Traits\ResponseHelper;
+use Modules\ForgeView\Traits\ViewHelper;
 
 #[Routable]
 #[UseMiddleware(['web', 'auth'])]

@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Modules\ForgeRouter\Commands;
+namespace Modules\ForgeRouter\Commands;
 
 use Exception;
 use Forge\CLI\Attributes\Arg;

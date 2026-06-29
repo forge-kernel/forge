@@ -1,14 +1,14 @@
 <?php
 declare(strict_types=1);
 
-namespace App\Modules\ForgeSqlOrm\Tests;
+namespace Modules\ForgeSqlOrm\Tests;
 
-use App\Modules\ForgeTesting\Attributes\BeforeEach;
-use App\Modules\ForgeTesting\Attributes\Group;
-use App\Modules\ForgeTesting\Attributes\Test;
-use App\Modules\ForgeTesting\TestCase;
+use Modules\ForgeTesting\Attributes\BeforeEach;
+use Modules\ForgeTesting\Attributes\Group;
+use Modules\ForgeTesting\Attributes\Test;
+use Modules\ForgeTesting\TestCase;
 use Forge\Core\Contracts\Database\DatabaseConnectionInterface;
-use App\Modules\ForgeSqlOrm\ORM\QueryBuilder;
+use Modules\ForgeSqlOrm\ORM\QueryBuilder;
 
 #[Group("forgesql-querybuilder")]
 final class QueryBuilderTest extends TestCase
@@ -288,7 +288,7 @@ final class QueryBuilderTest extends TestCase
     public function table_returns_self(): void
     {
         $result = $this->builder->table('test_table');
-        $this->assertInstanceOf(\App\Modules\ForgeSqlOrm\ORM\QueryBuilder::class, $result);
+        $this->assertInstanceOf(\Modules\ForgeSqlOrm\ORM\QueryBuilder::class, $result);
     }
 
     #[Test("raw triggers deprecation warning")]

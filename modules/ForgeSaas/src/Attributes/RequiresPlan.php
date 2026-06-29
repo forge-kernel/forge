@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Modules\ForgeSaas\Attributes;
+namespace Modules\ForgeSaas\Attributes;
 
 use Attribute;
 

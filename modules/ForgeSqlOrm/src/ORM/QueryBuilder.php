@@ -1,9 +1,9 @@
 <?php
 declare(strict_types=1);
 
-namespace App\Modules\ForgeSqlOrm\ORM;
+namespace Modules\ForgeSqlOrm\ORM;
 
-use App\Modules\ForgeRouter\Collectors\DatabaseCollector;
+use Modules\ForgeRouter\Collectors\DatabaseCollector;
 use Forge\Core\Contracts\Database\{DatabaseConnectionInterface, QueryBuilderInterface};
 use Forge\Core\DI\Container;
 use Forge\Core\Helpers\Debuger;
@@ -685,14 +685,14 @@ final class QueryBuilder implements QueryBuilderInterface
       $quotedColumnName = $identifierQuote . $columnName . $identifierQuote;
       if (is_string($column)) {
         $columnDefinitions[] = $quotedColumnName . ' ' . $this->normalizeColumnDefinition($column, $driver);
-      } elseif ($column instanceof \App\Modules\ForgeSqlOrm\ORM\Attributes\Column) {
+      } elseif ($column instanceof \Modules\ForgeSqlOrm\ORM\Attributes\Column) {
         $type = $this->resolveColumnType($columnName, $column);
         $def = $type;
         if ($column->primary) {
           $def .= ' PRIMARY KEY';
           $def .= $driver === 'sqlite' ? ' AUTOINCREMENT' : ' AUTO_INCREMENT';
         }
-        if ($column->cast === \App\Modules\ForgeSqlOrm\ORM\Values\Cast::JSON) {
+        if ($column->cast === \Modules\ForgeSqlOrm\ORM\Values\Cast::JSON) {
           $def = $driver === 'pgsql' ? 'JSONB' : 'TEXT';
         }
         $columnDefinitions[] = $quotedColumnName . ' ' . $def;
@@ -716,21 +716,21 @@ final class QueryBuilder implements QueryBuilderInterface
     return $sql . ($indexSqls ? ";\n" . implode(";\n", $indexSqls) : '');
   }
 
-  private function resolveColumnType(string $name, \App\Modules\ForgeSqlOrm\ORM\Attributes\Column $column): string
+  private function resolveColumnType(string $name, \Modules\ForgeSqlOrm\ORM\Attributes\Column $column): string
   {
     if ($column->primary) {
       return 'INTEGER';
     }
     return match ($column->cast) {
-      \App\Modules\ForgeSqlOrm\ORM\Values\Cast::INT => 'INTEGER',
-      \App\Modules\ForgeSqlOrm\ORM\Values\Cast::FLOAT => 'REAL',
-      \App\Modules\ForgeSqlOrm\ORM\Values\Cast::BOOL => 'INTEGER',
-      \App\Modules\ForgeSqlOrm\ORM\Values\Cast::STRING => 'TEXT',
-      \App\Modules\ForgeSqlOrm\ORM\Values\Cast::JSON => 'TEXT',
-      \App\Modules\ForgeSqlOrm\ORM\Values\Cast::DATE => 'TEXT',
-      \App\Modules\ForgeSqlOrm\ORM\Values\Cast::DATETIME => 'TEXT',
-      \App\Modules\ForgeSqlOrm\ORM\Values\Cast::TIMESTAMP => 'TEXT',
-      \App\Modules\ForgeSqlOrm\ORM\Values\Cast::ENUM => 'TEXT',
+      \Modules\ForgeSqlOrm\ORM\Values\Cast::INT => 'INTEGER',
+      \Modules\ForgeSqlOrm\ORM\Values\Cast::FLOAT => 'REAL',
+      \Modules\ForgeSqlOrm\ORM\Values\Cast::BOOL => 'INTEGER',
+      \Modules\ForgeSqlOrm\ORM\Values\Cast::STRING => 'TEXT',
+      \Modules\ForgeSqlOrm\ORM\Values\Cast::JSON => 'TEXT',
+      \Modules\ForgeSqlOrm\ORM\Values\Cast::DATE => 'TEXT',
+      \Modules\ForgeSqlOrm\ORM\Values\Cast::DATETIME => 'TEXT',
+      \Modules\ForgeSqlOrm\ORM\Values\Cast::TIMESTAMP => 'TEXT',
+      \Modules\ForgeSqlOrm\ORM\Values\Cast::ENUM => 'TEXT',
       default => 'TEXT',
     };
   }

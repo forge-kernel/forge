@@ -1,9 +1,9 @@
 <?php
 declare(strict_types=1);
 
-namespace App\Modules\ForgeComponents\Definitions;
+namespace Modules\ForgeComponents\Definitions;
 
-use App\Modules\ForgeComponents\Enums\InputType;
+use Modules\ForgeComponents\Enums\InputType;
 
 final readonly class InputDefinition
 {

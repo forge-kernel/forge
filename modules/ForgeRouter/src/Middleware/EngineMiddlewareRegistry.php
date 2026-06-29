@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Modules\ForgeRouter\Middleware;
+namespace Modules\ForgeRouter\Middleware;
 
 /**
  * Registry of all kernel-provided middlewares with their default configurations.
@@ -19,43 +19,43 @@ final class EngineMiddlewareRegistry
     {
         return [
             // Global middlewares
-            \App\Modules\ForgeRouter\Http\Middlewares\ObservabilityMiddleware::class => [
-                'class' => \App\Modules\ForgeRouter\Http\Middlewares\ObservabilityMiddleware::class,
+            \Modules\ForgeRouter\Http\Middlewares\ObservabilityMiddleware::class => [
+                'class' => \Modules\ForgeRouter\Http\Middlewares\ObservabilityMiddleware::class,
                 'group' => 'global',
                 'order' => -1,
                 'enabled' => true,
                 'description' => 'Captures request traces and performance data with minimal overhead',
             ],
-            \App\Modules\ForgeRouter\Http\Middlewares\RateLimitMiddleware::class => [
-                'class' => \App\Modules\ForgeRouter\Http\Middlewares\RateLimitMiddleware::class,
+            \Modules\ForgeRouter\Http\Middlewares\RateLimitMiddleware::class => [
+                'class' => \Modules\ForgeRouter\Http\Middlewares\RateLimitMiddleware::class,
                 'group' => 'global',
                 'order' => 0,
                 'enabled' => true,
                 'description' => 'Rate limiting middleware to prevent abuse',
             ],
-            \App\Modules\ForgeRouter\Http\Middlewares\CircuitBreakerMiddleware::class => [
-                'class' => \App\Modules\ForgeRouter\Http\Middlewares\CircuitBreakerMiddleware::class,
+            \Modules\ForgeRouter\Http\Middlewares\CircuitBreakerMiddleware::class => [
+                'class' => \Modules\ForgeRouter\Http\Middlewares\CircuitBreakerMiddleware::class,
                 'group' => 'global',
                 'order' => 1,
                 'enabled' => true,
                 'description' => 'Circuit breaker pattern for fault tolerance',
             ],
-            \App\Modules\ForgeRouter\Http\Middlewares\CorsMiddleware::class => [
-                'class' => \App\Modules\ForgeRouter\Http\Middlewares\CorsMiddleware::class,
+            \Modules\ForgeRouter\Http\Middlewares\CorsMiddleware::class => [
+                'class' => \Modules\ForgeRouter\Http\Middlewares\CorsMiddleware::class,
                 'group' => 'global',
                 'order' => 2,
                 'enabled' => true,
                 'description' => 'Cross-Origin Resource Sharing (CORS) headers',
             ],
-            \App\Modules\ForgeRouter\Http\Middlewares\SanitizeInputMiddleware::class => [
-                'class' => \App\Modules\ForgeRouter\Http\Middlewares\SanitizeInputMiddleware::class,
+            \Modules\ForgeRouter\Http\Middlewares\SanitizeInputMiddleware::class => [
+                'class' => \Modules\ForgeRouter\Http\Middlewares\SanitizeInputMiddleware::class,
                 'group' => 'global',
                 'order' => 3,
                 'enabled' => false, // Disabled by default
                 'description' => 'Sanitizes input data to prevent XSS attacks',
             ],
-            \App\Modules\ForgeRouter\Http\Middlewares\CompressionMiddleware::class => [
-                'class' => \App\Modules\ForgeRouter\Http\Middlewares\CompressionMiddleware::class,
+            \Modules\ForgeRouter\Http\Middlewares\CompressionMiddleware::class => [
+                'class' => \Modules\ForgeRouter\Http\Middlewares\CompressionMiddleware::class,
                 'group' => 'global',
                 'order' => 4,
                 'enabled' => true,
@@ -63,22 +63,22 @@ final class EngineMiddlewareRegistry
             ],
 
             // Web middlewares
-            \App\Modules\ForgeRouter\Http\Middlewares\SessionMiddleware::class => [
-                'class' => \App\Modules\ForgeRouter\Http\Middlewares\SessionMiddleware::class,
+            \Modules\ForgeRouter\Http\Middlewares\SessionMiddleware::class => [
+                'class' => \Modules\ForgeRouter\Http\Middlewares\SessionMiddleware::class,
                 'group' => 'web',
                 'order' => 0,
                 'enabled' => true,
                 'description' => 'Session management for web requests',
             ],
-            \App\Modules\ForgeRouter\Http\Middlewares\CsrfMiddleware::class => [
-                'class' => \App\Modules\ForgeRouter\Http\Middlewares\CsrfMiddleware::class,
+            \Modules\ForgeRouter\Http\Middlewares\CsrfMiddleware::class => [
+                'class' => \Modules\ForgeRouter\Http\Middlewares\CsrfMiddleware::class,
                 'group' => 'web',
                 'order' => 1,
                 'enabled' => true,
                 'description' => 'CSRF protection for web forms',
             ],
-            \App\Modules\ForgeRouter\Http\Middlewares\RelaxSecurityHeadersMiddleware::class => [
-                'class' => \App\Modules\ForgeRouter\Http\Middlewares\RelaxSecurityHeadersMiddleware::class,
+            \Modules\ForgeRouter\Http\Middlewares\RelaxSecurityHeadersMiddleware::class => [
+                'class' => \Modules\ForgeRouter\Http\Middlewares\RelaxSecurityHeadersMiddleware::class,
                 'group' => 'web',
                 'order' => 3,
                 'enabled' => true,
@@ -86,29 +86,29 @@ final class EngineMiddlewareRegistry
             ],
 
             // API middlewares
-            \App\Modules\ForgeRouter\Http\Middlewares\IpWhiteListMiddleware::class => [
-                'class' => \App\Modules\ForgeRouter\Http\Middlewares\IpWhiteListMiddleware::class,
+            \Modules\ForgeRouter\Http\Middlewares\IpWhiteListMiddleware::class => [
+                'class' => \Modules\ForgeRouter\Http\Middlewares\IpWhiteListMiddleware::class,
                 'group' => 'api',
                 'order' => 0,
                 'enabled' => true,
                 'description' => 'IP whitelist filtering for API endpoints',
             ],
-            \App\Modules\ForgeRouter\Http\Middlewares\ApiKeyMiddleware::class => [
-                'class' => \App\Modules\ForgeRouter\Http\Middlewares\ApiKeyMiddleware::class,
+            \Modules\ForgeRouter\Http\Middlewares\ApiKeyMiddleware::class => [
+                'class' => \Modules\ForgeRouter\Http\Middlewares\ApiKeyMiddleware::class,
                 'group' => 'api',
                 'order' => 1,
                 'enabled' => true,
                 'description' => 'API key authentication',
             ],
-            \App\Modules\ForgeRouter\Http\Middlewares\CookieMiddleware::class => [
-                'class' => \App\Modules\ForgeRouter\Http\Middlewares\CookieMiddleware::class,
+            \Modules\ForgeRouter\Http\Middlewares\CookieMiddleware::class => [
+                'class' => \Modules\ForgeRouter\Http\Middlewares\CookieMiddleware::class,
                 'group' => 'api',
                 'order' => 2,
                 'enabled' => true,
                 'description' => 'Cookie handling for API requests',
             ],
-            \App\Modules\ForgeRouter\Http\Middlewares\ApiMiddleware::class => [
-                'class' => \App\Modules\ForgeRouter\Http\Middlewares\ApiMiddleware::class,
+            \Modules\ForgeRouter\Http\Middlewares\ApiMiddleware::class => [
+                'class' => \Modules\ForgeRouter\Http\Middlewares\ApiMiddleware::class,
                 'group' => 'api',
                 'order' => 2,
                 'enabled' => true,

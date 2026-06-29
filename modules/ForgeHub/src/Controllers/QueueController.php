@@ -2,25 +2,25 @@
 
 declare(strict_types=1);
 
-namespace App\Modules\ForgeHub\Controllers;
+namespace Modules\ForgeHub\Controllers;
 
-use App\Modules\ForgeHub\Controllers\Traits\QueueBulkActions;
-use App\Modules\ForgeHub\Controllers\Traits\QueueFilterActions;
-use App\Modules\ForgeHub\Controllers\Traits\QueueJobActions;
-use App\Modules\ForgeHub\Controllers\Traits\QueueSelectionActions;
-use App\Modules\ForgeHub\Controllers\Traits\QueueSortActions;
-use App\Modules\ForgeEvents\Services\QueueHubService;
-use App\Modules\ForgeSqlOrm\ORM\Paginator;
-use App\Modules\ForgeWire\Attributes\Reactive;
-use App\Modules\ForgeWire\Attributes\State;
-use App\Modules\ForgeWire\Traits\WithWireResponse;
-use App\Modules\ForgeRouter\Http\Attributes\UseMiddleware;
-use App\Modules\ForgeRouter\Http\Response;
-use App\Modules\ForgeRouter\Routing\Endpoint;
-use App\Modules\ForgeRouter\Attributes\Routable;
-use App\Modules\ForgeRouter\Attributes\Layout;
-use App\Modules\ForgeRouter\Traits\ResponseHelper;
-use App\Modules\ForgeView\Traits\ViewHelper;
+use Modules\ForgeHub\Controllers\Traits\QueueBulkActions;
+use Modules\ForgeHub\Controllers\Traits\QueueFilterActions;
+use Modules\ForgeHub\Controllers\Traits\QueueJobActions;
+use Modules\ForgeHub\Controllers\Traits\QueueSelectionActions;
+use Modules\ForgeHub\Controllers\Traits\QueueSortActions;
+use Modules\ForgeEvents\Services\QueueHubService;
+use Modules\ForgeSqlOrm\ORM\Paginator;
+use Modules\ForgeWire\Attributes\Reactive;
+use Modules\ForgeWire\Attributes\State;
+use Modules\ForgeWire\Traits\WithWireResponse;
+use Modules\ForgeRouter\Http\Attributes\UseMiddleware;
+use Modules\ForgeRouter\Http\Response;
+use Modules\ForgeRouter\Routing\Endpoint;
+use Modules\ForgeRouter\Attributes\Routable;
+use Modules\ForgeRouter\Attributes\Layout;
+use Modules\ForgeRouter\Traits\ResponseHelper;
+use Modules\ForgeView\Traits\ViewHelper;
 
 #[Routable(prefix: '/hub')]
 #[Reactive]

@@ -1,10 +1,10 @@
 <?php
 declare(strict_types=1);
 
-namespace App\Modules\ForgeMultiTenant\Services;
+namespace Modules\ForgeMultiTenant\Services;
 
-use App\Modules\ForgeMultiTenant\Attributes\TenantScope;
-use App\Modules\ForgeRouter\Contracts\RouteScopeFilterInterface;
+use Modules\ForgeMultiTenant\Attributes\TenantScope;
+use Modules\ForgeRouter\Contracts\RouteScopeFilterInterface;
 use Forge\Core\DI\Attributes\Service;
 use Forge\Core\DI\Container;
 use Forge\Core\Module\Attributes\Provides;

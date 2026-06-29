@@ -1,7 +1,7 @@
 <?php
 
 use Forge\Core\Helpers\Flash;
-use App\Modules\ForgeUi\DesignTokens;
+use Modules\ForgeUi\DesignTokens;
 
 $flashMessages = Flash::flat() ?? [];
 ?>

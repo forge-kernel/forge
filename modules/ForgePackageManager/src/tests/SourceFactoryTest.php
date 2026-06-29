@@ -2,18 +2,18 @@
 
 declare(strict_types=1);
 
-namespace App\Modules\ForgePackageManager\Tests;
+namespace Modules\ForgePackageManager\Tests;
 
-use App\Modules\ForgePackageManager\Sources\FtpSource;
-use App\Modules\ForgePackageManager\Sources\GitSource;
-use App\Modules\ForgePackageManager\Sources\HttpSource;
-use App\Modules\ForgePackageManager\Sources\LocalNetworkSource;
-use App\Modules\ForgePackageManager\Sources\LocalSource;
-use App\Modules\ForgePackageManager\Sources\SftpSource;
-use App\Modules\ForgePackageManager\Sources\SourceFactory;
-use App\Modules\ForgeTesting\Attributes\Group;
-use App\Modules\ForgeTesting\Attributes\Test;
-use App\Modules\ForgeTesting\TestCase;
+use Modules\ForgePackageManager\Sources\FtpSource;
+use Modules\ForgePackageManager\Sources\GitSource;
+use Modules\ForgePackageManager\Sources\HttpSource;
+use Modules\ForgePackageManager\Sources\LocalNetworkSource;
+use Modules\ForgePackageManager\Sources\LocalSource;
+use Modules\ForgePackageManager\Sources\SftpSource;
+use Modules\ForgePackageManager\Sources\SourceFactory;
+use Modules\ForgeTesting\Attributes\Group;
+use Modules\ForgeTesting\Attributes\Test;
+use Modules\ForgeTesting\TestCase;
 
 #[Group("package-manager")]
 final class SourceFactoryTest extends TestCase

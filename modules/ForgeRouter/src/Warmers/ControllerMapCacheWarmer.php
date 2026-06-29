@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Modules\ForgeRouter\Warmers;
+namespace Modules\ForgeRouter\Warmers;
 
 use Forge\Core\Bootstrap\OptimizedDirectoryScanner;
 use Forge\Core\Config\Config;
@@ -10,7 +10,7 @@ use Forge\Core\Contracts\Cache\CacheWarmerInterface;
 use Forge\Core\DI\Attributes\Injectable;
 use Forge\Core\DI\Container;
 use Forge\Core\Structure\StructureResolver;
-use App\Modules\ForgeRouter\Routing\ControllerLoader;
+use Modules\ForgeRouter\Routing\ControllerLoader;
 
 #[Injectable]
 final class ControllerMapCacheWarmer implements CacheWarmerInterface

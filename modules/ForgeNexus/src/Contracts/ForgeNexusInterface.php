@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Modules\ForgeNexus\Contracts;
+namespace Modules\ForgeNexus\Contracts;
 
 interface ForgeNexusInterface
 {

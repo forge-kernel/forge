@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Modules\ForgeWelcome\Contracts;
+namespace Modules\ForgeWelcome\Contracts;
 
 interface ForgeWelcomeInterface
 {

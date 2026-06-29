@@ -1,25 +1,25 @@
 <?php
 declare(strict_types=1);
 
-namespace App\Modules\ForgeAppAuth\Controllers\Web;
+namespace Modules\ForgeAppAuth\Controllers\Web;
 
-use App\Modules\ForgeAppAuth\Requirements\PasswordRequirements;
-use App\Modules\ForgeAppAuth\Services\PasswordResetService;
-use App\Modules\ForgeAppAuth\Validations\ForgotPasswordValidation;
-use App\Modules\ForgeAppAuth\Validations\LoginValidation;
-use App\Modules\ForgeAppAuth\Validations\RegisterValidation;
-use App\Modules\ForgeAppAuth\Validations\ResetPasswordValidation;
-use App\Modules\ForgeAuth\Exceptions\LoginException;
-use App\Modules\ForgeAuth\Services\ForgeAuthService;
-use App\Modules\ForgeRouter\Helpers\Redirect;
-use App\Modules\ForgeRouter\Http\Attributes\UseMiddleware;
-use App\Modules\ForgeRouter\Http\Request;
-use App\Modules\ForgeRouter\Http\Response;
-use App\Modules\ForgeRouter\Attributes\Layout;
-use App\Modules\ForgeRouter\Routing\Endpoint;
-use App\Modules\ForgeRouter\Attributes\Routable;
-use App\Modules\ForgeRouter\Traits\ResponseHelper;
-use App\Modules\ForgeView\Traits\ViewHelper;
+use Modules\ForgeAppAuth\Requirements\PasswordRequirements;
+use Modules\ForgeAppAuth\Services\PasswordResetService;
+use Modules\ForgeAppAuth\Validations\ForgotPasswordValidation;
+use Modules\ForgeAppAuth\Validations\LoginValidation;
+use Modules\ForgeAppAuth\Validations\RegisterValidation;
+use Modules\ForgeAppAuth\Validations\ResetPasswordValidation;
+use Modules\ForgeAuth\Exceptions\LoginException;
+use Modules\ForgeAuth\Services\ForgeAuthService;
+use Modules\ForgeRouter\Helpers\Redirect;
+use Modules\ForgeRouter\Http\Attributes\UseMiddleware;
+use Modules\ForgeRouter\Http\Request;
+use Modules\ForgeRouter\Http\Response;
+use Modules\ForgeRouter\Attributes\Layout;
+use Modules\ForgeRouter\Routing\Endpoint;
+use Modules\ForgeRouter\Attributes\Routable;
+use Modules\ForgeRouter\Traits\ResponseHelper;
+use Modules\ForgeView\Traits\ViewHelper;
 use Forge\Core\Helpers\Flash;
 use Forge\Core\Services\RedirectHandlerService;
 use Forge\Exceptions\ValidationException;

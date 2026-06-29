@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace App\Modules\ForgeView\Traits;
+namespace Modules\ForgeView\Traits;
 
-use App\Modules\ForgeRouter\Http\Response;
-use App\Modules\ForgeRouter\Routing\Router;
+use Modules\ForgeRouter\Http\Response;
+use Modules\ForgeRouter\Routing\Router;
 use Forge\Core\Contracts\ViewInterface;
 use Forge\Core\DI\Container;
 use ReflectionClass;

@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace App\Modules\ForgeDatabaseSQL\Services;
+namespace Modules\ForgeDatabaseSQL\Services;
 
-use App\Modules\ForgeDatabaseSQL\DB\Migrations\Migration;
-use App\Modules\ForgeDatabaseSQL\DB\Attributes\GroupMigration;
+use Modules\ForgeDatabaseSQL\DB\Migrations\Migration;
+use Modules\ForgeDatabaseSQL\DB\Attributes\GroupMigration;
 use Forge\Core\DI\Attributes\Migration as MigrationAttribute;
 use Forge\Core\DI\Attributes\Service;
 use Forge\Core\Helpers\FileExistenceCache;

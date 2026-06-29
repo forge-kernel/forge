@@ -2,16 +2,16 @@
 
 declare(strict_types=1);
 
-namespace App\Modules\ForgeDeployment\Commands;
+namespace Modules\ForgeDeployment\Commands;
 
-use App\Modules\ForgeDeployment\Dto\DeploymentConfig;
-use App\Modules\ForgeDeployment\Dto\ProvisionConfig;
-use App\Modules\ForgeDeployment\Dto\ServerConfig;
-use App\Modules\ForgeDeployment\Services\DeploymentConfigReader;
-use App\Modules\ForgeDeployment\Services\DeploymentService;
-use App\Modules\ForgeDeployment\Services\DeploymentStateService;
-use App\Modules\ForgeDeployment\Services\ForgeDeploymentService;
-use App\Modules\ForgeDeployment\Services\LetsEncryptService;
+use Modules\ForgeDeployment\Dto\DeploymentConfig;
+use Modules\ForgeDeployment\Dto\ProvisionConfig;
+use Modules\ForgeDeployment\Dto\ServerConfig;
+use Modules\ForgeDeployment\Services\DeploymentConfigReader;
+use Modules\ForgeDeployment\Services\DeploymentService;
+use Modules\ForgeDeployment\Services\DeploymentStateService;
+use Modules\ForgeDeployment\Services\ForgeDeploymentService;
+use Modules\ForgeDeployment\Services\LetsEncryptService;
 use Forge\CLI\Attributes\Cli;
 use Forge\CLI\Command;
 use Forge\CLI\Traits\OutputHelper;
@@ -150,7 +150,7 @@ final class ResumeCommand extends Command
           }
 
           if (!empty($cloudflareToken)) {
-            $cloudflareService = new \App\Modules\ForgeDeployment\Services\CloudflareService($cloudflareToken);
+            $cloudflareService = new \Modules\ForgeDeployment\Services\CloudflareService($cloudflareToken);
             $zoneId = $cloudflareService->getZoneId($deploymentConfig->domain);
             if ($zoneId !== null) {
               $cloudflareService->addDnsRecord($zoneId, $deploymentConfig->domain, $state->serverIp);
@@ -184,7 +184,7 @@ final class ResumeCommand extends Command
 
         if (!empty($deploymentConfig->postDeploymentCommands) && !$state->isStepCompleted('post_deployment_completed')) {
           $this->info('Running post-deployment commands...');
-          $sshService = new \App\Modules\ForgeDeployment\Services\SshService();
+          $sshService = new \Modules\ForgeDeployment\Services\SshService();
           $connected = $sshService->connect(
             $state->serverIp,
             22,

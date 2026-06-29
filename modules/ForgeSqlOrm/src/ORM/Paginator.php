@@ -1,9 +1,9 @@
 <?php
 declare(strict_types=1);
 
-namespace App\Modules\ForgeSqlOrm\ORM;
+namespace Modules\ForgeSqlOrm\ORM;
 
-use App\Modules\ForgeSqlOrm\ORM\Contracts\PaginatorInterface;
+use Modules\ForgeSqlOrm\ORM\Contracts\PaginatorInterface;
 use Forge\Core\Helpers\Url;
 use JsonSerializable;
 

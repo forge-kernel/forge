@@ -2,12 +2,12 @@
 
 declare(strict_types=1);
 
-namespace App\Modules\ForgeBilling\Services;
+namespace Modules\ForgeBilling\Services;
 
-use App\Modules\ForgeBilling\Dto\BillingPlan;
+use Modules\ForgeBilling\Dto\BillingPlan;
 use Forge\Core\DI\Attributes\Service;
-use App\Modules\ForgeBilling\Dto\BillingSubscription;
-use App\Modules\ForgeBilling\Enums\SubscriptionStatus;
+use Modules\ForgeBilling\Dto\BillingSubscription;
+use Modules\ForgeBilling\Enums\SubscriptionStatus;
 use Forge\Core\Contracts\Database\QueryBuilderInterface;
 use Forge\Core\Helpers\UUID;
 

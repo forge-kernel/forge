@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Modules\ForgePackageManager\Services;
+namespace Modules\ForgePackageManager\Services;
 
 use Forge\CLI\Traits\OutputHelper;
 use Forge\Core\DI\Attributes\Service;

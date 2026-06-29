@@ -2,16 +2,16 @@
 
 declare(strict_types=1);
 
-namespace App\Modules\ForgeHub\Layouts;
+namespace Modules\ForgeHub\Layouts;
 
-use App\Modules\ForgeComponents\Definitions\Admin\BreadcrumbItemDefinition;
-use App\Modules\ForgeComponents\Definitions\Admin\BreadcrumbsDefinition;
-use App\Modules\ForgeComponents\Definitions\Admin\DropdownItemDefinition;
-use App\Modules\ForgeComponents\Definitions\Admin\IconDefinition;
-use App\Modules\ForgeComponents\Definitions\Admin\NavGroupDefinition;
-use App\Modules\ForgeComponents\Definitions\Admin\NavItemDefinition;
-use App\Modules\ForgeComponents\Definitions\Admin\SidebarDefinition;
-use App\Modules\ForgeComponents\Definitions\Admin\UserDropdownDefinition;
+use Modules\ForgeComponents\Definitions\Admin\BreadcrumbItemDefinition;
+use Modules\ForgeComponents\Definitions\Admin\BreadcrumbsDefinition;
+use Modules\ForgeComponents\Definitions\Admin\DropdownItemDefinition;
+use Modules\ForgeComponents\Definitions\Admin\IconDefinition;
+use Modules\ForgeComponents\Definitions\Admin\NavGroupDefinition;
+use Modules\ForgeComponents\Definitions\Admin\NavItemDefinition;
+use Modules\ForgeComponents\Definitions\Admin\SidebarDefinition;
+use Modules\ForgeComponents\Definitions\Admin\UserDropdownDefinition;
 
 final class AdminLayout
 {

@@ -2,12 +2,12 @@
 
 declare(strict_types=1);
 
-namespace App\Modules\ForgeBilling\Services;
+namespace Modules\ForgeBilling\Services;
 
-use App\Modules\ForgeBilling\Contracts\PaymentProviderInterface;
-use App\Modules\ForgeBilling\Dto\ChargeRequest;
-use App\Modules\ForgeBilling\Dto\ChargeResult;
-use App\Modules\ForgeBilling\Dto\RefundResult;
+use Modules\ForgeBilling\Contracts\PaymentProviderInterface;
+use Modules\ForgeBilling\Dto\ChargeRequest;
+use Modules\ForgeBilling\Dto\ChargeResult;
+use Modules\ForgeBilling\Dto\RefundResult;
 
 final class ManualPaymentProvider implements PaymentProviderInterface
 {

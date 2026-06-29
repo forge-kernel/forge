@@ -2,19 +2,19 @@
 
 declare(strict_types=1);
 
-namespace App\Modules\ForgeRouter\Tests;
+namespace Modules\ForgeRouter\Tests;
 
-use App\Modules\ForgeTesting\Attributes\Group;
-use App\Modules\ForgeTesting\Attributes\Test;
-use App\Modules\ForgeTesting\TestCase;
+use Modules\ForgeTesting\Attributes\Group;
+use Modules\ForgeTesting\Attributes\Test;
+use Modules\ForgeTesting\TestCase;
 use Forge\Core\DI\Container;
 use ReflectionClass;
-use App\Modules\ForgeRouter\Attributes\Routable;
-use App\Modules\ForgeRouter\Http\Request;
-use App\Modules\ForgeRouter\Routing\Endpoint;
-use App\Modules\ForgeRouter\Routing\Route;
-use App\Modules\ForgeRouter\Routing\Router;
-use App\Modules\ForgeRouter\Http\Attributes\ApiRoute;
+use Modules\ForgeRouter\Attributes\Routable;
+use Modules\ForgeRouter\Http\Request;
+use Modules\ForgeRouter\Routing\Endpoint;
+use Modules\ForgeRouter\Routing\Route;
+use Modules\ForgeRouter\Routing\Router;
+use Modules\ForgeRouter\Http\Attributes\ApiRoute;
 
 #[Group('routing')]
 final class RouterTest extends TestCase
