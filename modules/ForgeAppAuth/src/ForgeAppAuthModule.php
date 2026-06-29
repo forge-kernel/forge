@@ -33,7 +33,7 @@ use Forge\Core\Module\Attributes\Structure;
 ])]
 #[Module(
     name: 'ForgeAppAuth',
-    version: '0.1.3',
+    version: '0.1.4',
     description: 'Distributable authentication implementation with login, register, forgot-password, and reset-password',
     order: 60,
     author: 'Forge Team',
@@ -41,7 +41,7 @@ use Forge\Core\Module\Attributes\Structure;
     type: 'generic',
     tags: ['auth', 'authentication', 'login', 'register', 'password-reset'],
 )]
-#[Requires(module: "forge-router", version: ">=1.0.8")]
+#[Requires(module: "forge-router", version: ">=1.0.10")]
 #[Requires(module: "forge-view", version: ">=0.1.2")]
 #[Requires(module: "forge-auth", version: ">=2.0.5")]
 #[Requires(module: "forge-database-sql", version: ">=0.9.12")]
