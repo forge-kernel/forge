@@ -2,18 +2,18 @@
 
 declare(strict_types=1);
 
-namespace App\Modules\ForgeHub;
+namespace Modules\ForgeHub;
 
 use Forge\Core\DI\Container;
 use Forge\Core\Module\Attributes\Compatibility;
 use Forge\Core\Module\Attributes\ConfigDefaults;
 use Forge\Core\Module\Attributes\Module;
 use Forge\Core\Module\Attributes\Repository;
-use App\Modules\ForgeHub\Contracts\ForgeHubInterface;
-use App\Modules\ForgeHub\Services\ForgeHubService;
-use App\Modules\ForgeHub\Services\HubItemRegistry;
-use App\Modules\ForgeHub\Services\ObservabilityService;
-use App\Modules\ForgeHub\Services\ObservabilityServiceInterface;
+use Modules\ForgeHub\Contracts\ForgeHubInterface;
+use Modules\ForgeHub\Services\ForgeHubService;
+use Modules\ForgeHub\Services\HubItemRegistry;
+use Modules\ForgeHub\Services\ObservabilityService;
+use Modules\ForgeHub\Services\ObservabilityServiceInterface;
 use Forge\Core\DI\Attributes\Service;
 use Forge\CLI\Traits\OutputHelper;
 use Forge\Core\Module\Attributes\HubItem;
@@ -22,7 +22,7 @@ use Forge\Core\Security\PermissionsEnum;
 
 #[Module(
     name: 'ForgeHub',
-    version: '2.5.8',
+    version: '2.5.9',
     description: 'Administration Hub for Forge Framework',
     order: 6,
     author: 'Forge Team',
