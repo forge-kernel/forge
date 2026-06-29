@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Modules\ForgeNotification;
+namespace Modules\ForgeNotification;
 
 use Forge\Core\Config\Config;
 use Forge\Core\Contracts\NotificationInterface;
@@ -11,14 +11,14 @@ use Forge\Core\Module\Attributes\Compatibility;
 use Forge\Core\Module\Attributes\ConfigDefaults;
 use Forge\Core\Module\Attributes\Module;
 use Forge\Core\Module\Attributes\Repository;
-use App\Modules\ForgeNotification\Services\ForgeNotificationService;
+use Modules\ForgeNotification\Services\ForgeNotificationService;
 use Forge\Core\DI\Attributes\Service;
 use Forge\CLI\Traits\OutputHelper;
 
 #[Service]
 #[Module(
     name: 'ForgeNotification',
-    version: '0.3.2',
+    version: '0.3.3',
     description: 'Multi-channel notification system with provider support, fluent API, and async queue integration',
     order: 99,
     author: 'Forge Team',
