@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace App\Modules\ForgeEvents;
+namespace Modules\ForgeEvents;
 
-use App\Modules\ForgeEvents\Attributes\EventListener;
+use Modules\ForgeEvents\Attributes\EventListener;
 use Forge\Core\Bootstrap\OptimizedDirectoryScanner;
-use App\Modules\ForgeEvents\Services\EventDispatcher;
+use Modules\ForgeEvents\Services\EventDispatcher;
 use Forge\Core\DI\Container;
 use Forge\Core\Module\Attributes\Compatibility;
 use Forge\Core\Module\Attributes\Module;
@@ -18,7 +18,7 @@ use ReflectionMethod;
 
 #[Module(
     name: "ForgeEvents",
-    version: "1.4.7",
+    version: "1.4.8",
     description: "An Event Queue system by forge",
     order: 99,
     author: 'Forge Team',
