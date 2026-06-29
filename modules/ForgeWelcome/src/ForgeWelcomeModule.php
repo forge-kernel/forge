@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Modules\ForgeWelcome;
+namespace Modules\ForgeWelcome;
 
 use Forge\Core\DI\Container;
 use Forge\Core\Module\Attributes\Compatibility;
@@ -10,8 +10,8 @@ use Forge\Core\Module\Attributes\Module;
 use Forge\Core\Module\Attributes\PostInstall;
 use Forge\Core\Module\Attributes\PostUninstall;
 use Forge\Core\Module\Attributes\Repository;
-use App\Modules\ForgeWelcome\Contracts\ForgeWelcomeInterface;
-use App\Modules\ForgeWelcome\Services\ForgeWelcomeService;
+use Modules\ForgeWelcome\Contracts\ForgeWelcomeInterface;
+use Modules\ForgeWelcome\Services\ForgeWelcomeService;
 use Forge\Core\DI\Attributes\Service;
 use Forge\Core\Module\Attributes\LifecycleHook;
 use Forge\Core\Module\LifecycleHookName;
@@ -20,7 +20,7 @@ use Forge\Core\Module\Attributes\Structure;
 
 #[Module(
     name: 'ForgeWelcome',
-    version: '1.2.4',
+    version: '1.2.5',
     description: 'A playground by forge',
     order: 99,
     author: 'Forge Team',
