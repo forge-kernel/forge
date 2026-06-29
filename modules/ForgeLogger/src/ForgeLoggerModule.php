@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Modules\ForgeLogger;
+namespace Modules\ForgeLogger;
 
 use Forge\Core\Config\Config;
 use Forge\Core\DI\Container;
@@ -11,15 +11,15 @@ use Forge\Core\Module\Attributes\ConfigDefaults;
 use Forge\Core\Module\Attributes\Module;
 use Forge\Core\Module\Attributes\Structure;
 use Forge\Core\Module\Attributes\Repository;
-use App\Modules\ForgeLogger\Contracts\ForgeLoggerInterface;
-use App\Modules\ForgeLogger\Services\ForgeLoggerService;
+use Modules\ForgeLogger\Contracts\ForgeLoggerInterface;
+use Modules\ForgeLogger\Services\ForgeLoggerService;
 use Forge\Core\DI\Attributes\Service;
 use Forge\CLI\Traits\OutputHelper;
 
 #[Service]
 #[Module(
     name: 'ForgeLogger',
-    version: '0.5.3',
+    version: '0.5.4',
     description: 'A logger by Forge.',
     order: 90,
     author: 'Forge Team',
