@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace App\Modules\ForgeSqlOrm;
+namespace Modules\ForgeSqlOrm;
 
-use App\Modules\ForgeSqlOrm\ORM\Cache\QueryCache;
-use App\Modules\ForgeSqlOrm\ORM\QueryBuilder;
+use Modules\ForgeSqlOrm\ORM\Cache\QueryCache;
+use Modules\ForgeSqlOrm\ORM\QueryBuilder;
 use Forge\Core\Contracts\Database\DatabaseConnectionInterface;
 use Forge\Core\Contracts\Database\QueryBuilderInterface;
 use Forge\Core\Debug\Metrics;
@@ -16,7 +16,7 @@ use Forge\Core\Module\Attributes\Module;
 use Forge\Core\Module\Attributes\Repository;
 use Forge\CLI\Traits\OutputHelper;
 
-#[Module(name: 'ForgeSqlOrm', version: '0.6.6', description: 'SQL ORM Support (SQLite, MySQL, PostgreSQL)', order: 1, author: 'Forge Team', license: 'MIT', type: 'core', tags: ['database', 'sql', 'orm'])]
+#[Module(name: 'ForgeSqlOrm', version: '0.6.7', description: 'SQL ORM Support (SQLite, MySQL, PostgreSQL)', order: 1, author: 'Forge Team', license: 'MIT', type: 'core', tags: ['database', 'sql', 'orm'])]
 #[Compatibility(framework: '>=0.1.0', php: '>=8.3')]
 #[Repository(type: 'git', url: 'https://github.com/forge-kernel/kernel-module-registry')]
 #[ConfigDefaults(defaults: [
