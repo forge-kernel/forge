@@ -39,15 +39,19 @@ class CompressionMiddleware extends Middleware
             return $response;
         }
 
+        if (strlen($content) < 1024) {
+            return $response;
+        }
+
         if (str_contains($acceptEncoding, 'gzip')) {
-            $compressedContent = gzencode($content, 9);
+            $compressedContent = gzencode($content, 6);
             if ($compressedContent !== false) {
                 $response->setHeader('Content-Encoding', 'gzip');
                 $response->setContent($compressedContent);
                 $response->setHeader('Content-Length', (string)strlen($compressedContent));
             }
         } elseif (str_contains($acceptEncoding, 'deflate')) {
-            $compressedContent = gzdeflate($content, 9);
+            $compressedContent = gzdeflate($content, 6);
             if ($compressedContent !== false) {
                 $response->setHeader('Content-Encoding', 'deflate');
                 $response->setContent($compressedContent);

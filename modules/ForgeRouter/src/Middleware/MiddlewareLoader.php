@@ -41,7 +41,8 @@ final class MiddlewareLoader
             return $cached;
         }
 
-        $autoMiddlewares = $this->scanDirectories();
+        $scanResult = $this->scanDirectories();
+        $autoMiddlewares = $scanResult['middlewareMap'];
 
         $finalMiddlewares = [];
         foreach ($autoMiddlewares as $group => $middlewares) {
@@ -53,21 +54,26 @@ final class MiddlewareLoader
             ], $middlewares);
         }
 
-        $this->generateCache($finalMiddlewares);
+        $this->generateCache($finalMiddlewares, $scanResult['files'], $scanResult['dirs']);
 
         return $finalMiddlewares;
     }
 
     /**
-     * Discovers middlewares via attribute scanning first, then legacy folder fallback.
-     * @return array<string, array<int, array{class: class-string, order: int, overrideClass: ?string}>>
+     * Discovers middlewares via attribute scanning, then scans conventional
+     * middleware directories. Returns both the middleware map and the list of
+     * files/dirs scanned (for cache generation).
+     *
+     * @return array{middlewareMap: array, files: string[], dirs: string[]}
      */
     private function scanDirectories(): array
     {
         $autoMiddlewares = [];
         $discoveredClasses = [];
+        $files = [];
+        $dirs = [];
 
-        // 1. Attribute-based discovery: any class under app/ or modules/{Module}/src with #[RegisterMiddleware] or #[Middleware]
+        // 1. Attribute-based discovery: classes with #[RegisterMiddleware] or #[Middleware]
         $basePaths = $this->getAttributeDiscoveryBasePaths();
         if (!empty($basePaths)) {
             $discoveryService = new AttributeDiscoveryService();
@@ -107,64 +113,74 @@ final class MiddlewareLoader
                         'overrideClass' => $attrInstance->overrideClass ?? $className,
                     ];
                     $discoveredClasses[$className] = true;
+                    $files[] = $metadata['file'];
                 } catch (ReflectionException $e) {
                     //
                 }
             }
         }
 
-        // 2. Legacy folder fallback: app/Middlewares/ and modules/{Module}/src/Middlewares/
-        $filesToScan = [];
-        foreach ($this->resolveMiddlewareDirectories() as $dir) {
-            if (FileExistenceCache::isDir($dir)) {
-                $directoryIterator = new RecursiveDirectoryIterator($dir);
-                $iterator = new RecursiveIteratorIterator($directoryIterator);
-
-                foreach ($iterator as $file) {
-                    if ($file->isFile() && $file->getExtension() === "php") {
-                        $filesToScan[] = $file->getPathname();
-                    }
-                }
+        // 2. Conventional middleware directories: app/Middlewares/ and modules/{Module}/src/Middlewares/
+        $middlewareDirs = $this->resolveMiddlewareDirectories();
+        foreach ($middlewareDirs as $dir) {
+            if (!FileExistenceCache::isDir($dir)) {
+                continue;
             }
-        }
 
-        foreach (array_unique($filesToScan) as $file) {
-            try {
-                $className = $this->fileToClass($file);
+            $dirs[] = $dir;
 
-                if (isset($discoveredClasses[$className])) {
-                    continue;
-                }
+            $directoryIterator = new RecursiveDirectoryIterator($dir, RecursiveDirectoryIterator::SKIP_DOTS);
+            $iterator = new RecursiveIteratorIterator($directoryIterator, RecursiveIteratorIterator::SELF_FIRST);
 
-                if ($className && class_exists($className)) {
-                    $reflection = new ReflectionClass($className);
-                    $attribute = $reflection->getAttributes(Middleware::class)[0] ?? $reflection->getAttributes(RegisterMiddleware::class)[0] ?? null;
+            foreach ($iterator as $item) {
+                if ($item->isDir()) {
+                    $dirs[] = $item->getPathname();
+                } elseif ($item->isFile() && $item->getExtension() === "php") {
+                    $filePath = $item->getPathname();
+                    $files[] = $filePath;
 
-                    if ($attribute) {
-                        /** @var RegisterMiddleware|Middleware $attrInstance */
-                        $attrInstance = $attribute->newInstance();
+                    try {
+                        $className = $this->fileToClass($filePath);
 
-                        if (!$attrInstance->enabled) {
+                        if (isset($discoveredClasses[$className])) {
                             continue;
                         }
 
-                        if (!isset($autoMiddlewares[$attrInstance->group])) {
-                            $autoMiddlewares[$attrInstance->group] = [];
-                        }
+                        if ($className && class_exists($className)) {
+                            $reflection = new ReflectionClass($className);
+                            $attribute = $reflection->getAttributes(Middleware::class)[0] ?? $reflection->getAttributes(RegisterMiddleware::class)[0] ?? null;
 
-                        $autoMiddlewares[$attrInstance->group][] = [
-                            'class' => $className,
-                            'order' => $attrInstance->order,
-                            'overrideClass' => $attrInstance->overrideClass ?? $className,
-                        ];
+                            if ($attribute) {
+                                /** @var RegisterMiddleware|Middleware $attrInstance */
+                                $attrInstance = $attribute->newInstance();
+
+                                if (!$attrInstance->enabled) {
+                                    continue;
+                                }
+
+                                if (!isset($autoMiddlewares[$attrInstance->group])) {
+                                    $autoMiddlewares[$attrInstance->group] = [];
+                                }
+
+                                $autoMiddlewares[$attrInstance->group][] = [
+                                    'class' => $className,
+                                    'order' => $attrInstance->order,
+                                    'overrideClass' => $attrInstance->overrideClass ?? $className,
+                                ];
+                            }
+                        }
+                    } catch (ReflectionException $e) {
+                        //
                     }
                 }
-            } catch (ReflectionException $e) {
-                //
             }
         }
 
-        return $autoMiddlewares;
+        return [
+            'middlewareMap' => $autoMiddlewares,
+            'files' => array_values(array_unique($files)),
+            'dirs' => array_values(array_unique($dirs)),
+        ];
     }
 
     /**
@@ -298,7 +314,10 @@ final class MiddlewareLoader
     }
 
     /**
-     * Check if the cached middleware map is still valid by comparing file modification times.
+     * Check if the cached middleware map is still valid.
+     * Uses directory mtimes as the primary signal — any file add/remove/modify
+     * within a directory changes its mtime on most filesystems. Also verifies
+     * that every previously-cached file still exists.
      *
      * @param array{files: array<string, int>, dirs: array<string, int>, mtime: int} $metadata Cache metadata with file list and mtimes
      * @return bool True if cache is valid, false if files have changed
@@ -309,22 +328,21 @@ final class MiddlewareLoader
         $cachedDirs = $metadata['dirs'] ?? [];
 
         if (!empty($cachedFiles)) {
-            $filePaths = array_keys($cachedFiles);
-            FileExistenceCache::preload($filePaths);
+            FileExistenceCache::preload(array_keys($cachedFiles));
         }
 
         if (!empty($cachedDirs)) {
-            $dirPaths = array_keys($cachedDirs);
-            FileExistenceCache::preload($dirPaths);
+            FileExistenceCache::preload(array_keys($cachedDirs));
         }
 
+        // Check that every previously-cached file still exists
         foreach ($cachedFiles as $file => $fileMtime) {
-            $currentMtime = FileExistenceCache::getMtime($file);
-            if ($currentMtime === null || $currentMtime > $fileMtime) {
+            if (!FileExistenceCache::exists($file)) {
                 return false;
             }
         }
 
+        // Directory mtime tracks structural changes (additions, deletions)
         foreach ($cachedDirs as $dir => $dirMtime) {
             $currentMtime = FileExistenceCache::getMtime($dir);
             if ($currentMtime === null || $currentMtime > $dirMtime) {
@@ -332,8 +350,6 @@ final class MiddlewareLoader
             }
         }
 
-        // Since we track directory modification times, we don't need to recursively scan all directories
-        // to find newly created or deleted files! Any addition/deletion changes the directory mtime.
         return true;
     }
 
@@ -373,54 +389,19 @@ final class MiddlewareLoader
         return true;
     }
 
-    private function getAllMiddlewareFilesAndDirs(): array
-    {
-        $files = [];
-        $dirs = [];
-
-        $directoriesToScan = array_merge(
-            $this->resolveMiddlewareDirectories(),
-            $this->getAttributeDiscoveryBasePaths(),
-        );
-
-        foreach ($directoriesToScan as $dir) {
-            $fullDir = str_starts_with($dir, BASE_PATH) ? $dir : BASE_PATH . '/' . ltrim($dir, '/');
-            if (FileExistenceCache::isDir($fullDir)) {
-                $dirs[] = $fullDir;
-                $directoryIterator = new RecursiveDirectoryIterator($fullDir, RecursiveDirectoryIterator::SKIP_DOTS);
-                $iterator = new RecursiveIteratorIterator($directoryIterator, RecursiveIteratorIterator::SELF_FIRST);
-
-                foreach ($iterator as $file) {
-                    if ($file->isDir()) {
-                        $dirs[] = $file->getPathname();
-                    } elseif ($file->isFile() && $file->getExtension() === "php") {
-                        $files[] = $file->getPathname();
-                    }
-                }
-            }
-        }
-
-        return [
-            'files' => array_values(array_unique($files)),
-            'dirs' => array_values(array_unique($dirs)),
-        ];
-    }
-
     /**
      * Generates and caches the middleware map to a file.
      * Includes metadata (file list and modification times) for cache validation.
      *
      * @param array<string, array<int, array{class: class-string, overrideClass: ?string}>> $middlewareMap
+     * @param string[] $files File paths that were scanned
+     * @param string[] $dirs Directory paths that were scanned
      */
-    private function generateCache(array $middlewareMap): void
+    private function generateCache(array $middlewareMap, array $files, array $dirs): void
     {
         if (!FileExistenceCache::isDir(dirname(self::CACHE_FILE))) {
             mkdir(dirname(self::CACHE_FILE), 0777, true);
         }
-
-        $systemFiles = $this->getAllMiddlewareFilesAndDirs();
-        $files = $systemFiles['files'];
-        $dirs = $systemFiles['dirs'];
 
         $fileMetadata = [];
         $dirMetadata = [];

@@ -72,6 +72,11 @@ final class RouterSetup
         if ($container->has(AttributeDiscoveryService::class)) {
             $discoveryService = $container->get(AttributeDiscoveryService::class);
             $routableMetadata = $discoveryService->getClassesWithAttributeMetadata(Routable::class);
+            if (empty($routableMetadata)) {
+                $basePaths = OptimizedDirectoryScanner::getAttributeDiscoveryPaths($config);
+                $discoveryService->discover($basePaths, [Routable::class]);
+                $routableMetadata = $discoveryService->getClassesWithAttributeMetadata(Routable::class);
+            }
         }
 
         $existingClasses = [];
