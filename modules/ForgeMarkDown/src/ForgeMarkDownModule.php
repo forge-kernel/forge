@@ -1,8 +1,8 @@
 <?php
 
-namespace App\Modules\ForgeMarkDown;
+namespace Modules\ForgeMarkDown;
 
-use App\Modules\ForgeMarkDown\Contracts\ForgeMarkDownInterface;
+use Modules\ForgeMarkDown\Contracts\ForgeMarkDownInterface;
 use Forge\Core\DI\Attributes\Service;
 use Forge\Core\DI\Container;
 use Forge\Core\Module\Attributes\Compatibility;
@@ -11,7 +11,7 @@ use Forge\Core\Module\Attributes\Provides;
 
 #[Module(
   name: 'ForgeMarkDown',
-  version: '0.1.2',
+  version: '0.1.3',
   description: 'A markdown processor',
   order: 70,
   author: 'Forge Team',
@@ -21,7 +21,7 @@ use Forge\Core\Module\Attributes\Provides;
 )]
 #[Service()]
 #[Compatibility(framework: '>=0.1.0', php: '>=8.3')]
-#[Provides(interface: ForgeMarkDownInterface::class, version: '0.1.2')]
+#[Provides(interface: ForgeMarkDownInterface::class, version: '0.1.3')]
 class ForgeMarkDownModule
 {
   public function register(Container $container): void
