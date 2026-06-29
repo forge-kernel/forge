@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Modules\AppAuth;
+namespace Modules\AppAuth;
 
 use Forge\Core\Module\Attributes\Compatibility;
 use Forge\Core\Module\Attributes\ConfigDefaults;
@@ -13,10 +13,10 @@ use Forge\Core\Module\Attributes\Repository;
 use Forge\Core\DI\Attributes\Service;
 use Forge\Core\Module\Attributes\Structure;
 use Forge\Core\DI\Container;
-use App\Modules\ForgeAuth\Contracts\UserContextInterface;
-use App\Modules\ForgeAuth\Contracts\UserProviderInterface;
-use App\Modules\AppAuth\Repositories\UserRepository;
-use App\Modules\AppAuth\Services\UserContext;
+use Modules\ForgeAuth\Contracts\UserContextInterface;
+use Modules\ForgeAuth\Contracts\UserProviderInterface;
+use Modules\AppAuth\Repositories\UserRepository;
+use Modules\AppAuth\Services\UserContext;
 
 #[Structure(structure: [
     'controllers' => 'src/Controllers',
@@ -36,7 +36,7 @@ use App\Modules\AppAuth\Services\UserContext;
 
 
 #[Service]
-#[Module(name: 'AppAuth', version: '0.1.0', description: 'Application auth', order: 99, author: 'Your Name', license: 'MIT', tags: [])]
+#[Module(name: 'AppAuth', version: '0.1.1', description: 'Application auth', order: 99, author: 'Your Name', license: 'MIT', tags: [])]
 #[Compatibility(framework: '>=4.15.13', php: '>=8.3')]
 #[Repository(type: 'git', url: 'https://github.com/forge-kernel/kernel-module-registry')]
 #[ConfigDefaults(defaults: [
