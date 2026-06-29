@@ -2,19 +2,19 @@
 
 declare(strict_types=1);
 
-namespace App\Modules\ForgeBilling;
+namespace Modules\ForgeBilling;
 
-use App\Modules\ForgeBilling\Contracts\BillableResolverInterface;
-use App\Modules\ForgeBilling\Events\GenerateInvoiceEvent;
-use App\Modules\ForgeBilling\Services\BillableResolver;
-use App\Modules\ForgeBilling\Services\BillingPlanService;
-use App\Modules\ForgeBilling\Services\BillingPortalService;
-use App\Modules\ForgeBilling\Services\BillingSubscriptionService;
-use App\Modules\ForgeBilling\Services\InvoiceService;
-use App\Modules\ForgeBilling\Services\ManualPaymentProvider;
-use App\Modules\ForgeBilling\Services\PaymentMethodService;
-use App\Modules\ForgeBilling\Services\PaymentProviderRegistry;
-use App\Modules\ForgeBilling\Services\PaymentService;
+use Modules\ForgeBilling\Contracts\BillableResolverInterface;
+use Modules\ForgeBilling\Events\GenerateInvoiceEvent;
+use Modules\ForgeBilling\Services\BillableResolver;
+use Modules\ForgeBilling\Services\BillingPlanService;
+use Modules\ForgeBilling\Services\BillingPortalService;
+use Modules\ForgeBilling\Services\BillingSubscriptionService;
+use Modules\ForgeBilling\Services\InvoiceService;
+use Modules\ForgeBilling\Services\ManualPaymentProvider;
+use Modules\ForgeBilling\Services\PaymentMethodService;
+use Modules\ForgeBilling\Services\PaymentProviderRegistry;
+use Modules\ForgeBilling\Services\PaymentService;
 use Forge\Core\Contracts\Database\CentralQueryBuilderInterface;
 use Forge\Core\DI\Container;
 use Forge\Core\Module\Attributes\Compatibility;
@@ -44,7 +44,7 @@ use Forge\Core\Module\LifecycleHookName;
 ])]
 #[Module(
     name: 'ForgeBilling',
-    version: '0.2.4',
+    version: '0.2.5',
     description: 'Billing portal with plans, invoices, and payment provider support',
     order: 5,
     author: 'Forge Team',
@@ -119,7 +119,7 @@ final class ForgeBillingModule
     public function onAfterModuleLoad(): void
     {
         $container = Container::getInstance();
-        $dispatcher = $container->get(\App\Modules\ForgeEvents\Services\EventDispatcher::class);
+        $dispatcher = $container->get(\Modules\ForgeEvents\Services\EventDispatcher::class);
 
         $dispatcher->addListener(
             GenerateInvoiceEvent::class,
