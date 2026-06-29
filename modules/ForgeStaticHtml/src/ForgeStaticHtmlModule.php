@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Modules\ForgeStaticHtml;
+namespace Modules\ForgeStaticHtml;
 
 use Forge\Core\DI\Attributes\Service;
 use Forge\Core\DI\Container;
@@ -19,7 +19,7 @@ use Forge\Core\Module\Attributes\Provides;
   tags: ['html', 'static', 'site', 'generator']
 )]
 #[Service()]
-#[Provides(interface: StaticGenerator::class, version: '0.2.0')]
+#[Provides(interface: StaticGenerator::class, version: '0.2.1')]
 #[Compatibility(framework: '>=0.1.0', php: '>=8.3')]
 #[ConfigDefaults(defaults: [
   'forge_static_html' => [
