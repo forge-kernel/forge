@@ -14,7 +14,6 @@ use Modules\ForgeHub\Services\ForgeHubService;
 use Modules\ForgeHub\Services\HubItemRegistry;
 use Modules\ForgeHub\Services\ObservabilityService;
 use Modules\ForgeHub\Services\ObservabilityServiceInterface;
-use Forge\Core\DI\Attributes\Service;
 use Forge\CLI\Traits\OutputHelper;
 use Forge\Core\Module\Attributes\HubItem;
 use Forge\Core\Module\ForgeIcon;
@@ -22,7 +21,7 @@ use Forge\Core\Security\PermissionsEnum;
 
 #[Module(
     name: 'ForgeHub',
-    version: '2.5.9',
+    version: '2.5.10',
     description: 'Administration Hub for Forge Framework',
     order: 6,
     author: 'Forge Team',
@@ -39,7 +38,7 @@ use Forge\Core\Security\PermissionsEnum;
 #[HubItem(label: 'Cron Jobs', route: '/hub/cron-jobs', icon: ForgeIcon::CLOCK, order: 8)]
 #[HubItem(label: 'Monitoring', route: '/hub/monitoring', icon: ForgeIcon::MONITOR, order: 9)]
 #[HubItem(label: 'Observability', route: '/hub/observability', icon: ForgeIcon::MONITOR, order: 10)]
-#[Service]
+#[HubItem(label: 'Deployment', route: '/hub/deployment', icon: ForgeIcon::DEPLOY, order: 10)]
 #[Compatibility(framework: '>=4.15.10', php: '>=8.3')]
 #[Repository(type: 'git', url: 'https://github.com/forge-kernel/kernel-module-registry')]
 #[ConfigDefaults(defaults: [
