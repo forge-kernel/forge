@@ -25,12 +25,12 @@ use Throwable;
 #[Module(name: "ForgeRouter",
     description: "Forge Router and Http",
     author: "Forge Team",
-    version: '1.0.13',
+    version: '1.0.14',
     type: "core",
     license: "MIT",
     tags: ["router", "http"],
     order: PHP_INT_MAX)]
-#[Compatibility(framework: '>=0.1.0', php: '>=8.3')]
+#[Compatibility(framework: '>=6.0.23', php: '>=8.3')]
 #[Repository(type: 'git', url: 'https://github.com/forge-kernel/kernel-module-registry')]
 #[ConfigDefaults(defaults: [
     'forge_router' => [
