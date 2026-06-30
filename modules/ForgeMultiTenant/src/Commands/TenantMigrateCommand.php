@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace Modules\ForgeMultiTenant\Commands;
 
+use Forge\CLI\Attributes\CoreCommand;
 use Modules\ForgeMultiTenant\Services\TenantManager;
 use Modules\ForgeMultiTenant\Services\TenantConnectionFactory;
 use Forge\CLI\Attributes\Arg;
@@ -12,6 +13,7 @@ use Forge\CLI\Traits\OutputHelper;
 use Forge\CLI\Traits\Wizard;
 use Forge\Core\Database\Migrator;
 
+#[CoreCommand]
 #[Cli(
     command: 'tenant:migrate',
     description: 'Run migrations for one or all tenants (app/Database/Migrations/Tenants)',
@@ -34,11 +36,10 @@ final class TenantMigrateCommand extends Command
     private bool $preview;
 
     public function __construct(
-        private readonly TenantManager           $tenants,
+        private readonly TenantManager $tenants,
         private readonly TenantConnectionFactory $factory,
-        private readonly Migrator                $migrator
-    )
-    {
+        private readonly Migrator $migrator
+    ) {
     }
 
     /**

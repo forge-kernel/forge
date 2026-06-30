@@ -12,19 +12,17 @@ use Modules\ForgeNotification\Dto\SmsNotificationDto;
  * Event for queued SMS notifications.
  * Dispatched when an SMS notification should be sent asynchronously.
  */
-#[
-    Event(
+#[Event(
     queue: "notifications",
     maxRetries: 3,
     delay: "0s",
     priority: QueuePriority::NORMAL,
-  ),
-  ]
+)]
 final readonly class SmsNotificationEvent
 {
-  public function __construct(
-    public SmsNotificationDto $notification,
-    public ?string $provider = null
-  ) {
-  }
+    public function __construct(
+        public SmsNotificationDto $notification,
+        public ?string $provider = null
+    ) {
+    }
 }

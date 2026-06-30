@@ -12,19 +12,17 @@ use Modules\ForgeNotification\Dto\EmailNotificationDto;
  * Event for queued email notifications.
  * Dispatched when an email notification should be sent asynchronously.
  */
-#[
-    Event(
+#[Event(
     queue: "notifications",
     maxRetries: 3,
     delay: "0s",
     priority: QueuePriority::NORMAL,
-  ),
-  ]
+)]
 final readonly class EmailNotificationEvent
 {
-  public function __construct(
-    public EmailNotificationDto $notification,
-    public ?string $provider = null
-  ) {
-  }
+    public function __construct(
+        public EmailNotificationDto $notification,
+        public ?string $provider = null
+    ) {
+    }
 }

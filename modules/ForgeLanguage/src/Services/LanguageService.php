@@ -5,14 +5,15 @@ declare(strict_types=1);
 namespace Modules\ForgeLanguage\Services;
 
 use Forge\Core\Config\Config;
-use Forge\Core\DI\Attributes\Service;
-use Forge\Core\DI\Container;
+use Forge\Core\DI\Attributes\Injectable;
+use Forge\Core\Helpers\Path;
 use Modules\ForgeRouter\Http\Request;
 use Forge\Core\Session\SessionInterface;
 use Forge\Core\Structure\StructureResolver;
 use Forge\Core\Module\ModuleResourceResolver;
+use InvalidArgumentException;
 
-#[Service]
+#[Injectable]
 final class LanguageService
 {
     private ?string $currentLanguage = null;
@@ -22,8 +23,6 @@ final class LanguageService
      */
 
     private array $loadedLanguages = [];
-
-
 
     public function __construct(
         private readonly Request $request,
@@ -52,9 +51,7 @@ final class LanguageService
     public function set(string $language): void
     {
         if (!$this->isSupported($language)) {
-            throw new \InvalidArgumentException(
-                "Unsupported language: {$language}"
-            );
+            throw new InvalidArgumentException("Unsupported language: {$language}");
         }
 
         $this->session->set('language', $language);
@@ -66,16 +63,12 @@ final class LanguageService
      */
     public function available(): array
     {
-        return $this->config->get(
-            'forge_language.languages',
-            []
-        );
+        return $this->config->get('forge_language.languages', []);
     }
 
     public function language(string $code): ?array
     {
         return $this->available()[$code] ?? null;
-
     }
 
     /**
@@ -83,10 +76,7 @@ final class LanguageService
      */
     public function isSupported(string $language): bool
     {
-        return array_key_exists(
-            $language,
-            $this->available()
-        );
+        return array_key_exists($language, $this->available());
     }
 
     /**
@@ -168,7 +158,6 @@ final class LanguageService
             $this->isSupported($queryLanguage)
         ) {
             $this->session->set('language', $queryLanguage);
-
             return $queryLanguage;
         }
 
@@ -205,9 +194,7 @@ final class LanguageService
      */
     private function detectBrowserLanguage(): ?string
     {
-        $header = $this->request->getHeader(
-            'accept-language'
-        );
+        $header = $this->request->getHeader('accept-language');
 
         if ($header === null) {
             return null;
@@ -230,25 +217,36 @@ final class LanguageService
      */
     private function loadLanguage(string $language, ?string $module = null, string $filePath = ''): array
     {
-        if ($module === null) {
-            $path = BASE_PATH . '/' . trim($this->structureResolver->getAppPath('languages'), '/');
-        } else {
-            $path = BASE_PATH . '/modules/' . $module . '/' . trim($this->structureResolver->getModulePath($module, 'languages'), '/');
-        }
+        $path = $this->resolveLanguagePath($module);
 
-        if ($filePath !== '') {
-            $file = "{$path}/{$filePath}/{$language}.php";
-        } else {
-            $file = "{$path}/{$language}.php";
-        }
+        $file = $filePath !== ''
+            ? Path::resolve($path, $filePath, "{$language}.php")
+            : Path::resolve($path, "{$language}.php");
 
         if (!file_exists($file)) {
             return [];
         }
 
         $loaded = require $file;
-
         return is_array($loaded) ? $loaded : [];
+    }
+
+    private function resolveLanguagePath(?string $module = null): string
+    {
+        if ($module === null) {
+            return Path::resolve(
+                BASE_PATH,
+                $this->structureResolver->getAppPath('languages')
+            );
+        }
+
+        return Path::resolve(
+            BASE_PATH,
+            $this->structureResolver->getModulesRoot(),
+            $module,
+            $this->structureResolver->getModulePath($module, 'languages')
+
+        );
     }
 
     /**
@@ -256,9 +254,6 @@ final class LanguageService
      */
     private function defaultLanguage(): string
     {
-        return $this->config->get(
-            'forge_language.default',
-            'en'
-        );
+        return $this->config->get('forge_language.default', 'en');
     }
 }

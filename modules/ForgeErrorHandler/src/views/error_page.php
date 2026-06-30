@@ -1,497 +1,450 @@
 <!DOCTYPE html>
-<html lang="en" data-theme="light">
-
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Error - Forge Application</title>
     <style>
-    /* /modules/forge-error-handler/error.css - Light Theme */
     :root {
-        --bg-light: #e6e7eb;
-        --text-light: #444444;
-        --bg-dark: #1a1a1a;
-        --text-dark: #e0e0e0;
+        --bg: #f1f2f4;
+        --surface: #ffffff;
+        --text: #222;
+        --muted: #777;
         --primary: #212936;
-        --secondary: #4f46e5;
-        --border: rgba(0, 0, 0, 0.1);
+        --red: #dc3545;
+        --border: #e0e0e0;
         --radius: 8px;
-        --gap: 1.5rem;
-        --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas,
-            "Liberation Mono", "Courier New", monospace;
+        --mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
     }
 
-    [data-theme="dark"] {
-        --bg: var(--bg-dark);
-        --text: var(--text-dark);
-        --border: rgba(255, 255, 255, 0.1);
-    }
-
-    [data-theme="light"] {
-        --bg: var(--bg-light);
-        --text: var(--text-light);
-    }
-
-    * {
-        box-sizing: border-box;
-        margin: 0;
-    }
+    * { box-sizing: border-box; margin: 0; }
 
     body {
         background: var(--bg);
         color: var(--text);
-        font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
-            Oxygen, Ubuntu, Cantarell, sans-serif;
-        line-height: 1.5;
-        min-height: 100vh;
+        font-family: system-ui, -apple-system, sans-serif;
+        line-height: 1.6;
         padding: 2rem;
     }
 
     .error-container {
+        max-width: 100%;
+        margin: 0 auto;
         display: flex;
         flex-direction: column;
-        max-width: 90vw;
-        margin: 0 auto;
-        background: var(--bg);
+        gap: 1rem;
+        overflow-x: hidden;
     }
 
-    .error-header {
-        padding-bottom: var(--gap);
-        margin-bottom: var(--gap);
-        background-color: white;
-        display: flex;
+    .card {
+        background: var(--surface);
+        border-radius: var(--radius);
+        box-shadow: 0 1px 3px rgba(0,0,0,.08);
         padding: 2rem;
-        box-shadow: 4px 2px 5px 0px #cdced1;
+        max-width: 100%;
+        overflow-wrap: break-word;
+        overflow-x: auto;
+    }
+
+    .type-badge {
+        display: inline-block;
+        background: var(--primary);
+        color: #fff;
+        padding: 0.2rem 0.8rem;
+        border-radius: 4px;
+        font-weight: 600;
+        font-size: 0.8rem;
+        letter-spacing: 0.02em;
+        margin-bottom: 0.75rem;
+    }
+
+    .message-box {
+        background: #fff6f6;
+        border: 1px solid #f5c6cb;
+        border-left: 4px solid var(--red);
+        border-radius: var(--radius);
+        padding: 1rem 1.25rem;
+        font-family: var(--mono);
+        font-size: 0.95rem;
+        word-break: break-word;
+        margin-bottom: 1rem;
+    }
+
+    .message-label {
+        font-size: 0.7rem;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+        color: var(--muted);
+        margin-bottom: 0.25rem;
+    }
+
+    .meta-row {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.5rem;
+        align-items: baseline;
+        font-family: var(--mono);
+        font-size: 0.85rem;
+    }
+
+    .chip {
+        background: #f0f0f0;
+        border-radius: 4px;
+        padding: 0.3rem 0.7rem;
         width: 100%;
     }
 
-    .error-header .left,
-    .error-header .right {
-        flex-direction: column;
-        width: 50%;
+    .chip-label {
+        font-size: 0.65rem;
+        text-transform: uppercase;
+        letter-spacing: 0.04em;
+        color: var(--muted);
     }
 
-    .error-header .right {
-        text-align: right;
-        justify-items: end;
-        justify-content: center;
-        align-content: end !important;
+    .chip-value {
+        color: var(--primary);
+        font-weight: 500;
     }
 
-    .layout {
+    .chip-context {
+        background: #eef2ff;
+    }
+
+    .chip-context .chip-label { color: #6366f1; }
+
+    .footer-bar {
         display: flex;
-        flex: 1;
-        box-shadow: 4px 2px 5px 0px #cdced1;
-        background-color: white;
+        justify-content: space-between;
+        align-items: center;
+        font-size: 0.8rem;
+        color: var(--muted);
+        margin-top: 0.75rem;
     }
 
-    .file-list {
-        width: 30%;
-        background: white;
-        padding: 1rem;
-        border-right: 1px solid var(--border);
-        position: sticky;
-        top: 0;
-        overflow-y: auto;
+    .env-badge {
+        background: var(--primary);
+        color: #fff;
+        padding: 0.15rem 0.6rem;
+        border-radius: 12px;
+        font-weight: 500;
+        font-size: 0.75rem;
     }
 
-    .file-nav {
+    .section-title {
+        font-size: 0.85rem;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.04em;
+        color: var(--muted);
+        margin-bottom: 1rem;
+    }
+
+    .trace-list {
+        list-style: none;
         display: flex;
         flex-direction: column;
+        gap: 0;
     }
 
-    .file-button {
-        background: none;
-        border: none;
-        padding: 0.75rem 1rem;
-        cursor: pointer;
-        color: var(--text);
-        text-align: left;
+    .trace-frame {
+        padding: 0.75rem 0;
         border-bottom: 1px solid var(--border);
     }
 
-    .file-button.active,
-    .file-button:hover {
-        background-color: var(--primary);
-        ;
-        color: white;
-    }
+    .trace-frame:last-child { border-bottom: none; }
 
-    .main-content {
-        flex: 1;
-        margin-left: 1rem;
-        overflow-y: auto;
-        padding: 0.8rem;
-    }
-
-    .stack-trace-container {
-        display: grid;
-        gap: 1rem;
-    }
-
-    .stack-trace-item {
-        display: none;
-        background: white;
-        padding: 1rem;
-        font-family: var(--font-mono);
-        font-size: 0.85em;
-        transition: transform 0.1s ease;
-    }
-
-    .stack-trace-item.active {
-        display: block;
-    }
-
-    .trace-header {
+    .trace-call {
+        font-family: var(--mono);
+        font-size: 0.85rem;
         color: var(--primary);
-        margin-bottom: 0.5rem;
+        font-weight: 500;
     }
 
-    .trace-file {
-        color: #666;
-        font-size: 0.9em;
-        margin-bottom: 0.5rem;
+    .trace-call .frame-num {
+        color: var(--muted);
+        font-weight: 400;
+        margin-right: 0.5rem;
     }
 
-    .error-title {
-        font-size: 1.75rem;
-        color: var(--primary);
-        margin-bottom: 0.5rem;
+    .trace-location {
+        font-family: var(--mono);
+        font-size: 0.8rem;
+        color: var(--muted);
+        margin-top: 0.15rem;
     }
 
-    .error-meta {
-        color: #666;
-        font-size: 0.9em;
-    }
-
-    .error-file {
-        display: block;
+    details {
         margin-top: 0.5rem;
-        font-family: var(--font-mono);
-        font-size: 0.85em;
+    }
+
+    details summary {
+        font-size: 0.8rem;
+        color: var(--muted);
+        cursor: pointer;
+    }
+
+    .flow-list {
+        display: flex;
+        flex-direction: column;
+        gap: 0;
+        font-family: var(--mono);
+        font-size: 0.85rem;
+    }
+
+    .flow-entry {
+        padding: 0.3rem 0;
+        color: var(--muted);
+    }
+
+    .flow-step {
+        padding: 0.3rem 0 0.3rem 1.5rem;
         color: var(--primary);
+        font-weight: 500;
+        position: relative;
     }
 
-    .stack-trace {
-        display: grid;
-        gap: 1rem;
-        margin: var(--gap) 0;
+    .flow-step::before {
+        content: '';
+        position: absolute;
+        left: 0.25rem;
+        top: 0;
+        bottom: 0;
+        width: 1px;
+        background: var(--border);
     }
 
-    .trace-item {
-        background: white;
-        border: 1px solid var(--border);
-        padding: 1rem;
-        font-family: var(--font-mono);
-        font-size: 0.85em;
-        transition: transform 0.1s ease;
+    .flow-step::after {
+        content: '\2192';
+        position: absolute;
+        left: -0.1rem;
+        top: 0.3rem;
+        color: var(--muted);
+        font-weight: 400;
     }
 
-    [data-theme="dark"] .trace-item {
-        background: rgba(255, 255, 255, 0.03);
+    .flow-location {
+        color: var(--muted);
+        font-weight: 400;
+        font-size: 0.8rem;
     }
 
-    .trace-item:hover {
-        transform: translateX(2px);
-    }
-
-    .trace-header {
-        color: var(--primary);
+    .flow-group {
         margin-bottom: 0.5rem;
     }
 
-    .trace-file {
-        color: #666;
-        font-size: 0.9em;
-        margin-bottom: 0.5rem;
+    .flow-group:last-child {
+        margin-bottom: 0;
+    }
+
+    .flow-group-header {
+        font-size: 0.7rem;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.06em;
+        color: #999;
+        margin-bottom: 0.25rem;
+        padding-left: 0.25rem;
+    }
+
+    .flow-group-module {
+        color: #6366f1;
+    }
+
+    .flow-step-module {
+        color: #4f46e5;
+        font-weight: 600;
     }
 
     .code-snippet {
-        background: rgba(0, 0, 0, 0.05);
+        background: #f8f9fa;
         border: 1px solid var(--border);
-        border-radius: calc(var(--radius) - 2px);
-        padding: 1rem;
+        border-radius: 4px;
+        padding: 0.75rem;
         overflow-x: auto;
-        font-size: 1.2em;
-        white-space: pre;
+        font-family: var(--mono);
+        font-size: 0.8rem;
+        margin-top: 0.5rem;
     }
 
-    .code-line {
-        display: table-row;
-    }
-
+    .code-line { display: table-row; }
     .line-number {
         display: table-cell;
         text-align: right;
         padding-right: 1em;
         user-select: none;
-        opacity: 0.6;
+        opacity: 0.5;
     }
-
-    .line-content {
-        display: table-cell;
-    }
-
+    .highlighted-line .line-number { opacity: 0.8; }
     .highlighted-line {
-        background: rgba(255, 0, 0, 0.1);
-        border-left: 2px solid var(--primary);
-        ;
-        margin: 0 -1rem;
-        padding: 0 1rem;
-    }
-
-    .tab-nav {
-        display: flex;
-        gap: 0.5rem;
-        border-bottom: 1px solid var(--border);
-        margin: var(--gap) 0;
-    }
-
-    .tab-button {
-        background: none;
-        border: none;
-        padding: 0.75rem 1.5rem;
-        cursor: pointer;
-        color: var(--text);
-        position: relative;
-        border-radius: var(--radius) var(--radius) 0 0;
-    }
-
-    .tab-button.active {
-        background: rgba(var(--primary), 0.1);
-        color: var(--primary);
-    }
-
-    .tab-button.active::after {
-        content: "";
-        position: absolute;
-        bottom: -1px;
-        left: 0;
-        right: 0;
-        height: 2px;
-        background: var(--primary);
-    }
-
-    .tab-content {
-        display: none;
-    }
-
-    .tab-content.active {
-        display: block;
-    }
-
-    .environment-badge {
-        top: 1rem;
-        right: 1rem;
-        background: var(--primary);
-        color: white;
-        padding: 0.25rem 0.75rem;
-        border-radius: 20px;
-        font-weight: 500;
-    }
-
-    .top-bar {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        padding: 0.5rem 1rem;
-        background: var(--bg-light);
-        border: 1px solid var(--border);
-        min-height: 100px;
-    }
-
-    .exception-tag {
-        font-weight: bold;
-        color: var(--primary);
-        margin-bottom: 4px;
-    }
-
-    .exception-link {
-        background-color: #e6e6e6;
-        padding: 0.5rem 1rem;
-        text-decoration: none;
-        color: inherit;
-        border-radius: 4px;
-    }
-
-    .exception-link:hover {
-        background-color: #b0b0b0;
-    }
-
-    .php-version {
-        margin-left: auto;
-        font-size: 0.9em;
-        color: #666;
-    }
-
-    .request-details {
-        width: 100%;
-        position: static;
-        height: auto;
-        border-right: none;
-        background-color: white;
-    }
-
-    @media (max-width: 768px) {
-        body {
-            padding: 1rem;
-        }
-
-        .error-title {
-            font-size: 1.5rem;
-        }
-
-        .tab-nav {
-            overflow-x: auto;
-        }
-
-        .layout {
-            flex-direction: column;
-            box-shadow: 4px 2px 5px 0px #cdced1;
-            background-color: white;
-        }
-
-        .file-list {
-            width: 100%;
-            position: static;
-            height: auto;
-            border-right: none;
-            border-bottom: 1px solid var(--border);
-            margin-bottom: 1rem;
-        }
-
-        .request-details {
-            width: 100%;
-            position: static;
-            height: auto;
-            border-right: none;
-            border-bottom: 1px solid var(--border);
-        }
-
-        .main-content {
-            margin: 0;
-            width: 100%;
-        }
-
-        .stack-trace-item {
-            width: 100%;
-        }
+        background: rgba(220, 53, 69, 0.07);
+        border-left: 2px solid var(--red);
+        margin: 0 -0.75rem;
+        padding: 0 0.75rem;
     }
     </style>
 </head>
 
 <body>
     <div class="error-container">
-        <div class="error-header">
-            <div class="left">
-                <div class="exception-tag">
-                    <a href="#" class="exception-link"><?= $data['error']['type'] ?></a>
-                </div>
-                <h1 class="error-title">
-                    <span class="error-code"><?= $data['error']['message'] ?></span>
-                </h1>
-                <p class="error-meta">
-                    <strong>File:</strong> <?= $data['error']['file'] ?>
-                    <strong>Line:</strong> <?= $data['error']['line'] ?>
-                </p>
+
+        <div class="card">
+            <div class="type-badge"><?= $data['error']['original_type'] ?></div>
+
+            <div class="message-box">
+                <div class="message-label">Message</div>
+                <?= htmlspecialchars($data['error']['original_message']) ?>
             </div>
-            <div class="right">
-                <?php if (isset($_ENV['APP_ENV']) && $_ENV['APP_ENV'] !== 'production'): ?>
-                <div>
-                    <div class="environment-badge">
-                        <?= strtoupper($_ENV['APP_ENV'] ?? 'DEBUG') ?>
-                    </div>
+
+            <div class="meta-row">
+                <div class="chip">
+                    <span class="chip-label">Origin</span><br>
+                    <span class="chip-value"><?= $data['error']['origin_file'] ?>:<?= $data['error']['origin_line'] ?></span>
+                </div>
+
+                <?php if (!empty($data['error']['context']['module'])): ?>
+                <div class="chip chip-context">
+                    <span class="chip-label">Module</span><br>
+                    <span class="chip-value"><?= $data['error']['context']['module'] ?></span>
                 </div>
                 <?php endif; ?>
-                <div class="php-version">PHP <?= phpversion() ?></div>
+
+                <?php if (!empty($data['error']['context']['hook'])): ?>
+                <div class="chip chip-context">
+                    <span class="chip-label">Hook</span><br>
+                    <span class="chip-value"><?= $data['error']['context']['hook'] ?></span>
+                </div>
+                <?php endif; ?>
+
+                <?php if (!empty($data['error']['context']['method'])): ?>
+                <div class="chip chip-context">
+                    <span class="chip-label">Method</span><br>
+                    <span class="chip-value"><?= $data['error']['context']['method'] ?>()</span>
+                </div>
+                <?php endif; ?>
+            </div>
+
+            <div class="footer-bar">
+                <span><?= $data['error']['type'] ?></span>
+                <span>
+                    <span class="env-badge"><?= strtoupper($_ENV['APP_ENV'] ?? 'DEBUG') ?></span>
+                    PHP <?= phpversion() ?>
+                </span>
             </div>
         </div>
 
-        <div class="layout">
-            <aside class="file-list">
-                <nav class="file-nav">
-                    <?php foreach ($data['error']['trace'] as $index => $trace): ?>
-                    <button class="file-button <?= $index === 0 ? 'active' : '' ?>" data-target="trace-<?= $index ?>">
-                        <?= $trace['function'] ?>
-                        <?php if (isset($trace['file'])): ?>
-                        <?= $trace['file'] !== null ? basename($trace['file']) : '' ?>:<?= $trace['line'] ?? '?' ?>
+        <?php
+        $reversed = array_reverse($data['error']['trace']);
+        $groups = [];
+        $currentGroup = null;
+        foreach ($reversed as $frame) {
+            $file = $frame['file'] ?? '';
+            if ($file === 'public/index.php') {
+                $group = 'ENTRYPOINT';
+            } elseif (str_starts_with($file, 'kernel/Core/Bootstrap/')) {
+                $group = 'BOOTSTRAP';
+            } elseif (str_starts_with($file, 'kernel/')) {
+                $group = 'KERNEL';
+            } elseif (str_starts_with($file, 'modules/')) {
+                $group = 'MODULE';
+            } else {
+                $group = null;
+            }
+            if ($currentGroup !== $group) {
+                $groups[] = ['header' => $group, 'frames' => []];
+                $currentGroup = $group;
+            }
+            $groups[count($groups) - 1]['frames'][] = $frame;
+        }
+        ?>
+        <div class="card">
+            <div class="section-title">Execution Flow</div>
+            <?php $isFirstFrame = true; ?>
+            <?php foreach ($groups as $g): ?>
+            <?php if ($g['header'] !== null): ?>
+            <?php $isModule = $g['header'] === 'MODULE'; ?>
+            <div class="flow-group">
+                <div class="flow-group-header <?= $isModule ? 'flow-group-module' : '' ?>"><?= $g['header'] ?></div>
+                <div class="flow-list">
+            <?php else: ?>
+                <div class="flow-list">
+            <?php endif; ?>
+                    <?php foreach ($g['frames'] as $frame):
+                        $short = '';
+                        if (!empty($frame['class'])) {
+                            $parts = explode('\\', $frame['class']);
+                            $short = end($parts) . ($frame['type'] ?? '::') . $frame['function'] . '()';
+                        } elseif (!empty($frame['function']) && $frame['function'] !== '{main}') {
+                            $short = $frame['function'] . '()';
+                        } elseif (!empty($frame['function'])) {
+                            $short = $frame['function'];
+                        }
+                    ?>
+                    <?php if ($isFirstFrame): ?>
+                    <div class="flow-entry"><?= htmlspecialchars($frame['file'] ?? 'unknown') ?></div>
+                    <?php $isFirstFrame = false; ?>
+                    <?php else: ?>
+                    <div class="flow-step <?= ($g['header'] ?? '') === 'MODULE' ? 'flow-step-module' : '' ?>">
+                        <?= htmlspecialchars($short) ?>
+                        <?php if (isset($frame['file'])): ?>
+                        <span class="flow-location"> — <?= htmlspecialchars(basename($frame['file']) . ':' . ($frame['line'] ?? '?')) ?></span>
                         <?php endif; ?>
-                    </button>
+                    </div>
+                    <?php endif; ?>
                     <?php endforeach; ?>
-                </nav>
-            </aside>
-            <div class="main-content">
-                <div class="stack-trace-container">
+                </div>
+            <?php if ($g['header'] !== null): ?>
+            </div>
+            <?php endif; ?>
+            <?php endforeach; ?>
+        </div>
+
+        <div class="card">
+            <div class="section-title">Full Stack Trace</div>
+            <details>
+                <summary>Show all frames</summary>
+                <ol class="trace-list" style="margin-top:1rem;">
                     <?php foreach ($data['error']['trace'] as $index => $trace): ?>
-                    <div id="trace-<?= $index ?>" class="stack-trace-item <?= $index === 0 ? 'active' : '' ?>">
-                        <div class="trace-header">
-                            #<?= $index + 1 ?> <?= $trace['function'] ?>
+                    <li class="trace-frame">
+                        <div class="trace-call">
+                            <span class="frame-num">#<?= $index + 1 ?></span>
+                            <?php if (!empty($trace['class'])): ?>
+                            <?= htmlspecialchars($trace['class'] . ($trace['type'] ?? '::') . $trace['function'] . '()') ?>
+                            <?php else: ?>
+                            <?= htmlspecialchars($trace['function'] ?? '{main}') ?>
+                            <?php endif; ?>
                         </div>
                         <?php if (isset($trace['file'])): ?>
-                        <div class="trace-file">
-                            <?= $trace['file'] ?>:<?= $trace['line'] ?? '?' ?>
-                        </div>
+                        <div class="trace-location"><?= htmlspecialchars($trace['file']) ?>:<?= $trace['line'] ?? '?' ?></div>
                         <?php endif; ?>
                         <?php if (!empty($trace['code_snippet'])): ?>
-                        <pre class="code-snippet"><?php foreach ($trace['code_snippet'] as $line => $code): ?>
-									<div
-										class="code-line <?= $line === ($trace['line'] ?? -1) ? 'highlighted-line' : '' ?>">
-										<span class="line-number"><?= $line ?></span>
-										<span class="line-content"><?= $code ?></span>
-									</div>
-								<?php endforeach; ?></pre>
+                        <details>
+                            <summary>Show code</summary>
+                            <div class="code-snippet"><?php foreach ($trace['code_snippet'] as $line => $code): ?>
+                                <div class="code-line <?= $line === ($trace['line'] ?? -1) ? 'highlighted-line' : '' ?>">
+                                    <span class="line-number"><?= $line ?></span>
+                                    <span class="line-content"><?= htmlspecialchars($code) ?></span>
+                                </div>
+                            <?php endforeach; ?></div>
+                        </details>
                         <?php endif; ?>
-                    </div>
+                    </li>
                     <?php endforeach; ?>
-                </div>
-
-                <div class="request-details">
-                    <nav class="tab-nav">
-                        <button class="tab-button active" data-target="headers">Headers</button>
-                        <button class="tab-button" data-target="parameters">Parameters</button>
-                        <button class="tab-button" data-target="session">Session</button>
-                    </nav>
-
-                    <div id="headers" class="tab-content active">
-                        <pre class="code-snippet"><?= print_r($data['request']['headers'] ?? [], true)?></pre>
-                    </div>
-                    <div id="parameters" class="tab-content">
-                        <pre class="code-snippet"><?= print_r($data['request']['parameters'] ?? [], true) ?></pre>
-                    </div>
-                    <div id="session" class="tab-content">
-                        <?php if (!empty($data['session'])): ?>
-                        <pre class="code-snippet"><?= print_r($data['session'], true) ?></pre>
-                        <?php else: ?>
-                        <div class="code-snippet">No active session</div>
-                        <?php endif; ?>
-                    </div>
-                </div>
-            </div>
+                </ol>
+            </details>
         </div>
+
+        <div class="card">
+            <div class="section-title">Request</div>
+            <details>
+                <summary>Show request details</summary>
+                <div style="margin-top:0.75rem;font-family:var(--mono);font-size:0.8rem;">
+                    <strong>Method:</strong> <?= $data['request']['method'] ?> &mdash;
+                    <strong>URI:</strong> <?= htmlspecialchars($data['request']['uri']) ?>
+                    <pre style="margin-top:0.5rem;"><?= htmlspecialchars(print_r($data['request']['headers'] ?? [], true)) ?></pre>
+                </div>
+            </details>
+        </div>
+
     </div>
-    <script>
-    document.addEventListener('DOMContentLoaded', function() {
-        document.querySelectorAll('.file-button').forEach(button => {
-            button.addEventListener('click', function() {
-                const targetTrace = document.getElementById(button.dataset.target);
-                document.querySelectorAll('.file-button').forEach(b => b.classList.remove('active'));
-                document.querySelectorAll('.stack-trace-item').forEach(item => item.classList.remove('active'));
-                button.classList.add('active');
-                targetTrace.classList.add('active');
-            });
-        });
-
-        document.querySelectorAll('.tab-button').forEach(button => {
-            button.addEventListener('click', function() {
-                const targetTab = document.getElementById(button.dataset.target);
-                document.querySelectorAll('.tab-button').forEach(b => b.classList.remove('active'));
-                document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
-                button.classList.add('active');
-                targetTab.classList.add('active');
-            });
-        });
-    });
-    </script>
 </body>
-
 </html>

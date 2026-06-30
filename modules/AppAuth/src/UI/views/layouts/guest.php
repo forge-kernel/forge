@@ -1,6 +1,6 @@
 <?php
 
-use Forge\Core\Helpers\Framework;
+use Forge\Core\Helpers\Version;
 
 /**
  * @var string $title
@@ -60,7 +60,7 @@ use Forge\Core\Helpers\Framework;
       <div class="space-y-3 pt-8 border-t border-gray-700">
         <div class="flex items-center justify-between text-sm">
           <span class="text-gray-400">Kernel Version</span>
-          <span class="text-white font-mono text-xs">v<?= htmlspecialchars(Framework::version()) ?></span>
+          <span class="text-white font-mono text-xs">v<?= htmlspecialchars(Version::version()) ?></span>
         </div>
         <div class="flex items-center justify-between text-sm">
           <span class="text-gray-400">License</span>

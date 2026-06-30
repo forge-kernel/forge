@@ -1,13 +1,12 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Modules\ForgeLogger\Contracts;
 
-interface ForgeLoggerInterface
+use Forge\Core\Contracts\LoggerInterface;
+
+interface ForgeLoggerInterface extends LoggerInterface
 {
     public function registerDriver(string $name, LogDriverInterface $driver): void;
-
-    public function log(string $message, string $level = 'INFO'): void;
-
-    public function debug(string $message, array $context = []): void;
 }

@@ -5,9 +5,9 @@ declare(strict_types=1);
 namespace Modules\ForgeDebugBar\Services;
 
 use Modules\ForgeDebugBar\DebugBar;
-use Forge\Core\DI\Attributes\Service;
+use Forge\Core\DI\Attributes\Injectable;
 
-#[Service]
+#[Injectable]
 final class DebugBarHubService
 {
     private const string SESSION_KEY = 'forge_debugbar_latest_data';

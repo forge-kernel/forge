@@ -23,12 +23,12 @@
       </div>
     </div>
 
-    <!-- Framework Version -->
+    <!-- Kernel Version -->
     <div class="bg-white rounded-xl border border-gray-200 p-6">
       <div class="flex items-center justify-between">
         <div>
           <p class="text-sm text-gray-500">Kernel</p>
-          <p class="text-2xl font-bold text-gray-900 mt-1">v<?= htmlspecialchars($frameworkVersion) ?></p>
+          <p class="text-2xl font-bold text-gray-900 mt-1">v<?= htmlspecialchars($kernelVersion) ?></p>
         </div>
         <div class="w-12 h-12 bg-purple-100 rounded-lg flex items-center justify-center">
           <svg class="w-6 h-6 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -86,33 +86,33 @@
 
     <!-- Cache Stats -->
     <?php if ($cacheStats): ?>
-          <div class="bg-white rounded-xl border border-gray-200 p-6">
-            <div class="flex items-center justify-between mb-4">
-              <h3 class="text-sm font-medium text-gray-700">Cache</h3>
-              <a href="/hub/cache" class="text-xs text-blue-600 hover:text-blue-800 font-medium">Manage →</a>
-            </div>
-            <p class="text-3xl font-bold text-gray-900"><?= htmlspecialchars((string) ($cacheStats['keys_count'] ?? 0)) ?></p>
-            <p class="text-xs text-gray-500 mt-1">Cached keys</p>
-            <p class="text-xs text-gray-400 mt-1 font-mono"><?= htmlspecialchars($cacheStats['driver'] ?? 'Unknown') ?></p>
-          </div>
+                          <div class="bg-white rounded-xl border border-gray-200 p-6">
+                            <div class="flex items-center justify-between mb-4">
+                              <h3 class="text-sm font-medium text-gray-700">Cache</h3>
+                              <a href="/hub/cache" class="text-xs text-blue-600 hover:text-blue-800 font-medium">Manage →</a>
+                            </div>
+                            <p class="text-3xl font-bold text-gray-900"><?= htmlspecialchars((string) ($cacheStats['keys_count'] ?? 0)) ?></p>
+                            <p class="text-xs text-gray-500 mt-1">Cached keys</p>
+                            <p class="text-xs text-gray-400 mt-1 font-mono"><?= htmlspecialchars($cacheStats['driver'] ?? 'Unknown') ?></p>
+                          </div>
     <?php endif; ?>
 
     <!-- Queue Stats -->
     <?php if ($queueStats): ?>
-          <div class="bg-white rounded-xl border border-gray-200 p-6">
-            <div class="flex items-center justify-between mb-4">
-              <h3 class="text-sm font-medium text-gray-700">Queue Jobs</h3>
-              <a href="/hub/queues" class="text-xs text-blue-600 hover:text-blue-800 font-medium">View All →</a>
-            </div>
-            <p class="text-3xl font-bold text-gray-900"><?= htmlspecialchars((string) ($queueStats['total'] ?? 0)) ?></p>
-            <p class="text-xs text-gray-500 mt-1">Total jobs</p>
-            <div class="flex gap-2 mt-2">
-              <span class="text-xs px-2 py-1 bg-blue-100 text-blue-700 rounded">Pending:
-                <?= htmlspecialchars((string) ($queueStats['pending'] ?? 0)) ?></span>
-              <span class="text-xs px-2 py-1 bg-red-100 text-red-700 rounded">Failed:
-                <?= htmlspecialchars((string) ($queueStats['failed'] ?? 0)) ?></span>
-            </div>
-          </div>
+                          <div class="bg-white rounded-xl border border-gray-200 p-6">
+                            <div class="flex items-center justify-between mb-4">
+                              <h3 class="text-sm font-medium text-gray-700">Queue Jobs</h3>
+                              <a href="/hub/queues" class="text-xs text-blue-600 hover:text-blue-800 font-medium">View All →</a>
+                            </div>
+                            <p class="text-3xl font-bold text-gray-900"><?= htmlspecialchars((string) ($queueStats['total'] ?? 0)) ?></p>
+                            <p class="text-xs text-gray-500 mt-1">Total jobs</p>
+                            <div class="flex gap-2 mt-2">
+                              <span class="text-xs px-2 py-1 bg-blue-100 text-blue-700 rounded">Pending:
+                                <?= htmlspecialchars((string) ($queueStats['pending'] ?? 0)) ?></span>
+                              <span class="text-xs px-2 py-1 bg-red-100 text-red-700 rounded">Failed:
+                                <?= htmlspecialchars((string) ($queueStats['failed'] ?? 0)) ?></span>
+                            </div>
+                          </div>
     <?php endif; ?>
   </div>
 
@@ -121,23 +121,23 @@
     <h2 class="text-lg font-medium text-gray-800 mb-4">Quick Links</h2>
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
       <?php foreach ($hubItems as $item): ?>
-            <a href="<?= htmlspecialchars($item['route']) ?>"
-              class="flex items-center gap-3 p-4 border border-gray-200 rounded-lg hover:border-blue-300 hover:bg-blue-50 transition-colors group">
-              <div
-                class="w-10 h-10 bg-gray-100 group-hover:bg-blue-100 rounded-lg flex items-center justify-center transition-colors">
-                <i
-                  class="fa-solid fa-<?= htmlspecialchars($item['icon'] ?? 'circle') ?> text-gray-600 group-hover:text-blue-600"></i>
-              </div>
-              <div class="flex-1 min-w-0">
-                <p class="text-sm font-medium text-gray-900 group-hover:text-blue-900"><?= htmlspecialchars($item['label']) ?>
-                </p>
-                <p class="text-xs text-gray-500 truncate"><?= htmlspecialchars($item['route']) ?></p>
-              </div>
-              <svg class="w-5 h-5 text-gray-400 group-hover:text-blue-600 transition-colors" fill="none" stroke="currentColor"
-                viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
-              </svg>
-            </a>
+                            <a href="<?= htmlspecialchars($item['route']) ?>"
+                              class="flex items-center gap-3 p-4 border border-gray-200 rounded-lg hover:border-blue-300 hover:bg-blue-50 transition-colors group">
+                              <div
+                                class="w-10 h-10 bg-gray-100 group-hover:bg-blue-100 rounded-lg flex items-center justify-center transition-colors">
+                                <i
+                                  class="fa-solid fa-<?= htmlspecialchars($item['icon'] ?? 'circle') ?> text-gray-600 group-hover:text-blue-600"></i>
+                              </div>
+                              <div class="flex-1 min-w-0">
+                                <p class="text-sm font-medium text-gray-900 group-hover:text-blue-900"><?= htmlspecialchars($item['label']) ?>
+                                </p>
+                                <p class="text-xs text-gray-500 truncate"><?= htmlspecialchars($item['route']) ?></p>
+                              </div>
+                              <svg class="w-5 h-5 text-gray-400 group-hover:text-blue-600 transition-colors" fill="none" stroke="currentColor"
+                                viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+                              </svg>
+                            </a>
       <?php endforeach; ?>
     </div>
   </div>
@@ -152,7 +152,7 @@
       </div>
       <div>
         <dt class="text-sm font-medium text-gray-500">Kernel Version</dt>
-        <dd class="mt-1 text-sm text-gray-900 font-mono">v<?= htmlspecialchars($frameworkVersion) ?></dd>
+        <dd class="mt-1 text-sm text-gray-900 font-mono">v<?= htmlspecialchars($kernelVersion) ?></dd>
       </div>
       <div>
         <dt class="text-sm font-medium text-gray-500">Server Time</dt>

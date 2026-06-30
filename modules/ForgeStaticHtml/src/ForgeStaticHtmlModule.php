@@ -1,58 +1,54 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Modules\ForgeStaticHtml;
 
-use Forge\Core\DI\Attributes\Service;
+use Forge\Core\Config\Config;
 use Forge\Core\DI\Container;
 use Forge\Core\Module\Attributes\Compatibility;
 use Forge\Core\Module\Attributes\ConfigDefaults;
 use Forge\Core\Module\Attributes\Module;
-use Forge\Core\Module\Attributes\Provides;
+use Forge\Core\Module\Attributes\Requires;
+use Forge\Core\Module\Attributes\Structure;
 
 #[Module(
-  name: 'ForgeMarkDown',
-  description: 'Static site generator for Forge Framework',
-  isCli: true,
-  author: 'Forge Team',
-  license: 'MIT',
-  type: 'html',
-  tags: ['html', 'static', 'site', 'generator']
+    name: 'ForgeStaticHtml',
+    description: 'Static HTML generator with link crawling, depth control, and asset management',
+    isCli: true,
+    author: 'Forge Team',
+    license: 'MIT',
+    type: 'html',
+    tags: ['html', 'static', 'site', 'generator', 'crawler']
 )]
-#[Service()]
-#[Provides(interface: StaticGenerator::class, version: '0.2.1')]
-#[Compatibility(framework: '>=0.1.0', php: '>=8.3')]
-#[ConfigDefaults(defaults: [
-  'forge_static_html' => [
-    'output_dir' => 'public/static',
-    'base_url' => '/',
-    'clean_build' => true,
-    'copy_assets' => true,
-    'asset_dirs' => [
-      'public/assets',
-      'public/images'
-    ],
-    'include_paths' => [
-      '/docs2',
-    ],
-    'dynamic_routes' => [
-      'documentation' => [
-        'route_pattern' => '/docs2/{category}/{slug}',
-        'data_source' => 'Database',
-        'options' => [
-          'categories_table' => 'categories',
-          'sections_table' => 'sections',
-          'category_slug_column' => 'slug',
-          'section_slug_column' => 'slug',
-          'section_category_id_column' => 'category_id',
-          'batch_size' => 100,
-        ],
-      ],
-    ],
-  ]
+#[Structure(structure: [
+    'services' => 'src/Services',
+    'commands' => 'src/Commands',
+    'tests' => 'src/tests',
 ])]
-class ForgeStaticHtmlModule
+#[Compatibility(framework: '>=0.1.0', php: '>=8.3')]
+#[Requires(module: 'forge-router')]
+#[ConfigDefaults(defaults: [
+    'forge_static_html' => [
+        'output_dir' => 'public/static',
+        'base_url' => 'http://localhost',
+        'clean_build' => true,
+        'max_depth' => 3,
+        'include_paths' => ['/'],
+        'exclude_paths' => ['/admin', '/api', '/_debug'],
+        'copy_assets' => true,
+        'asset_discovery' => true,
+        'asset_dirs' => ['public/assets', 'public/images'],
+        'dynamic_routes' => [],
+    ]
+])]
+final class ForgeStaticHtmlModule
 {
-  public function register(Container $container): void
-  {
-  }
+    public function register(Container $container): void
+    {
+        $container->bind(StaticGenerator::class, function () use ($container): StaticGenerator {
+            $config = $container->get(Config::class);
+            return new StaticGenerator($config->get('forge_static_html', []));
+        });
+    }
 }

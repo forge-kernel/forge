@@ -19,6 +19,7 @@ final class ForgeErrorHandlerService implements ErrorHandlerInterface
 
   private bool $debug;
   private string $basePath;
+  private string $basePathPrefix;
   private string $logFile;
   private array $hiddenKeys = ['password', 'token', 'secret', 'authorization', 'cookie'];
   private array $rateLimitMap = [];
@@ -28,11 +29,19 @@ final class ForgeErrorHandlerService implements ErrorHandlerInterface
   public function __construct(?object $logger = null)
   {
     $this->basePath = BASE_PATH;
+    $this->basePathPrefix = BASE_PATH . '/';
     $this->debug = Environment::getInstance()->isDebugEnabled();
     $this->logFile = $this->basePath . '/storage/logs/errors.log';
     $this->logger = $logger && $this->implementsPsr3($logger) ? $logger : null;
 
     $this->registerHandlers();
+  }
+
+  private function relativePath(string $path): string
+  {
+    return str_starts_with($path, $this->basePathPrefix)
+      ? substr($path, strlen($this->basePathPrefix))
+      : $path;
   }
 
   public function handle(Throwable $e, Request $request): Response
@@ -173,19 +182,55 @@ final class ForgeErrorHandlerService implements ErrorHandlerInterface
 
   private function buildDebugResponse(Throwable $e, Request $request): Response
   {
+    $originFile = $e->getFile();
+    $originLine = $e->getLine();
+    $originalType = get_class($e);
+    $originalMessage = $e->getMessage();
+    $context = [];
+
+    $previous = $e->getPrevious();
+    if ($previous !== null) {
+      $originFile = $previous->getFile();
+      $originLine = $previous->getLine();
+      $originalType = get_class($previous);
+      $originalMessage = $previous->getMessage();
+    }
+    $originFile = $this->relativePath($originFile);
+
+    if (preg_match("/^Error in lifecycle hook '([^']+)' for callback \[([^\]]+)\]/", $e->getMessage(), $m)) {
+      $context['hook'] = $m[1];
+      $context['callback'] = $m[2];
+      $parts = explode('::', $m[2]);
+      if (count($parts) === 2) {
+        $context['class'] = $parts[0];
+        $context['method'] = $parts[1];
+        if (preg_match('#Modules\\\\([^\\\\]+)#', $parts[0], $nm)) {
+          $context['module'] = $nm[1];
+        }
+      }
+    }
+
     $snippets = $this->extractSnippets($e);
     $trace = $this->filterTrace($e->getTrace());
     foreach ($trace as $idx => &$frame) {
       $frame['code_snippet'] = $snippets[$idx] ?? [];
+      if (isset($frame['file'])) {
+        $frame['file'] = $this->relativePath($frame['file']);
+      }
     }
 
     $data = [
       'error' => [
-        'message' => $e->getMessage(),
         'type' => get_class($e),
+        'message' => $e->getMessage(),
+        'original_type' => $originalType,
+        'original_message' => $originalMessage,
         'code' => $e->getCode(),
-        'file' => $e->getFile(),
+        'file' => $this->relativePath($e->getFile()),
         'line' => $e->getLine(),
+        'origin_file' => $originFile,
+        'origin_line' => $originLine,
+        'context' => $context,
         'trace' => $trace,
       ],
       'request' => [
@@ -242,19 +287,55 @@ final class ForgeErrorHandlerService implements ErrorHandlerInterface
    */
   private function buildDebugJsonResponse(Throwable $e, Request $request): Response
   {
+    $originFile = $e->getFile();
+    $originLine = $e->getLine();
+    $originalType = get_class($e);
+    $originalMessage = $e->getMessage();
+    $context = [];
+
+    $previous = $e->getPrevious();
+    if ($previous !== null) {
+      $originFile = $previous->getFile();
+      $originLine = $previous->getLine();
+      $originalType = get_class($previous);
+      $originalMessage = $previous->getMessage();
+    }
+    $originFile = $this->relativePath($originFile);
+
+    if (preg_match("/^Error in lifecycle hook '([^']+)' for callback \[([^\]]+)\]/", $e->getMessage(), $m)) {
+      $context['hook'] = $m[1];
+      $context['callback'] = $m[2];
+      $parts = explode('::', $m[2]);
+      if (count($parts) === 2) {
+        $context['class'] = $parts[0];
+        $context['method'] = $parts[1];
+        if (preg_match('#Modules\\\\([^\\\\]+)#', $parts[0], $nm)) {
+          $context['module'] = $nm[1];
+        }
+      }
+    }
+
     $snippets = $this->extractSnippets($e);
     $trace = $this->filterTrace($e->getTrace());
     foreach ($trace as $idx => &$frame) {
       $frame['code_snippet'] = $snippets[$idx] ?? [];
+      if (isset($frame['file'])) {
+        $frame['file'] = $this->relativePath($frame['file']);
+      }
     }
 
     $data = [
       'error' => [
-        'message' => $e->getMessage(),
         'type' => get_class($e),
+        'message' => $e->getMessage(),
+        'original_type' => $originalType,
+        'original_message' => $originalMessage,
         'code' => $e->getCode(),
-        'file' => $e->getFile(),
+        'file' => $this->relativePath($e->getFile()),
         'line' => $e->getLine(),
+        'origin_file' => $originFile,
+        'origin_line' => $originLine,
+        'context' => $context,
         'trace' => $trace,
       ],
       'request' => [

@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Modules\ForgeDatabaseSQL;
 
+use Forge\Core\Module\Attributes\Provides;
 use Modules\ForgeDatabaseSQL\DB\DatabaseSetup;
 use Forge\Core\Config\Environment;
 use Forge\Core\Contracts\Database\DatabaseConnectionInterface;
@@ -16,12 +17,11 @@ use Forge\Core\Module\Attributes\Compatibility;
 use Forge\Core\Module\Attributes\ConfigDefaults;
 use Forge\Core\Module\Attributes\Module;
 use Forge\Core\Module\Attributes\Repository;
-use Forge\Core\Module\Attributes\Requires;
 use Forge\CLI\Traits\OutputHelper;
 
 #[Module(
     name: 'ForgeDatabaseSQL',
-    version: '0.9.13',
+    version: '0.9.15',
     description: 'SQL database support (SQLite, MySQL, PostgreSQL)',
     order: 0,
     author: 'Forge Team',
@@ -44,7 +44,7 @@ use Forge\CLI\Traits\OutputHelper;
     'middlewares' => 'src/Middlewares',
 ])]
 #[Compatibility(framework: '>=4.15.10', php: '>=8.3')]
-#[Requires(interface: DatabaseConnectionInterface::class, version: '>=0.1.0')]
+#[Provides(interface: DatabaseConnectionInterface::class, version: '0.9.15')]
 #[Repository(type: 'git', url: 'https://github.com/forge-kernel/kernel-module-registry')]
 #[ConfigDefaults(defaults: [
     "forge_database_sql" => []

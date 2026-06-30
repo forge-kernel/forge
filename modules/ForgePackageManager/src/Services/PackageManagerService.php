@@ -11,6 +11,7 @@ use Forge\CLI\Traits\OutputHelper;
 use Forge\Core\Config\Config;
 use Forge\Core\DI\Attributes\Injectable;
 use Forge\Core\Module\Attributes\Module;
+use Forge\Core\Helpers\Version;
 use Forge\Core\Structure\StructureResolver;
 use Forge\Core\Module\Attributes\PostInstall;
 use Forge\Core\Module\Attributes\PostUninstall;
@@ -1005,6 +1006,19 @@ final class PackageManagerService implements PackageManagerInterface
         return is_dir($this->getModulesPath() . $moduleDirName);
     }
 
+    private function resolveVersionConstraint(array $moduleInfo, string $constraint): ?string
+    {
+        $bestVersion = null;
+        foreach (array_keys($moduleInfo['versions'] ?? []) as $version) {
+            if (Version::isVersionCompatible($version, $constraint)) {
+                if ($bestVersion === null || version_compare($version, $bestVersion, '>')) {
+                    $bestVersion = $version;
+                }
+            }
+        }
+        return $bestVersion;
+    }
+
     private function resolveModuleDependencies(string $stagingPath, string $moduleName): void
     {
         $modulePascalName = $this->toPascalCase($moduleName);
@@ -1038,7 +1052,7 @@ final class PackageManagerService implements PackageManagerInterface
             $this->info("Module '{$moduleName}' requires '{$requiredModule}'. Installing dependency...");
 
             try {
-                $this->installModule($requiredModule, null, null, null, true, null);
+                $this->installModule($requiredModule, $instance->version, null, null, true, null);
             } catch (\Throwable $e) {
                 array_pop($this->resolvingDependencies);
                 throw new \RuntimeException(
@@ -1062,17 +1076,14 @@ final class PackageManagerService implements PackageManagerInterface
     ): void {
         $explicitLatest = $version === 'latest' || $version === '*';
         $resolveLatest = $version === null || $explicitLatest;
-        if ($resolveLatest) {
-            $version = null;
-        }
 
         $this->info(
             "Installing module: {$moduleName}" .
-            ($resolveLatest ? " (latest)" : " version {$version}"),
+            ($resolveLatest ? " (latest)" : " constraint: {$version}"),
         );
 
         if ($moduleName === self::FRAMEWORK_MODULE_NAME) {
-            $this->installFrameworkModule($version);
+            $this->installFrameworkModule($resolveLatest ? null : $version);
             return;
         }
 
@@ -1082,16 +1093,25 @@ final class PackageManagerService implements PackageManagerInterface
             return;
         }
 
-        $versionToInstall =
-            $version ??
-            (isset($moduleInfo["latest"]) ? $moduleInfo["latest"] : null);
+        if (!$resolveLatest) {
+            $versionToInstall = $this->resolveVersionConstraint($moduleInfo, $version);
+            if ($versionToInstall === null) {
+                $this->error(
+                    "No available version satisfies constraint '{$version}' for module '{$moduleName}'.",
+                );
+                return;
+            }
+        } else {
+            $versionToInstall = $moduleInfo["latest"] ?? null;
+        }
+
         $versionDetails = isset($moduleInfo["versions"][$versionToInstall])
             ? $moduleInfo["versions"][$versionToInstall]
             : null;
 
         if (!$versionDetails) {
             $this->error(
-                "Version '{$versionToInstall}' for module '{$moduleName}' version '{$versionToInstall}' not found.",
+                "Version '{$versionToInstall}' for module '{$moduleName}' not found.",
             );
             return;
         }

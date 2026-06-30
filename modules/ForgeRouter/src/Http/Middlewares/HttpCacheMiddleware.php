@@ -4,11 +4,12 @@ declare(strict_types=1);
 
 namespace Modules\ForgeRouter\Http\Middlewares;
 
-use Modules\ForgeRouter\Contracts\MiddlewareInterface;
+use Forge\Core\DI\Attributes\Injectable;
 use Forge\Core\Helpers\FileExistenceCache;
+use Modules\ForgeRouter\Http\Middleware as MiddlewareExtend;
 use Modules\ForgeRouter\Http\Request;
 use Modules\ForgeRouter\Http\Response;
-use Modules\ForgeRouter\Middleware\Attributes\RegisterMiddleware;
+use Modules\ForgeRouter\Middleware\Attributes\Middleware;
 
 /**
  * HTTP caching middleware with ETag and conditional request support.
@@ -20,9 +21,9 @@ use Modules\ForgeRouter\Middleware\Attributes\RegisterMiddleware;
  * - Cache control headers
  * - Vary header support
  */
-#[Service]
-#[RegisterMiddleware(group: 'global', order: 5, allowDuplicate: true, enabled: true)]
-class HttpCacheMiddleware extends Middleware
+#[Injectable]
+#[Middleware(group: 'global', order: 5, allowDuplicate: true, enabled: true)]
+class HttpCacheMiddleware extends MiddlewareExtend
 {
     private const int DEFAULT_MAX_AGE = 3600; // 1 hour
     private const string ETAG_ALGORITHM = 'xxh3'; // Fast hash algorithm

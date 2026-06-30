@@ -3,12 +3,14 @@ declare(strict_types=1);
 
 namespace Modules\ForgeMultiTenant\Commands;
 
+use Forge\CLI\Attributes\CoreCommand;
 use Modules\ForgeMultiTenant\DTO\Tenant;
 use Modules\ForgeMultiTenant\Services\TenantManager;
 use Forge\CLI\Attributes\Cli;
 use Forge\CLI\Command;
 use Forge\CLI\Traits\OutputHelper;
 
+#[CoreCommand]
 #[Cli(
     command: 'tenant:list',
     description: 'List all configured tenants',

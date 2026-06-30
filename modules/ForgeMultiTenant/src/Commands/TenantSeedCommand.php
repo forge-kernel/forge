@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace Modules\ForgeMultiTenant\Commands;
 
+use Forge\CLI\Attributes\CoreCommand;
 use Modules\ForgeMultiTenant\Services\TenantManager;
 use Modules\ForgeMultiTenant\Services\TenantConnectionFactory;
 use Forge\CLI\Attributes\Arg;
@@ -11,6 +12,7 @@ use Forge\CLI\Command;
 use Forge\CLI\Traits\OutputHelper;
 use Forge\Core\Database\Seeders\SeederManager;
 
+#[CoreCommand]
 #[Cli(
     command: 'tenant:seed',
     description: 'Run seeders for one or all tenants (app/Database/Seeders/Tenants)',
@@ -32,11 +34,10 @@ final class TenantSeedCommand extends Command
     private bool $preview;
 
     public function __construct(
-        private readonly TenantManager           $tenants,
+        private readonly TenantManager $tenants,
         private readonly TenantConnectionFactory $factory,
-        private readonly SeederManager           $seeder
-    )
-    {
+        private readonly SeederManager $seeder
+    ) {
     }
 
     /**

@@ -8,7 +8,7 @@ use Modules\ForgeAppAuth\Models\User;
 use Modules\ForgeAuth\Contracts\AuthUserInterface;
 use Modules\ForgeAuth\Contracts\UserProviderInterface;
 use Modules\ForgeSqlOrm\ORM\Paginator;
-use Modules\ForgeSqlOrm\Repositories\RecordRepository;
+use Modules\ForgeSqlOrm\ORM\RecordRepository;
 use Forge\Core\DI\Attributes\NoCache;
 
 #[NoCache]

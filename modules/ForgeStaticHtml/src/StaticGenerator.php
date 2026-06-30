@@ -1,245 +1,382 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Modules\ForgeStaticHtml;
 
-use Forge\Core\Helpers\FileExistenceCache;
+use Forge\Core\Contracts\Database\DatabaseConnectionInterface;
 use Forge\Core\DI\Container;
 use Modules\ForgeRouter\Http\Request;
 use Modules\ForgeRouter\Http\Response;
 use Modules\ForgeRouter\Routing\Router;
 
-class StaticGenerator
+final class StaticGenerator
 {
     private Router $router;
     private string $outputDir;
     private array $config;
+    private array $generatedPages = [];
 
     public function __construct(array $config)
     {
-        Router::init(Container::getInstance());
-        $this->router = Router::getInstance();
         $this->config = $config;
-        $this->outputDir = BASE_PATH . '/' . $config['output_dir'];
+        $outputDir = $config['output_dir'] ?? 'public/static';
+        $this->outputDir = str_starts_with($outputDir, '/')
+            ? rtrim($outputDir, '/')
+            : BASE_PATH . '/' . rtrim($outputDir, '/');
+        $this->router = Router::getInstance();
     }
 
     public function generate(): void
     {
-        if ($this->config['clean_build']) {
+        if ($this->config['clean_build'] ?? true) {
             $this->cleanOutputDir();
         }
 
-        $this->generateRoutes();
+        $seedUrls = $this->discoverSeedUrls();
+        $this->crawlAndGenerate($seedUrls);
 
-        if ($this->config['copy_assets']) {
-            $this->copyAssets();
-        }
-    }
-
-    private function generateRoutes(): void
-    {
-        $routes = $this->router->getRoutes();
-        $dynamicRoutesConfig = $this->config['dynamic_routes'] ?? [];
-
-        foreach ($routes as $route) {
-            if ($this->shouldGenerateRoute($route)) {
-                $isDynamicRoute = false;
-
-                foreach ($dynamicRoutesConfig as $routeName => $dynamicRouteConfig) {
-                    $routePattern = $dynamicRouteConfig['route_pattern'] ?? null;
-                    $strposResult = strpos($route['uri'], $routePattern);
-
-                    if ($routePattern && $strposResult === 0) {
-                        $this->generateDynamicRoutes($route, $routeName, $dynamicRouteConfig);
-                        $isDynamicRoute = true;
-                        break;
-                    }
-                }
-
-                if (!$isDynamicRoute) {
-                    $this->generateRouteOutput($route);
-                }
-            } else {
+        if ($this->config['copy_assets'] ?? true) {
+            foreach ($this->config['asset_dirs'] ?? [] as $dir) {
+                $this->copyDirectory(
+                    BASE_PATH . '/' . $dir,
+                    $this->outputDir . '/' . basename($dir)
+                );
             }
         }
-        echo "Route generation completed.\n";
+
+        if ($this->config['asset_discovery'] ?? true) {
+            $this->discoverAndCopyAssets();
+        }
     }
 
-    private function generateDynamicRoutes(array $route, string $routeName, array $dynamicRouteConfig): void
+    private function discoverSeedUrls(): array
     {
-        if ($dynamicRouteConfig['data_source'] !== 'Database') {
-            echo "Warning: Dynamic route '{$routeName}' misconfigured or Database data source not specified.\n";
-            return;
+        $urls = ['/'];
+
+        foreach ($this->config['dynamic_routes'] ?? [] as $pattern => $config) {
+            if (($config['source'] ?? '') !== 'database') {
+                continue;
+            }
+
+            $urls = array_merge($urls, $this->resolveDatabaseRoute($pattern, $config));
+        }
+
+        return array_values(array_unique($urls));
+    }
+
+    private function resolveDatabaseRoute(string $pattern, array $config): array
+    {
+        $db = $this->resolveDatabase();
+        if ($db === null) {
+            return [];
+        }
+
+        $query = $config['query'] ?? '';
+        if ($query === '') {
+            return [];
         }
 
         try {
-            $database = Container::getInstance()->get(Connection::class);
-        } catch (\Throwable $e) {
-            echo "Warning: Database module not available. Skipping dynamic route '{$routeName}' generation.\n";
-            echo "  Ensure the Database module is installed and configured if you want to generate dynamic routes from the Database.\n";
-            return;
+            $rows = $db->query($query)->fetchAll(\PDO::FETCH_ASSOC);
+        } catch (\Throwable) {
+            return [];
         }
 
-        $categoriesTable = $dynamicRouteConfig['options']['categories_table'];
-        $sectionsTable = $dynamicRouteConfig['options']['sections_table'];
-        $categorySlugColumn = $dynamicRouteConfig['options']['category_slug_column'];
-        $sectionSlugColumn = $dynamicRouteConfig['options']['section_slug_column'];
-        $sectionCategoryIdColumn = $dynamicRouteConfig['options']['section_category_id_column'];
+        $urls = [];
+        foreach ($rows as $row) {
+            $url = $pattern;
+            foreach ($row as $column => $value) {
+                $url = str_replace('{' . $column . '}', (string) $value, $url);
+            }
+            $urls[] = $url;
+        }
 
-        $categories = $database->table($categoriesTable)->get();
+        return $urls;
+    }
 
+    private function resolveDatabase(): ?DatabaseConnectionInterface
+    {
+        try {
+            return Container::getInstance()->get(DatabaseConnectionInterface::class);
+        } catch (\Throwable) {
+            return null;
+        }
+    }
 
-        foreach ($categories as $category) {
-            $sections = $database->table($sectionsTable)
-                ->where($sectionCategoryIdColumn, $category['id'])
-                ->get();
+    private function crawlAndGenerate(array $seedUrls): void
+    {
+        $visited = [];
+        $queue = [];
 
-            foreach ($sections as $section) {
-                $uri = str_replace(
-                    ['{category}', '{slug}'],
-                    [$category[$categorySlugColumn], $section[$sectionSlugColumn]],
-                    $dynamicRouteConfig['route_pattern']
-                );
+        foreach ($seedUrls as $url) {
+            $normalized = $this->normalizeUrl($url);
+            if (!isset($visited[$normalized])) {
+                $visited[$normalized] = 0;
+                $queue[] = [$normalized, 0];
+            }
+        }
 
-                if ($this->matchesIncludePatterns($uri)) {
-                    $this->generateRouteOutput(['uri' => $uri, 'method' => 'GET']);
+        while (!empty($queue)) {
+            [$url, $depth] = array_shift($queue);
+
+            $content = $this->fetchPage($url);
+            if ($content === null) {
+                continue;
+            }
+
+            $this->writePage($url, $content);
+
+            $maxDepth = $this->config['max_depth'] ?? 3;
+            if ($maxDepth < 0 || $depth < $maxDepth) {
+                foreach ($this->extractLinks($content, $url) as $link) {
+                    $normalized = $this->normalizeUrl($link);
+                    if (!isset($visited[$normalized]) && !$this->shouldIgnore($normalized)) {
+                        $visited[$normalized] = $depth + 1;
+                        $queue[] = [$normalized, $depth + 1];
+                    }
                 }
             }
         }
     }
 
-
-    private function shouldGenerateRoute(array $route): bool
+    private function fetchPage(string $url): ?string
     {
-        $isGet = $route['method'] === 'GET';
-        //$isStatic = $this->isStaticRoute($route);
-        $matchesPatterns = $this->matchesIncludePatterns($route['uri']);
+        $request = $this->createRequest($url);
+        $result = $this->router->dispatch($request);
 
-        return $isGet && $matchesPatterns;
-    }
+        $response = $result instanceof Response
+            ? $result
+            : new Response((string) $result, 200);
 
-    private function matchesIncludePatterns(string $uri): bool
-    {
-        $patterns = $this->config['include_paths'] ?? ['/'];
-
-        if (in_array('/', $patterns, true)) {
-            return true;
+        if ($response->getStatusCode() !== 200) {
+            return null;
         }
 
-        foreach ($patterns as $pattern) {
-            $normalizedPattern = rtrim($pattern, '*') . '*';
-            if (fnmatch($normalizedPattern, $uri) || $uri === $pattern) {
-                return true;
-            }
+        return $response->getContent();
+    }
+
+    private function createRequest(string $uri): Request
+    {
+        $parts = parse_url($this->config['base_url'] ?? 'http://localhost');
+        $host = $parts['host'] ?? 'localhost';
+        $scheme = $parts['scheme'] ?? 'http';
+
+        return new Request(
+            queryParams: [],
+            postData: [],
+            serverParams: [
+                'REQUEST_URI' => $uri,
+                'REQUEST_METHOD' => 'GET',
+                'HTTP_HOST' => $host,
+                'SERVER_NAME' => $host,
+                'SERVER_PORT' => $scheme === 'https' ? 443 : 80,
+            ],
+            requestMethod: 'GET',
+            cookies: [],
+        );
+    }
+
+    private function writePage(string $url, string $html): void
+    {
+        $filePath = $this->getOutputPath($url);
+        $dir = dirname($filePath);
+
+        if (!is_dir($dir)) {
+            mkdir($dir, 0755, true);
         }
 
-        return false;
-    }
-
-    private function isStaticRoute(array $route): bool
-    {
-        $isStatic = !preg_match('/\{.*?\}/', $route['uri']) && strpos($route['uri'], '/_') !== 0;
-        return $isStatic;
-    }
-
-    private function generateRouteOutput(array $route): void
-    {
-        $request  = $this->createMockRequest($route['uri']);
-        $returned = Router::getInstance()->dispatch($request);
-
-        $response = $returned instanceof Response
-            ? $returned
-            : new Response((string)$returned, 200);
-
-        if ($response->getStatusCode() === 200) {
-            $html = $response->getContent();
-            $filePath = $this->getOutputPath($route['uri']);
-            $outputDir = dirname($filePath);
-
-            if (!FileExistenceCache::isDir($outputDir) && !mkdir($outputDir, 0755, true)) {
-                echo "  Error: Failed to create output directory: {$outputDir}\n";
-                return;
-            }
-            file_put_contents($filePath, $html);
-        } else {
-            echo "  Warning: Non-200 status code ({$response->getStatusCode()}) for route: {$route['uri']}. Skipping HTML save.\n";
-        }
-    }
-
-    private function createMockRequest(string $uri): Request
-    {
-        $baseUrl = parse_url($this->config['base_url']);
-        $host = $baseUrl['host'] ?? 'localhost';
-        $scheme = $baseUrl['scheme'] ?? 'http';
-        $port = $baseUrl['port'] ?? ($scheme === 'https' ? 443 : 80);
-
-        $_SERVER['REQUEST_METHOD'] = 'GET';
-        $_SERVER['REQUEST_URI'] = $uri;
-        $_SERVER['HTTP_HOST'] = $host;
-        $_SERVER['SERVER_NAME'] = $host;
-        $_SERVER['SERVER_PORT'] = $port;
-        $_SERVER['HTTPS'] = $scheme === 'https' ? 'on' : 'off';
-
-        return Request::createFromGlobals();
+        file_put_contents($filePath, $html);
+        $this->generatedPages[$url] = $html;
     }
 
     private function getOutputPath(string $uri): string
     {
-        $pathParts = explode('/', trim($uri, '/'));
-        $filename = array_pop($pathParts) ?: 'index';
-        $path = implode('/', $pathParts);
+        $path = trim(parse_url($uri, PHP_URL_PATH), '/');
 
-        if (empty($path)) {
-            return "{$this->outputDir}/{$filename}/index.html";
-        } else {
-            return "{$this->outputDir}/{$path}/{$filename}/index.html";
+        if ($path === '') {
+            return $this->outputDir . '/index.html';
         }
+
+        return $this->outputDir . '/' . $path . '/index.html';
     }
 
-
-    private function cleanOutputDir(): void
+    private function extractLinks(string $html, string $baseUrl): array
     {
-        if (is_dir($this->outputDir)) {
-            $this->deleteDirectory($this->outputDir);
+        $links = [];
+
+        if (!preg_match_all('/<a\s[^>]*href\s*=\s*"([^"]+)"/i', $html, $matches)) {
+            return $links;
         }
-        mkdir($this->outputDir, 0755, true);
-    }
 
-    private function copyAssets(): void
-    {
-        foreach ($this->config['asset_dirs'] as $assetDir) {
-            $source = BASE_PATH . '/' . $assetDir;
-            $dest = $this->outputDir . '/' . basename($assetDir);
-
-            if (is_dir($source)) {
-                $this->copyDirectory($source, $dest);
+        foreach ($matches[1] as $href) {
+            $resolved = $this->resolveUrl($href, $baseUrl);
+            if ($resolved !== null) {
+                $links[] = $resolved;
             }
         }
+
+        return array_unique($links);
     }
 
-    private function copyDirectory(string $src, string $dst): void
+    private function resolveUrl(string $href, string $baseUrl): ?string
     {
-        $dir = opendir($src);
-        @mkdir($dst, 0755);
+        $trimmed = trim($href);
 
-        while (($file = readdir($dir)) !== false) {
-            if ($file != '.' && $file != '..') {
-                $srcFile = "$src/$file";
-                $destFile = "$dst/$file";
+        if (
+            $trimmed === '' ||
+            str_starts_with($trimmed, '#') ||
+            str_starts_with($trimmed, 'javascript:') ||
+            str_starts_with($trimmed, 'mailto:') ||
+            str_starts_with($trimmed, 'tel:')
+        ) {
+            return null;
+        }
 
-                if (is_dir($srcFile)) {
-                    $this->copyDirectory($srcFile, $destFile);
-                } else {
-                    copy($srcFile, $destFile);
+        if (parse_url($trimmed, PHP_URL_SCHEME) !== null) {
+            $baseHost = parse_url($this->config['base_url'] ?? 'http://localhost', PHP_URL_HOST);
+            $linkHost = parse_url($trimmed, PHP_URL_HOST);
+
+            if ($linkHost !== null && $linkHost !== $baseHost) {
+                return null;
+            }
+
+            return $trimmed;
+        }
+
+        if (str_starts_with($trimmed, '/')) {
+            return $trimmed;
+        }
+
+        $basePath = rtrim(parse_url($baseUrl, PHP_URL_PATH) ?? '/', '/');
+        return $basePath . '/' . $trimmed;
+    }
+
+    private function normalizeUrl(string $url): string
+    {
+        $path = parse_url($url, PHP_URL_PATH);
+
+        if ($path === false || $path === null || $path === '') {
+            return '/';
+        }
+
+        $path = '/' . ltrim($path, '/');
+
+        return $path;
+    }
+
+    private function shouldIgnore(string $url): bool
+    {
+        $path = parse_url($url, PHP_URL_PATH);
+
+        if ($path === null || $path === false) {
+            return true;
+        }
+
+        foreach ($this->config['exclude_paths'] ?? [] as $exclude) {
+            if (str_starts_with($path, rtrim($exclude, '/'))) {
+                return true;
+            }
+        }
+
+        foreach ($this->config['include_paths'] ?? ['/'] as $include) {
+            if (str_starts_with($path, rtrim($include, '/'))) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    private function discoverAndCopyAssets(): void
+    {
+        $copied = [];
+
+        foreach ($this->generatedPages as $pageUrl => $html) {
+            foreach ($this->extractAssetUrls($html) as $assetUrl) {
+                $resolved = $this->resolveUrl($assetUrl, $pageUrl);
+                if ($resolved === null) {
+                    continue;
+                }
+
+                $normalized = $this->normalizeAssetUrl($resolved);
+                if (isset($copied[$normalized])) {
+                    continue;
+                }
+
+                if ($this->copyAssetToOutput($normalized)) {
+                    $copied[$normalized] = true;
                 }
             }
         }
-        closedir($dir);
     }
 
-    private function deleteDirectory(string $dir): void
+    private function extractAssetUrls(string $html): array
     {
+        $urls = [];
+
+        if (preg_match_all('/<link[^>]*href\s*=\s*"([^"]+)"/i', $html, $m)) {
+            $urls = array_merge($urls, $m[1]);
+        }
+
+        if (preg_match_all('/<script[^>]*src\s*=\s*"([^"]+)"/i', $html, $m)) {
+            $urls = array_merge($urls, $m[1]);
+        }
+
+        if (preg_match_all('/<img[^>]*src\s*=\s*"([^"]+)"/i', $html, $m)) {
+            $urls = array_merge($urls, $m[1]);
+        }
+
+        if (preg_match_all('/<source[^>]*src\s*=\s*"([^"]+)"/i', $html, $m)) {
+            $urls = array_merge($urls, $m[1]);
+        }
+
+        if (preg_match_all('/url\(\s*["\']?([^"\')\s]+)["\']?\s*\)/i', $html, $m)) {
+            $urls = array_merge($urls, $m[1]);
+        }
+
+        return array_unique($urls);
+    }
+
+    private function normalizeAssetUrl(string $url): string
+    {
+        $path = parse_url($url, PHP_URL_PATH);
+
+        if ($path === false || $path === null) {
+            return $url;
+        }
+
+        return $path;
+    }
+
+    private function copyAssetToOutput(string $assetPath): bool
+    {
+        $source = BASE_PATH . $assetPath;
+
+        if (!file_exists($source) || is_dir($source)) {
+            return false;
+        }
+
+        $relative = ltrim($assetPath, '/');
+        $destination = $this->outputDir . '/' . $relative;
+        $destDir = dirname($destination);
+
+        if (!is_dir($destDir)) {
+            mkdir($destDir, 0755, true);
+        }
+
+        return copy($source, $destination);
+    }
+
+    private function cleanOutputDir(): void
+    {
+        if (!is_dir($this->outputDir)) {
+            mkdir($this->outputDir, 0755, true);
+            return;
+        }
+
         $files = new \RecursiveIteratorIterator(
-            new \RecursiveDirectoryIterator($dir, \FilesystemIterator::SKIP_DOTS),
+            new \RecursiveDirectoryIterator($this->outputDir, \FilesystemIterator::SKIP_DOTS),
             \RecursiveIteratorIterator::CHILD_FIRST
         );
 
@@ -250,6 +387,33 @@ class StaticGenerator
                 unlink($file->getRealPath());
             }
         }
-        rmdir($dir);
+    }
+
+    private function copyDirectory(string $source, string $dest): void
+    {
+        if (!is_dir($source)) {
+            return;
+        }
+
+        if (!is_dir($dest)) {
+            mkdir($dest, 0755, true);
+        }
+
+        $iterator = new \RecursiveIteratorIterator(
+            new \RecursiveDirectoryIterator($source, \FilesystemIterator::SKIP_DOTS),
+            \RecursiveIteratorIterator::SELF_FIRST
+        );
+
+        foreach ($iterator as $item) {
+            $target = $dest . '/' . $iterator->getSubPathname();
+
+            if ($item->isDir()) {
+                if (!is_dir($target)) {
+                    mkdir($target, 0755, true);
+                }
+            } else {
+                copy($item->getRealPath(), $target);
+            }
+        }
     }
 }

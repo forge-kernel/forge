@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Modules\ForgeTesting\Commands;
 
+use Forge\CLI\Attributes\CoreCommand;
 use Modules\ForgeTesting\Services\TestRunnerService;
 use Forge\CLI\Command;
 use Forge\CLI\Attributes\Cli;
@@ -12,6 +13,7 @@ use Forge\CLI\Traits\OutputHelper;
 use Forge\CLI\Traits\Wizard;
 use Forge\Traits\NamespaceHelper;
 
+#[CoreCommand]
 #[Cli(
     command: 'test',
     description: 'Run application tests',

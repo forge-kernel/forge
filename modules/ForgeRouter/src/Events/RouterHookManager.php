@@ -6,6 +6,7 @@ namespace Modules\ForgeRouter\Events;
 
 use Forge\Core\DI\Container;
 use Forge\Core\Helpers\FileExistenceCache;
+use Forge\Core\Helpers\Logger;
 use Throwable;
 
 final class RouterHookManager
@@ -71,10 +72,13 @@ final class RouterHookManager
                 } else {
                     try {
                         $instance = $container->make($class);
-                        call_user_func_array([$instance, $method], $args);
                     } catch (\Throwable $e) {
-                        call_user_func_array($callback, $args);
+                        if (is_callable($callback)) {
+                            call_user_func_array($callback, $args);
+                        }
+                        return;
                     }
+                    call_user_func_array([$instance, $method], $args);
                 }
             }
         }
@@ -172,7 +176,7 @@ final class RouterHookManager
                 }
             }
         } catch (Throwable $e) {
-            error_log("Failed to discover router hooks: " . $e->getMessage());
+            Logger::log("Failed to discover router hooks", $e->getMessage());
         }
     }
 
@@ -232,7 +236,7 @@ final class RouterHookManager
                         $callback = [$hook['class'], $hook['method']];
                         self::addHook($hookNameEnum, $callback);
                     } catch (Throwable $e) {
-                        error_log("Failed to load compiled router hook: " . $e->getMessage());
+                        Logger::log("Failed to load compiled router hook", $e->getMessage());
                     }
                 }
             }

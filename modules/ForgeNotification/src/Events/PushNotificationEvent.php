@@ -12,19 +12,17 @@ use Modules\ForgeNotification\Dto\PushNotificationDto;
  * Event for queued push notifications.
  * Dispatched when a push notification should be sent asynchronously.
  */
-#[
-    Event(
+#[Event(
     queue: "notifications",
     maxRetries: 3,
     delay: "0s",
     priority: QueuePriority::NORMAL,
-  ),
-  ]
+)]
 final readonly class PushNotificationEvent
 {
-  public function __construct(
-    public PushNotificationDto $notification,
-    public ?string $provider = null
-  ) {
-  }
+    public function __construct(
+        public PushNotificationDto $notification,
+        public ?string $provider = null
+    ) {
+    }
 }

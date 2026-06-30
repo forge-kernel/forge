@@ -40,8 +40,8 @@ trait ViewHelper
             "\\",
             (new ReflectionClass($this))->getNamespaceName()
         );
-        return ($namespaceParts[1] ?? null) === "Modules"
-            ? $namespaceParts[2]
+        return ($namespaceParts[0] ?? null) === "Modules"
+            ? $namespaceParts[1]
             : null;
     }
 }

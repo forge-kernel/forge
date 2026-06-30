@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace Modules\ForgeAppAuth;
 
+use Forge\Core\Module\Attributes\Provides;
 use Modules\ForgeAppAuth\Repositories\UserRepository;
 use Modules\ForgeAppAuth\Services\UserContext;
 use Modules\ForgeAuth\Contracts\UserContextInterface;
@@ -46,6 +47,9 @@ use Forge\Core\Module\Attributes\Structure;
 #[Requires(module: "forge-auth", version: ">=2.0.5")]
 #[Requires(module: "forge-database-sql", version: ">=0.9.12")]
 #[Requires(module: "forge-sql-orm", version: ">=0.6.5")]
+#[Requires(module: "forge-auth")]
+#[Provides(interface: UserProviderInterface::class, version: "0.1.4")]
+#[Provides(interface: UserContextInterface::class, version: "0.1.4")]
 #[Compatibility(framework: '>=4.15.13', php: '>=8.3')]
 #[Repository(type: 'git', url: 'https://github.com/forge-kernel/kernel-module-registry')]
 #[ConfigDefaults(defaults: [

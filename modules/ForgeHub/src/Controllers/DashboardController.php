@@ -10,7 +10,7 @@ use Modules\ForgeHub\Services\HubItemRegistry;
 use Modules\ForgeHub\Services\LogService;
 use Modules\ForgeHub\Services\CacheService;
 use Forge\Core\DI\Container;
-use Forge\Core\Helpers\Framework;
+use Forge\Core\Helpers\Version;
 use Modules\ForgeRouter\Http\Attributes\UseMiddleware;
 use Modules\ForgeRouter\Http\Attributes\RequiresRole;
 use Modules\ForgeRouter\Http\Response;
@@ -67,7 +67,7 @@ final class DashboardController
         $data = [
             'title' => 'Dashboard',
             'phpVersion' => phpversion(),
-            'frameworkVersion' => Framework::version(),
+            'kernelVersion' => Version::version(),
             'moduleCount' => count($modules),
             'hubItemCount' => count($hubItems),
             'logFileCount' => count($logFiles),

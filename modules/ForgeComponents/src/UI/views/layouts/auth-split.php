@@ -7,7 +7,7 @@
  * @var string $parentLayout
  */
 
-use Forge\Core\Helpers\Framework;
+use Forge\Core\Helpers\Version;
 
 $parentLayout = 'ForgeComponents:root';
 
@@ -51,7 +51,7 @@ $infoSide = $layoutProps['infoSide'] ?? 'left';
               <div class="fc-auth-split__meta">
                 <div class="fc-auth-split__meta-row">
                   <span class="fc-auth-split__meta-label">Kernel Version</span>
-                  <span class="fc-auth-split__meta-value">v<?= htmlspecialchars(Framework::version()) ?></span>
+                  <span class="fc-auth-split__meta-value">v<?= htmlspecialchars(Version::version()) ?></span>
                 </div>
                 <div class="fc-auth-split__meta-row">
                   <span class="fc-auth-split__meta-label">License</span>

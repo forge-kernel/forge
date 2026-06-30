@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Modules\ForgeTesting\Services;
 
+use Forge\Core\DI\Attributes\Injectable;
 use Modules\ForgeTesting\Attributes\AfterEach;
 use Modules\ForgeTesting\Attributes\BeforeEach;
 use Modules\ForgeTesting\Attributes\DataProvider;
@@ -14,18 +15,15 @@ use Modules\ForgeTesting\Attributes\Skip;
 use Modules\ForgeTesting\Attributes\Test;
 use Modules\ForgeTesting\TestCase;
 use Forge\CLI\Traits\OutputHelper;
-use Forge\Core\DI\Attributes\Service;
 use Forge\Core\DI\Container;
 use Forge\Core\Module\Attributes\Provides;
-use Forge\Core\Module\Attributes\Requires;
 use Forge\Traits\NamespaceHelper;
 use ReflectionClass;
 use ReflectionMethod;
 use Throwable;
 
-#[Service]
+#[Injectable]
 #[Provides(TestRunnerService::class, version: '0.1.0')]
-#[Requires()]
 final class TestRunnerService
 {
     use OutputHelper;
