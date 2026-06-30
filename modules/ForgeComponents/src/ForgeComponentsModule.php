@@ -12,7 +12,7 @@ use Forge\Core\Module\Attributes\Requires;
 
 #[Module(
     name: 'ForgeComponents',
-    version: '0.3.8',
+    version: '0.3.9',
     description: 'Primitive reusable UI components with vanilla CSS design system',
     order: 1,
     author: 'Forge Team',
