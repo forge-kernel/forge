@@ -18,7 +18,7 @@ use Modules\ForgeRouter\Http\Response;
 
 #[Module(
     name: 'ForgeHtmx',
-    version: '1.0.0',
+    version: '1.0.1',
     description: 'HTMX integration for Forge router',
     order: 80,
     author: 'Forge Team',
