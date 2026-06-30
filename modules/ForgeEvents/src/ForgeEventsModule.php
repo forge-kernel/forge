@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Modules\ForgeEvents;
 
+use Forge\Core\Module\Attributes\Requires;
 use Modules\ForgeEvents\Attributes\EventListener;
 use Forge\Core\Bootstrap\OptimizedDirectoryScanner;
 use Modules\ForgeEvents\Services\EventDispatcher;
@@ -18,7 +19,7 @@ use ReflectionMethod;
 
 #[Module(
     name: "ForgeEvents",
-    version: "1.4.8",
+    version: "1.4.9",
     description: "An Event Queue system by forge",
     order: 99,
     author: 'Forge Team',
@@ -27,6 +28,7 @@ use ReflectionMethod;
     tags: ['communication', 'event', 'queue', 'event-queue', 'event-dispatcher', 'event-listener']
 )]
 #[Compatibility(framework: ">=0.1.0", php: ">=8.3")]
+#[Requires(module: "forge-database-sql")]
 #[Repository(type: "git", url: "https://github.com/forge-kernel/kernel-module-registry")]
 final class ForgeEventsModule
 {
