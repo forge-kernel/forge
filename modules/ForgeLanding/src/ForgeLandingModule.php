@@ -13,7 +13,7 @@ use Forge\Core\Module\Attributes\Requires;
 
 #[Module(
     name: 'ForgeLanding',
-    version: '0.1.3',
+    version: '0.1.4',
     description: 'Public-facing landing page with navigation to auth flows',
     order: 50,
     author: 'Forge Team',
