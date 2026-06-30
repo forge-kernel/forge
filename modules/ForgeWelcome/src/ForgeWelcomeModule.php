@@ -10,17 +10,15 @@ use Forge\Core\Module\Attributes\Module;
 use Forge\Core\Module\Attributes\PostInstall;
 use Forge\Core\Module\Attributes\PostUninstall;
 use Forge\Core\Module\Attributes\Repository;
-use Modules\ForgeWelcome\Contracts\ForgeWelcomeInterface;
-use Modules\ForgeWelcome\Services\ForgeWelcomeService;
-use Forge\Core\DI\Attributes\Service;
+use Modules\ForgeWelcome\Common\Contracts\WelcomeInterface;
+use Modules\ForgeWelcome\Common\Welcome;
 use Forge\Core\Module\Attributes\LifecycleHook;
 use Forge\Core\Module\LifecycleHookName;
 use Forge\CLI\Traits\OutputHelper;
-use Forge\Core\Module\Attributes\Structure;
 
 #[Module(
     name: 'ForgeWelcome',
-    version: '1.2.5',
+    version: '1.2.6',
     description: 'A playground by forge',
     order: 99,
     author: 'Forge Team',
@@ -28,23 +26,8 @@ use Forge\Core\Module\Attributes\Structure;
     type: 'generic',
     tags: ['generic', 'welcome', 'playground', 'forge']
 )]
-#[Service]
 #[Compatibility(framework: '>=4.15.10', php: '>=8.3')]
 #[Repository(type: 'git', url: 'https://github.com/forge-kernel/kernel-module-registry')]
-#[Structure(structure: [
-    'controllers' => 'src/Controllers',
-    'services' => 'src/Services',
-    'migrations' => 'src/Database/Migrations',
-    'views' => 'src/UI/views',
-    'components' => 'src/UI/views/components',
-    'commands' => 'src/Commands',
-    'events' => 'src/Events',
-    'tests' => 'src/tests',
-    'models' => 'src/Models',
-    'dto' => 'src/Dto',
-    'seeders' => 'src/Database/Seeders',
-    'middlewares' => 'src/Middlewares',
-])]
 #[PostInstall(command: 'asset:link', args: ['--type=module', '--module=forge-welcome'])]
 #[PostUninstall(command: 'asset:unlink', args: ['--type=module', '--module=forge-welcome'])]
 final class ForgeWelcomeModule
@@ -53,7 +36,7 @@ final class ForgeWelcomeModule
 
     public function register(Container $container): void
     {
-        $container->bind(ForgeWelcomeInterface::class, ForgeWelcomeService::class);
+        $container->bind(WelcomeInterface::class, Welcome::class);
     }
 
     #[LifecycleHook(hook: LifecycleHookName::AFTER_MODULE_REGISTER)]
