@@ -28,7 +28,7 @@ use Forge\Core\Module\Attributes\Structure;
 ])]
 #[Module(
     name: 'ForgeSaas',
-    version: '0.1.5',
+    version: '0.1.6',
     description: 'SaaS plans, subscriptions, and feature gating for Forge Kernel',
     order: 4,
     author: 'Forge Team',
