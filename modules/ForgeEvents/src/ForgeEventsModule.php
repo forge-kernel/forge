@@ -19,7 +19,7 @@ use ReflectionMethod;
 
 #[Module(
     name: "ForgeEvents",
-    version: "1.4.9",
+    version: "1.4.10",
     description: "An Event Queue system by forge",
     order: 99,
     author: 'Forge Team',
