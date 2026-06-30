@@ -13,7 +13,7 @@ use Forge\Core\Module\Attributes\Repository;
 
 #[Module(
     name: 'ForgeView',
-    version: '0.1.2',
+    version: '0.1.3',
     description: 'A View engine provided by forge',
     order: 4,
     author: 'Forge Team',
@@ -21,7 +21,7 @@ use Forge\Core\Module\Attributes\Repository;
     type: 'core',
     tags: ['view-engine', 'view'])]
 #[Compatibility(framework: '>=0.1.0', php: '>=8.3')]
-#[Provides(interface: ViewInterface::class, version: '0.1.2')]
+#[Provides(interface: ViewInterface::class, version: '0.1.3')]
 #[Repository(type: 'git', url: 'https://github.com/forge-kernel/kernel-module-registry')]
 
 final class ForgeViewModule
