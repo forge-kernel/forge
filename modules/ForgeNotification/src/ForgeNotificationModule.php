@@ -11,14 +11,13 @@ use Forge\Core\Module\Attributes\Compatibility;
 use Forge\Core\Module\Attributes\ConfigDefaults;
 use Forge\Core\Module\Attributes\Module;
 use Forge\Core\Module\Attributes\Repository;
+use Forge\Core\Module\Attributes\Requires;
 use Modules\ForgeNotification\Services\ForgeNotificationService;
-use Forge\Core\DI\Attributes\Service;
 use Forge\CLI\Traits\OutputHelper;
 
-#[Service]
 #[Module(
     name: 'ForgeNotification',
-    version: '0.3.3',
+    version: '0.3.4',
     description: 'Multi-channel notification system with provider support, fluent API, and async queue integration',
     order: 99,
     author: 'Forge Team',
@@ -27,6 +26,7 @@ use Forge\CLI\Traits\OutputHelper;
     tags: ['communication', 'notification', 'email', 'sms', 'push']
 )]
 #[Compatibility(framework: '>=0.1.0', php: '>=8.3')]
+#[Requires(module: "forge-events")]
 #[Repository(type: 'git', url: 'https://github.com/forge-kernel/kernel-module-registry')]
 #[ConfigDefaults(defaults: [
     'forge_notification' => [
