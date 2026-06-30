@@ -17,7 +17,7 @@ use Forge\CLI\Traits\OutputHelper;
 
 #[Module(
     name: 'ForgeLogger',
-    version: '0.5.5',
+    version: '0.5.6',
     description: 'A logger by Forge.',
     order: 90,
     author: 'Forge Team',
