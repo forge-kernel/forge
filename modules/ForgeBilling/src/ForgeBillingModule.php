@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Modules\ForgeBilling;
 
+use Forge\Core\Module\Attributes\Requires;
 use Modules\ForgeBilling\Contracts\BillableResolverInterface;
 use Modules\ForgeBilling\Events\GenerateInvoiceEvent;
 use Modules\ForgeBilling\Services\BillableResolver;
@@ -44,13 +45,18 @@ use Forge\Core\Module\LifecycleHookName;
 ])]
 #[Module(
     name: 'ForgeBilling',
-    version: '0.2.5',
+    version: '0.2.6',
     description: 'Billing portal with plans, invoices, and payment provider support',
     order: 5,
     author: 'Forge Team',
     license: 'MIT',
     tags: ['billing', 'invoices', 'payments', 'plans'],
 )]
+#[Requires(module: "forge-database-sql")]
+#[Requires(module: "forge-sql-orm")]
+#[Requires(module: "forge-router")]
+#[Requires(module: "forge-view")]
+#[Requires(module: "forge-components")]
 #[Compatibility(framework: '>=4.15.10', php: '>=8.3')]
 #[Repository(type: 'git', url: 'https://github.com/forge-kernel/kernel-module-registry')]
 #[ConfigDefaults(defaults: ['forge_billing' => []])]
