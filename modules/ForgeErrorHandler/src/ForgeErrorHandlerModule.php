@@ -15,7 +15,7 @@ use Forge\CLI\Traits\OutputHelper;
 
 #[Module(
     name: 'ForgeErrorHandler',
-    version: '1.2.4',
+    version: '1.2.5',
     description: 'An error handler by Forge',
     order: 2,
     core: true,
