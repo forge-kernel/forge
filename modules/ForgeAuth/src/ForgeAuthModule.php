@@ -11,6 +11,7 @@ use Forge\Core\Module\Attributes\ConfigDefaults;
 use Forge\Core\Module\Attributes\Module;
 use Forge\Core\Module\Attributes\PostInstall;
 use Forge\Core\Module\Attributes\PostUninstall;
+use Forge\Core\Module\Attributes\Provides;
 use Forge\Core\Module\Attributes\Repository;
 use Modules\ForgeAuth\Contracts\ForgeAuthInterface;
 use Modules\ForgeAuth\Services\ForgeAuthService;
@@ -19,7 +20,7 @@ use Forge\Core\Module\Attributes\Structure;
 use Forge\Core\Module\Attributes\Requires;
 
 #[Module(name: 'ForgeAuth',
-    version: '2.0.7',
+    version: '2.0.8',
     description: 'An Auth module by forge.',
     order: 99,
     author: 'Forge Team',
@@ -29,6 +30,7 @@ use Forge\Core\Module\Attributes\Requires;
 )]
 #[Requires(module: "forge-database-sql", version: ">=0.9.12")]
 #[Requires(module: "forge-sql-orm", version: ">=0.6.5")]
+#[Provides(interface: ForgeAuthInterface::class, version: "2.0.8")]
 #[Compatibility(framework: '>=4.15.10', php: '>=8.3')]
 #[Repository(type: 'git', url: 'https://github.com/forge-kernel/kernel-module-registry')]
 #[ConfigDefaults(defaults: [
