@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Modules\ForgeMultiTenant;
 
+use Forge\Core\Module\Attributes\Requires;
 use Modules\ForgeMultiTenant\Services\RouteScopeFilter;
 use Modules\ForgeMultiTenant\Services\TenantManager;
 use Modules\ForgeRouter\Contracts\RouteScopeFilterInterface;
@@ -14,12 +15,11 @@ use Forge\Core\Module\Attributes\Module;
 use Forge\Core\Module\Attributes\PostInstall;
 use Forge\Core\Module\Attributes\PostUninstall;
 use Forge\Core\Module\Attributes\Repository;
-use Forge\Core\DI\Attributes\Service;
 use Forge\CLI\Traits\OutputHelper;
 
 #[Module(
     name: 'ForgeMultiTenant',
-    version: '0.3.5',
+    version: '0.3.6',
     description: 'A Multi Tenant Module by Forge',
     order: 2,
     author: 'Forge Team',
@@ -27,8 +27,9 @@ use Forge\CLI\Traits\OutputHelper;
     type: 'multi-tenant',
     tags: ['multi-tenant', 'tenant', 'management', 'database', 'multi-tenant', 'multi-tenant-management']
 )]
-#[Service]
 #[Compatibility(framework: '>=0.1.0', php: '>=8.3')]
+#[Requires(module: "forge-database-sql")]
+#[Requires(module: "forge-router")]
 #[Repository(type: 'git', url: 'https://github.com/forge-kernel/kernel-module-registry')]
 #[ConfigDefaults(defaults: [
     "forge_multi_tenant" => []
