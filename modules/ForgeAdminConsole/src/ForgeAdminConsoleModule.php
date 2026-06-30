@@ -13,7 +13,7 @@ use Forge\Core\Module\Attributes\Requires;
 
 #[Module(
     name: 'ForgeAdminConsole',
-    version: '0.1.3',
+    version: '0.1.4',
     description: 'Protected admin console with dashboard, account, profile, and user management',
     order: 55,
     author: 'Forge Team',
