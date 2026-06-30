@@ -3,34 +3,17 @@ declare(strict_types=1);
 
 namespace Modules\ForgeAdminConsole;
 
-use Forge\Core\DI\Attributes\Service;
 use Forge\Core\Module\Attributes\Compatibility;
 use Forge\Core\Module\Attributes\ConfigDefaults;
 use Forge\Core\Module\Attributes\Module;
 use Forge\Core\Module\Attributes\PostInstall;
 use Forge\Core\Module\Attributes\PostUninstall;
 use Forge\Core\Module\Attributes\Repository;
-use Forge\Core\Module\Attributes\Structure;
+use Forge\Core\Module\Attributes\Requires;
 
-#[Structure(structure: [
-    'controllers' => 'src/Controllers',
-    'services'    => 'src/Services',
-    'migrations'  => 'src/Database/Migrations',
-    'views'       => 'src/UI/views',
-    'components'  => 'src/UI/views/components',
-    'commands'    => 'src/Commands',
-    'events'      => 'src/Events',
-    'tests'       => 'src/tests',
-    'models'      => 'src/Models',
-    'dto'         => 'src/Dto',
-    'seeders'     => 'src/Database/Seeders',
-    'middlewares' => 'src/Middlewares',
-])]
-
-#[Service]
 #[Module(
     name: 'ForgeAdminConsole',
-    version: '0.1.2',
+    version: '0.1.3',
     description: 'Protected admin console with dashboard, account, profile, and user management',
     order: 55,
     author: 'Forge Team',
@@ -38,6 +21,10 @@ use Forge\Core\Module\Attributes\Structure;
     type: 'generic',
     tags: ['ui', 'admin', 'console'],
 )]
+#[Requires(module: "forge-router")]
+#[Requires(module: "forge-view")]
+#[Requires(module: "forge-components")]
+#[Requires(module: "forge-auth")]
 #[Compatibility(framework: '>=4.15.13', php: '>=8.3')]
 #[Repository(type: 'git', url: 'https://github.com/forge-kernel/kernel-module-registry')]
 #[ConfigDefaults(defaults: [
