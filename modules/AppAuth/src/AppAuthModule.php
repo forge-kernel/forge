@@ -36,7 +36,7 @@ use Modules\AppAuth\Services\UserContext;
     'languages' => 'src/Languages',
 ])]
 
-#[Module(name: 'AppAuth', version: '0.1.2', description: 'Application auth', order: 99, author: 'Your Name', license: 'MIT', tags: [])]
+#[Module(name: 'AppAuth', version: '0.1.3', description: 'Application auth', order: 99, author: 'Your Name', license: 'MIT', tags: [])]
 #[Compatibility(framework: '>=4.15.13', php: '>=8.3')]
 #[Requires(module: "forge-database-sql")]
 #[Requires(module: "forge-sql-orm")]
@@ -44,8 +44,8 @@ use Modules\AppAuth\Services\UserContext;
 #[Requires(module: "forge-view")]
 #[Requires(module: "forge-components")]
 #[Requires(module: "forge-testing")]
-#[Provides(interface: UserProviderInterface::class, version: "0.1.2")]
-#[Provides(interface: UserContextInterface::class, version: "0.1.2")]
+#[Provides(interface: UserProviderInterface::class, version: "0.1.3")]
+#[Provides(interface: UserContextInterface::class, version: "0.1.3")]
 #[Repository(type: 'git', url: 'https://github.com/forge-kernel/kernel-module-registry')]
 #[ConfigDefaults(defaults: [
     "app_auth" => []
