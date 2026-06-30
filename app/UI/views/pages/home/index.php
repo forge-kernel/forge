@@ -20,6 +20,8 @@ $layoutProps = ['title' => $data['title']];
     </div>
 
     <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        <button hx-post="/languages" hx-target="#language-switcher">Htmx language</button>
+        <div id="language-switcher"></div>
       <!-- Main Content -->
       <?= component(
           name: 'ForgeLanguage:language-switcher',

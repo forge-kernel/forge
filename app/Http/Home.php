@@ -4,34 +4,43 @@ declare(strict_types=1);
 
 namespace App\Http;
 
-use Modules\ForgeMultiTenant\Attributes\TenantScope;
+use Modules\ForgeHtmx\Traits\HtmxResponseHelper;
 use Modules\ForgeRouter\Http\Attributes\UseMiddleware;
 use Modules\ForgeRouter\Http\Response;
 use Modules\ForgeRouter\Routing\Endpoint;
 use Modules\ForgeRouter\Attributes\Layout;
 use Modules\ForgeRouter\Attributes\Routable;
-use Modules\ForgeRouter\Http\Request;
-use Modules\ForgeRouter\Traits\ResponseHelper;
 use Modules\ForgeView\Traits\ViewHelper;
+use Modules\ForgeLanguage\Definitions\LanguageSwitcherDefinition;
 
 #[Routable]
+#[UseMiddleware("web")]
 final class Home
 {
-    use ResponseHelper;
     use ViewHelper;
-
-    public function __construct()
-    {
-    }
+    use HtmxResponseHelper;
 
     #[Endpoint("/")]
     #[Layout("main")]
-    public function home(Request $request): Response
+    public function home(): Response
     {
-        $data = [
+        return $this->view(view: 'home/index', data: [
             "title" => "Welcome to Forge Kernel",
-        ];
+        ]);
+    }
 
-        return $this->view(view: 'home/index', data: $data);
+    #[Endpoint(path: "/languages", method: "POST")]
+    public function languages(): Response
+    {
+        return $this->htmxFragment(component(
+            name: 'ForgeLanguage:language-switcher',
+            props: [
+                'definition' => new LanguageSwitcherDefinition(
+                    showFlags: true,
+                    showLabels: true,
+                    showCodes: false,
+                )
+            ]
+        ));
     }
 }

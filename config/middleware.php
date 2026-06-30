@@ -51,6 +51,7 @@ return [
     "web" => [
         \Modules\ForgeRouter\Http\Middlewares\SessionMiddleware::class,
         \Modules\ForgeRouter\Http\Middlewares\CsrfMiddleware::class,
+        \Modules\ForgeHtmx\Middlewares\ForgeHtmxMiddleware::class,
         \Modules\ForgeWire\Middlewares\ForgeWireMiddleware::class,
     ],
     "api" => [

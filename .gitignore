@@ -117,3 +117,4 @@ OPENCODE_AGENT_GUIDE.MD
 kernel/*
 /public/assets/modules/*
 /storage/framework/*
+/nbproject/private/
