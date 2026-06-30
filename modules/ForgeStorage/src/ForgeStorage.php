@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Modules\ForgeStorage;
 
+use Forge\Core\Module\Attributes\Requires;
 use Modules\ForgeStorage\Contracts\StorageDriverInterface;
 use Modules\ForgeStorage\Services\ProviderResolver;
 use Forge\Core\Config\Config;
@@ -18,15 +19,15 @@ use Forge\Core\Module\Attributes\Repository;
 
 #[Module(
     name: 'ForgeStorage',
-    version: '1.3.3',
+    version: '1.3.4',
     description: 'Simple file upload storage module with multiple provider support',
     author: 'Forge Team',
     license: 'MIT',
     type: 'storage',
     tags: ['storage', 'file', 'upload']
 )]
-#[Service]
 #[Compatibility(framework: '>=0.1.2', php: '>=8.3')]
+#[Requires(module: "forge-router")]
 #[Repository(type: 'git', url: 'https://github.com/forge-kernel/kernel-module-registry')]
 #[ConfigDefaults(defaults: [
     'forge_storage' => [
