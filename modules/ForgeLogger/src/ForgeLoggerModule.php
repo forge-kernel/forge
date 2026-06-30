@@ -5,21 +5,19 @@ declare(strict_types=1);
 namespace Modules\ForgeLogger;
 
 use Forge\Core\Config\Config;
+use Forge\Core\Contracts\LoggerInterface;
 use Forge\Core\DI\Container;
 use Forge\Core\Module\Attributes\Compatibility;
 use Forge\Core\Module\Attributes\ConfigDefaults;
 use Forge\Core\Module\Attributes\Module;
 use Forge\Core\Module\Attributes\Structure;
 use Forge\Core\Module\Attributes\Repository;
-use Modules\ForgeLogger\Contracts\ForgeLoggerInterface;
 use Modules\ForgeLogger\Services\ForgeLoggerService;
-use Forge\Core\DI\Attributes\Service;
 use Forge\CLI\Traits\OutputHelper;
 
-#[Service]
 #[Module(
     name: 'ForgeLogger',
-    version: '0.5.4',
+    version: '0.5.5',
     description: 'A logger by Forge.',
     order: 90,
     author: 'Forge Team',
@@ -28,18 +26,10 @@ use Forge\CLI\Traits\OutputHelper;
     tags: ['logging', 'logger', 'log', 'logging-system', 'logging-library', 'logging-framework']
 )]
 #[Structure(structure: [
-    'controllers' => 'src/Controllers',
     'services' => 'src/Services',
-    'migrations' => 'src/Database/Migrations',
-    'views' => 'src/UI/views',
-    'components' => 'src/UI/views/components',
     'commands' => 'src/Commands',
     'events' => 'src/Events',
     'tests' => 'src/tests',
-    'models' => 'src/Models',
-    'dto' => 'src/Dto',
-    'seeders' => 'src/Database/Seeders',
-    'middlewares' => 'src/Middlewares',
 ])]
 #[Compatibility(framework: '>=0.1.0', php: '>=8.3')]
 #[Repository(type: 'git', url: 'https://github.com/forge-kernel/kernel-module-registry')]
@@ -47,6 +37,8 @@ use Forge\CLI\Traits\OutputHelper;
     'forge_logger' => [
         'driver' => 'syslog',
         'path' => '/storage/logs/forge.log',
+        'min_level' => 'DEBUG',
+        'max_file_size' => 0,
     ]
 ])]
 final class ForgeLoggerModule
@@ -56,7 +48,7 @@ final class ForgeLoggerModule
     public function register(Container $container): void
     {
         $this->setupConfigDefaults($container);
-        $container->bind(ForgeLoggerInterface::class, ForgeLoggerService::class);
+        $container->bind(LoggerInterface::class, ForgeLoggerService::class);
     }
 
     private function setupConfigDefaults(Container $container): void
@@ -65,5 +57,7 @@ final class ForgeLoggerModule
         $config = $container->get(Config::class);
         $config->set('forge_logger.driver', env('FORGE_LOGGER_DRIVER', 'syslog'));
         $config->set('forge_logger.path', env('FORGE_LOGGER_PATH', BASE_PATH . '/storage/logs/forge.log'));
+        $config->set('forge_logger.min_level', env('FORGE_LOGGER_MIN_LEVEL', 'DEBUG'));
+        $config->set('forge_logger.max_file_size', env('FORGE_LOGGER_MAX_FILE_SIZE', '0'));
     }
 }
