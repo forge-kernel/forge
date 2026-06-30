@@ -2,6 +2,7 @@
 
 namespace Modules\ForgeDebugBar;
 
+use Forge\Core\Module\Attributes\Requires;
 use Modules\ForgeDebugBar\Collectors\MemoryCollector;
 use Modules\ForgeDebugBar\Collectors\MessageCollector;
 use Modules\ForgeDebugBar\Collectors\RequestCollector;
@@ -38,7 +39,7 @@ use Forge\Core\Config\Config;
 ])]
 #[Module(
     name: 'ForgeDebugBar',
-    version: '1.3.7',
+    version: '1.3.8',
     description: 'A debug bar by Forge',
     order: 3,
     author: 'Forge Team',
@@ -46,6 +47,8 @@ use Forge\Core\Config\Config;
     type: 'generic',
     tags: ['generic', 'debug', 'debug-bar', 'debug-bar-system', 'debug-bar-library', 'debug-bar-framework']
 )]
+#[Requires(module: "forge-router")]
+#[Requires(module: "forge-view")]
 #[HubItem(label: 'Debug Bar', route: '/hub/debugbar', icon: ForgeIcon::COG, order: 6)]
 #[Compatibility(framework: '>=4.15.11', php: '>=8.3')]
 #[ConfigDefaults(defaults: [
@@ -58,6 +61,13 @@ use Forge\Core\Config\Config;
 class DebugBarModule
 {
     use InjectsAssets;
+
+    public function register(Container $container): void
+    {
+        /** @var Config $config */
+        $config = $container->get(Config::class);
+        $config->set("forge_debug_bar.enabled", env("FORGE_DEBUG_BAR_ENABLED", true));
+    }
 
     #[RouterHookAttribute(RouterHookName::AFTER_REQUEST)]
     public function onAfterRequest(Request $request, Response $response): void
