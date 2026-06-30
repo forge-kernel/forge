@@ -8,18 +8,11 @@ use Forge\Core\Module\Attributes\Compatibility;
 use Forge\Core\Module\Attributes\ConfigDefaults;
 use Forge\Core\Module\Attributes\Module;
 use Forge\Core\Module\Attributes\Repository;
-use Forge\Core\Module\Attributes\Structure;
+use Forge\Core\Module\Attributes\Requires;
 
-#[Structure(structure: [
-    'controllers' => 'src/Controllers',
-    'services' => 'src/Services',
-    'views' => 'src/UI/views',
-    'components' => 'src/UI/views/components',
-    'assets' => 'src/UI/assets',
-])]
 #[Module(
     name: 'ForgeComponents',
-    version: '0.3.7',
+    version: '0.3.8',
     description: 'Primitive reusable UI components with vanilla CSS design system',
     order: 1,
     author: 'Forge Team',
@@ -28,6 +21,7 @@ use Forge\Core\Module\Attributes\Structure;
     tags: ['ui', 'component', 'design-system']
 )]
 #[Compatibility(framework: '>=4.15.13', php: '>=8.3')]
+#[Requires(module: "forge-view")]
 #[Repository(type: 'git', url: 'https://github.com/forge-kernel/kernel-module-registry')]
 #[ConfigDefaults(defaults: [
     "forge_components" => []
