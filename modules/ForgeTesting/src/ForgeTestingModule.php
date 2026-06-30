@@ -10,7 +10,7 @@ use Forge\Core\Module\Attributes\Repository;
 
 #[Module(
     name: "ForgeTesting",
-    version: "0.4.4",
+    version: "0.4.5",
     description: "A Test Suite Module By Forge",
     order: 9999,
     isCli: true,
