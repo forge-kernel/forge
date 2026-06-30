@@ -3,34 +3,17 @@ declare(strict_types=1);
 
 namespace Modules\ForgeLanding;
 
-use Forge\Core\DI\Attributes\Service;
 use Forge\Core\Module\Attributes\Compatibility;
 use Forge\Core\Module\Attributes\ConfigDefaults;
 use Forge\Core\Module\Attributes\Module;
 use Forge\Core\Module\Attributes\PostInstall;
 use Forge\Core\Module\Attributes\PostUninstall;
 use Forge\Core\Module\Attributes\Repository;
-use Forge\Core\Module\Attributes\Structure;
+use Forge\Core\Module\Attributes\Requires;
 
-#[Structure(structure: [
-    'controllers' => 'src/Controllers',
-    'services'    => 'src/Services',
-    'migrations'  => 'src/Database/Migrations',
-    'views'       => 'src/UI/views',
-    'components'  => 'src/UI/views/components',
-    'commands'    => 'src/Commands',
-    'events'      => 'src/Events',
-    'tests'       => 'src/tests',
-    'models'      => 'src/Models',
-    'dto'         => 'src/Dto',
-    'seeders'     => 'src/Database/Seeders',
-    'middlewares' => 'src/Middlewares',
-])]
-
-#[Service]
 #[Module(
     name: 'ForgeLanding',
-    version: '0.1.2',
+    version: '0.1.3',
     description: 'Public-facing landing page with navigation to auth flows',
     order: 50,
     author: 'Forge Team',
@@ -39,6 +22,9 @@ use Forge\Core\Module\Attributes\Structure;
     tags: ['ui', 'landing', 'public'],
 )]
 #[Compatibility(framework: '>=4.15.13', php: '>=8.3')]
+#[Requires(module: "forge-components")]
+#[Requires(module: "forge-router")]
+#[Requires(module: "forge-view")]
 #[Repository(type: 'git', url: 'https://github.com/forge-kernel/kernel-module-registry')]
 #[ConfigDefaults(defaults: [
     "forge_landing" => [
