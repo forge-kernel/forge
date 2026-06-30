@@ -10,7 +10,7 @@ use Forge\Core\Module\Attributes\Repository;
 
 #[Module(
     name: 'ForgeTailwind',
-    version: '0.2.4',
+    version: '0.2.5',
     description: 'A tailwind module by forge',
     order: 99,
     isCli: true,
