@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 namespace Modules\ForgeSaas;
 
+use Forge\Core\Module\Attributes\Requires;
 use Modules\ForgeSaas\Contracts\SubscriptionManagerInterface;
 use Modules\ForgeSaas\Services\SubscriptionManager;
 use Forge\Core\Contracts\Database\CentralQueryBuilderInterface;
-use Forge\Core\DI\Attributes\Service;
 use Forge\Core\DI\Container;
 use Forge\Core\Module\Attributes\Compatibility;
 use Forge\Core\Module\Attributes\ConfigDefaults;
@@ -26,10 +26,9 @@ use Forge\Core\Module\Attributes\Structure;
     'middlewares' => 'src/Middlewares',
     'support' => 'src/Support',
 ])]
-#[Service]
 #[Module(
     name: 'ForgeSaas',
-    version: '0.1.4',
+    version: '0.1.5',
     description: 'SaaS plans, subscriptions, and feature gating for Forge Kernel',
     order: 4,
     author: 'Forge Team',
@@ -37,6 +36,8 @@ use Forge\Core\Module\Attributes\Structure;
     tags: ['saas', 'billing', 'plans', 'feature-flags', 'multi-tenant']
 )]
 #[Compatibility(framework: '>=0.1.0', php: '>=8.3')]
+#[Requires(module: "forge-router")]
+#[Requires(module: "forge-database-sql")]
 #[Repository(type: 'git', url: 'https://github.com/forge-kernel/kernel-module-registry')]
 #[ConfigDefaults(defaults: ['forge_saas' => []])]
 #[PostInstall(command: 'db:migrate', args: ['--type=', 'module', '--module=', 'ForgeSaas'])]
