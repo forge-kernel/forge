@@ -14,7 +14,7 @@ use Forge\CLI\Traits\OutputHelper;
 
 #[Module(
     name: 'ForgeDeployment',
-    version: '2.5.6',
+    version: '2.5.7',
     description: 'Deploy applications to cloud providers with automated provisioning',
     order: 99,
     author: 'Forge Team',
