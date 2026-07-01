@@ -10,8 +10,7 @@ class AutoRollback
 {
     public function __construct(
         public string $table,
-        public array  $where
-    )
-    {
+        public array $where
+    ) {
     }
 }
