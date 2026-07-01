@@ -17,7 +17,7 @@ use Forge\CLI\Traits\OutputHelper;
 
 #[Module(
     name: 'ForgeNotification',
-    version: '0.3.5',
+    version: '0.3.6',
     description: 'Multi-channel notification system with provider support, fluent API, and async queue integration',
     order: 99,
     author: 'Forge Team',
@@ -48,8 +48,8 @@ use Forge\CLI\Traits\OutputHelper;
                         'username' => '',
                         'password' => '',
                         'encryption' => 'none',
-                        'from_address' => 'noreply@forge.test',
-                        'from_name' => 'Forge Application',
+                        'from_address' => 'noreply@localhost',
+                        'from_name' => 'Forge',
                     ],
                     'sendgrid' => [
                         'api_key' => '',
@@ -121,8 +121,8 @@ final class ForgeNotificationModule
         $config->set('forge_notification.channels.email.providers.smtp.username', env('SMTP_USERNAME', ''));
         $config->set('forge_notification.channels.email.providers.smtp.password', env('SMTP_PASSWORD', ''));
         $config->set('forge_notification.channels.email.providers.smtp.encryption', env('SMTP_ENCRYPTION', 'none'));
-        $config->set('forge_notification.channels.email.providers.smtp.from_address', env('SMTP_FROM_ADDRESS', 'noreply@forge.test'));
-        $config->set('forge_notification.channels.email.providers.smtp.from_name', env('SMTP_FROM_NAME', 'Forge Application'));
+        $config->set('forge_notification.channels.email.providers.smtp.from_address', env('SMTP_FROM_ADDRESS', 'noreply@localhost'));
+        $config->set('forge_notification.channels.email.providers.smtp.from_name', env('SMTP_FROM_NAME', 'Forge'));
         $config->set('forge_notification.channels.email.providers.sendgrid.api_key', env('SENDGRID_API_KEY', ''));
         $config->set('forge_notification.channels.email.providers.sendgrid.from_address', env('SENDGRID_FROM_ADDRESS', 'noreply@example.com'));
         $config->set('forge_notification.channels.email.providers.sendgrid.from_name', env('SENDGRID_FROM_NAME', 'Forge Application'));
