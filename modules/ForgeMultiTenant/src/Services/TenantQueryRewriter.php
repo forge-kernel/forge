@@ -6,25 +6,31 @@ namespace Modules\ForgeMultiTenant\Services;
 use Modules\ForgeMultiTenant\DTO\Tenant;
 use Modules\ForgeMultiTenant\Enums\Strategy;
 use Forge\Core\Contracts\Database\QueryBuilderInterface;
-use Forge\Core\DI\Attributes\Service;
+use Forge\Core\DI\Attributes\Injectable;
 
-#[Service]
+#[Injectable]
 final class TenantQueryRewriter
 {
-    private static ?string $tenantId = null;
-    private static ?Strategy $strategy = null;
+    private ?string $tenantId = null;
+    private ?Strategy $strategy = null;
 
-    public static function setTenant(Tenant $tenant): void
+    public function setTenant(Tenant $tenant): void
     {
-        self::$tenantId = $tenant->id;
-        self::$strategy = $tenant->strategy;
+        $this->tenantId = $tenant->id;
+        $this->strategy = $tenant->strategy;
     }
 
-    public static function scope(QueryBuilderInterface $qb): QueryBuilderInterface
+    public function scope(QueryBuilderInterface $qb): QueryBuilderInterface
     {
-        if (self::$tenantId === null || self::$strategy !== Strategy::COLUMN) {
+        if ($this->tenantId === null || $this->strategy !== Strategy::COLUMN) {
             return $qb;
         }
-        return $qb->whereRaw('`tenant_id` = ?', [self::$tenantId]);
+        return $qb->whereRaw('`tenant_id` = ?', [$this->tenantId]);
+    }
+
+    public function reset(): void
+    {
+        $this->tenantId = null;
+        $this->strategy = null;
     }
 }

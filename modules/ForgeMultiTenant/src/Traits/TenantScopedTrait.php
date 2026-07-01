@@ -5,12 +5,14 @@ namespace Modules\ForgeMultiTenant\Traits;
 
 use Modules\ForgeMultiTenant\Services\TenantQueryRewriter;
 use Forge\Core\Contracts\Database\QueryBuilderInterface;
+use Forge\Core\DI\Container;
 
 trait TenantScopedTrait
 {
     protected function newQuery(): QueryBuilderInterface
     {
         $builder = parent::newQuery();
-        return TenantQueryRewriter::scope($builder);
+        $rewriter = Container::getInstance()->get(TenantQueryRewriter::class);
+        return $rewriter->scope($builder);
     }
 }

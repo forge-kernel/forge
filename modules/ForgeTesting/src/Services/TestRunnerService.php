@@ -50,7 +50,8 @@ final class TestRunnerService
             'incomplete_tests' => [],
             'benchmarks' => [],
             'durations' => [],
-            'passed_tests' => []
+            'passed_tests' => [],
+            'metrics' => [],
         ];
     }
 
@@ -182,6 +183,17 @@ final class TestRunnerService
 
             $this->recordDuration($fullMethodName, $startTime);
 
+            if (method_exists($testInstance, 'getMetricsRow')) {
+                $row = $testInstance->getMetricsRow();
+                if ($row !== null && !empty($row)) {
+                    $this->results['metrics'][] = [
+                        'method' => $fullMethodName,
+                        'description' => $testDescription,
+                        'data' => $row,
+                    ];
+                }
+            }
+
             if (is_array($returnValue) && isset($returnValue['avg'])) {
                 $this->results['benchmarks'][$fullMethodName] = $returnValue;
                 //iterations count for test method calculation
@@ -291,12 +303,47 @@ final class TestRunnerService
     {
         $this->renderBenchmarkResults();
         $this->renderTestDurations();
+        $this->renderTestMetrics();
 
         $this->renderPassedTests();
         $this->renderFailureDetails();
         $this->renderSkippedTests();
         $this->renderIncompleteTests();
         $this->renderSummaryTable();
+    }
+
+    private function renderTestMetrics(): void
+    {
+        if (empty($this->results['metrics'])) {
+            return;
+        }
+
+        $this->info("\nMetric Benchmarks:");
+
+        $groups = [];
+        foreach ($this->results['metrics'] as $entry) {
+            $keys = array_keys($entry['data']);
+            sort($keys);
+            $sig = implode("\0", $keys);
+            $groups[$sig][] = $entry;
+        }
+
+        foreach ($groups as $entries) {
+            $allKeys = array_keys($entries[0]['data']);
+            $headers = array_merge(['Test'], $allKeys);
+
+            $rows = [];
+            foreach ($entries as $entry) {
+                $row = ['Test' => $entry['description'] ?: $entry['method']];
+                foreach ($allKeys as $key) {
+                    $row[$key] = $entry['data'][$key] ?? '-';
+                }
+                $rows[] = $row;
+            }
+
+            $this->table($headers, $rows);
+            $this->line('');
+        }
     }
 
     private function renderBenchmarkResults(): void

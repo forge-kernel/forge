@@ -17,6 +17,17 @@ final class CentralDomain
 
     public static function stripPort(string $host): string
     {
+        if (str_starts_with($host, '[')) {
+            $close = strpos($host, ']');
+            if ($close !== false) {
+                return substr($host, 0, $close + 1);
+            }
+        }
+
+        if (substr_count($host, ':') > 1) {
+            return $host;
+        }
+
         return explode(':', $host, 2)[0];
     }
 

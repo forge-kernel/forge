@@ -19,6 +19,7 @@ use Modules\ForgeRouter\Middleware\Attributes\RegisterMiddleware;
 use Forge\Core\Session\SessionInterface;
 use Forge\Core\Cache\CacheManager;
 use Modules\ForgeMultiTenant\Services\TenantManager;
+use Modules\ForgeMultiTenant\Services\RouteScopeFilter;
 use Forge\Exceptions\MissingServiceException;
 use Forge\Exceptions\ResolveParameterException;
 use PDO;
@@ -28,8 +29,10 @@ use ReflectionException;
 final class TenantMiddleware extends Middleware
 {
 
-    public function __construct(private readonly TenantManager $tenantManager)
-    {
+    public function __construct(
+        private readonly TenantManager $tenantManager,
+        private readonly TenantQueryRewriter $queryRewriter,
+    ) {
     }
 
     /**
@@ -39,6 +42,10 @@ final class TenantMiddleware extends Middleware
      */
     public function handle(Request $request, callable $next): Response
     {
+        $this->tenantManager->clearCache();
+        RouteScopeFilter::reset();
+        $this->queryRewriter->reset();
+
         $rawHost = $request->getHeader('Host') ?? $request->serverParams['HTTP_HOST'] ?? '';
         $host = CentralDomain::stripPort($rawHost);
 
@@ -47,7 +54,7 @@ final class TenantMiddleware extends Middleware
         if ($tenant !== null) {
             $request->setAttribute('tenant', $tenant);
 
-            TenantQueryRewriter::setTenant($tenant);
+            $this->queryRewriter->setTenant($tenant);
 
             $container = Container::getInstance();
             $newConn = $container->get(TenantConnectionFactory::class)->forTenant($tenant);

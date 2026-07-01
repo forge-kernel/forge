@@ -1,35 +1,33 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Modules\ForgeMultiTenant\Services;
 
 use Modules\ForgeMultiTenant\DTO\Tenant;
 use Modules\ForgeMultiTenant\Enums\Strategy;
+use Modules\ForgeMultiTenant\Exceptions\TenantNotFoundException;
 use Forge\Core\Contracts\Database\QueryBuilderInterface;
-use Forge\Core\DI\Attributes\Service;
-use Forge\Core\DI\Container;
-use Forge\Core\Module\Attributes\Provides;
-use Forge\Exceptions\MissingServiceException;
-use Forge\Exceptions\ResolveParameterException;
-use ReflectionException;
-use RuntimeException;
+use Forge\Core\DI\Attributes\Injectable;
 
-#[Service]
+#[Injectable]
 final class TenantManager
 {
     private ?Tenant $current = null;
 
-    public function __construct(private readonly Container $container)
-    {
+    private ?array $tenantsById = null;
+    private ?array $tenantsByHost = null;
+
+    public function __construct(
+        private readonly ?QueryBuilderInterface $queryBuilder = null,
+        private readonly ?\Closure $dataCallback = null,
+    ) {
     }
 
-    /**
-     * @throws ReflectionException
-     * @throws MissingServiceException
-     * @throws ResolveParameterException
-     */
     public function resolveByDomain(string $host): ?Tenant
     {
+        $this->current = null;
+
         if (CentralDomain::isLocal($host)) {
             return null;
         }
@@ -38,49 +36,68 @@ final class TenantManager
             return null;
         }
 
-        $rows = $this->fetchFromDb();
-        $source = $rows ?: [];
+        $this->loadTenants();
 
-        foreach ($source as $tenant) {
-            $fullHost = $tenant['subdomain']
-                ? "{$tenant['subdomain']}.{$tenant['domain']}"
-                : $tenant['domain'];
-
-            if ($host === $fullHost) {
-                $dto = $this->arrayToDto($tenant);
-                $this->current = $dto;
-                return $dto;
-            }
+        if (isset($this->tenantsByHost[$host])) {
+            $this->current = $dto = $this->tenantsByHost[$host];
+            return $dto;
         }
+
         return null;
     }
 
-    /**
-     * @throws ReflectionException
-     * @throws MissingServiceException
-     * @throws ResolveParameterException
-     */
-    private function fetchFromDb(): array
+    public function clearCache(): void
     {
-        $rows = $this->container->get(QueryBuilderInterface::class)
-            ->setTable('tenants')
-            ->get();
-        $out = [];
-        foreach ($rows as $row) {
-            $out[$row['id']] = $row;
+        $this->tenantsById = null;
+        $this->tenantsByHost = null;
+    }
+
+    private function loadTenants(): array
+    {
+        if ($this->tenantsById !== null) {
+            return $this->tenantsById;
         }
-        return $out;
+
+        $rows = $this->dataCallback
+            ? ($this->dataCallback)()
+            : ($this->queryBuilder
+                ? $this->queryBuilder
+                    ->setTable('tenants')
+                    ->select('id', 'domain', 'subdomain', 'strategy', 'db_name', 'connection')
+                    ->get()
+                : []);
+
+        $byId = [];
+        $byHost = [];
+
+        foreach ($rows as $row) {
+            $dto = $this->arrayToDto($row);
+            $byId[$dto->id] = $dto;
+
+            $fullHost = $dto->subdomain
+                ? "{$dto->subdomain}.{$dto->domain}"
+                : $dto->domain;
+
+            $byHost[$fullHost] = $dto;
+        }
+
+        $this->tenantsById = $byId;
+        $this->tenantsByHost = $byHost;
+
+        return $byId;
     }
 
     private function arrayToDto(array $row): Tenant
     {
+        $strategy = Strategy::tryFrom($row['strategy'] ?? 'column') ?? Strategy::COLUMN;
+
         return new Tenant(
             id: $row['id'],
             domain: $row['domain'],
             subdomain: $row['subdomain'] ?? null,
-            strategy: Strategy::from($row['strategy'] ?? 'column'),
+            strategy: $strategy,
             dbName: $row['db_name'] ?? null,
-            connection: $row['connection'] ?? null
+            connection: $row['connection'] ?? null,
         );
     }
 
@@ -97,26 +114,13 @@ final class TenantManager
     /** @return Tenant[] */
     public function all(): array
     {
-        try {
-            $rows = $this->fetchFromDb() ?: [];
-            return array_map(fn(array $t) => $this->arrayToDto($t), $rows);
-        } catch (MissingServiceException|ResolveParameterException|ReflectionException $e) {
-
-        }
-        return [];
+        return array_values($this->loadTenants());
     }
 
-    /** @throws RuntimeException if not found */
+    /** @throws TenantNotFoundException */
     public function find(string $id): Tenant
     {
-        try {
-            $rows = $this->fetchFromDb() ?: [];
-        } catch (MissingServiceException|ResolveParameterException|ReflectionException $e) {
-
-        }
-        if (!isset($rows[$id])) {
-            throw new RuntimeException("Tenant [$id] not found.");
-        }
-        return $this->arrayToDto($rows[$id]);
+        $dto = ($this->loadTenants())[$id] ?? throw new TenantNotFoundException($id);
+        return $dto;
     }
 }

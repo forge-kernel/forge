@@ -5,6 +5,7 @@ namespace Modules\ForgeMultiTenant\Services;
 
 use Modules\ForgeMultiTenant\Attributes\TenantScope;
 use Modules\ForgeRouter\Contracts\RouteScopeFilterInterface;
+use Forge\Core\Contracts\Database\QueryBuilderInterface;
 use Forge\Core\DI\Attributes\Service;
 use Forge\Core\DI\Container;
 use Forge\Core\Module\Attributes\Provides;
@@ -19,15 +20,15 @@ final class RouteScopeFilter implements RouteScopeFilterInterface
 {
   private static ?bool $isCentral = null;
 
-  /**
-   * @throws \ReflectionException
-   * @throws MissingServiceException
-   * @throws ResolveParameterException
-   */
   public static function isCentralDomain(): bool
   {
-    return self::$isCentral ??= (new TenantManager(Container::getInstance()))
+    return self::$isCentral ??= (new TenantManager(Container::getInstance()->get(QueryBuilderInterface::class)))
       ->resolveByDomain($_SERVER['HTTP_HOST'] ?? '') === null;
+  }
+
+  public static function reset(): void
+  {
+    self::$isCentral = null;
   }
 
   /**
