@@ -17,7 +17,7 @@ use Forge\CLI\Traits\OutputHelper;
 
 #[Module(
     name: 'ForgeLogger',
-    version: '0.5.6',
+    version: '0.5.7',
     description: 'A logger by Forge.',
     order: 90,
     author: 'Forge Team',
@@ -35,7 +35,7 @@ use Forge\CLI\Traits\OutputHelper;
 #[Repository(type: 'git', url: 'https://github.com/forge-kernel/kernel-module-registry')]
 #[ConfigDefaults(defaults: [
     'forge_logger' => [
-        'driver' => 'syslog',
+        'driver' => 'file',
         'path' => '/storage/logs/forge.log',
         'min_level' => 'DEBUG',
         'max_file_size' => 0,
@@ -55,8 +55,8 @@ final class ForgeLoggerModule
     {
         /** @var Config $config */
         $config = $container->get(Config::class);
-        $config->set('forge_logger.driver', env('FORGE_LOGGER_DRIVER', 'syslog'));
-        $config->set('forge_logger.path', env('FORGE_LOGGER_PATH', BASE_PATH . '/storage/logs/forge.log'));
+        $config->set('forge_logger.driver', env('LOG_DRIVER', env('FORGE_LOGGER_DRIVER', 'file')));
+        $config->set('forge_logger.path', env('LOG_PATH', env('FORGE_LOGGER_PATH', BASE_PATH . '/storage/logs/forge.log')));
         $config->set('forge_logger.min_level', env('FORGE_LOGGER_MIN_LEVEL', 'DEBUG'));
         $config->set('forge_logger.max_file_size', env('FORGE_LOGGER_MAX_FILE_SIZE', '0'));
     }
