@@ -19,7 +19,7 @@ use Forge\CLI\Traits\OutputHelper;
 
 #[Module(
     name: 'ForgeMultiTenant',
-    version: '0.3.7',
+    version: '0.3.8',
     description: 'A Multi Tenant Module by Forge',
     order: 2,
     author: 'Forge Team',
@@ -34,13 +34,13 @@ use Forge\CLI\Traits\OutputHelper;
 #[ConfigDefaults(defaults: [
     "forge_multi_tenant" => []
 ])]
-#[PostInstall(command: 'migrate', args: ['--type=', 'module', '--module=', 'ForgeMultiTenant'])]
-#[PostInstall(command: 'seed', args: ['--type=', 'module', '--module=', 'ForgeMultiTenant'])]
+#[PostInstall(command: 'db:migrate', args: ['--type=module', '--module=ForgeMultiTenant'])]
+#[PostInstall(command: 'db:seed', args: ['--type=module', '--module=ForgeMultiTenant'])]
 #[PostInstall(command: 'tenant:migrate', args: [''])]
 #[PostInstall(command: 'tenant:seed', args: [''])]
-#[PostUninstall(command: 'migrate:rollback', args: ['--type=module', '--module=ForgeMultiTenant', '--group=tenant'])]
-#[PostUninstall(command: 'migrate:rollback', args: ['--type=module', '--module=ForgeMultiTenant'])]
-#[PostUninstall(command: 'seed:rollback', args: ['--type=module', '--module=ForgeMultiTenant'])]
+#[PostUninstall(command: 'db:migrate:rollback', args: ['--type=module', '--module=ForgeMultiTenant', '--group=tenant'])]
+#[PostUninstall(command: 'db:migrate:rollback', args: ['--type=module', '--module=ForgeMultiTenant'])]
+#[PostUninstall(command: 'db:seed:rollback', args: ['--type=module', '--module=ForgeMultiTenant'])]
 final class ForgeMultiTenantModule
 {
     use OutputHelper;
