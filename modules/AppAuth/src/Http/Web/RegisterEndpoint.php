@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Modules\AppAuth\Controllers\Web;
+namespace Modules\AppAuth\Http\Web;
 
 use Modules\AppAuth\Requeriments\PasswordRequeriments;
 use Modules\AppAuth\Validations\RegisterValidation;
@@ -23,7 +23,7 @@ use Forge\Traits\SecurityHelper;
 
 #[Routable(prefix: '/auth')]
 #[UseMiddleware('web')]
-final class RegisterController
+final class RegisterEndpoint
 {
     use ResponseHelper;
     use ViewHelper;

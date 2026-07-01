@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Modules\AppAuth\Controllers\Api;
+namespace Modules\AppAuth\Http\Api;
 
 use Modules\ForgeAuth\Enums\Permission;
 use Modules\AppAuth\Models\User;
@@ -18,7 +18,7 @@ use Modules\ForgeRouter\Traits\PaginationHelper;
 
 #[Routable]
 #[UseMiddleware("api")]
-final class ApiUserController
+final class UserEndpoint
 {
     use ResponseHelper;
     use AuthorizeRequests;

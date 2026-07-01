@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Modules\AppAuth\Controllers\Web;
+namespace Modules\AppAuth\Http\Web;
 
 use Modules\AppAuth\Models\User;
 use Modules\ForgeRouter\Http\Attributes\UseMiddleware;
@@ -16,7 +16,7 @@ use Modules\ForgeRouter\Traits\PaginationHelper;
 
 #[Routable]
 #[UseMiddleware('web')]
-final class UserController
+final class UserEndpoint
 {
     use ResponseHelper;
     use PaginationHelper;

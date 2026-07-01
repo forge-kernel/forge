@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Modules\AppAuth\Controllers\Web;
+namespace Modules\AppAuth\Http\Web;
 
 use Modules\AppAuth\Validations\LoginValidation;
 use Modules\ForgeAuth\Exceptions\LoginException;
@@ -22,7 +22,7 @@ use Forge\Traits\SecurityHelper;
 
 #[Routable(prefix: '/auth')]
 #[UseMiddleware('web')]
-final class LoginController
+final class LoginEndpoint
 {
     use ResponseHelper;
     use ViewHelper;

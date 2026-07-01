@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Modules\AppAuth\Controllers\Api;
+namespace Modules\AppAuth\Http\Api;
 
 use Modules\ForgeAuth\Exceptions\LoginException;
 use Modules\ForgeAuth\Services\ForgeAuthService;
@@ -18,7 +18,7 @@ use Forge\Traits\SecurityHelper;
 
 #[Routable(prefix: '/auth')]
 #[UseMiddleware('api')]
-final class AuthController
+final class AuthEndpoint
 {
     use ResponseHelper;
     use SecurityHelper;
