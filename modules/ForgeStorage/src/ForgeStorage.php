@@ -19,7 +19,7 @@ use Forge\Core\Module\Attributes\Repository;
 
 #[Module(
     name: 'ForgeStorage',
-    version: '1.3.4',
+    version: '1.3.5',
     description: 'Simple file upload storage module with multiple provider support',
     author: 'Forge Team',
     license: 'MIT',
@@ -32,7 +32,7 @@ use Forge\Core\Module\Attributes\Repository;
 #[ConfigDefaults(defaults: [
     'forge_storage' => [
         'provider' => 'local',
-        'root_path' => 'storage/app',
+        'root_path' => 'storage/files',
         'public_path' => 'public/storage',
         'drivers' => [
             'local' => [],
@@ -70,8 +70,8 @@ final class ForgeStorage
 
     private function setupConfigDefaults(): void
     {
-        $this->config->set('forge_storage.provider', env('FORGE_STORAGE_PROVIDER', 'local'));
-        $this->config->set('forge_storage.root_path', env('FORGE_STORAGE_ROOT_PATH', 'storage/app'));
+        $this->config->set('forge_storage.provider', env('STORAGE_PROVIDER', env('FORGE_STORAGE_PROVIDER', 'local')));
+        $this->config->set('forge_storage.root_path', env('FILE_STORAGE_PATH', env('FORGE_STORAGE_ROOT_PATH', 'storage/files')));
         $this->config->set('forge_storage.public_path', env('FORGE_STORAGE_PUBLIC_PATH', 'public/storage'));
         $this->config->set('forge_storage.drivers.s3.key', env('FORGE_STORAGE_AWS_ACCESS_KEY_ID'));
         $this->config->set('forge_storage.drivers.s3.secret', env('FORGE_STORAGE_AWS_SECRET_ACCESS_KEY'));
