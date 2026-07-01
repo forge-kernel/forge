@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Modules\ForgeHub;
 
+use Forge\Core\Config\Config;
 use Forge\Core\DI\Container;
 use Forge\Core\Module\Attributes\Compatibility;
 use Forge\Core\Module\Attributes\ConfigDefaults;
@@ -43,7 +44,7 @@ use Forge\Core\Security\PermissionsEnum;
 #[Repository(type: 'git', url: 'https://github.com/forge-kernel/kernel-module-registry')]
 #[ConfigDefaults(defaults: [
     'forge_observability' => [
-        'enabled' => true,
+        'enabled' => false,
         'sampling' => [
             'strategy' => 'adaptive',
             'base_rate' => 0.1,
@@ -61,6 +62,8 @@ final class ForgeHubModule
 
     public function register(Container $container): void
     {
+        $this->setupConfigDefaults($container);
+
         $container->bind(ForgeHubInterface::class, ForgeHubService::class);
         $container->bind(ObservabilityServiceInterface::class, ObservabilityService::class);
 
@@ -68,5 +71,11 @@ final class ForgeHubModule
             $registry = $container->get(HubItemRegistry::class);
             $registry->refresh();
         }
+    }
+
+    private function setupConfigDefaults(Container $container): void
+    {
+        $config = $container->get(Config::class);
+        $config->set('forge_observability.enabled', filter_var(env('APP_METRICS_ENABLED', env('FORGE_OBSERVABILITY_ENABLED', false)), FILTER_VALIDATE_BOOLEAN));
     }
 }

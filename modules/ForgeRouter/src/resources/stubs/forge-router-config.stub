@@ -20,12 +20,12 @@ return [
             'disable_in_dev' => env('CIRCUIT_BREAKER_DISABLE_IN_DEV', true),
         ],
         'csp' => [
-            'enabled' => env('CSP_ENABLED', false),
-            'directives' => [
+            'enabled' => filter_var(env('CSP_ENABLED', false), FILTER_VALIDATE_BOOLEAN),
+            'directives' => filter_var(env('CSP_ENABLED', false), FILTER_VALIDATE_BOOLEAN) ? [
                 'default-src' => ["'self'"],
                 'script-src' => ["'self'", "'unsafe-inline'"],
                 'style-src' => ["'self'", "'unsafe-inline'"],
-            ],
+            ] : [],
         ],
         'ip_whitelist' => env('IP_WHITE_LIST', []),
     ],
