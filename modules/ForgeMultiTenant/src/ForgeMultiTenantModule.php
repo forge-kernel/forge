@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Modules\ForgeMultiTenant;
 
+use Forge\Core\Config\Config;
 use Forge\Core\Module\Attributes\Requires;
 use Modules\ForgeMultiTenant\Services\RouteScopeFilter;
 use Modules\ForgeMultiTenant\Services\TenantManager;
@@ -19,7 +20,7 @@ use Forge\CLI\Traits\OutputHelper;
 
 #[Module(
     name: 'ForgeMultiTenant',
-    version: '0.3.9',
+    version: '0.3.10',
     description: 'A Multi Tenant Module by Forge',
     order: 2,
     author: 'Forge Team',
@@ -32,7 +33,9 @@ use Forge\CLI\Traits\OutputHelper;
 #[Requires(module: "forge-router")]
 #[Repository(type: 'git', url: 'https://github.com/forge-kernel/kernel-module-registry')]
 #[ConfigDefaults(defaults: [
-    "forge_multi_tenant" => []
+    "forge_multi_tenant" => [
+        'central_domain' => 'forge.localhost',
+    ]
 ])]
 #[PostInstall(command: 'db:migrate', args: ['--type=module', '--module=ForgeMultiTenant'])]
 #[PostInstall(command: 'db:seed', args: ['--type=module', '--module=ForgeMultiTenant'])]
@@ -47,10 +50,18 @@ final class ForgeMultiTenantModule
 
     public function register(Container $container): void
     {
+        $this->setupConfigDefaults($container);
+
         $container->bind(TenantManager::class, function (Container $container) {
             return new TenantManager($container);
         });
 
         $container->bind(RouteScopeFilterInterface::class, RouteScopeFilter::class);
+    }
+
+    private function setupConfigDefaults(Container $container): void
+    {
+        $config = $container->get(Config::class);
+        $config->set('forge_multi_tenant.central_domain', env('CENTRAL_DOMAIN', 'forge.localhost'));
     }
 }
