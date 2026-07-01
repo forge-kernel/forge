@@ -5,7 +5,7 @@ use Forge\Core\DI\Container;
 if (!function_exists("add_timeline_event")) {
     function add_timeline_event(string $name, string $label, array $data = []): void
     {
-        if (filter_var($_ENV["APP_DEBUG"] ?? false, FILTER_VALIDATE_BOOLEAN)) {
+        if (filter_var(env("APP_DEBUG", false), FILTER_VALIDATE_BOOLEAN)) {
             try {
                 $timelineCollector = Container::getInstance()->get(\Modules\ForgeRouter\Collectors\TimelineCollector::class);
                 $timelineCollector->addEvent($name, $label, $data);

@@ -46,12 +46,12 @@ final class DatabaseSetup
         $container->singleton(DatabaseConfigInterface::class, function () use ($env) {
             return new DatabaseConfig(
                 driver: $env->get("DB_DRIVER", 'sqlite'),
-                database: $env->get("DB_DRIVER") === "sqlite"
+                database: $env->get("DB_DRIVER", 'sqlite') === "sqlite"
                 ? BASE_PATH . $env->get('SQLITE_PATH', '/storage/database') . $env->get('SQLITE_DB', '/database.sqlite')
-                : $env->get("DB_NAME", 'forge'),
-                host: $env->get("DB_HOST", 'localhost'),
+                : $env->get("DB_NAME", 'forge_v3'),
+                host: $env->get("DB_HOST", '127.0.0.1'),
                 username: $env->get("DB_USER", 'root'),
-                password: $env->get("DB_PASS", ''),
+                password: $env->get("DB_PASS", 'root'),
                 port: (int) $env->get("DB_PORT", 3306)
             );
         });

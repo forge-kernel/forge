@@ -30,6 +30,16 @@ class CorsMiddleware extends Middleware
         $allowedMethods = $this->normalizeArray($this->config->get('forge_router.cors.allowed_methods'));
         $allowedHeaders = $this->normalizeArray($this->config->get('forge_router.cors.allowed_headers'));
 
+        if (empty($allowedOrigins)) {
+            $allowedOrigins = ['*'];
+        }
+        if (empty($allowedMethods)) {
+            $allowedMethods = ['*'];
+        }
+        if (empty($allowedHeaders)) {
+            $allowedHeaders = ['*'];
+        }
+
         $origin = $request->getHeader("Origin");
         $requestMethod = $request->getMethod();
         $requestHeaders = $request->getHeader("Access-Control-Request-Headers");
@@ -69,7 +79,7 @@ class CorsMiddleware extends Middleware
             }
         }
 
-        if (!in_array($requestMethod, $allowedMethods)) {
+        if (!in_array($requestMethod, $allowedMethods) && !in_array('*', $allowedMethods)) {
             return $this->createResponse($request, 'Method not allowed', 403);
         }
 
@@ -77,7 +87,7 @@ class CorsMiddleware extends Middleware
             if ($requestHeaders !== null) {
                 $requestedHeaders = array_map('trim', explode(',', $requestHeaders));
                 foreach ($requestedHeaders as $header) {
-                    if (!in_array($header, $allowedHeaders)) {
+                    if (!in_array($header, $allowedHeaders) && !in_array('*', $allowedHeaders)) {
                         return $this->createResponse($request, 'Header not allowed', 403);
                     }
                 }

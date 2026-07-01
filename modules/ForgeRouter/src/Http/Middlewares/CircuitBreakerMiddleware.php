@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Modules\ForgeRouter\Http\Middlewares;
 
 use Forge\Core\Config\Config;
+use Forge\Core\Config\Environment;
 use Forge\Core\Contracts\Contracts\Database\DatabaseConnectionInterface;
 use Forge\Core\Contracts\Database\QueryBuilderInterface;
 use Forge\Core\DI\Attributes\Service;
@@ -35,13 +36,14 @@ class CircuitBreakerMiddleware extends Middleware
             return $next($request);
         }
 
-        $isDev = \Forge\Core\Config\Environment::getInstance()->isDevelopment();
-        $disableInDev = $this->config->get('forge_router.circuit_breaker.disable_in_dev', true);
+        $isDev = Environment::getInstance()->isDevelopment();
+        $env = Environment::getInstance();
+        $disableInDev = $this->config->get('forge_router.circuit_breaker.disable_in_dev', $env->get('CIRCUIT_BREAKER_DISABLE_IN_DEV', true));
         if ($isDev && $disableInDev) {
             return $next($request);
         }
 
-        if (($_ENV['CIRCUIT_BREAKER_ENABLED'] ?? 'true') === 'false') {
+        if (($env->get('CIRCUIT_BREAKER_ENABLED', 'true')) === 'false') {
             return $next($request);
         }
 
@@ -49,8 +51,8 @@ class CircuitBreakerMiddleware extends Middleware
             $maintenancePage = file_get_contents(BASE_PATH . "/kernel/Core/Http/ErrorPages/maintenance.html");
             $queryBuilder = clone $this->queryBuilder;
 
-            $maxFailures = $this->config->get('forge_router.circuit_breaker.max_failures', 5);
-            $resetTime = $this->config->get('forge_router.circuit_breaker.reset_time', 300);
+            $maxFailures = $this->config->get('forge_router.circuit_breaker.max_failures', $env->get('CIRCUIT_BREAKER_MAX_FAILURES', 5));
+            $resetTime = $this->config->get('forge_router.circuit_breaker.reset_time', $env->get('CIRCUIT_BREAKER_RESET_TIME', 300));
 
             $clientIp = $request->getClientIp();
             $now = time();

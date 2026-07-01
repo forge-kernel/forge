@@ -24,10 +24,12 @@ class IpWhiteListMiddleware extends Middleware
     public function handle(Request $request, callable $next): Response
     {
         $allowedIps = $this->config->get('forge_router.ip_whitelist');
-        $clientIp = $request->getClientIp();
 
-        if (!in_array($clientIp, $allowedIps, true)) {
-            return $this->createErrorResponse($request, 'Forbidden', 403);
+        if (!empty($allowedIps)) {
+            $clientIp = $request->getClientIp();
+            if (!in_array($clientIp, $allowedIps, true)) {
+                return $this->createErrorResponse($request, 'Forbidden', 403);
+            }
         }
 
         return $next($request);

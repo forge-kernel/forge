@@ -59,7 +59,7 @@ final class CsrfMiddleware extends Middleware
 
     private function isSameOrigin(Request $request): bool
     {
-        $trusted = filter_var(env('TRUST_PROXIES', false), FILTER_VALIDATE_BOOLEAN);
+        $trusted = filter_var(env('TRUST_PROXIES', true), FILTER_VALIDATE_BOOLEAN);
 
         $scheme = $trusted
             ? ($request->getHeader('X-Forwarded-Proto') ?: $request->getScheme())

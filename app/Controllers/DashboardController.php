@@ -34,6 +34,6 @@ final class DashboardController
             "title" => "Welcome to Forge Framework",
         ];
 
-        return $this->view(view: "admin/default", data: []);
+        return $this->view(view: "admin/default", data: $data);
     }
 }

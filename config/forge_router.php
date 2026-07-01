@@ -1,7 +1,7 @@
 <?php
 return [
     'csp' => [
-        'enabled' => env('CSP_ENABLED', true),
+        'enabled' => env('CSP_ENABLED', false),
         'directives' => [
             'default-src' => ["'self'"],
             'script-src' => ["'self'", "'unsafe-inline'"],

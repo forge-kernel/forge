@@ -40,18 +40,19 @@ class RateLimitMiddleware extends Middleware
         }
 
         $isDev = Environment::getInstance()->isDevelopment();
+        $env = Environment::getInstance();
         $path = $request->getPath();
 
         if ($isDev && str_contains($path, 'tailwind-watch.php')) {
             return $next($request);
         }
 
-        $disableInDev = $this->config->get('forge_router.rate_limit.disable_in_dev', true);
+        $disableInDev = $this->config->get('forge_router.rate_limit.disable_in_dev', $env->get('RATE_LIMIT_DISABLE_IN_DEV', true));
         if ($isDev && $disableInDev) {
             return $next($request);
         }
 
-        if (($_ENV['RATE_LIMIT_ENABLED'] ?? 'true') === 'false') {
+        if (($env->get('RATE_LIMIT_ENABLED', 'true')) === 'false') {
             return $next($request);
         }
 
@@ -68,8 +69,8 @@ class RateLimitMiddleware extends Middleware
 
         $queryBuilder = clone $this->queryBuilder;
 
-        $maxRequests = $this->config->get('forge_router.rate_limit.max_requests', 100);
-        $timeWindow = $this->config->get('forge_router.rate_limit.time_window', 60);
+        $maxRequests = $this->config->get('forge_router.rate_limit.max_requests', $env->get('RATE_LIMIT_MAX_REQUESTS', 100));
+        $timeWindow = $this->config->get('forge_router.rate_limit.time_window', $env->get('RATE_LIMIT_TIME_WINDOW', 60));
         $table = 'rate_limits';
         $now = time();
         $nowFormatted = date('Y-m-d H:i:s');

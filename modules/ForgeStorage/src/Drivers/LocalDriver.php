@@ -64,7 +64,7 @@ class LocalDriver implements StorageDriverInterface
 
     public function signedUrl(string $path, int $expires): string
     {
-        $token = hash_hmac('sha256', "{$path}|{$expires}", env('APP_KEY', ''));
+        $token = hash_hmac('sha256', "{$path}|{$expires}", env('APP_KEY', 'your-secure-app-key'));
         return "/storage/signed/{$path}?expires={$expires}&signature={$token}";
     }
 

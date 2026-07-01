@@ -4,8 +4,8 @@ return [
     'forge_router' => [
         'cors' => [
             'allowed_origins' => env('CORS_ALLOWED_ORIGINS', ['*']),
-            'allowed_methods' => env('CORS_ALLOWED_METHODS', ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS']),
-            'allowed_headers' => env('CORS_ALLOWED_HEADERS', ['Content-Type', 'Authorization']),
+            'allowed_methods' => env('CORS_ALLOWED_METHODS', ['*']),
+            'allowed_headers' => env('CORS_ALLOWED_HEADERS', ['*']),
         ],
         'rate_limit' => [
             'enabled' => env('RATE_LIMIT_ENABLED', true),
@@ -20,7 +20,7 @@ return [
             'disable_in_dev' => env('CIRCUIT_BREAKER_DISABLE_IN_DEV', true),
         ],
         'csp' => [
-            'enabled' => env('CSP_ENABLED', true),
+            'enabled' => env('CSP_ENABLED', false),
             'directives' => [
                 'default-src' => ["'self'"],
                 'script-src' => ["'self'", "'unsafe-inline'"],
