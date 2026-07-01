@@ -20,7 +20,7 @@ use Forge\CLI\Traits\OutputHelper;
 
 #[Module(
     name: 'ForgeMultiTenant',
-    version: '0.3.10',
+    version: '0.3.11',
     description: 'A Multi Tenant Module by Forge',
     order: 2,
     author: 'Forge Team',
@@ -62,6 +62,6 @@ final class ForgeMultiTenantModule
     private function setupConfigDefaults(Container $container): void
     {
         $config = $container->get(Config::class);
-        $config->set('forge_multi_tenant.central_domain', env('CENTRAL_DOMAIN', 'forge.localhost'));
+        $config->set('forge_multi_tenant.central_domain', env('CENTRAL_DOMAIN', env('FORGE_MULTI_TENANT_CENTRAL_DOMAIN', 'forge.localhost')));
     }
 }
