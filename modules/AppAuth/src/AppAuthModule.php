@@ -21,7 +21,6 @@ use Modules\AppAuth\Repositories\UserRepository;
 use Modules\AppAuth\Services\UserContext;
 
 #[Structure(structure: [
-    'controllers' => 'src/Controllers',
     'services' => 'src/Services',
     'migrations' => 'src/Database/Migrations',
     'views' => 'src/UI/views',
@@ -36,7 +35,7 @@ use Modules\AppAuth\Services\UserContext;
     'languages' => 'src/Languages',
 ])]
 
-#[Module(name: 'AppAuth', version: '0.1.3', description: 'Application auth', order: 99, author: 'Your Name', license: 'MIT', tags: [])]
+#[Module(name: 'AppAuth', version: '0.1.4', description: 'Application auth', order: 99, author: 'Your Name', license: 'MIT', tags: [])]
 #[Compatibility(framework: '>=4.15.13', php: '>=8.3')]
 #[Requires(module: "forge-database-sql")]
 #[Requires(module: "forge-sql-orm")]
@@ -44,14 +43,14 @@ use Modules\AppAuth\Services\UserContext;
 #[Requires(module: "forge-view")]
 #[Requires(module: "forge-components")]
 #[Requires(module: "forge-testing")]
-#[Provides(interface: UserProviderInterface::class, version: "0.1.3")]
-#[Provides(interface: UserContextInterface::class, version: "0.1.3")]
+#[Provides(interface: UserProviderInterface::class, version: "0.1.4")]
+#[Provides(interface: UserContextInterface::class, version: "0.1.4")]
 #[Repository(type: 'git', url: 'https://github.com/forge-kernel/kernel-module-registry')]
 #[ConfigDefaults(defaults: [
     "app_auth" => []
 ])]
-#[PostInstall(command: 'app-auth:greet', args: [])]
-#[PostUninstall(command: 'app-auth:greet', args: ['--post-uninstall'])]
+#[PostInstall(command: 'db:migrate', args: ['--type=module', '--module=app-auth'])]
+#[PostUninstall(command: 'db:migrate:rollback', args: ['--type=module', '--module=app-auth'])]
 final class AppAuthModule
 {
     public function register(Container $container): void
