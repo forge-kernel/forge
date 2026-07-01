@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Modules\ForgeEvents\Commands;
 
+use Forge\Core\Config\Config;
 use Modules\ForgeEvents\Services\EventDispatcher;
 use Forge\CLI\Attributes\Arg;
 use Forge\CLI\Attributes\Cli;
@@ -44,7 +45,10 @@ final class QueueWorkCommand extends Command
     )]
     private ?string $queues = null;
 
-    public function __construct(private readonly EventDispatcher $dispatcher)
+    public function __construct(
+        private readonly EventDispatcher $dispatcher,
+        private readonly Config $config
+    )
     {
     }
 
@@ -62,7 +66,7 @@ final class QueueWorkCommand extends Command
                 return 1;
             }
         } else {
-            $queues = env('QUEUE_LIST', ['default']);
+            $queues = $this->config->get('forge_events.queue_list', ['default']);
         }
 
         pcntl_async_signals(true);

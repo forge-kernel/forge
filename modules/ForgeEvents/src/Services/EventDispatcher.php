@@ -14,7 +14,7 @@ use Modules\ForgeEvents\Queues\FileQueue;
 use Modules\ForgeEvents\Queues\InMemoryQueue;
 use Forge\CLI\Traits\OutputHelper;
 use Forge\Core\Cache\Attributes\NoCache;
-use Forge\Core\Config\Environment;
+use Forge\Core\Config\Config;
 use Forge\Core\Contracts\Database\QueryBuilderInterface;
 use Forge\Core\Contracts\EventDispatcherInterface;
 use Forge\Core\DI\Attributes\Service;
@@ -46,7 +46,7 @@ final class EventDispatcher implements EventDispatcherInterface
      * @throws MissingServiceException
      * @throws ResolveParameterException
      */
-    public function __construct()
+    public function __construct(private Config $config)
     {
         $this->queryBuilder = Container::getInstance()->get(QueryBuilderInterface::class);
         $this->container = Container::getInstance();
@@ -55,7 +55,7 @@ final class EventDispatcher implements EventDispatcherInterface
 
     private function driverSetup(): Queueinterface
     {
-        $driver = Environment::getInstance()->get('QUEUE_DRIVER', 'file');
+        $driver = $this->config->get('forge_events.queue_driver', 'database');
         $adapter = match ($driver) {
             'file' => new FileQueue("forge_events"),
             'in-memory' => new InMemoryQueue(),
