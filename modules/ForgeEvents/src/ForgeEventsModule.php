@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace Modules\ForgeEvents;
 
+use Forge\Core\Config\Config;
+use Forge\Core\Module\Attributes\ConfigDefaults;
 use Forge\Core\Module\Attributes\Requires;
 use Modules\ForgeEvents\Attributes\EventListener;
 use Forge\Core\Bootstrap\OptimizedDirectoryScanner;
@@ -19,7 +21,7 @@ use ReflectionMethod;
 
 #[Module(
     name: "ForgeEvents",
-    version: "1.4.10",
+    version: "1.4.11",
     description: "An Event Queue system by forge",
     order: 99,
     author: 'Forge Team',
@@ -30,10 +32,17 @@ use ReflectionMethod;
 #[Compatibility(framework: ">=0.1.0", php: ">=8.3")]
 #[Requires(module: "forge-database-sql")]
 #[Repository(type: "git", url: "https://github.com/forge-kernel/kernel-module-registry")]
+#[ConfigDefaults(defaults: [
+    'forge_events' => [
+        'queue_driver' => 'database',
+        'queue_list' => ['default'],
+    ]
+])]
 final class ForgeEventsModule
 {
     public function register(Container $container): void
     {
+        $this->setupConfigDefaults($container);
         $eventDispatcher = $container->has(EventDispatcher::class)
             ? $container->get(EventDispatcher::class)
             : null;
@@ -79,5 +88,12 @@ final class ForgeEventsModule
 
             }
         }
+    }
+
+    private function setupConfigDefaults(Container $container): void
+    {
+        $config = $container->get(Config::class);
+        $config->set('forge_events.queue_driver', env('QUEUE_DRIVER', 'database'));
+        $config->set('forge_events.queue_list', env('QUEUE_LIST', ['default']));
     }
 }
