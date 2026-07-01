@@ -6,7 +6,8 @@ declare(strict_types=1);
 namespace Modules\ForgeDatabaseSQL\DB\Seeders;
 
 use Modules\ForgeDatabaseSQL\DB\Seeders\Attributes\Seedable;
-use Modules\ForgeDatabaseSQL\DB\Seeders\Attributes\Seeder;
+use Modules\ForgeDatabaseSQL\DB\Seeders\Attributes\Seeder as SeederAttribute;
+use Modules\ForgeDatabaseSQL\DB\Seeders\Seeder;
 use Forge\Core\Bootstrap\OptimizedDirectoryScanner;
 use Forge\Core\Contracts\Database\DatabaseConnectionInterface;
 use Forge\Core\Helpers\ModuleHelper;
@@ -202,16 +203,24 @@ final class SeederManager
         }
 
         $discoveryService = new AttributeDiscoveryService();
-        $classMap = $discoveryService->discover($basePaths, [Seedable::class, Seeder::class]);
+        $classMap = $discoveryService->discover($basePaths, [Seedable::class, SeederAttribute::class]);
 
         $files = [];
         foreach ($classMap as $className => $metadata) {
-            if (!in_array(Seedable::class, $metadata['attributes'] ?? [], true) && !in_array(Seeder::class, $metadata['attributes'] ?? [], true)) {
+            if (!in_array(Seedable::class, $metadata['attributes'] ?? [], true) && !in_array(SeederAttribute::class, $metadata['attributes'] ?? [], true)) {
                 continue;
             }
 
             $file = $metadata['file'] ?? null;
-            if ($file === null || !is_subclass_of($className, Seeder::class)) {
+            if ($file === null) {
+                continue;
+            }
+
+            if (!class_exists($className, false)) {
+                @include_once $file;
+            }
+
+            if (!class_exists($className, false) || !is_subclass_of($className, Seeder::class, false)) {
                 continue;
             }
             $files[] = $file;
@@ -377,15 +386,20 @@ final class SeederManager
     {
         $path = $this->findSeederPath($filename);
         if (!$path) {
-            throw new RuntimeException("Seeder file not found for rollback: $filename");
+            $this->connection->prepare(
+                "DELETE FROM " . self::SEEDERS_TABLE . " WHERE seeder = ?"
+            )->execute([$filename]);
+            return;
         }
 
-        $this->resolveSeeder($path)->down();
+        try {
+            $this->resolveSeeder($path)->down();
+        } catch (Throwable $e) {
+        }
 
-        $stmt = $this->connection->prepare(
+        $this->connection->prepare(
             "DELETE FROM " . self::SEEDERS_TABLE . " WHERE seeder = ?"
-        );
-        $stmt->execute([$filename]);
+        )->execute([$filename]);
     }
 
     private function findSeederPath(string $filename): ?string

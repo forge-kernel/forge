@@ -11,7 +11,7 @@ use Forge\CLI\Attributes\Cli;
 use Forge\CLI\Command;
 use Forge\CLI\Traits\OutputHelper;
 use Forge\CLI\Traits\Wizard;
-use Forge\Core\Database\Migrator;
+use Modules\ForgeDatabaseSQL\DB\Migrator;
 
 #[CoreCommand]
 #[Cli(

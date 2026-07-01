@@ -10,7 +10,7 @@ use Forge\CLI\Attributes\Arg;
 use Forge\CLI\Attributes\Cli;
 use Forge\CLI\Command;
 use Forge\CLI\Traits\OutputHelper;
-use Forge\Core\Database\Seeders\SeederManager;
+use Modules\ForgeDatabaseSQL\DB\Seeders\SeederManager;
 
 #[CoreCommand]
 #[Cli(

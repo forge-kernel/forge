@@ -51,8 +51,14 @@ abstract class Seeder
         $q = $this->getQuoteChar();
 
         foreach ($where as $col => $val) {
-            $clauses[] = "$q$col$q = ?";
-            $params[] = $val;
+            if (is_array($val)) {
+                $placeholders = implode(',', array_fill(0, count($val), '?'));
+                $clauses[] = "$q$col$q IN ($placeholders)";
+                $params = array_merge($params, array_values($val));
+            } else {
+                $clauses[] = "$q$col$q = ?";
+                $params[] = $val;
+            }
         }
 
         $sql = sprintf("DELETE FROM $q%s$q WHERE %s", $table, implode(' AND ', $clauses));

@@ -4,12 +4,14 @@ declare(strict_types=1);
 
 namespace Modules\ForgeSaas\Database\Seeders;
 
+use Modules\ForgeDatabaseSQL\DB\Seeders\Attributes\AutoRollback;
 use Modules\ForgeDatabaseSQL\DB\Seeders\Attributes\SeederInfo;
 use Modules\ForgeDatabaseSQL\DB\Seeders\Attributes\Seedable;
 use Modules\ForgeDatabaseSQL\DB\Seeders\Seeder;
 
 #[Seedable]
 #[SeederInfo(description: 'Seeds the default SaaS plans', author: 'Forge Team')]
+#[AutoRollback('saas_plans', ['slug' => ['free', 'pro', 'enterprise']])]
 class SaasDefaultPlansSeeder extends Seeder
 {
     public function up(): void
