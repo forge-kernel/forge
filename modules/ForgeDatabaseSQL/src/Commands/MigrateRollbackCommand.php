@@ -150,14 +150,19 @@ final class MigrateRollbackCommand extends Command
             return 0;
         }
 
-        $this->migrator->rollback(
+        $rolledBack = $this->migrator->rollback(
             $steps,
             $migrationType,
             $module,
             $group,
             $batch,
         );
-        $this->success("Rollback completed successfully.");
+
+        if ($rolledBack === 0) {
+            $this->warning("No migrations were found to roll back matching the criteria.");
+        } else {
+            $this->success("Rolled back {$rolledBack} migration(s) successfully.");
+        }
         return 0;
     }
 }

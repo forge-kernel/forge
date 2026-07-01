@@ -96,13 +96,6 @@ final class MigrationBatchService
                 WHERE 1=1";
         $params = [];
 
-        if ($steps > 0) {
-            $lastBatch = $this->getLastBatch();
-            $minBatch = max(1, $lastBatch - $steps + 1);
-            $sql .= " AND batch >= ?";
-            $params[] = $minBatch;
-        }
-
         if (!empty($filters['type']) && strtolower($filters['type']) !== 'all') {
             $sql .= " AND type = ?";
             $params[] = $filters['type'];
@@ -116,6 +109,34 @@ final class MigrationBatchService
         if (!empty($filters['group'])) {
             $sql .= " AND migration_group = ?";
             $params[] = $filters['group'];
+        }
+
+        if ($steps > 0) {
+            $hasFilters = !empty($filters['type']) || !empty($filters['module']) || !empty($filters['group']);
+            $lastBatch = $this->getLastBatch();
+            if ($hasFilters) {
+                $batchSql = "SELECT COALESCE(MAX(batch), 0) FROM " . self::MIGRATIONS_TABLE . " WHERE 1=1";
+                $batchParams = [];
+                if (!empty($filters['type']) && strtolower($filters['type']) !== 'all') {
+                    $batchSql .= " AND type = ?";
+                    $batchParams[] = $filters['type'];
+                }
+                if (!empty($filters['module'])) {
+                    $batchSql .= " AND module = ?";
+                    $batchParams[] = $filters['module'];
+                }
+                if (!empty($filters['group'])) {
+                    $batchSql .= " AND migration_group = ?";
+                    $batchParams[] = $filters['group'];
+                }
+                $stmt = $this->connection->prepare($batchSql);
+                $stmt->execute($batchParams);
+                $lastBatch = (int) $stmt->fetchColumn();
+            }
+
+            $minBatch = max(1, $lastBatch - $steps + 1);
+            $sql .= " AND batch >= ?";
+            $params[] = $minBatch;
         }
 
         $sql .= " ORDER BY batch DESC, migration DESC";

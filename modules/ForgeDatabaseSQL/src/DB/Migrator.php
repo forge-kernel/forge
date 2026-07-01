@@ -322,32 +322,43 @@ final class Migrator
         $module = $module ? $this->toPascalCase($module) : null;
 
         $sql = "SELECT migration FROM " . self::MIGRATIONS_TABLE . " WHERE 1=1";
+        $filters = [];
         $params = [];
 
-        if ($batch === null) {
-            $lastBatch = $this->getLastBatch();
-            $minBatch = $lastBatch - $steps + 1;
+        if ($type !== null && strtolower($type) !== "all") {
+            $filters[] = "type = ?";
+            $params[] = $type;
+        }
 
+        if ($module !== null) {
+            $filters[] = "module = ?";
+            $params[] = $module;
+        }
+
+        if ($group !== null) {
+            $filters[] = "migration_group = ?";
+            $params[] = $group;
+        }
+
+        $whereClause = !empty($filters) ? " AND " . implode(" AND ", $filters) : "";
+        $sql .= $whereClause;
+
+        if ($batch === null) {
+            $filteredLastBatch = $this->getLastBatch();
+            if (!empty($filters)) {
+                $stmt = $this->connection->prepare(
+                    "SELECT COALESCE(MAX(batch), 0) FROM " . self::MIGRATIONS_TABLE . " WHERE 1=1" . $whereClause
+                );
+                $stmt->execute($params);
+                $filteredLastBatch = (int) $stmt->fetchColumn();
+            }
+
+            $minBatch = max(1, $filteredLastBatch - $steps + 1);
             $sql .= " AND batch >= ?";
             $params[] = $minBatch;
         } else {
             $sql .= " AND batch = ?";
             $params[] = $batch;
-        }
-
-        if ($type !== null && strtolower($type) !== "all") {
-            $sql .= " AND type = ?";
-            $params[] = $type;
-        }
-
-        if ($module !== null) {
-            $sql .= " AND module = ?";
-            $params[] = $module;
-        }
-
-        if ($group !== null) {
-            $sql .= " AND migration_group = ?";
-            $params[] = $group;
         }
 
         $sql .= " ORDER BY batch DESC, migration DESC";
@@ -531,7 +542,7 @@ final class Migrator
         ?string $module = null,
         ?string $group = null,
         ?int $batch = null,
-    ): void {
+    ): int {
         $this->connection->beginTransaction();
         try {
             $migrations = $this->getRanMigrations(
@@ -547,6 +558,7 @@ final class Migrator
             }
 
             $this->connection->commit();
+            return count($migrations);
         } catch (Throwable $e) {
             $this->connection->rollBack();
             throw $e;
