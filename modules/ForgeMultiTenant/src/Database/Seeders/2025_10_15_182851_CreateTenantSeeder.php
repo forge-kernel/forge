@@ -12,7 +12,7 @@ use Modules\ForgeDatabaseSQL\DB\Seeders\Seeder;
 
 #[Seedable]
 #[SeederInfo(description: 'Seed for TenantSeeder', author: 'Forge Team')]
-#[AutoRollback('tenants', ['domain' => 'central'])]
+#[AutoRollback('tenants', ['id' => ['central', 'upper']])]
 class CreateTenantSeeder extends Seeder
 {
     public function up(): void

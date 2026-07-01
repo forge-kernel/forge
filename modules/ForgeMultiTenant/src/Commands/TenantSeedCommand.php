@@ -4,6 +4,7 @@ declare(strict_types=1);
 namespace Modules\ForgeMultiTenant\Commands;
 
 use Forge\CLI\Attributes\CoreCommand;
+use Forge\CLI\Traits\Wizard;
 use Modules\ForgeMultiTenant\Services\TenantManager;
 use Modules\ForgeMultiTenant\Services\TenantConnectionFactory;
 use Forge\CLI\Attributes\Arg;
@@ -26,6 +27,7 @@ use Modules\ForgeDatabaseSQL\DB\Seeders\SeederManager;
 final class TenantSeedCommand extends Command
 {
     use OutputHelper;
+    use Wizard;
 
     #[Arg(name: 'tenant', description: 'Tenant ID to seed (default: all)', default: 'all', required: false)]
     private string $tenantId;
