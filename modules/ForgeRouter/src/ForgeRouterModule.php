@@ -25,7 +25,7 @@ use Throwable;
 #[Module(name: "ForgeRouter",
     description: "Forge Router and Http",
     author: "Forge Team",
-    version: '1.0.16',
+    version: '1.0.17',
     type: "core",
     license: "MIT",
     tags: ["router", "http"],
@@ -52,7 +52,7 @@ use Throwable;
             'disable_in_dev' => true,
         ],
         'csp' => [
-            'enabled' => true,
+            'enabled' => false,
             'directives' => [
                 'default-src' => ["'self'"],
                 'script-src' => ["'self'", "'unsafe-inline'"],
