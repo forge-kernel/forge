@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Modules\ForgeMultiTenant;
 
 use Forge\Core\Config\Config;
+use Forge\Core\Contracts\Database\QueryBuilderInterface;
 use Forge\Core\Module\Attributes\Requires;
 use Modules\ForgeMultiTenant\Services\RouteScopeFilter;
 use Modules\ForgeMultiTenant\Services\TenantManager;
@@ -20,7 +21,7 @@ use Forge\CLI\Traits\OutputHelper;
 
 #[Module(
     name: 'ForgeMultiTenant',
-    version: '0.3.11',
+    version: '0.3.12',
     description: 'A Multi Tenant Module by Forge',
     order: 2,
     author: 'Forge Team',
@@ -53,7 +54,7 @@ final class ForgeMultiTenantModule
         $this->setupConfigDefaults($container);
 
         $container->bind(TenantManager::class, function (Container $container) {
-            return new TenantManager($container);
+            return new TenantManager($container->get(QueryBuilderInterface::class));
         });
 
         $container->bind(RouteScopeFilterInterface::class, RouteScopeFilter::class);
