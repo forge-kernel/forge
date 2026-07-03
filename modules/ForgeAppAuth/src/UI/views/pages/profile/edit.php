@@ -8,6 +8,7 @@ use Modules\ForgeComponents\Enums\InputType;
 
 /** @var array $user */
 /** @var array $profile */
+/** @var array $layoutSections */
 
 $layoutSections['head_end'] = ($layoutSections['head_end'] ?? '') . "\n" . '<link rel="stylesheet" href="/assets/modules/forge-components/css/forge-components/_admin.css">';
 $layoutSections['breadcrumbs'] ??= [];

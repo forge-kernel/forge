@@ -1,5 +1,6 @@
 <?php
 use Forge\Core\Helpers\Format;
+/** @var array $metrics */
 ?>
 <div class="space-y-6">
   <div class="flex items-center justify-between">

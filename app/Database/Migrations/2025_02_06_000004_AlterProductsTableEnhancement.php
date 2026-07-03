@@ -23,7 +23,7 @@ use Modules\ForgeDatabaseSQL\DB\Migrations\Migration;
 #[AddColumn(table: 'products', name: 'sku', type: ColumnType::STRING, length: 50, nullable: false)]
 #[AddColumn(table: 'products', name: 'weight', type: ColumnType::DECIMAL, precision: 10, scale: 3, nullable: true)]
 #[AddColumn(table: 'products', name: 'is_featured', type: ColumnType::BOOLEAN, default: false)]
-#[RenameColumn(table: 'products', old: 'prod_name', new: 'name')]
+#[RenameColumn(table: 'products', old: 'prod_name', newName: 'name')]
 #[DropColumn(table: 'products', name: 'legacy_field')]
 #[Index(columns: ['sku'], name: 'idx_products_sku', unique: true)]
 #[Index(columns: ['is_featured'], name: 'idx_products_featured')]

@@ -3,16 +3,22 @@ declare(strict_types=1);
 
 namespace Modules\ForgeMultiTenant\Services;
 
-use Forge\Core\DI\Attributes\Service;
+use Forge\Core\Config\Config;
+use Forge\Core\DI\Attributes\Injectable;
 
-#[Service]
+#[Injectable]
 final class CentralDomain
 {
     private static ?string $host = null;
 
+    public function __construct(protected readonly Config $config)
+    {
+        self::$host = $this->config->get('forge_multi_tenant.central_domain', env('FORGE_MULTI_TENANT_CENTRAL_DOMAIN', 'forge-v3.test'));
+    }
+
     public static function get(): string
     {
-        return self::$host ??= env('CENTRAL_DOMAIN', 'forge-v3.test');
+        return self::$host ??= env('FORGE_MULTI_TENANT_CENTRAL_DOMAIN', 'forge-v3.test');
     }
 
     public static function stripPort(string $host): string

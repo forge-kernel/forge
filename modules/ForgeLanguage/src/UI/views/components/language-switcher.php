@@ -1,5 +1,9 @@
 <?php
+use Modules\ForgeLanguage\Definitions\LanguageSwitcherDefinition;
 
+/**
+    @var LanguageSwitcherDefinition $definition
+*/
 $current = current_language();
 $languages = available_languages();
 ?>

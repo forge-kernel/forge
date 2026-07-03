@@ -1,3 +1,9 @@
+<?php 
+  /** 
+  @var array $data 
+  @var array $stats
+  */ 
+?>
 <div class="grid gap-6">
   <div class="bg-white rounded-lg shadow-sm p-6">
     <h2 class="text-sm font-medium text-gray-600 mb-4">Cache Statistics</h2>

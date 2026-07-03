@@ -1,7 +1,10 @@
 <?php
 use Modules\ForgeLanguage\Definitions\LanguageSwitcherDefinition;
 
-/** @var LanguageSwitcherDefinition $definition */
+/** 
+@var LanguageSwitcherDefinition $definition 
+@var array $data
+*/
 $layoutProps = ['title' => $data['title']];
 ?>
 <div class="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 py-12 px-4 sm:px-6 lg:px-8">

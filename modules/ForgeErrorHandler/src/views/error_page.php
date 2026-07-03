@@ -1,3 +1,6 @@
+<?php 
+ /** @var array $data */
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>

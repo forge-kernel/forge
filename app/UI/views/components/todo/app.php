@@ -1,3 +1,4 @@
+<?php /** @var int $counter */ ?>
 <div <?= scope('todo-app') ?> class="container my-5" fw:depends="counter">
     <h1 class="text-3xl" fw:target>Reactive Todo List counter: <?= $counter ?></h1>
     <div class="p-4 shadow-sm card">

@@ -2,6 +2,7 @@
 
 /**
  * @var array $props
+ * @var array $slots
  * @var string $type
  * @var string $variant
  * @var string $title

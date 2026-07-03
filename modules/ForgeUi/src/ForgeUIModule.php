@@ -11,7 +11,7 @@ use Forge\Core\Module\Attributes\Repository;
 
 #[Module(
     name: 'ForgeUi',
-    version: '1.1.5',
+    version: '1.1.6',
     description: 'A UI component module by forge.',
     order: 99,
     author: 'Forge Team',

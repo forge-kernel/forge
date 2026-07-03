@@ -82,7 +82,7 @@ if (!function_exists('external_asset')) {
         $asset = config("security.csp.external_assets.$name") ?? config("forge_router.csp.external_assets.$name");
 
         if (!$asset) {
-            throw new RuntimeException(
+            throw new \RuntimeException(
                 "External asset [$name] not defined. " .
                 "Did you forget to unpack external_asset_config() with ... ?"
             );
@@ -104,7 +104,7 @@ if (!function_exists('external_asset')) {
                 $asset['integrity'] ?? null,
                 $asset['crossorigin'] ?? null
             ),
-            default => throw new RuntimeException("Unsupported external asset type [$type]."),
+            default => throw new \RuntimeException("Unsupported external asset type [$type]."),
         };
     }
 }

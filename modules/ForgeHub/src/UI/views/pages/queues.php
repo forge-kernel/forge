@@ -1,3 +1,8 @@
+<?php 
+  /** 
+  @var array $stats
+  */ 
+?>
 <div class="space-y-6" fw:shared>
   <div>
     <h1 class="text-2xl font-bold text-gray-900">Queue Jobs</h1>

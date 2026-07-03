@@ -18,7 +18,7 @@ final class RenameColumn
     public function __construct(
         public string $table,
         public string $old,
-        public string $new,
+        public string $newName,
     )
     {
     }

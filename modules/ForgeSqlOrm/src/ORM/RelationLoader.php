@@ -4,7 +4,9 @@ declare(strict_types=1);
 namespace Modules\ForgeSqlOrm\ORM;
 
 use Modules\ForgeSqlOrm\ORM\Values\RelationKind;
+use Modules\ForgeSqlOrm\ORM\Values\Relation;
 use ReflectionException;
+use Modules\ForgeSqlOrm\ForgeSqlOrmModule;
 
 final class RelationLoader
 {

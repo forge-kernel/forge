@@ -439,8 +439,8 @@ $queueFilter = $props['queueFilter'] ?? '';
                         break;
                       case 'date':
                         if ($value) {
-                          $date = new DateTime($value);
-                          $now = new DateTime();
+                          $date = new \DateTime($value);
+                          $now = new \DateTime();
                           $diff = $now->diff($date);
                           $relative = '';
                           if ($diff->days > 0) {

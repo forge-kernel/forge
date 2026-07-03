@@ -94,7 +94,7 @@ if (!function_exists('collect_database_query')) {
 }
 
 if (!function_exists('collect_exception')) {
-    function collect_exception(Throwable $exception): void
+    function collect_exception(\Throwable $exception): void
     {
         try {
             $container = Container::getInstance();
@@ -102,7 +102,7 @@ if (!function_exists('collect_exception')) {
                 $collector = $container->get(ExceptionCollector::class);
                 $collector->addException($exception);
             }
-        } catch (Throwable $e) {
+        } catch (\Throwable $e) {
         }
     }
 }
