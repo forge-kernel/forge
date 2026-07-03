@@ -14,7 +14,7 @@ use Modules\ForgeRouter\Events\RouterHookName;
 use Forge\Core\Module\Attributes\Module;
 use Forge\Core\Module\Attributes\Repository;
 
-#[Module(name: 'ForgeLanguage', version: '0.2.5', description: 'Multi language support to extend Forge Kernel', order: 40, author: 'Your Name', license: 'MIT', tags: [])]
+#[Module(name: 'ForgeLanguage', version: '0.2.6', description: 'Multi language support to extend Forge Kernel', order: 40, author: 'Your Name', license: 'MIT', tags: [])]
 #[Compatibility(framework: '>=0.1.0', php: '>=8.3')]
 #[Requires(module: "forge-router")]
 #[Repository(type: 'git', url: 'https://github.com/forge-kernel/kernel-module-registry')]
