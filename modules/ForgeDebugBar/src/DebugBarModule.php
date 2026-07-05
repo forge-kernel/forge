@@ -13,22 +13,23 @@ use Modules\ForgeRouter\Collectors\DatabaseCollector;
 use Modules\ForgeRouter\Collectors\ExceptionCollector;
 use Modules\ForgeRouter\Collectors\TimelineCollector;
 use Modules\ForgeRouter\Collectors\ViewCollector;
+use Forge\Core\Config\Config;
 use Forge\Core\DI\Container;
-use Modules\ForgeRouter\Http\Request;
-use Modules\ForgeRouter\Http\Response;
 use Forge\Core\Module\Attributes\Compatibility;
 use Forge\Core\Module\Attributes\ConfigDefaults;
 use Forge\Core\Module\Attributes\HubItem;
-use Modules\ForgeRouter\Events\RouterHookAttribute;
-use Modules\ForgeRouter\Events\RouterHookName;
 use Forge\Core\Module\Attributes\Module;
 use Forge\Core\Module\Attributes\PostInstall;
 use Forge\Core\Module\Attributes\PostUninstall;
 use Forge\Core\Module\Attributes\Structure;
 use Forge\Core\Module\ForgeIcon;
+use Forge\Core\ResetManager;
+use Modules\ForgeDebugBar\DebugBar;
+use Modules\ForgeRouter\Events\RouterHookAttribute;
+use Modules\ForgeRouter\Events\RouterHookName;
+use Modules\ForgeRouter\Http\Request;
+use Modules\ForgeRouter\Http\Response;
 use Forge\Traits\InjectsAssets;
-use \Modules\ForgeDebugBar\DebugBar;
-use Forge\Core\Config\Config;
 
 #[Structure(structure: [
     'controllers' => 'src/Controllers',
@@ -39,7 +40,7 @@ use Forge\Core\Config\Config;
 ])]
 #[Module(
     name: 'ForgeDebugBar',
-    version: '1.3.10',
+    version: '1.3.11',
     description: 'A debug bar by Forge',
     order: 3,
     author: 'Forge Team',
@@ -67,6 +68,8 @@ class DebugBarModule
         /** @var Config $config */
         $config = $container->get(Config::class);
         $config->set("forge_debug_bar.enabled", env("FORGE_DEBUG_BAR_ENABLED", true));
+
+        ResetManager::onBefore([DebugBar::class, 'reset']);
     }
 
     #[RouterHookAttribute(RouterHookName::AFTER_REQUEST)]
