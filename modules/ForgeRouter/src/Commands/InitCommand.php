@@ -103,8 +103,29 @@ final class InitCommand extends Command
             }
         }
 
-        $export = var_export($merged, true);
-        return "<?php\n\nreturn {$export};\n";
+        return $this->formatMiddlewareConfig($merged);
+    }
+
+    private function formatMiddlewareConfig(array $config): string
+    {
+        $lines = [];
+        $lines[] = '<?php';
+        $lines[] = '';
+        $lines[] = 'return [';
+
+        foreach ($config as $group => $middlewares) {
+            $lines[] = "    \"{$group}\" => [";
+            foreach ($middlewares as $mw) {
+                $mw = ltrim($mw, '\\');
+                $lines[] = "        \\{$mw}::class,";
+            }
+            $lines[] = '    ],';
+        }
+
+        $lines[] = '];';
+        $lines[] = '';
+
+        return implode("\n", $lines);
     }
 
     private function mergeMiddlewareConfig(string $targetPath): void
