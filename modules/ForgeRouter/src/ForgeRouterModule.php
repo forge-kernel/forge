@@ -20,12 +20,13 @@ use Forge\Core\Module\Attributes\PostUninstall;
 use Forge\Core\Module\Attributes\Compatibility;
 use Forge\Core\Module\Attributes\Repository;
 use Forge\Core\Module\LifecycleHookName;
+use Forge\Core\ResetManager;
 use Throwable;
 
 #[Module(name: "ForgeRouter",
     description: "Forge Router and Http",
     author: "Forge Team",
-    version: '1.0.19',
+    version: '1.0.20',
     type: "core",
     license: "MIT",
     tags: ["router", "http"],
@@ -76,6 +77,8 @@ final class ForgeRouterModule
     #[LifecycleHook(hook: LifecycleHookName::APP_BOOTED)]
     public function boot(): void
     {
+        ResetManager::triggerBefore();
+
         Metrics::start("router_hook_discover");
         RouterHookManager::discover();
         Metrics::stop("router_hook_discover");
@@ -114,6 +117,8 @@ final class ForgeRouterModule
             Metrics::start("router_after_response_hook");
             RouterHookManager::triggerHook(RouterHookName::AFTER_RESPONSE, $request, $response);
             Metrics::stop("router_after_response_hook");
+
+            ResetManager::triggerAfter();
         } catch (Throwable $e) {
             self::handleException($e);
         }
@@ -160,4 +165,5 @@ final class ForgeRouterModule
 
         throw $e;
     }
+
 }
