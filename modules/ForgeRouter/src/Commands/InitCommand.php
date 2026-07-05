@@ -49,6 +49,12 @@ final class InitCommand extends Command
             $targetPath = BASE_PATH . $file['target'];
 
             if (is_file($targetPath) && !$this->force) {
+                if ($file['target'] === '/config/middleware.php') {
+                    $this->mergeMiddlewareConfig($targetPath);
+                    $this->success("Merged: {$file['target']}");
+                    $anyCreated = true;
+                    continue;
+                }
                 $this->comment("Skipped (exists): {$file['target']}");
                 continue;
             }
@@ -60,6 +66,11 @@ final class InitCommand extends Command
 
             $stubPath = self::STUBS_DIR . '/' . $file['stub'];
             $content = file_get_contents($stubPath);
+
+            if ($file['target'] === '/config/middleware.php' && is_file($targetPath)) {
+                $content = $this->mergeMiddlewareConfigContent($targetPath, $stubPath);
+            }
+
             file_put_contents($targetPath, $content);
 
             $this->success("Created: {$file['target']}");
@@ -71,5 +82,35 @@ final class InitCommand extends Command
         }
 
         return 0;
+    }
+
+    private function mergeMiddlewareConfigContent(string $existingPath, string $stubPath): string
+    {
+        $existing = @include $existingPath;
+        $defaults = @include $stubPath;
+
+        if (!is_array($existing)) {
+            return file_get_contents($stubPath);
+        }
+        if (!is_array($defaults)) {
+            return file_get_contents($stubPath);
+        }
+
+        $merged = $defaults;
+        foreach ($existing as $group => $middlewares) {
+            if (!isset($merged[$group])) {
+                $merged[$group] = $middlewares;
+            }
+        }
+
+        $export = var_export($merged, true);
+        return "<?php\n\nreturn {$export};\n";
+    }
+
+    private function mergeMiddlewareConfig(string $targetPath): void
+    {
+        $stubPath = self::STUBS_DIR . '/middleware-config.stub';
+        $content = $this->mergeMiddlewareConfigContent($targetPath, $stubPath);
+        file_put_contents($targetPath, $content);
     }
 }
