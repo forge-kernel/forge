@@ -7,6 +7,7 @@ namespace Modules\ForgeMultiTenant;
 use Forge\Core\Config\Config;
 use Forge\Core\Contracts\Database\QueryBuilderInterface;
 use Forge\Core\Module\Attributes\Requires;
+use Forge\Core\ResetManager;
 use Modules\ForgeMultiTenant\Services\RouteScopeFilter;
 use Modules\ForgeMultiTenant\Services\TenantManager;
 use Modules\ForgeRouter\Contracts\RouteScopeFilterInterface;
@@ -21,7 +22,7 @@ use Forge\CLI\Traits\OutputHelper;
 
 #[Module(
     name: 'ForgeMultiTenant',
-    version: '0.3.14',
+    version: '0.3.15',
     description: 'A Multi Tenant Module by Forge',
     order: 2,
     author: 'Forge Team',
@@ -58,6 +59,8 @@ final class ForgeMultiTenantModule
         });
 
         $container->bind(RouteScopeFilterInterface::class, RouteScopeFilter::class);
+
+        ResetManager::onBefore([RouteScopeFilter::class, 'reset']);
     }
 
     private function setupConfigDefaults(Container $container): void
