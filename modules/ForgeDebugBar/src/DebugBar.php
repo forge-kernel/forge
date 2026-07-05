@@ -91,6 +91,11 @@ class DebugBar implements DebugBarInterface
     return $configEnabled && $forgeDebug;
   }
 
+  public static function reset(): void
+  {
+    self::$instance = null;
+  }
+
   public function render(): string
   {
     $modulePath = BASE_PATH . '/modules/ForgeDebugBar/src/views/debugbar.php';

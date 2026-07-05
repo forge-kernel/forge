@@ -49,7 +49,14 @@ final class ViewState
   /** @deprecated Use $layoutSlots in view files instead. */
   public function endSection(): void
   {
-    $this->sections[$this->currentSection] = ob_get_clean();
+    try {
+      $this->sections[$this->currentSection] = ob_get_clean();
+    } catch (\Throwable) {
+      while (ob_get_level() > 0) {
+        ob_end_clean();
+      }
+      $this->sections[$this->currentSection] = '';
+    }
     $this->currentSection = "";
   }
 
@@ -93,5 +100,9 @@ final class ViewState
     $this->sections = [];
     $this->currentSection = "";
     $this->slots = [];
+
+    while (ob_get_level() > 0) {
+      ob_end_clean();
+    }
   }
 }

@@ -33,6 +33,11 @@ final class TokenManagerService
         self::$customClaimsCallbacks[] = $callback;
     }
 
+    public static function resetCustomClaimsCallbacks(): void
+    {
+        self::$customClaimsCallbacks = [];
+    }
+
     public function issueToken(AuthUserInterface $user): array
     {
         if (!$this->isJwtEnabled()) {

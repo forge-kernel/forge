@@ -19,16 +19,24 @@ use ReflectionMethod;
 final class RouteScopeFilter implements RouteScopeFilterInterface
 {
   private static ?bool $isCentral = null;
+  private static ?string $lastHost = null;
 
   public static function isCentralDomain(): bool
   {
+    $currentHost = $_SERVER['HTTP_HOST'] ?? '';
+    if ($currentHost !== self::$lastHost) {
+      self::$isCentral = null;
+      self::$lastHost = $currentHost;
+    }
+
     return self::$isCentral ??= (new TenantManager(Container::getInstance()->get(QueryBuilderInterface::class)))
-      ->resolveByDomain($_SERVER['HTTP_HOST'] ?? '') === null;
+      ->resolveByDomain($currentHost) === null;
   }
 
   public static function reset(): void
   {
     self::$isCentral = null;
+    self::$lastHost = null;
   }
 
   /**

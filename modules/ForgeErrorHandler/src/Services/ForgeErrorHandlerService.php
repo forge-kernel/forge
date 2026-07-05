@@ -17,6 +17,8 @@ final class ForgeErrorHandlerService implements ErrorHandlerInterface
 {
   use PathHelper;
 
+  private static bool $handlersRegistered = false;
+
   private bool $debug;
   private string $basePath;
   private string $basePathPrefix;
@@ -61,9 +63,15 @@ final class ForgeErrorHandlerService implements ErrorHandlerInterface
 
   private function registerHandlers(): void
   {
+    if (self::$handlersRegistered) {
+      return;
+    }
+
     set_error_handler([$this, 'phpErrorHandler']);
     set_exception_handler([$this, 'phpExceptionHandler']);
     register_shutdown_function([$this, 'phpShutdownHandler']);
+
+    self::$handlersRegistered = true;
   }
 
   public function phpErrorHandler(int $severity, string $message, string $file, int $line): bool
