@@ -138,9 +138,9 @@ final class View
     {
         $state = self::getState();
         try {
-            Metrics::start("view_compile");
+            Metrics::start("view_render");
             $viewResult = $this->compileView($view, $data);
-            Metrics::stop("view_compile");
+            Metrics::stop("view_render");
 
             $viewContent = $viewResult["content"];
             $layoutSlots = $viewResult["layoutSlots"];

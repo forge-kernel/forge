@@ -125,7 +125,12 @@ final class ForgeBillingModule
     public function onAfterModuleLoad(): void
     {
         $container = Container::getInstance();
-        $dispatcher = $container->get(\Modules\ForgeEvents\Services\EventDispatcher::class);
+
+        try {
+            $dispatcher = $container->get(\Modules\ForgeEvents\Services\EventDispatcher::class);
+        } catch (\Throwable $e) {
+            return;
+        }
 
         $dispatcher->addListener(
             GenerateInvoiceEvent::class,

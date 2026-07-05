@@ -22,7 +22,7 @@ return array (
     'hubItems' => 
     array (
     ),
-    'mtime' => 1783270821,
+    'mtime' => 1783270843,
     'modulePath' => '/Users/acidlake/Development/UPPER/Forge/repos/forge-v3/modules/ForgePackageManager',
   ),
   'Modules\\ForgeSqlOrm\\ForgeSqlOrmModule' => 
@@ -88,7 +88,7 @@ return array (
     'hubItems' => 
     array (
     ),
-    'mtime' => 1782852149,
+    'mtime' => 1783271804,
     'modulePath' => '/Users/acidlake/Development/UPPER/Forge/repos/forge-v3/modules/ForgeBilling',
   ),
   'Modules\\ForgeHub\\ForgeHubModule' => 
@@ -303,7 +303,7 @@ return array (
     'mtime' => 1782852284,
     'modulePath' => '/Users/acidlake/Development/UPPER/Forge/repos/forge-v3/modules/ForgeTailwind',
   ),
-  'Modules\\ForgeUi\\ForgeUIModule' => 
+  'Modules\\ForgeUi\\ForgeUiModule' => 
   array (
     'hubItems' => 
     array (
@@ -364,7 +364,7 @@ return array (
     'hubItems' => 
     array (
     ),
-    'mtime' => 1783270797,
+    'mtime' => 1783270850,
     'modulePath' => '/Users/acidlake/Development/UPPER/Forge/repos/forge-v3/modules/ForgeStorage',
   ),
 );

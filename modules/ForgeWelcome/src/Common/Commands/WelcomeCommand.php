@@ -7,7 +7,7 @@ use Forge\CLI\Command as CommandBase;
 use Forge\CLI\Attributes\Command;
 use Forge\Core\Config\Config;
 
-#[Command(name: 'forge-welcome:greet', description: 'An example command to greet the user')]
+#[Command(command: 'forge-welcome:greet', description: 'An example command to greet the user')]
 class WelcomeCommand extends CommandBase
 {
     public function __construct(private Config $config)
