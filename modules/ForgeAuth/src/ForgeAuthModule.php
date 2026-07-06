@@ -22,7 +22,7 @@ use Modules\ForgeAuth\Services\TokenManagerService;
 use Forge\CLI\Traits\OutputHelper;
 
 #[Module(name: 'ForgeAuth',
-    version: '2.0.10',
+    version: '2.0.11',
     description: 'An Auth module by forge.',
     order: 99,
     author: 'Forge Team',
@@ -32,7 +32,7 @@ use Forge\CLI\Traits\OutputHelper;
 )]
 #[Requires(module: "forge-database-sql", version: ">=0.9.12")]
 #[Requires(module: "forge-sql-orm", version: ">=0.6.5")]
-#[Provides(interface: ForgeAuthInterface::class, version: "2.0.10")]
+#[Provides(interface: ForgeAuthInterface::class, version: "2.0.11")]
 #[Compatibility(framework: '>=4.15.10', php: '>=8.3')]
 #[Repository(type: 'git', url: 'https://github.com/forge-kernel/kernel-module-registry')]
 #[ConfigDefaults(defaults: [
