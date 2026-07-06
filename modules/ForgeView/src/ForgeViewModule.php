@@ -15,7 +15,7 @@ use Modules\ForgeView\ViewState;
 
 #[Module(
     name: 'ForgeView',
-    version: '0.1.6',
+    version: '0.1.7',
     description: 'A View engine provided by forge',
     order: 4,
     author: 'Forge Team',
@@ -23,7 +23,7 @@ use Modules\ForgeView\ViewState;
     type: 'core',
     tags: ['view-engine', 'view'])]
 #[Compatibility(framework: '>=0.1.0', php: '>=8.3')]
-#[Provides(interface: ViewInterface::class, version: '0.1.6')]
+#[Provides(interface: ViewInterface::class, version: '0.1.7')]
 #[Repository(type: 'git', url: 'https://github.com/forge-kernel/kernel-module-registry')]
 
 final class ForgeViewModule
