@@ -5,12 +5,10 @@ declare(strict_types=1);
 namespace Modules\ForgeDatabaseSQL\Services;
 
 use Forge\Core\Contracts\Database\DatabaseConnectionInterface;
-use Forge\Core\DI\Attributes\Service;
 use Forge\CLI\Traits\OutputHelper;
 use PDO;
 use Throwable;
 
-#[Service]
 final class MigrationConflictDetector
 {
     use OutputHelper;
@@ -20,7 +18,8 @@ final class MigrationConflictDetector
     public function __construct(
         private readonly DatabaseConnectionInterface $connection,
         private readonly MigrationMetadataResolver $metadataResolver
-    ) {}
+    ) {
+    }
 
     /**
      * Detect tables that exist but aren't tracked in migrations
@@ -33,7 +32,7 @@ final class MigrationConflictDetector
 
         $existingTables = $this->getExistingTables();
         $migrationTables = $this->extractTableNamesFromMigrations($pendingMigrations);
-        
+
         $conflicts = [];
         foreach ($migrationTables as $migrationPath => $tableName) {
             if ($tableName && in_array($tableName, $existingTables)) {
@@ -55,7 +54,7 @@ final class MigrationConflictDetector
     public function detectConflictsInBatches(array $migrationBatches): array
     {
         $allConflicts = [];
-        
+
         foreach ($migrationBatches as $batch => $migrations) {
             $conflicts = $this->detectConflicts($migrations);
             if (!empty($conflicts)) {
@@ -132,8 +131,8 @@ final class MigrationConflictDetector
             'total_existing_tables' => $totalTables,
             'migration_tables_count' => count($migrationTables),
             'conflicts_count' => count($conflicts),
-            'conflict_percentage' => count($pendingMigrations) > 0 
-                ? round((count($conflicts) / count($pendingMigrations)) * 100, 2) 
+            'conflict_percentage' => count($pendingMigrations) > 0
+                ? round((count($conflicts) / count($pendingMigrations)) * 100, 2)
                 : 0,
             'conflicts_by_type' => $this->getConflictsByType($pendingMigrations),
             'conflicts_by_module' => $this->getConflictsByModule($pendingMigrations)
@@ -151,7 +150,7 @@ final class MigrationConflictDetector
 
         try {
             $driver = $this->connection->getPdo()->getAttribute(PDO::ATTR_DRIVER_NAME);
-            
+
             $query = match ($driver) {
                 'mysql' => 'SHOW TABLES',
                 'pgsql' => "SELECT tablename FROM pg_catalog.pg_tables WHERE schemaname != 'pg_catalog' AND schemaname != 'information_schema'",
@@ -236,7 +235,7 @@ final class MigrationConflictDetector
     public function hasConflict(string $migrationPath): bool
     {
         $tableName = $this->extractTableNameFromPath($migrationPath);
-        
+
         if (!$tableName) {
             return false;
         }

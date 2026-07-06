@@ -5,11 +5,9 @@ declare(strict_types=1);
 namespace Modules\ForgeHub\Services;
 
 use Forge\Core\Cache\CacheManager;
-use Forge\Core\DI\Attributes\Service;
 use Forge\Core\Helpers\FileExistenceCache;
 use Forge\Core\Config\Environment;
 
-#[Service]
 final class EnhancedCacheService
 {
     /** @var array<string, string> Cache tag descriptions */
@@ -43,7 +41,7 @@ final class EnhancedCacheService
     {
         $cacheFiles = $this->getAllCacheFiles();
         $totalSize = 0;
-        
+
         foreach ($cacheFiles as $file) {
             $totalSize += $file['size'] ?? 0;
         }
@@ -77,7 +75,7 @@ final class EnhancedCacheService
             if ($fileInfo->isFile() && $fileInfo->getExtension() === 'php') {
                 $filePath = $fileInfo->getPathname();
                 $relativePath = str_replace(BASE_PATH . '/', '', $filePath);
-                
+
                 $files[] = [
                     'path' => $relativePath,
                     'full_path' => $filePath,
@@ -100,7 +98,7 @@ final class EnhancedCacheService
         foreach ($this->cacheTags as $tag => $description) {
             $keywords = $this->getTagKeywords($tag);
             foreach ($keywords as $keyword) {
-                if (str_contains((string)$filename, (string)$keyword)) {
+                if (str_contains((string) $filename, (string) $keyword)) {
                     return $tag;
                 }
             }
@@ -223,7 +221,7 @@ final class EnhancedCacheService
     {
         $env = Environment::getInstance();
         $logFile = BASE_PATH . '/storage/logs/cache_operations.log';
-        
+
         $logEntry = '[' . date('Y-m-d H:i:s') . '] ' . $message . PHP_EOL;
         file_put_contents($logFile, $logEntry, FILE_APPEND | LOCK_EX);
     }

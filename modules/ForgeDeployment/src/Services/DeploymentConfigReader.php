@@ -4,103 +4,101 @@ declare(strict_types=1);
 
 namespace Modules\ForgeDeployment\Services;
 
-use Forge\Core\DI\Attributes\Service;
 use Forge\Core\Helpers\FileExistenceCache;
 
-#[Service]
 final class DeploymentConfigReader
 {
-  private const CONFIG_FILE = 'forge-deployment.php';
-  private const CONFIG_FILE_ALT = 'deployment.php';
+    private const CONFIG_FILE = 'forge-deployment.php';
+    private const CONFIG_FILE_ALT = 'deployment.php';
 
-  public function readConfig(?string $configPath = null): ?array
-  {
-    $pathsToCheck = [];
-    if ($configPath !== null) {
-      $pathsToCheck[] = $configPath;
-    }
-    
-    $projectRoot = BASE_PATH;
-    $configFile = $projectRoot . '/' . self::CONFIG_FILE;
-    $pathsToCheck[] = $configFile;
-    
-    $configFileAlt = $projectRoot . '/' . self::CONFIG_FILE_ALT;
-    $pathsToCheck[] = $configFileAlt;
-    
-    if (!empty($pathsToCheck)) {
-      FileExistenceCache::preload($pathsToCheck);
-    }
-    
-    if ($configPath !== null && FileExistenceCache::exists($configPath)) {
-      return $this->loadConfigFile($configPath);
-    }
+    public function readConfig(?string $configPath = null): ?array
+    {
+        $pathsToCheck = [];
+        if ($configPath !== null) {
+            $pathsToCheck[] = $configPath;
+        }
 
-    if (FileExistenceCache::exists($configFile)) {
-      return $this->loadConfigFile($configFile);
-    }
+        $projectRoot = BASE_PATH;
+        $configFile = $projectRoot . '/' . self::CONFIG_FILE;
+        $pathsToCheck[] = $configFile;
 
-    if (FileExistenceCache::exists($configFileAlt)) {
-      return $this->loadConfigFile($configFileAlt);
-    }
+        $configFileAlt = $projectRoot . '/' . self::CONFIG_FILE_ALT;
+        $pathsToCheck[] = $configFileAlt;
 
-    return null;
-  }
+        if (!empty($pathsToCheck)) {
+            FileExistenceCache::preload($pathsToCheck);
+        }
 
-  public function hasConfig(?string $configPath = null): bool
-  {
-    if ($configPath !== null && FileExistenceCache::exists($configPath)) {
-      return true;
+        if ($configPath !== null && FileExistenceCache::exists($configPath)) {
+            return $this->loadConfigFile($configPath);
+        }
+
+        if (FileExistenceCache::exists($configFile)) {
+            return $this->loadConfigFile($configFile);
+        }
+
+        if (FileExistenceCache::exists($configFileAlt)) {
+            return $this->loadConfigFile($configFileAlt);
+        }
+
+        return null;
     }
 
-    $projectRoot = BASE_PATH;
-    return file_exists($projectRoot . '/' . self::CONFIG_FILE) ||
-      file_exists($projectRoot . '/' . self::CONFIG_FILE_ALT);
-  }
+    public function hasConfig(?string $configPath = null): bool
+    {
+        if ($configPath !== null && FileExistenceCache::exists($configPath)) {
+            return true;
+        }
 
-  private function loadConfigFile(string $path): ?array
-  {
-    if (!FileExistenceCache::exists($path) || !is_readable($path)) {
-      return null;
+        $projectRoot = BASE_PATH;
+        return file_exists($projectRoot . '/' . self::CONFIG_FILE) ||
+            file_exists($projectRoot . '/' . self::CONFIG_FILE_ALT);
     }
 
-    $config = require $path;
-    if (!is_array($config)) {
-      return null;
+    private function loadConfigFile(string $path): ?array
+    {
+        if (!FileExistenceCache::exists($path) || !is_readable($path)) {
+            return null;
+        }
+
+        $config = require $path;
+        if (!is_array($config)) {
+            return null;
+        }
+
+        return $this->normalizeConfig($config);
     }
 
-    return $this->normalizeConfig($config);
-  }
+    private function normalizeConfig(array $config): array
+    {
+        $normalized = [
+            'php_executable' => $config['php_executable'] ?? null,
+            'server' => $config['server'] ?? [],
+            'provision' => $config['provision'] ?? [],
+            'deployment' => $config['deployment'] ?? [],
+        ];
 
-  private function normalizeConfig(array $config): array
-  {
-    $normalized = [
-      'php_executable' => $config['php_executable'] ?? null,
-      'server' => $config['server'] ?? [],
-      'provision' => $config['provision'] ?? [],
-      'deployment' => $config['deployment'] ?? [],
-    ];
+        return $normalized;
+    }
 
-    return $normalized;
-  }
+    public function getServerConfig(array $config): ?array
+    {
+        return $config['server'] ?? null;
+    }
 
-  public function getServerConfig(array $config): ?array
-  {
-    return $config['server'] ?? null;
-  }
+    public function getProvisionConfig(array $config): ?array
+    {
+        return $config['provision'] ?? null;
+    }
 
-  public function getProvisionConfig(array $config): ?array
-  {
-    return $config['provision'] ?? null;
-  }
+    public function getDeploymentConfig(array $config): ?array
+    {
+        return $config['deployment'] ?? null;
+    }
 
-  public function getDeploymentConfig(array $config): ?array
-  {
-    return $config['deployment'] ?? null;
-  }
-
-  public function generateConfigTemplate(): string
-  {
-    return <<<'PHP'
+    public function generateConfigTemplate(): string
+    {
+        return <<<'PHP'
 <?php
 
 declare(strict_types=1);
@@ -151,5 +149,5 @@ return [
     ],
 ];
 PHP;
-  }
+    }
 }

@@ -7,9 +7,7 @@ namespace Modules\ForgeEvents\Listeners;
 use Modules\ForgeEvents\Attributes\EventListener;
 use Modules\ForgeEvents\Events\CacheRefreshEvent;
 use Forge\Core\Cache\CacheManager;
-use Forge\Core\DI\Attributes\Service;
 
-#[Service]
 final readonly class CacheRefreshListener
 {
     public function __construct(private CacheManager $cache)

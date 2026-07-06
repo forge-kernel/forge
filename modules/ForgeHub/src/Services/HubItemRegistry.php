@@ -4,14 +4,12 @@ declare(strict_types=1);
 
 namespace Modules\ForgeHub\Services;
 
-use Forge\Core\DI\Attributes\Service;
 use Forge\Core\Helpers\FileExistenceCache;
 use Forge\Core\Module\Attributes\HubItem;
 use Forge\Core\Module\ModuleLoader\Loader;
 use ReflectionClass;
 use ReflectionException;
 
-#[Service]
 final class HubItemRegistry
 {
     private const string CLASS_MAP_FILE = BASE_PATH . '/modules/ForgeHub/config/hub_items.php';
@@ -23,8 +21,7 @@ final class HubItemRegistry
 
     public function __construct(
         private readonly Loader $loader
-    )
-    {
+    ) {
     }
 
     public function refresh(): void

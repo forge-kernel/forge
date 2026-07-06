@@ -4,9 +4,6 @@ declare(strict_types=1);
 
 namespace Modules\ForgeRouter\Http;
 
-use Forge\Core\DI\Attributes\Service;
-
-#[Service]
 final class CookieJar
 {
     private array $cookies = [];

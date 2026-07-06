@@ -6,10 +6,8 @@ namespace Modules\ForgeAuth\Services;
 
 use Modules\ForgeAuth\Repositories\RoleRepository;
 use Modules\ForgeAuth\Repositories\PermissionRepository;
-use Forge\Core\DI\Attributes\Service;
 use Forge\Core\Services\TemplateGenerator;
 
-#[Service]
 final class EnumGeneratorService
 {
     public const string ROLE_ENUM_PATH =
@@ -21,7 +19,8 @@ final class EnumGeneratorService
         private readonly RoleRepository $roleRepository,
         private readonly PermissionRepository $permissionRepository,
         private readonly TemplateGenerator $templateGenerator,
-    ) {}
+    ) {
+    }
 
     public function generateRoleEnum(): void
     {

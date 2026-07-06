@@ -4,16 +4,14 @@ declare(strict_types=1);
 
 namespace Modules\ForgeRouter\Http\Middlewares;
 
-use Forge\Core\DI\Attributes\Service;
 use Forge\Core\Observability\ObservabilityManager;
-use Modules\ForgeRouter\Http\Middleware;
+use Modules\ForgeRouter\Http\Middleware as MiddlewareImpl;
 use Modules\ForgeRouter\Http\Request;
 use Modules\ForgeRouter\Http\Response;
-use Modules\ForgeRouter\Middleware\Attributes\RegisterMiddleware;
+use Modules\ForgeRouter\Middleware\Attributes\Middleware;
 
-#[Service]
-#[RegisterMiddleware(group: "global", order: -1, allowDuplicate: false, overrideClass: null, enabled: true)]
-final class ObservabilityMiddleware extends Middleware
+#[Middleware(group: "global", order: -1, allowDuplicate: false, overrideClass: null, enabled: true)]
+final class ObservabilityMiddleware extends MiddlewareImpl
 {
     public function handle(Request $request, callable $next): Response
     {

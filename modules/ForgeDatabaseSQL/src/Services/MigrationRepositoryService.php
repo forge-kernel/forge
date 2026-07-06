@@ -5,17 +5,16 @@ declare(strict_types=1);
 namespace Modules\ForgeDatabaseSQL\Services;
 
 use Forge\Core\Contracts\Database\DatabaseConnectionInterface;
-use Forge\Core\DI\Attributes\Service;
 use PDO;
 
-#[Service]
 final class MigrationRepositoryService
 {
     private const string MIGRATIONS_TABLE = "forge_migrations";
 
     public function __construct(
         private readonly DatabaseConnectionInterface $connection
-    ) {}
+    ) {
+    }
 
     /**
      * Get all migration names that have been run
@@ -84,7 +83,7 @@ final class MigrationRepositoryService
         ?string $group = null
     ): bool {
         $stmt = $this->connection->prepare(
-            "INSERT INTO " . self::MIGRATIONS_TABLE . 
+            "INSERT INTO " . self::MIGRATIONS_TABLE .
             " (migration, batch, type, module, migration_group)
             VALUES (?, ?, ?, ?, ?)"
         );
@@ -110,7 +109,7 @@ final class MigrationRepositoryService
         $this->connection->beginTransaction();
         try {
             $stmt = $this->connection->prepare(
-                "INSERT INTO " . self::MIGRATIONS_TABLE . 
+                "INSERT INTO " . self::MIGRATIONS_TABLE .
                 " (migration, batch, type, module, migration_group)
                 VALUES (?, ?, ?, ?, ?)"
             );

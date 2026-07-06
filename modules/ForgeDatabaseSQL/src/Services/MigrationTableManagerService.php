@@ -5,18 +5,17 @@ declare(strict_types=1);
 namespace Modules\ForgeDatabaseSQL\Services;
 
 use Forge\Core\Contracts\Database\DatabaseConnectionInterface;
-use Forge\Core\DI\Attributes\Service;
 use PDO;
 use Throwable;
 
-#[Service]
 final class MigrationTableManagerService
 {
     private const string MIGRATIONS_TABLE = "forge_migrations";
 
     public function __construct(
         private readonly DatabaseConnectionInterface $connection
-    ) {}
+    ) {
+    }
 
     /**
      * Ensure the migrations table exists with proper schema
@@ -41,7 +40,7 @@ final class MigrationTableManagerService
     {
         try {
             $driver = $this->connection->getPdo()->getAttribute(PDO::ATTR_DRIVER_NAME);
-            
+
             $query = match ($driver) {
                 'mysql' => "SHOW TABLES LIKE '" . self::MIGRATIONS_TABLE . "'",
                 'pgsql' => "SELECT EXISTS (SELECT FROM information_schema.tables WHERE table_name = '" . self::MIGRATIONS_TABLE . "')",
@@ -65,7 +64,7 @@ final class MigrationTableManagerService
     {
         try {
             $driver = $this->connection->getPdo()->getAttribute(PDO::ATTR_DRIVER_NAME);
-            
+
             $createTableSQL = match ($driver) {
                 'mysql' => $this->getMySQLCreateTableSQL(),
                 'pgsql' => $this->getPostgreSQLCreateTableSQL(),
@@ -74,7 +73,7 @@ final class MigrationTableManagerService
             };
 
             $this->connection->exec($createTableSQL);
-            
+
             return $this->migrationsTableExists();
         } catch (Throwable $e) {
             throw new \RuntimeException("Failed to create migrations table: " . $e->getMessage(), 0, $e);
@@ -109,7 +108,7 @@ final class MigrationTableManagerService
     {
         try {
             $driver = $this->connection->getPdo()->getAttribute(PDO::ATTR_DRIVER_NAME);
-            
+
             $query = match ($driver) {
                 'mysql' => "SHOW COLUMNS FROM " . self::MIGRATIONS_TABLE,
                 'pgsql' => "SELECT column_name FROM information_schema.columns WHERE table_name = '" . self::MIGRATIONS_TABLE . "'",
@@ -184,7 +183,7 @@ final class MigrationTableManagerService
     {
         try {
             $driver = $this->connection->getPdo()->getAttribute(PDO::ATTR_DRIVER_NAME);
-            
+
             $truncateSQL = match ($driver) {
                 'mysql' => "TRUNCATE TABLE " . self::MIGRATIONS_TABLE,
                 'pgsql' => "TRUNCATE TABLE " . self::MIGRATIONS_TABLE . " RESTART IDENTITY",
@@ -232,11 +231,11 @@ final class MigrationTableManagerService
                 module VARCHAR(255) NULL,
                 migration_group VARCHAR(255) NULL
             );
-            
+
             CREATE INDEX idx_" . self::MIGRATIONS_TABLE . "_batch ON " . self::MIGRATIONS_TABLE . "(batch);
             CREATE INDEX idx_" . self::MIGRATIONS_TABLE . "_type ON " . self::MIGRATIONS_TABLE . "(type);
-            CREATE INDEX idx_" . self::MIGRATIONS_TABLE . "_module ON " . self::MIGRATIONS_TABLE ."(module);
-            CREATE INDEX idx_" . self::MIGRATIONS_TABLE . "_migration_group ON " . self::MIGRATIONS_TABLE ."(migration_group);
+            CREATE INDEX idx_" . self::MIGRATIONS_TABLE . "_module ON " . self::MIGRATIONS_TABLE . "(module);
+            CREATE INDEX idx_" . self::MIGRATIONS_TABLE . "_migration_group ON " . self::MIGRATIONS_TABLE . "(migration_group);
         ";
     }
 
@@ -253,11 +252,11 @@ final class MigrationTableManagerService
                 module VARCHAR(255) NULL,
                 migration_group VARCHAR(255) NULL
             );
-            
-            CREATE INDEX idx_" . self::MIGRATIONS_TABLE . "_batch ON " . self::MIGRATIONS_TABLE ."(batch);
-            CREATE INDEX idx_" . self::MIGRATIONS_TABLE . "_type ON " . self::MIGRATIONS_TABLE ."(type);
-            CREATE INDEX idx_" . self::MIGRATIONS_TABLE . "_module ON " . self::MIGRATIONS_TABLE ."(module);
-            CREATE INDEX idx_" . self::MIGRATIONS_TABLE . "_migration_group ON " . self::MIGRATIONS_TABLE ."(migration_group);
+
+            CREATE INDEX idx_" . self::MIGRATIONS_TABLE . "_batch ON " . self::MIGRATIONS_TABLE . "(batch);
+            CREATE INDEX idx_" . self::MIGRATIONS_TABLE . "_type ON " . self::MIGRATIONS_TABLE . "(type);
+            CREATE INDEX idx_" . self::MIGRATIONS_TABLE . "_module ON " . self::MIGRATIONS_TABLE . "(module);
+            CREATE INDEX idx_" . self::MIGRATIONS_TABLE . "_migration_group ON " . self::MIGRATIONS_TABLE . "(migration_group);
         ";
     }
 
@@ -281,7 +280,7 @@ final class MigrationTableManagerService
     {
         try {
             $driver = $this->connection->getPdo()->getAttribute(PDO::ATTR_DRIVER_NAME);
-            
+
             $countSQL = "SELECT COUNT(*) FROM " . self::MIGRATIONS_TABLE;
             $countStmt = $this->connection->query($countSQL);
             $totalMigrations = (int) $countStmt->fetchColumn();

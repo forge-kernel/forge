@@ -9,7 +9,6 @@ use Modules\ForgePackageManager\Sources\SourceFactory;
 use Modules\ForgePackageManager\Sources\SourceInterface;
 use Forge\CLI\Traits\OutputHelper;
 use Forge\Core\Config\Config;
-use Forge\Core\DI\Attributes\Injectable;
 use Forge\Core\Module\Attributes\Module;
 use Forge\Core\Helpers\Version;
 use Forge\Core\Structure\StructureResolver;
@@ -23,7 +22,6 @@ use ReflectionClass;
 use ReflectionException;
 use ZipArchive;
 
-#[Injectable]
 #[Provides(interface: PackageManagerInterface::class, version: "3.3.18")]
 final class PackageManagerService implements PackageManagerInterface
 {

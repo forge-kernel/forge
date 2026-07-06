@@ -5,17 +5,16 @@ declare(strict_types=1);
 namespace Modules\ForgeDatabaseSQL\Services;
 
 use Forge\Core\Contracts\Database\DatabaseConnectionInterface;
-use Forge\Core\DI\Attributes\Service;
 use PDO;
 
-#[Service]
 final class MigrationBatchService
 {
     private const string MIGRATIONS_TABLE = "forge_migrations";
 
     public function __construct(
         private readonly DatabaseConnectionInterface $connection
-    ) {}
+    ) {
+    }
 
     /**
      * Get the next available batch number
@@ -56,9 +55,9 @@ final class MigrationBatchService
     public function getMigrationsInBatch(int $batch): array
     {
         $stmt = $this->connection->prepare(
-            "SELECT migration, type, module, migration_group 
-             FROM " . self::MIGRATIONS_TABLE . " 
-             WHERE batch = ? 
+            "SELECT migration, type, module, migration_group
+             FROM " . self::MIGRATIONS_TABLE . "
+             WHERE batch = ?
              ORDER BY migration"
         );
         $stmt->execute([$batch]);
@@ -78,8 +77,8 @@ final class MigrationBatchService
         $minBatch = max(1, $lastBatch - $steps + 1);
 
         $stmt = $this->connection->prepare(
-            "SELECT DISTINCT batch FROM " . self::MIGRATIONS_TABLE . 
-            " WHERE batch >= ? AND batch <= ? 
+            "SELECT DISTINCT batch FROM " . self::MIGRATIONS_TABLE .
+            " WHERE batch >= ? AND batch <= ?
              ORDER BY batch DESC"
         );
         $stmt->execute([$minBatch, $lastBatch]);
@@ -91,8 +90,8 @@ final class MigrationBatchService
      */
     public function getMigrationsToRollback(int $steps, array $filters = []): array
     {
-        $sql = "SELECT migration, type, module, migration_group, batch 
-                FROM " . self::MIGRATIONS_TABLE . " 
+        $sql = "SELECT migration, type, module, migration_group, batch
+                FROM " . self::MIGRATIONS_TABLE . "
                 WHERE 1=1";
         $params = [];
 
@@ -176,12 +175,12 @@ final class MigrationBatchService
     public function getBatchStatistics(): array
     {
         $stmt = $this->connection->query(
-            "SELECT batch, 
+            "SELECT batch,
                     COUNT(*) as migration_count,
                     COUNT(DISTINCT type) as type_count,
                     COUNT(DISTINCT module) as module_count
-             FROM " . self::MIGRATIONS_TABLE . " 
-             GROUP BY batch 
+             FROM " . self::MIGRATIONS_TABLE . "
+             GROUP BY batch
              ORDER BY batch DESC"
         );
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
@@ -215,8 +214,8 @@ final class MigrationBatchService
     public function getBatchesInRange(int $start, int $end): array
     {
         $stmt = $this->connection->prepare(
-            "SELECT DISTINCT batch FROM " . self::MIGRATIONS_TABLE . 
-            " WHERE batch >= ? AND batch <= ? 
+            "SELECT DISTINCT batch FROM " . self::MIGRATIONS_TABLE .
+            " WHERE batch >= ? AND batch <= ?
              ORDER BY batch"
         );
         $stmt->execute([$start, $end]);

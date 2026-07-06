@@ -6,17 +6,10 @@ namespace Modules\ForgeDatabaseSQL\Services;
 
 use Modules\ForgeDatabaseSQL\DB\Attributes\GroupMigration;
 use Forge\CLI\Traits\OutputHelper;
-use Forge\Core\Contracts\Database\DatabaseConnectionInterface;
-use Forge\Core\DI\Attributes\Migration as MigrationAttribute;
-use Forge\Core\DI\Attributes\Service;
-use Forge\Core\Helpers\FileExistenceCache;
 use Forge\Core\Structure\StructureResolver;
-use Forge\Traits\StringHelper;
 use ReflectionClass;
-use ReflectionException;
 use Throwable;
 
-#[Service]
 final class MigrationMetadataResolver
 {
     use OutputHelper;
@@ -27,7 +20,8 @@ final class MigrationMetadataResolver
     public function __construct(
         private readonly MigrationPathResolverService $pathResolver,
         private readonly ?StructureResolver $structureResolver = null
-    ) {}
+    ) {
+    }
 
     /**
      * Extract metadata from migration path with optimized caching
@@ -92,7 +86,7 @@ final class MigrationMetadataResolver
     public function extractGroup(string $path): ?string
     {
         $cacheKey = 'group_' . md5($path);
-        
+
         if (isset($this->metadataCache[$cacheKey])) {
             return $this->metadataCache[$cacheKey];
         }
@@ -156,10 +150,10 @@ final class MigrationMetadataResolver
     {
         try {
             $className = $this->pathResolver->getMigrationClassName($path);
-            
+
             if (!isset($this->reflectionCache[$className])) {
                 require_once $path;
-                
+
                 if (!class_exists($className)) {
                     return null;
                 }
@@ -199,10 +193,10 @@ final class MigrationMetadataResolver
     {
         try {
             $className = $this->pathResolver->getMigrationClassName($path);
-            
+
             if (!isset($this->reflectionCache[$className])) {
                 require_once $path;
-                
+
                 if (!class_exists($className)) {
                     return false;
                 }
@@ -225,10 +219,10 @@ final class MigrationMetadataResolver
     {
         try {
             $className = $this->pathResolver->getMigrationClassName($path);
-            
+
             if (!isset($this->reflectionCache[$className])) {
                 require_once $path;
-                
+
                 if (!class_exists($className)) {
                     return [];
                 }

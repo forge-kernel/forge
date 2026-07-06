@@ -11,7 +11,6 @@ use Forge\CLI\Attributes\CoreCommand;
 use Forge\CLI\Command;
 use Forge\CLI\Traits\Wizard;
 use Forge\Core\Bootstrap\ModuleSetup;
-use Forge\Core\Services\ModuleAssetManager;
 
 #[CoreCommand]
 #[Cli(
@@ -43,10 +42,6 @@ final class ServeCommand extends Command
     )]
     private string $port;
 
-    public function __construct(private readonly ModuleAssetManager $moduleAssetManager)
-    {
-    }
-
     public function execute(array $args): int
     {
         $this->wizard($args);
@@ -57,18 +52,10 @@ final class ServeCommand extends Command
             RouterHookManager::compile();
         }
 
-        $this->linkAssets();
-
         $publicDir = BASE_PATH . "/public";
         $this->info("Server running on http://{$this->host}:{$this->port}");
         passthru("php -S {$this->host}:{$this->port} -t $publicDir");
 
         return 0;
-    }
-
-    private function linkAssets(): void
-    {
-        $this->moduleAssetManager::initialize();
-        $this->info("Assets cache regenerated");
     }
 }

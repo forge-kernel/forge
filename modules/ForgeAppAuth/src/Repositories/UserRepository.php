@@ -9,7 +9,7 @@ use Modules\ForgeAuth\Contracts\AuthUserInterface;
 use Modules\ForgeAuth\Contracts\UserProviderInterface;
 use Modules\ForgeSqlOrm\ORM\Paginator;
 use Modules\ForgeSqlOrm\ORM\RecordRepository;
-use Forge\Core\DI\Attributes\NoCache;
+use Forge\Core\Cache\Attributes\NoCache;
 
 #[NoCache]
 class UserRepository extends RecordRepository implements UserProviderInterface

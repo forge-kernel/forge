@@ -5,9 +5,7 @@ declare(strict_types=1);
 namespace Modules\ForgeAuth\Services;
 
 use Forge\Core\Contracts\Cache\CacheWarmerInterface;
-use Forge\Core\DI\Attributes\Service;
 
-#[Service]
 final class RolePermissionCacheService implements CacheWarmerInterface
 {
     private const string ROLE_CACHE_FILE =

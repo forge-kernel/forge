@@ -6,7 +6,6 @@ namespace Modules\ForgeSqlOrm\ORM;
 use Modules\ForgeSqlOrm\ORM\Values\RelationKind;
 use Modules\ForgeSqlOrm\ORM\Values\Relation;
 use ReflectionException;
-use Modules\ForgeSqlOrm\ForgeSqlOrmModule;
 
 final class RelationLoader
 {
@@ -24,7 +23,7 @@ final class RelationLoader
     public function load(string ...$relations): void
     {
         $relationMap = $this->groupRelations($relations);
-        
+
         foreach ($relationMap as $relation => $nested) {
             $this->loadOne($relation, $nested);
         }
@@ -49,14 +48,14 @@ final class RelationLoader
 
         $localKeysMap = [];
         $parentIndexMap = [];
-        
+
         foreach ($this->parents as $index => $p) {
             $key = $p->{$rel->localKey};
             // Handle null keys properly
             if ($key === null || $key === '' || $key === '0') {
                 continue;
             }
-            $stringKey = (string)$key;
+            $stringKey = (string) $key;
             $localKeysMap[$stringKey] = true;
             if (!isset($parentIndexMap[$stringKey])) {
                 $parentIndexMap[$stringKey] = [];
@@ -82,7 +81,7 @@ final class RelationLoader
 
         $bucket = [];
         foreach ($children as $child) {
-            $foreignKey = (string)$child->{$foreignColumn};
+            $foreignKey = (string) $child->{$foreignColumn};
             if ($kind === RelationKind::HasOne) {
                 $bucket[$foreignKey] = $child;
             } else {
@@ -100,10 +99,10 @@ final class RelationLoader
                 $parent->setRelation($relation, $kind === RelationKind::HasOne ? null : []);
                 continue;
             }
-            $stringKey = (string)$key;
+            $stringKey = (string) $key;
             $value = $bucket[$stringKey] ?? ($kind === RelationKind::HasOne ? null : []);
             $parent->setRelation($relation, $value);
-            
+
             if (!empty($nested) && $value !== null) {
                 $childrenToLoad = $kind === RelationKind::HasOne ? [$value] : $value;
                 if (!empty($childrenToLoad)) {
@@ -131,7 +130,7 @@ final class RelationLoader
             if ($key === null || $key === '' || $key === '0') {
                 continue;
             }
-            $stringKey = (string)$key;
+            $stringKey = (string) $key;
             $localKeysMap[$stringKey] = true;
             $parentIndexMap[$stringKey][] = $index;
         }
@@ -151,14 +150,14 @@ final class RelationLoader
 
         $pivotGrouped = [];
         foreach ($pivotRows as $row) {
-            $fk = (string)$row[$pivotFk];
+            $fk = (string) $row[$pivotFk];
             $pivotGrouped[$fk][] = $row[$pivotLk];
         }
 
         $targetIds = [];
         foreach ($pivotGrouped as $ids) {
             foreach ($ids as $id) {
-                $targetIds[(string)$id] = true;
+                $targetIds[(string) $id] = true;
             }
         }
 
@@ -168,7 +167,7 @@ final class RelationLoader
 
         $childBucket = [];
         foreach ($children as $child) {
-            $childBucket[(string)$child->{$rel->foreignKey}] = $child;
+            $childBucket[(string) $child->{$rel->foreignKey}] = $child;
         }
 
         foreach ($this->parents as $index => $parent) {
@@ -177,11 +176,11 @@ final class RelationLoader
                 $parent->setRelation($relation, []);
                 continue;
             }
-            $stringKey = (string)$key;
+            $stringKey = (string) $key;
             $pivotIds = $pivotGrouped[$stringKey] ?? [];
             $related = [];
             foreach ($pivotIds as $id) {
-                $idStr = (string)$id;
+                $idStr = (string) $id;
                 if (isset($childBucket[$idStr])) {
                     $related[] = $childBucket[$idStr];
                 }
@@ -198,21 +197,21 @@ final class RelationLoader
     private function groupRelations(array $relations): array
     {
         $grouped = [];
-        
+
         foreach ($relations as $relation) {
             $parts = explode('.', $relation, 2);
             $main = $parts[0];
             $nested = isset($parts[1]) ? [$parts[1]] : [];
-            
+
             if (!isset($grouped[$main])) {
                 $grouped[$main] = [];
             }
-            
+
             if (!empty($nested)) {
                 $grouped[$main] = array_merge($grouped[$main], $nested);
             }
         }
-        
+
         return $grouped;
     }
 }

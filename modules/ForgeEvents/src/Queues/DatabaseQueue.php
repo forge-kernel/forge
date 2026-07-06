@@ -6,10 +6,10 @@ namespace Modules\ForgeEvents\Queues;
 
 use Modules\ForgeEvents\Contracts\QueueInterface;
 use Forge\Core\Contracts\Database\QueryBuilderInterface;
-use Forge\Core\DI\Attributes\Service;
+use Forge\Core\DI\Attributes\Injectable;
 use PDO;
 
-#[Service(singleton: true)]
+#[Injectable(singleton: true)]
 class DatabaseQueue implements QueueInterface
 {
     private string $queueName = 'default';
@@ -29,7 +29,7 @@ class DatabaseQueue implements QueueInterface
         $processAt = null;
 
         if ($delay > 0) {
-            $delayInSeconds = (int)($delay / 1000);
+            $delayInSeconds = (int) ($delay / 1000);
             $processAtTimestamp = time() + $delayInSeconds;
             $processAt = date('Y-m-d H:i:s', $processAtTimestamp);
         }
@@ -123,7 +123,7 @@ class DatabaseQueue implements QueueInterface
 
         $processAt = null;
         if ($delay > 0) {
-            $delayInSeconds = (int)($delay / 100);
+            $delayInSeconds = (int) ($delay / 100);
             $processAtTimestamp = time() + $delayInSeconds;
             $processAt = date('Y-m-d H:i:s', $processAtTimestamp);
         }
@@ -161,7 +161,7 @@ class DatabaseQueue implements QueueInterface
         $processTimestamp = strtotime($processAt);
 
         $delay = $processTimestamp - $now;
-        return $delay > 0 ? (float)$delay : 0;
+        return $delay > 0 ? (float) $delay : 0;
     }
 
     public function count(): int

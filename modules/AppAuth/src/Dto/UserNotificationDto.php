@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Modules\AppAuth\Dto;
 
-use Forge\Core\Dto\BaseDto;
+use Modules\ForgeSqlOrm\Dto\BaseDto;
 
 final class UserNotificationDto extends BaseDto
 {

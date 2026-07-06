@@ -6,17 +6,15 @@ namespace Modules\ForgeRouter\Http\Middlewares;
 
 use Forge\Core\Contracts\Contracts\Database\DatabaseConnectionInterface;
 use Forge\Core\Contracts\Database\QueryBuilderInterface;
-use Forge\Core\DI\Attributes\Service;
 use Forge\Core\DI\Container;
-use Modules\ForgeRouter\Http\Middleware;
+use Modules\ForgeRouter\Http\Middleware as MiddlewareImpl;
 use Modules\ForgeRouter\Http\Request;
 use Modules\ForgeRouter\Http\Response;
-use Modules\ForgeRouter\Middleware\Attributes\RegisterMiddleware;
+use Modules\ForgeRouter\Middleware\Attributes\Middleware;
 use Modules\ForgeRouter\Traits\ResponseHelper;
 
-#[Service]
-#[RegisterMiddleware(group: 'api', order: 1, allowDuplicate: true, enabled: true)]
-class ApiKeyMiddleware extends Middleware
+#[Middleware(group: 'api', order: 1, allowDuplicate: true, enabled: true)]
+class ApiKeyMiddleware extends MiddlewareImpl
 {
     use ResponseHelper;
 

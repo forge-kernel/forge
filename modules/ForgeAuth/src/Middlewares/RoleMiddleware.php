@@ -6,11 +6,9 @@ namespace Modules\ForgeAuth\Middlewares;
 
 use Modules\ForgeAuth\Services\RoleService;
 use Modules\ForgeAuth\Traits\HasCurrentUser;
-use Forge\Core\DI\Attributes\Service;
 use Modules\ForgeRouter\Http\Request;
 use Modules\ForgeRouter\Http\Response;
 
-#[Service]
 final class RoleMiddleware
 {
     use HasCurrentUser;

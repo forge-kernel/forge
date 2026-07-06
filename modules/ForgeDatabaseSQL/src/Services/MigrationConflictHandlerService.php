@@ -5,13 +5,11 @@ declare(strict_types=1);
 namespace Modules\ForgeDatabaseSQL\Services;
 
 use Forge\Core\Contracts\Database\DatabaseConnectionInterface;
-use Forge\Core\DI\Attributes\Service;
 use Forge\Core\DI\Container;
 use Forge\CLI\Traits\OutputHelper;
 use PDO;
 use Throwable;
 
-#[Service]
 final class MigrationConflictHandlerService
 {
     use OutputHelper;
@@ -20,7 +18,8 @@ final class MigrationConflictHandlerService
         private readonly DatabaseConnectionInterface $connection,
         private readonly MigrationPathResolverService $pathResolver,
         private readonly ?Container $container = null
-    ) {}
+    ) {
+    }
 
     /**
      * Detect conflicts between existing tables and pending migrations
@@ -63,7 +62,7 @@ final class MigrationConflictHandlerService
         $this->displayConflictWarning($conflicts);
 
         $templateGenerator = $this->getTemplateGenerator();
-        
+
         if ($templateGenerator) {
             return $this->handleWithTemplateGenerator(
                 $conflicts,
@@ -151,7 +150,7 @@ final class MigrationConflictHandlerService
     {
         try {
             $driver = $this->connection->getPdo()->getAttribute(PDO::ATTR_DRIVER_NAME);
-            
+
             $query = match ($driver) {
                 'mysql' => "SHOW TABLES",
                 'pgsql' => "SELECT tablename FROM pg_catalog.pg_tables WHERE schemaname != 'pg_catalog' AND schemaname != 'information_schema'",
@@ -193,11 +192,11 @@ final class MigrationConflictHandlerService
         try {
             require_once $path;
             $className = $this->pathResolver->getMigrationClassName($path);
-            
+
             if (class_exists($className)) {
                 $reflection = new \ReflectionClass($className);
                 $attributes = $reflection->getAttributes(\Modules\ForgeDatabaseSQL\DB\Attributes\GroupMigration::class);
-                
+
                 if (!empty($attributes)) {
                     $instance = $attributes[0]->newInstance();
                     return $instance->name ?? null;

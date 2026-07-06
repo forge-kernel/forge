@@ -9,7 +9,6 @@ use Modules\ForgeBilling\Dto\InvoiceItem;
 use Modules\ForgeBilling\Enums\InvoiceStatus;
 use Forge\Core\Contracts\Database\QueryBuilderInterface;
 use Forge\Core\Helpers\UUID;
-use Forge\Core\DI\Attributes\Service;
 
 final class InvoiceService
 {

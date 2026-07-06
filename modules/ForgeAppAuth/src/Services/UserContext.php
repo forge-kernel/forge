@@ -7,11 +7,9 @@ use Modules\ForgeAppAuth\Repositories\UserRepository;
 use Modules\ForgeAuth\Contracts\AuthUserInterface;
 use Modules\ForgeAuth\Contracts\UserContextInterface;
 use Forge\Core\Config\Config;
-use Forge\Core\DI\Attributes\Service;
 use Forge\Core\Module\Attributes\Requires;
 use Forge\Core\Session\SessionInterface;
 
-#[Service]
 #[Requires(SessionInterface::class, version: '>=0.1.0')]
 #[Requires(Config::class, version: '>=0.1.0')]
 final class UserContext implements UserContextInterface

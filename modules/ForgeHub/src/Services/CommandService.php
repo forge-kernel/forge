@@ -7,11 +7,9 @@ namespace Modules\ForgeHub\Services;
 use Forge\CLI\Application;
 use Forge\CLI\Attributes\Arg;
 use Forge\Core\Bootstrap\AppCommandSetup;
-use Forge\Core\DI\Attributes\Service;
 use Forge\Core\DI\Container;
 use ReflectionClass;
 
-#[Service]
 final class CommandService
 {
     private const PROCESS_TIMEOUT = 30;
@@ -44,10 +42,10 @@ final class CommandService
     public function getCacheStats(): array
     {
         $this->cacheService->loadCache();
-        
+
         $commandsCached = $this->cacheService->getCachedCommands() !== null;
         $phpExecutableCached = $this->cacheService->getCachedPhpExecutable() !== null;
-        
+
         $stats = [
             'commands_cached' => $commandsCached,
             'php_executable_cached' => $phpExecutableCached,
@@ -336,10 +334,10 @@ final class CommandService
         }
 
         $phpPath = $this->discoverPhpExecutable();
-        
+
         // Cache the result
         $this->cacheService->setCachedPhpExecutable($phpPath);
-        
+
         return $phpPath;
     }
 

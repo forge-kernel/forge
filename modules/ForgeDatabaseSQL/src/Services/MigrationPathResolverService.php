@@ -4,12 +4,10 @@ declare(strict_types=1);
 
 namespace Modules\ForgeDatabaseSQL\Services;
 
-use Forge\Core\DI\Attributes\Service;
 use Forge\Core\Helpers\ModuleHelper;
 use Forge\Core\Structure\StructureResolver;
 use Forge\Traits\StringHelper;
 
-#[Service]
 final class MigrationPathResolverService
 {
     use StringHelper;

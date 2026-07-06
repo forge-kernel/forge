@@ -4,16 +4,14 @@ declare(strict_types=1);
 
 namespace Modules\ForgeRouter\Http\Middlewares;
 
-use Forge\Core\DI\Attributes\Service;
-use Modules\ForgeRouter\Http\Middleware;
+use Modules\ForgeRouter\Http\Middleware as MiddlewareImpl;
 use Modules\ForgeRouter\Http\Request;
 use Modules\ForgeRouter\Http\Response;
-use Modules\ForgeRouter\Middleware\Attributes\RegisterMiddleware;
-use Forge\Exceptions\InvalidMiddlewareResponse;
+use Modules\ForgeRouter\Middleware\Attributes\Middleware;
+use Modules\ForgeRouter\Exceptions\InvalidMiddlewareResponse;
 
-#[Service]
-#[RegisterMiddleware(group: 'global', order: 4, allowDuplicate: true, enabled: true)]
-class CompressionMiddleware extends Middleware
+#[Middleware(group: 'global', order: 4, allowDuplicate: true, enabled: true)]
+class CompressionMiddleware extends MiddlewareImpl
 {
     public function handle(Request $request, callable $next): Response
     {
@@ -48,14 +46,14 @@ class CompressionMiddleware extends Middleware
             if ($compressedContent !== false) {
                 $response->setHeader('Content-Encoding', 'gzip');
                 $response->setContent($compressedContent);
-                $response->setHeader('Content-Length', (string)strlen($compressedContent));
+                $response->setHeader('Content-Length', (string) strlen($compressedContent));
             }
         } elseif (str_contains($acceptEncoding, 'deflate')) {
             $compressedContent = gzdeflate($content, 6);
             if ($compressedContent !== false) {
                 $response->setHeader('Content-Encoding', 'deflate');
                 $response->setContent($compressedContent);
-                $response->setHeader('Content-Length', (string)strlen($compressedContent));
+                $response->setHeader('Content-Length', (string) strlen($compressedContent));
             }
         }
 

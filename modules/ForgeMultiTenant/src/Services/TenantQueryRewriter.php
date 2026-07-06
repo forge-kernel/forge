@@ -6,9 +6,7 @@ namespace Modules\ForgeMultiTenant\Services;
 use Modules\ForgeMultiTenant\DTO\Tenant;
 use Modules\ForgeMultiTenant\Enums\Strategy;
 use Forge\Core\Contracts\Database\QueryBuilderInterface;
-use Forge\Core\DI\Attributes\Injectable;
 
-#[Injectable]
 final class TenantQueryRewriter
 {
     private ?string $tenantId = null;

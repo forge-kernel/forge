@@ -8,10 +8,8 @@ use Modules\ForgeAuth\Contracts\AuthUserInterface;
 use Modules\ForgeAuth\Models\Role;
 use Modules\ForgeAuth\Models\Permission;
 use Modules\ForgeAuth\Repositories\RoleRepository;
-use Forge\Core\DI\Attributes\Service;
 use Forge\Core\Contracts\Database\QueryBuilderInterface;
 
-#[Service]
 final class RoleService
 {
     private array $userRolesCache = [];
@@ -19,7 +17,8 @@ final class RoleService
     public function __construct(
         private readonly RoleRepository $roleRepository,
         private readonly QueryBuilderInterface $queryBuilder,
-    ) {}
+    ) {
+    }
 
     public function createRole(string $name, ?string $description = null): Role
     {

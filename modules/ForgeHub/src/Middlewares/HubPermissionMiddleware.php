@@ -6,14 +6,12 @@ namespace Modules\ForgeHub\Middlewares;
 
 use Modules\ForgeAuth\Contracts\UserContextInterface;
 use Modules\ForgeAuth\Services\PermissionService;
-use Forge\Core\DI\Attributes\Service;
 use Forge\Core\Helpers\Flash;
 use Modules\ForgeRouter\Helpers\Redirect;
 use Modules\ForgeRouter\Http\Middleware;
 use Modules\ForgeRouter\Http\Request;
 use Modules\ForgeRouter\Http\Response;
 
-#[Service]
 final class HubPermissionMiddleware extends Middleware
 {
     public function __construct(

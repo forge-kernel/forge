@@ -7,15 +7,14 @@ namespace Modules\ForgeAuth\Services;
 use Modules\ForgeAuth\Contracts\AuthUserInterface;
 use Modules\ForgeAuth\Repositories\PermissionRepository;
 use Modules\ForgeAuth\Repositories\ApiKeyRepository;
-use Forge\Core\DI\Attributes\Service;
 
-#[Service]
 final class ApiKeyService
 {
     public function __construct(
         private readonly PermissionRepository $permissionRepository,
         private readonly ApiKeyRepository $apiKeyRepository,
-    ) {}
+    ) {
+    }
 
     public function validateApiKey(string $apiKey, ?AuthUserInterface $user = null): bool
     {

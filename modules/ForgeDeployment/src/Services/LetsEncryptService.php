@@ -4,146 +4,143 @@ declare(strict_types=1);
 
 namespace Modules\ForgeDeployment\Services;
 
-use Forge\Core\DI\Attributes\Service;
-
-#[Service]
 final class LetsEncryptService
 {
-  public function __construct(
-    private readonly SshService $sshService
-  ) {
-  }
+    public function __construct(
+        private readonly SshService $sshService
+    ) {
+    }
 
-  public function connect(string $host, int $port, string $username, ?string $privateKeyPath = null, ?string $publicKeyPath = null, ?string $passphrase = null): bool
-  {
-    return $this->sshService->connect($host, $port, $username, $privateKeyPath, $publicKeyPath, $passphrase);
-  }
+    public function connect(string $host, int $port, string $username, ?string $privateKeyPath = null, ?string $publicKeyPath = null, ?string $passphrase = null): bool
+    {
+        return $this->sshService->connect($host, $port, $username, $privateKeyPath, $publicKeyPath, $passphrase);
+    }
 
-  public function setupSsl(string $domain, string $email, ?callable $outputCallback = null, ?callable $errorCallback = null): bool
-  {
-    $this->installCertbot($outputCallback, $errorCallback);
-    $this->generateCertificate($domain, $email, $outputCallback, $errorCallback);
-    $this->configureAutoRenewal($outputCallback, $errorCallback);
+    public function setupSsl(string $domain, string $email, ?callable $outputCallback = null, ?callable $errorCallback = null): bool
+    {
+        $this->installCertbot($outputCallback, $errorCallback);
+        $this->generateCertificate($domain, $email, $outputCallback, $errorCallback);
+        $this->configureAutoRenewal($outputCallback, $errorCallback);
 
-    return true;
-  }
+        return true;
+    }
 
-  public function updateNginxConfig(string $domain, string $rootPath, string $phpVersion, ?callable $outputCallback = null): bool
-  {
-    $config = $this->generateSslConfig($domain, $rootPath, $phpVersion);
-    $configPath = "/etc/nginx/sites-available/{$domain}";
+    public function updateNginxConfig(string $domain, string $rootPath, string $phpVersion, ?callable $outputCallback = null): bool
+    {
+        $config = $this->generateSslConfig($domain, $rootPath, $phpVersion);
+        $configPath = "/etc/nginx/sites-available/{$domain}";
 
-    // Remove old config to ensure clean overwrite
-    $this->sshService->execute("rm -f {$configPath}", $outputCallback, null, 10);
+        // Remove old config to ensure clean overwrite
+        $this->sshService->execute("rm -f {$configPath}", $outputCallback, null, 10);
 
-    $this->sshService->uploadString($config, $configPath, $outputCallback);
+        $this->sshService->uploadString($config, $configPath, $outputCallback);
 
-    $result = $this->sshService->execute('nginx -t', $outputCallback, null, 60);
-    if (!$result['success']) {
-      $errorMsg = $result['error'] ?? $result['output'] ?? '';
-
-      // Check for missing shared memory zones (old rate limiting configs)
-      if (strpos($errorMsg, 'zero size shared memory zone') !== false || strpos($errorMsg, 'shared memory zone') !== false) {
-        if ($outputCallback !== null) {
-          $outputCallback('      Detected old rate limiting configs. Cleaning up...');
-        }
-        // Remove rate limiting directives from all site configs
-        $this->sshService->execute('find /etc/nginx/sites-available -type f -exec sed -i "/limit_req/d" {} \\;', $outputCallback, null, 30);
-        // Retry test
         $result = $this->sshService->execute('nginx -t', $outputCallback, null, 60);
-        if ($result['success']) {
-          if ($outputCallback !== null) {
-            $outputCallback('      Rate limiting directives removed. Config validated.');
-          }
-        }
-      }
+        if (!$result['success']) {
+            $errorMsg = $result['error'] ?? $result['output'] ?? '';
 
-      // Check if error is in a different site config file
-      if (!$result['success'] && preg_match('/in \/etc\/nginx\/sites-enabled\/([^:]+):(\d+)/', $errorMsg, $matches)) {
-        $brokenSite = $matches[1];
-        if ($brokenSite !== $domain) {
-          if ($outputCallback !== null) {
-            $outputCallback("      Detected broken config in {$brokenSite}, temporarily disabling...");
-          }
-          $this->sshService->execute("rm -f /etc/nginx/sites-enabled/{$brokenSite}", $outputCallback, null, 10);
-          // Retry test
-          $result = $this->sshService->execute('nginx -t', $outputCallback, null, 60);
-          if ($result['success']) {
-            if ($outputCallback !== null) {
-              $outputCallback("      Broken site {$brokenSite} disabled. New site config validated.");
+            // Check for missing shared memory zones (old rate limiting configs)
+            if (strpos($errorMsg, 'zero size shared memory zone') !== false || strpos($errorMsg, 'shared memory zone') !== false) {
+                if ($outputCallback !== null) {
+                    $outputCallback('      Detected old rate limiting configs. Cleaning up...');
+                }
+                // Remove rate limiting directives from all site configs
+                $this->sshService->execute('find /etc/nginx/sites-available -type f -exec sed -i "/limit_req/d" {} \\;', $outputCallback, null, 30);
+                // Retry test
+                $result = $this->sshService->execute('nginx -t', $outputCallback, null, 60);
+                if ($result['success']) {
+                    if ($outputCallback !== null) {
+                        $outputCallback('      Rate limiting directives removed. Config validated.');
+                    }
+                }
             }
-          }
+
+            // Check if error is in a different site config file
+            if (!$result['success'] && preg_match('/in \/etc\/nginx\/sites-enabled\/([^:]+):(\d+)/', $errorMsg, $matches)) {
+                $brokenSite = $matches[1];
+                if ($brokenSite !== $domain) {
+                    if ($outputCallback !== null) {
+                        $outputCallback("      Detected broken config in {$brokenSite}, temporarily disabling...");
+                    }
+                    $this->sshService->execute("rm -f /etc/nginx/sites-enabled/{$brokenSite}", $outputCallback, null, 10);
+                    // Retry test
+                    $result = $this->sshService->execute('nginx -t', $outputCallback, null, 60);
+                    if ($result['success']) {
+                        if ($outputCallback !== null) {
+                            $outputCallback("      Broken site {$brokenSite} disabled. New site config validated.");
+                        }
+                    }
+                }
+            }
+
+            if (!$result['success']) {
+                throw new \RuntimeException('Nginx configuration test failed after SSL update: ' . ($result['error'] ?? 'Unknown error'));
+            }
         }
-      }
 
-      if (!$result['success']) {
-        throw new \RuntimeException('Nginx configuration test failed after SSL update: ' . ($result['error'] ?? 'Unknown error'));
-      }
-    }
+        $result = $this->sshService->execute('systemctl reload nginx', $outputCallback, null, 60);
+        if (!$result['success']) {
+            throw new \RuntimeException('Failed to reload Nginx after SSL update: ' . ($result['error'] ?? 'Unknown error'));
+        }
 
-    $result = $this->sshService->execute('systemctl reload nginx', $outputCallback, null, 60);
-    if (!$result['success']) {
-      throw new \RuntimeException('Failed to reload Nginx after SSL update: ' . ($result['error'] ?? 'Unknown error'));
+        return true;
     }
 
-    return true;
-  }
+    private function installCertbot(?callable $outputCallback = null, ?callable $errorCallback = null): void
+    {
+        $checkResult = $this->sshService->execute('which certbot', $outputCallback, $errorCallback, 10);
+        if ($checkResult['success'] && trim($checkResult['output'] ?? '') !== '') {
+            if ($outputCallback !== null) {
+                $outputCallback('      Certbot is already installed, skipping installation...');
+            }
+            return;
+        }
 
-  private function installCertbot(?callable $outputCallback = null, ?callable $errorCallback = null): void
-  {
-    $checkResult = $this->sshService->execute('which certbot', $outputCallback, $errorCallback, 10);
-    if ($checkResult['success'] && trim($checkResult['output'] ?? '') !== '') {
-      if ($outputCallback !== null) {
-        $outputCallback('      Certbot is already installed, skipping installation...');
-      }
-      return;
+        if ($outputCallback !== null) {
+            $outputCallback('      Installing certbot...');
+        }
+        $result = $this->sshService->execute('apt-get install -y certbot python3-certbot-nginx', $outputCallback, $errorCallback, 600);
+        if (!$result['success']) {
+            throw new \RuntimeException('Failed to install certbot: ' . $result['error']);
+        }
     }
 
-    if ($outputCallback !== null) {
-      $outputCallback('      Installing certbot...');
+    private function generateCertificate(string $domain, string $email, ?callable $outputCallback = null, ?callable $errorCallback = null): void
+    {
+        if ($outputCallback !== null) {
+            $outputCallback("      Generating SSL certificate for {$domain}...");
+            $outputCallback('      This may take a few minutes while Let\'s Encrypt validates the domain...');
+        }
+        $result = $this->sshService->execute("certbot --nginx -d {$domain} --non-interactive --agree-tos --email {$email} --redirect", $outputCallback, $errorCallback, 600);
+        if (!$result['success']) {
+            $error = $result['error'] ?? 'Unknown error';
+            if (strpos($error, 'timeout') !== false || strpos($error, 'timed out') !== false) {
+                throw new \RuntimeException("Certbot command timed out. DNS may not have propagated yet. Error: {$error}");
+            }
+            throw new \RuntimeException('Failed to generate SSL certificate: ' . $error);
+        }
     }
-    $result = $this->sshService->execute('apt-get install -y certbot python3-certbot-nginx', $outputCallback, $errorCallback, 600);
-    if (!$result['success']) {
-      throw new \RuntimeException('Failed to install certbot: ' . $result['error']);
-    }
-  }
 
-  private function generateCertificate(string $domain, string $email, ?callable $outputCallback = null, ?callable $errorCallback = null): void
-  {
-    if ($outputCallback !== null) {
-      $outputCallback("      Generating SSL certificate for {$domain}...");
-      $outputCallback('      This may take a few minutes while Let\'s Encrypt validates the domain...');
+    private function configureAutoRenewal(?callable $outputCallback = null, ?callable $errorCallback = null): void
+    {
+        if ($outputCallback !== null) {
+            $outputCallback('      Configuring automatic certificate renewal...');
+        }
+        $result = $this->sshService->execute('systemctl enable certbot.timer', $outputCallback, $errorCallback, 60);
+        if (!$result['success']) {
+            throw new \RuntimeException('Failed to enable certbot timer: ' . $result['error']);
+        }
+        $result = $this->sshService->execute('systemctl start certbot.timer', $outputCallback, $errorCallback, 60);
+        if (!$result['success']) {
+            throw new \RuntimeException('Failed to start certbot timer: ' . $result['error']);
+        }
     }
-    $result = $this->sshService->execute("certbot --nginx -d {$domain} --non-interactive --agree-tos --email {$email} --redirect", $outputCallback, $errorCallback, 600);
-    if (!$result['success']) {
-      $error = $result['error'] ?? 'Unknown error';
-      if (strpos($error, 'timeout') !== false || strpos($error, 'timed out') !== false) {
-        throw new \RuntimeException("Certbot command timed out. DNS may not have propagated yet. Error: {$error}");
-      }
-      throw new \RuntimeException('Failed to generate SSL certificate: ' . $error);
-    }
-  }
 
-  private function configureAutoRenewal(?callable $outputCallback = null, ?callable $errorCallback = null): void
-  {
-    if ($outputCallback !== null) {
-      $outputCallback('      Configuring automatic certificate renewal...');
-    }
-    $result = $this->sshService->execute('systemctl enable certbot.timer', $outputCallback, $errorCallback, 60);
-    if (!$result['success']) {
-      throw new \RuntimeException('Failed to enable certbot timer: ' . $result['error']);
-    }
-    $result = $this->sshService->execute('systemctl start certbot.timer', $outputCallback, $errorCallback, 60);
-    if (!$result['success']) {
-      throw new \RuntimeException('Failed to start certbot timer: ' . $result['error']);
-    }
-  }
+    private function generateSslConfig(string $domain, string $rootPath, string $phpVersion): string
+    {
+        $rootPathEscaped = str_replace('/', '\/', $rootPath);
 
-  private function generateSslConfig(string $domain, string $rootPath, string $phpVersion): string
-  {
-    $rootPathEscaped = str_replace('/', '\/', $rootPath);
-
-    return <<<EOF
+        return <<<EOF
 server {
     listen 80;
     listen [::]:80;
@@ -199,5 +196,5 @@ server {
 
 }
 EOF;
-  }
+    }
 }

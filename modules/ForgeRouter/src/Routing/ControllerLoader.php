@@ -5,24 +5,27 @@ namespace Modules\ForgeRouter\Routing;
 
 use FilesystemIterator;
 use Forge\Core\DI\Container;
-use Forge\Core\Helpers\ModuleHelper;
-use Forge\Core\Structure\StructureResolver;
 use RecursiveDirectoryIterator;
 use RecursiveIteratorIterator;
 
 final readonly class ControllerLoader
 {
+  /**
+   * @param array<int, array{path: string, namespace: string}> $controllerDirs
+   */
   public function __construct(
     private Container $container,
     private array $controllerDirs = [],
-    private ?StructureResolver $structureResolver = null
   ) {
   }
 
   public function registerControllers(): array
   {
     $registeredControllers = [];
-    foreach ($this->controllerDirs as $dir) {
+    foreach ($this->controllerDirs as $dirInfo) {
+      $dir = $dirInfo['path'];
+      $namespace = $dirInfo['namespace'];
+
       if (!is_dir($dir)) {
         continue;
       }
@@ -40,13 +43,12 @@ final readonly class ControllerLoader
           continue;
         }
 
-        if (!str_contains($file->getFilename(), 'Controller')) {
-          continue;
-        }
-
         $path = $file->getPathname();
-        $class = $this->fileToClass($path, $dir);
-        if (!$class) {
+
+        $relative = substr($path, strlen($dir) + 1);
+        $class = $namespace . '\\' . str_replace(['/', '.php'], ['\\', ''], $relative);
+
+        if (!class_exists($class)) {
           continue;
         }
 
@@ -60,63 +62,5 @@ final readonly class ControllerLoader
     }
 
     return array_values($registeredControllers);
-  }
-
-  private function fileToClass(string $file, string $baseDir): ?string
-  {
-    $relativePath = str_replace($baseDir, '', $file);
-    $class = str_replace(['/', '.php'], ['\\', ''], trim($relativePath, '/'));
-
-    if ($this->structureResolver) {
-      $appControllersPath = BASE_PATH . '/' . $this->structureResolver->getAppPath('controllers');
-      if (str_starts_with($baseDir, $appControllersPath)) {
-        $structurePath = $this->structureResolver->getAppPath('controllers');
-        $relativeFromApp = str_replace('app/', '', $structurePath);
-        $namespaceParts = explode('/', $relativeFromApp);
-        $namespaceParts = array_filter($namespaceParts);
-        $namespaceParts = array_map(fn($part) => ucfirst($part), $namespaceParts);
-        $namespacePrefix = 'App\\' . implode('\\', $namespaceParts);
-        return "$namespacePrefix\\$class";
-      }
-
-      $modulesPath = BASE_PATH . '/modules';
-      if (str_starts_with($baseDir, $modulesPath)) {
-        $relativeToModules = str_replace($modulesPath . '/', '', $baseDir);
-        $parts = explode('/', $relativeToModules);
-        if (!empty($parts)) {
-          $moduleName = $parts[0];
-          if (ModuleHelper::isModuleDisabled($moduleName)) {
-            return null;
-          }
-          try {
-            $moduleControllersPath = $this->structureResolver->getModulePath($moduleName, 'controllers');
-            $expectedPath = "$modulesPath/$moduleName/$moduleControllersPath";
-            if (str_starts_with($baseDir, $expectedPath)) {
-              $namespacePath = preg_replace('#^src/#', '', $moduleControllersPath);
-              $namespaceParts = explode('/', $namespacePath);
-              $namespaceParts = array_filter($namespaceParts);
-              $namespaceParts = array_map(fn($part) => ucfirst($part), $namespaceParts);
-              $namespacePrefix = "Modules\\{$moduleName}\\" . implode('\\', $namespaceParts);
-              return "$namespacePrefix\\$class";
-            }
-          } catch (\InvalidArgumentException $e) {
-            return null;
-          }
-        }
-      }
-    } else {
-      if (str_starts_with($baseDir, BASE_PATH . "/app/Controllers")) {
-        return "App\\Controllers\\$class";
-      }
-      if (preg_match('#modules/([^/]+)/src/Controllers#', $baseDir, $matches)) {
-        $moduleName = $matches[1];
-        if (ModuleHelper::isModuleDisabled($moduleName)) {
-          return null;
-        }
-        return "Modules\\{$moduleName}\\Controllers\\$class";
-      }
-    }
-
-    throw new \RuntimeException("Invalid controller path: $file");
   }
 }

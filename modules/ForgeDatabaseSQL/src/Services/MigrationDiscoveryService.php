@@ -4,18 +4,11 @@ declare(strict_types=1);
 
 namespace Modules\ForgeDatabaseSQL\Services;
 
-use Modules\ForgeDatabaseSQL\DB\Migrations\Migration;
 use Modules\ForgeDatabaseSQL\DB\Attributes\GroupMigration;
-use Forge\Core\DI\Attributes\Migration as MigrationAttribute;
-use Forge\Core\DI\Attributes\Service;
-use Forge\Core\Helpers\FileExistenceCache;
-use Forge\Core\Helpers\ModuleHelper;
-use Forge\Core\Services\AttributeDiscoveryService;
 use Forge\Traits\StringHelper;
 use ReflectionClass;
 use ReflectionException;
 
-#[Service]
 final class MigrationDiscoveryService
 {
     use StringHelper;
@@ -34,13 +27,18 @@ final class MigrationDiscoveryService
         ?string $scope = "all",
         ?string $module = null
     ): array {
-        $files = $this->resolveMigrationFiles($scope, $module);
-        $attributeFiles = $this->discoverAttributeBasedMigrations($scope, $module);
+        $paths = $this->pathResolver->getMigrationPaths($scope, $module);
+        $files = [];
 
-        $allFiles = array_unique(array_merge($files, $attributeFiles));
-        sort($allFiles);
+        foreach ($paths as $path) {
+            if (is_dir($path)) {
+                $files = array_merge($files, glob($path . "/*.php"));
+            }
+        }
 
-        return $allFiles;
+        sort($files);
+
+        return $files;
     }
 
     /**
@@ -85,51 +83,6 @@ final class MigrationDiscoveryService
         }
 
         return $pendingFiles;
-    }
-
-    private function resolveMigrationFiles(?string $scope, ?string $module): array
-    {
-        $paths = $this->pathResolver->getMigrationPaths($scope, $module);
-        $files = [];
-
-        foreach ($paths as $path) {
-            if (is_dir($path)) {
-                $files = array_merge($files, glob($path . "/*.php"));
-            }
-        }
-
-        return $files;
-    }
-
-    private function discoverAttributeBasedMigrations(?string $scope, ?string $module): array
-    {
-        $discoveryService = new AttributeDiscoveryService();
-        $basePaths = $this->pathResolver->getBasePathsForDiscovery($scope, $module);
-
-        $classMap = $discoveryService->discover($basePaths, [
-            MigrationAttribute::class,
-        ]);
-
-        $files = [];
-        foreach ($classMap as $className => $metadata) {
-            if (class_exists($className)) {
-                try {
-                    $reflection = new ReflectionClass($className);
-                    if ($reflection->isSubclassOf(Migration::class)) {
-                        $filepath = $metadata["file"] ?? "";
-                        if ($filepath && FileExistenceCache::exists($filepath)) {
-                            if ($this->pathResolver->matchesScopeAndModule($filepath, $scope, $module)) {
-                                $files[] = $filepath;
-                            }
-                        }
-                    }
-                } catch (ReflectionException $e) {
-                    continue;
-                }
-            }
-        }
-
-        return $files;
     }
 
     private function matchesModuleFilter(string $relativePath, string $module): bool

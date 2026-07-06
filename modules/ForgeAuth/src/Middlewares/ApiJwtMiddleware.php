@@ -9,13 +9,11 @@ use Modules\ForgeAuth\Exceptions\JwtTokenInvalidException;
 use Modules\ForgeAuth\Exceptions\JwtTokenMissingException;
 use Modules\ForgeAuth\Contracts\UserContextInterface;
 use Modules\ForgeAuth\Services\TokenManagerService;
-use Forge\Core\DI\Attributes\Service;
 use Modules\ForgeRouter\Http\ApiResponse;
 use Modules\ForgeRouter\Http\Middleware;
 use Modules\ForgeRouter\Http\Request;
 use Modules\ForgeRouter\Http\Response;
 
-#[Service]
 final class ApiJwtMiddleware extends Middleware
 {
     public function __construct(

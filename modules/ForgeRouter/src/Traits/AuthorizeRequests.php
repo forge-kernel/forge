@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Modules\ForgeRouter\Traits;
 
 use Modules\ForgeRouter\Http\Request;
-use Forge\Exceptions\AuthorizationException;
+use Modules\ForgeRouter\Exceptions\AuthorizationException;
 
 trait AuthorizeRequests
 {

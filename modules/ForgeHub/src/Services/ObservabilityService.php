@@ -5,10 +5,8 @@ declare(strict_types=1);
 namespace Modules\ForgeHub\Services;
 
 use Forge\Core\Contracts\Database\DatabaseConnectionInterface;
-use Forge\Core\DI\Attributes\Service;
 use Forge\Core\Observability\ObservabilityConfig;
 
-#[Service]
 final class ObservabilityService implements ObservabilityServiceInterface
 {
     private const TABLE_NAME = 'observability_traces';

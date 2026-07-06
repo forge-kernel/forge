@@ -9,10 +9,8 @@ use Modules\ForgeAuth\Contracts\UserProviderInterface;
 use Modules\ForgeAuth\Exceptions\JwtTokenExpiredException;
 use Modules\ForgeAuth\Exceptions\JwtTokenInvalidException;
 use Forge\Core\Config\Config;
-use Forge\Core\DI\Attributes\Service;
 use Forge\Core\Module\Attributes\Requires;
 
-#[Service]
 #[Requires(Config::class, version: '>=0.1.0')]
 final class TokenManagerService
 {

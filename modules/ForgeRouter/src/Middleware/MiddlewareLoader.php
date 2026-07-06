@@ -4,10 +4,8 @@ declare(strict_types=1);
 
 namespace Modules\ForgeRouter\Middleware;
 
-use Forge\Core\Bootstrap\OptimizedDirectoryScanner;
 use Forge\Core\Helpers\FileExistenceCache;
 use Forge\Core\Helpers\ModuleHelper;
-use Forge\Core\Services\AttributeDiscoveryService;
 use Forge\Core\Structure\StructureResolver;
 use Modules\ForgeRouter\Middleware\Attributes\Middleware;
 use Modules\ForgeRouter\Middleware\Attributes\RegisterMiddleware;
@@ -60,69 +58,24 @@ final class MiddlewareLoader
     }
 
     /**
-     * Discovers middlewares via attribute scanning, then scans conventional
-     * middleware directories. Returns both the middleware map and the list of
-     * files/dirs scanned (for cache generation).
+     * Scans middleware directories defined by StructureResolver, reads
+     * #[Middleware]/#[RegisterMiddleware] metadata, and builds the middleware map.
+     * Classes without a middleware attribute are skipped.
      *
      * @return array{middlewareMap: array, files: string[], dirs: string[]}
      */
     private function scanDirectories(): array
     {
         $autoMiddlewares = [];
-        $discoveredClasses = [];
         $files = [];
         $dirs = [];
 
-        // 1. Attribute-based discovery: classes with #[RegisterMiddleware] or #[Middleware]
-        $basePaths = $this->getAttributeDiscoveryBasePaths();
-        if (!empty($basePaths)) {
-            $discoveryService = new AttributeDiscoveryService();
-            $classMap = $discoveryService->discover($basePaths, [RegisterMiddleware::class, Middleware::class]);
-
-            foreach ($classMap as $className => $metadata) {
-                if (!in_array(RegisterMiddleware::class, $metadata['attributes'] ?? [], true) && !in_array(Middleware::class, $metadata['attributes'] ?? [], true)) {
-                    continue;
-                }
-
-                if (!class_exists($className)) {
-                    continue;
-                }
-
-                try {
-                    $reflection = new ReflectionClass($className);
-                    $attribute = $reflection->getAttributes(Middleware::class)[0] ?? $reflection->getAttributes(RegisterMiddleware::class)[0] ?? null;
-
-                    if (!$attribute) {
-                        continue;
-                    }
-
-                    /** @var RegisterMiddleware|Middleware $attrInstance */
-                    $attrInstance = $attribute->newInstance();
-
-                    if (!$attrInstance->enabled) {
-                        continue;
-                    }
-
-                    if (!isset($autoMiddlewares[$attrInstance->group])) {
-                        $autoMiddlewares[$attrInstance->group] = [];
-                    }
-
-                    $autoMiddlewares[$attrInstance->group][] = [
-                        'class' => $className,
-                        'order' => $attrInstance->order,
-                        'overrideClass' => $attrInstance->overrideClass ?? $className,
-                    ];
-                    $discoveredClasses[$className] = true;
-                    $files[] = $metadata['file'];
-                } catch (ReflectionException $e) {
-                    //
-                }
-            }
-        }
-
-        // 2. Conventional middleware directories: app/Middlewares/ and modules/{Module}/src/Middlewares/
         $middlewareDirs = $this->resolveMiddlewareDirectories();
-        foreach ($middlewareDirs as $dir) {
+
+        foreach ($middlewareDirs as $dirInfo) {
+            $dir = $dirInfo['path'];
+            $namespace = $dirInfo['namespace'];
+
             if (!FileExistenceCache::isDir($dir)) {
                 continue;
             }
@@ -139,36 +92,42 @@ final class MiddlewareLoader
                     $filePath = $item->getPathname();
                     $files[] = $filePath;
 
-                    try {
-                        $className = $this->fileToClass($filePath);
+                    $className = self::buildClassName($filePath, $dir, $namespace);
 
-                        if (isset($discoveredClasses[$className])) {
+                    if (!$className || !class_exists($className)) {
+                        continue;
+                    }
+
+                    try {
+                        $reflection = new ReflectionClass($className);
+
+                        $attribute = $reflection->getAttributes(Middleware::class)[0]
+                            ?? $reflection->getAttributes(RegisterMiddleware::class)[0]
+                            ?? null;
+
+                        if (!$attribute) {
                             continue;
                         }
 
-                        if ($className && class_exists($className)) {
-                            $reflection = new ReflectionClass($className);
-                            $attribute = $reflection->getAttributes(Middleware::class)[0] ?? $reflection->getAttributes(RegisterMiddleware::class)[0] ?? null;
+                        $attrInstance = $attribute->newInstance();
 
-                            if ($attribute) {
-                                /** @var RegisterMiddleware|Middleware $attrInstance */
-                                $attrInstance = $attribute->newInstance();
-
-                                if (!$attrInstance->enabled) {
-                                    continue;
-                                }
-
-                                if (!isset($autoMiddlewares[$attrInstance->group])) {
-                                    $autoMiddlewares[$attrInstance->group] = [];
-                                }
-
-                                $autoMiddlewares[$attrInstance->group][] = [
-                                    'class' => $className,
-                                    'order' => $attrInstance->order,
-                                    'overrideClass' => $attrInstance->overrideClass ?? $className,
-                                ];
-                            }
+                        if (!$attrInstance->enabled) {
+                            continue;
                         }
+
+                        $group = $attrInstance->group;
+                        $order = $attrInstance->order;
+                        $overrideClass = $attrInstance->overrideClass;
+
+                        if (!isset($autoMiddlewares[$group])) {
+                            $autoMiddlewares[$group] = [];
+                        }
+
+                        $autoMiddlewares[$group][] = [
+                            'class' => $className,
+                            'order' => $order,
+                            'overrideClass' => $overrideClass ?? $className,
+                        ];
                     } catch (ReflectionException $e) {
                         //
                     }
@@ -184,93 +143,98 @@ final class MiddlewareLoader
     }
 
     /**
-     * @return array<string>
+     * Builds the fully-qualified class name for a file within a scanned directory.
      */
-    private function getAttributeDiscoveryBasePaths(): array
+    private static function buildClassName(string $filePath, string $baseDir, string $namespace): ?string
     {
-        return OptimizedDirectoryScanner::getAttributeDiscoveryPaths();
+        if (!str_starts_with($filePath, $baseDir)) {
+            return null;
+        }
+
+        $relative = substr($filePath, strlen($baseDir) + 1);
+        $relative = str_replace('.php', '', $relative);
+
+        if ($relative === '' || $relative === false) {
+            return null;
+        }
+
+        $parts = explode('/', $relative);
+        $parts = array_map(fn(string $part) => str_replace(['-', '_'], '', $part), $parts);
+
+        return $namespace . '\\' . implode('\\', $parts);
     }
 
     /**
-     * @return array<string>
+     * @return array<int, array{path: string, namespace: string}>
      */
     private function resolveMiddlewareDirectories(): array
     {
-        $dirs = [];
+        $directories = [];
 
-        $appDir = $this->resolveAppMiddlewaresPath();
-        if ($appDir !== null) {
-            $dirs[] = $appDir;
+        $appPaths = $this->structureResolver
+            ? $this->structureResolver->getAppPaths('middlewares')
+            : ['app/Middlewares', 'app/Http/Middlewares', 'app/Controllers/Middlewares'];
+
+        foreach ($appPaths as $appPath) {
+            $fullPath = BASE_PATH . '/' . $appPath;
+            if (!is_dir($fullPath)) {
+                continue;
+            }
+
+            $relative = str_replace('app/', '', $appPath);
+            $directories[] = [
+                'path' => $fullPath,
+                'namespace' => 'App\\' . str_replace('/', '\\', $relative),
+            ];
         }
 
-        $modulesDir = BASE_PATH . '/modules';
-        if (is_dir($modulesDir)) {
-            foreach (scandir($modulesDir) as $moduleName) {
-                if ($moduleName === '.' || $moduleName === '..' || ModuleHelper::isModuleDisabled($moduleName)) {
+        $modulesRoot = $this->structureResolver
+            ? $this->structureResolver->getModulesRoot()
+            : 'modules';
+        $modulesPath = BASE_PATH . '/' . $modulesRoot;
+
+        if (is_dir($modulesPath)) {
+            foreach (scandir($modulesPath) as $moduleName) {
+                if ($moduleName === '.' || $moduleName === '..') {
+                    continue;
+                }
+                if (ModuleHelper::isModuleDisabled($moduleName)) {
                     continue;
                 }
 
-                $moduleDir = $modulesDir . '/' . $moduleName;
+                $moduleDir = $modulesPath . '/' . $moduleName;
                 if (!is_dir($moduleDir)) {
                     continue;
                 }
 
-                $middlewareDir = $this->resolveModuleMiddlewaresPath($moduleName);
-                if ($middlewareDir !== null && is_dir($middlewareDir)) {
-                    $dirs[] = $middlewareDir;
+                try {
+                    $modulePaths = $this->structureResolver
+                        ? $this->structureResolver->getModulePaths($moduleName, 'middlewares')
+                        : ['src/Middlewares', 'src/Http/Middlewares', 'src/Controllers/Middlewares'];
+                } catch (\InvalidArgumentException) {
+                    continue;
+                }
+
+                foreach ($modulePaths as $modulePath) {
+                    $fullPath = $moduleDir . '/' . $modulePath;
+                    if (!is_dir($fullPath)) {
+                        continue;
+                    }
+
+                    $relativeNs = str_replace('src/', '', $modulePath);
+                    $directories[] = [
+                        'path' => $fullPath,
+                        'namespace' => 'Modules\\' . $moduleName . '\\' . str_replace('/', '\\', $relativeNs),
+                    ];
                 }
             }
         }
 
-        return $dirs;
-    }
-
-    private function resolveAppMiddlewaresPath(): ?string
-    {
-        if ($this->structureResolver) {
-            try {
-                $path = $this->structureResolver->getAppPath('middlewares');
-                $fullPath = BASE_PATH . '/' . $path;
-                return is_dir($fullPath) ? $fullPath : null;
-            } catch (\InvalidArgumentException $e) {
-                return $this->getDefaultAppMiddlewaresPath();
-            }
-        }
-
-        return $this->getDefaultAppMiddlewaresPath();
-    }
-
-    private function getDefaultAppMiddlewaresPath(): ?string
-    {
-        $fullPath = BASE_PATH . '/app/Middlewares';
-        return is_dir($fullPath) ? $fullPath : null;
-    }
-
-    private function resolveModuleMiddlewaresPath(string $moduleName): ?string
-    {
-        if ($this->structureResolver) {
-            try {
-                $path = $this->structureResolver->getModulePath($moduleName, 'middlewares');
-                $fullPath = BASE_PATH . '/modules/' . $moduleName . '/' . $path;
-                return is_dir($fullPath) ? $fullPath : null;
-            } catch (\InvalidArgumentException $e) {
-                return $this->getDefaultModuleMiddlewaresPath($moduleName);
-            }
-        }
-
-        return $this->getDefaultModuleMiddlewaresPath($moduleName);
-    }
-
-    private function getDefaultModuleMiddlewaresPath(string $moduleName): ?string
-    {
-        $fullPath = BASE_PATH . '/modules/' . $moduleName . '/src/Middlewares';
-        return is_dir($fullPath) ? $fullPath : null;
+        return $directories;
     }
 
     /**
      * Loads the middleware map from cache.
-     * Always uses cache if valid, regardless of environment.
-     * Validates cache by checking file modification times.
      *
      * @return array<string, class-string[]>|null
      */
@@ -314,13 +278,7 @@ final class MiddlewareLoader
     }
 
     /**
-     * Check if the cached middleware map is still valid.
-     * Uses directory mtimes as the primary signal — any file add/remove/modify
-     * within a directory changes its mtime on most filesystems. Also verifies
-     * that every previously-cached file still exists.
-     *
-     * @param array{files: array<string, int>, dirs: array<string, int>, mtime: int} $metadata Cache metadata with file list and mtimes
-     * @return bool True if cache is valid, false if files have changed
+     * @param array{files: array<string, int>, dirs: array<string, int>, mtime: int} $metadata
      */
     private function isCacheValid(array $metadata): bool
     {
@@ -335,14 +293,12 @@ final class MiddlewareLoader
             FileExistenceCache::preload(array_keys($cachedDirs));
         }
 
-        // Check that every previously-cached file still exists
         foreach ($cachedFiles as $file => $fileMtime) {
             if (!FileExistenceCache::exists($file)) {
                 return false;
             }
         }
 
-        // Directory mtime tracks structural changes (additions, deletions)
         foreach ($cachedDirs as $dir => $dirMtime) {
             $currentMtime = FileExistenceCache::getMtime($dir);
             if ($currentMtime === null || $currentMtime > $dirMtime) {
@@ -353,12 +309,6 @@ final class MiddlewareLoader
         return true;
     }
 
-    /**
-     * Check if legacy cache (without metadata) is still valid.
-     * This is a fallback for existing caches.
-     *
-     * @return bool True if cache appears valid, false otherwise
-     */
     private function isLegacyCacheValid(): bool
     {
         $cacheMtime = @filemtime(self::CACHE_FILE);
@@ -371,7 +321,10 @@ final class MiddlewareLoader
             return true;
         }
 
-        $dirsToCheck = $this->resolveMiddlewareDirectories();
+        $dirsToCheck = [];
+        foreach ($this->resolveMiddlewareDirectories() as $dirInfo) {
+            $dirsToCheck[] = $dirInfo['path'];
+        }
 
         if (!empty($dirsToCheck)) {
             FileExistenceCache::preload($dirsToCheck);
@@ -390,12 +343,9 @@ final class MiddlewareLoader
     }
 
     /**
-     * Generates and caches the middleware map to a file.
-     * Includes metadata (file list and modification times) for cache validation.
-     *
      * @param array<string, array<int, array{class: class-string, overrideClass: ?string}>> $middlewareMap
-     * @param string[] $files File paths that were scanned
-     * @param string[] $dirs Directory paths that were scanned
+     * @param string[] $files
+     * @param string[] $dirs
      */
     private function generateCache(array $middlewareMap, array $files, array $dirs): void
     {
@@ -434,29 +384,5 @@ final class MiddlewareLoader
 
         $cacheContent = "<?php return " . var_export($cacheData, true) . ";";
         file_put_contents(self::CACHE_FILE, $cacheContent);
-    }
-
-
-    private function fileToClass(string $filepath): string
-    {
-        $basePath = BASE_PATH;
-        $relativePath = str_replace($basePath, "", $filepath);
-        $class = str_replace([".php", "/"], ["", "\\"], $relativePath);
-
-        $class = ltrim($class, "\\");
-        if (str_starts_with($class, "app\\")) {
-            $class = str_replace("app\\", "App\\", $class);
-        }
-
-        if (preg_match('#modules/([^/]+)/src/Middlewares/(.*)\.php#', $relativePath, $matches)) {
-            return "Modules\\{$matches[1]}\\Middlewares\\{$matches[2]}";
-        }
-
-        if (preg_match('#modules/([^/]+)/(.*)/Middlewares/(.*)\.php#', $relativePath, $matches)) {
-            $namespacePath = str_replace('/', '\\', $matches[2]);
-            return "Modules\\{$matches[1]}\\{$namespacePath}\\Middlewares\\{$matches[3]}";
-        }
-
-        return $class;
     }
 }

@@ -5,14 +5,12 @@ declare(strict_types=1);
 namespace Modules\AppAuth\Middlewares;
 
 use Modules\AppAuth\Services\UserContext;
-use Forge\Core\DI\Attributes\Service;
 use Modules\ForgeRouter\Helpers\Redirect;
 use Modules\ForgeRouter\Http\Middleware;
 use Modules\ForgeRouter\Http\Request;
 use Modules\ForgeRouter\Http\Response;
 use Forge\Core\Services\RedirectHandlerService;
 
-#[Service]
 final class AuthMiddleware extends Middleware
 {
     public function __construct(

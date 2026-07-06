@@ -4,16 +4,14 @@ declare(strict_types=1);
 
 namespace Modules\ForgeRouter\Http\Middlewares;
 
-use Forge\Core\DI\Attributes\Service;
-use Modules\ForgeRouter\Http\Middleware;
+use Modules\ForgeRouter\Http\Middleware as MiddlewareImpl;
 use Modules\ForgeRouter\Http\Request;
 use Modules\ForgeRouter\Http\Response;
-use Modules\ForgeRouter\Middleware\Attributes\RegisterMiddleware;
+use Modules\ForgeRouter\Middleware\Attributes\Middleware;
 use Forge\Core\Security\AssetRegistry;
 
-#[Service]
-#[RegisterMiddleware(group: 'web', order: 3, allowDuplicate: true, enabled: true)]
-final class RelaxSecurityHeadersMiddleware extends Middleware
+#[Middleware(group: 'web', order: 3, allowDuplicate: true, enabled: true)]
+final class RelaxSecurityHeadersMiddleware extends MiddlewareImpl
 {
     public function handle(Request $request, callable $next): Response
     {

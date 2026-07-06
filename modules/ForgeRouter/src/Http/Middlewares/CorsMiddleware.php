@@ -3,17 +3,15 @@
 namespace Modules\ForgeRouter\Http\Middlewares;
 
 use Forge\Core\Config\Config;
-use Forge\Core\DI\Attributes\Service;
-use Modules\ForgeRouter\Http\Middleware;
+use Modules\ForgeRouter\Http\Middleware as MiddlewareImpl;
 use Modules\ForgeRouter\Http\Request;
 use Modules\ForgeRouter\Http\Response;
-use Modules\ForgeRouter\Middleware\Attributes\RegisterMiddleware;
-use Forge\Exceptions\InvalidMiddlewareResponse;
+use Modules\ForgeRouter\Middleware\Attributes\Middleware;
+use Modules\ForgeRouter\Exceptions\InvalidMiddlewareResponse;
 use Modules\ForgeRouter\Traits\ResponseHelper;
 
-#[Service]
-#[RegisterMiddleware(group: 'global', order: 2, allowDuplicate: true, enabled: true)]
-class CorsMiddleware extends Middleware
+#[Middleware(group: 'global', order: 2, allowDuplicate: true, enabled: true)]
+class CorsMiddleware extends MiddlewareImpl
 {
     use ResponseHelper;
 

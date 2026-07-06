@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Modules\ForgeRouter\Http\Middlewares;
 
-use Forge\Core\DI\Attributes\Injectable;
 use Forge\Core\Helpers\FileExistenceCache;
 use Modules\ForgeRouter\Http\Middleware as MiddlewareExtend;
 use Modules\ForgeRouter\Http\Request;
@@ -21,7 +20,6 @@ use Modules\ForgeRouter\Middleware\Attributes\Middleware;
  * - Cache control headers
  * - Vary header support
  */
-#[Injectable]
 #[Middleware(group: 'global', order: 5, allowDuplicate: true, enabled: true)]
 class HttpCacheMiddleware extends MiddlewareExtend
 {

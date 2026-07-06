@@ -9,12 +9,10 @@ use Modules\ForgeAuth\Contracts\ForgeAuthInterface;
 use Modules\ForgeAuth\Contracts\UserProviderInterface;
 use Modules\ForgeAuth\Exceptions\LoginException;
 use Forge\Core\Config\Config;
-use Forge\Core\DI\Attributes\Service;
 use Forge\Core\Module\Attributes\Provides;
 use Forge\Core\Module\Attributes\Requires;
 use Forge\Core\Session\SessionInterface;
 
-#[Service]
 #[Provides(interface: ForgeAuthInterface::class, version: '0.1.7')]
 #[Requires(SessionInterface::class, version: '>=0.1.0')]
 #[Requires(Config::class, version: '>=0.1.0')]

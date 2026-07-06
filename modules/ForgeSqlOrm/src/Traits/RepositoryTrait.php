@@ -4,7 +4,7 @@ namespace Modules\ForgeSqlOrm\Traits;
 
 use Forge\Core\Contracts\Database\QueryBuilderInterface;
 use Forge\Core\DI\Container;
-use Forge\Core\Dto\BaseDto;
+use Modules\ForgeSqlOrm\Dto\BaseDto;
 use Forge\Core\Helpers\Url;
 
 trait RepositoryTrait
@@ -71,13 +71,12 @@ trait RepositoryTrait
     }
 
     public static function paginate(
-        int    $page,
-        int    $perPage,
+        int $page,
+        int $perPage,
         string $column = 'created_at',
         string $direction = 'ASC',
         string $search = ''
-    ): array
-    {
+    ): array {
         $offset = ($page - 1) * $perPage;
         $query = static::query();
 
@@ -133,16 +132,15 @@ trait RepositoryTrait
     }
 
     private static function formatPaginationResult(
-        array  $items,
-        int    $total,
-        int    $page,
-        int    $perPage,
+        array $items,
+        int $total,
+        int $page,
+        int $perPage,
         string $column,
         string $direction,
         string $search
-    ): array
-    {
-        $totalPages = (int)ceil($total / $perPage);
+    ): array {
+        $totalPages = (int) ceil($total / $perPage);
 
         return [
             'data' => $items,

@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Modules\ForgeHub\Services;
 
 use Modules\ForgeHub\Models\LogEntry;
-use Forge\Core\DI\Attributes\Service;
 use Forge\Core\Helpers\FileExistenceCache;
 use Forge\Core\Module\Attributes\Requires;
 use Forge\Core\Config\Config;
@@ -13,7 +12,6 @@ use Generator;
 use SplFileInfo;
 use DirectoryIterator;
 
-#[Service]
 #[Requires(Config::class)]
 final class LogService
 {
@@ -24,8 +22,7 @@ final class LogService
 
     public function __construct(
         private Config $config
-    )
-    {
+    ) {
         $this->logPath = self::LOG_PATH;
     }
 
@@ -56,8 +53,7 @@ final class LogService
         ?string $filename = null,
         ?string $search = null,
         ?string $date = null
-    ): Generator
-    {
+    ): Generator {
         $file = $this->validateFile($filename);
 
         foreach ($this->readFileLines($file) as $line) {

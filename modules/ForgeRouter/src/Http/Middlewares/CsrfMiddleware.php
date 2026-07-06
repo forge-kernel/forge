@@ -4,17 +4,15 @@ declare(strict_types=1);
 
 namespace Modules\ForgeRouter\Http\Middlewares;
 
-use Forge\Core\DI\Attributes\Service;
-use Modules\ForgeRouter\Http\Middleware;
+use Modules\ForgeRouter\Http\Middleware as MiddlewareImpl;
 use Modules\ForgeRouter\Http\Request;
 use Modules\ForgeRouter\Http\Response;
-use Modules\ForgeRouter\Middleware\Attributes\RegisterMiddleware;
-use Forge\Core\Services\TokenManager;
+use Modules\ForgeRouter\Middleware\Attributes\Middleware;
+use Modules\ForgeRouter\Services\TokenManager;
 use Modules\ForgeRouter\Traits\ResponseHelper;
 
-#[Service]
-#[RegisterMiddleware(group: 'web', order: 1, allowDuplicate: true, enabled: true)]
-final class CsrfMiddleware extends Middleware
+#[Middleware(group: 'web', order: 1, allowDuplicate: true, enabled: true)]
+final class CsrfMiddleware extends MiddlewareImpl
 {
     use ResponseHelper;
 
@@ -119,7 +117,7 @@ final class CsrfMiddleware extends Middleware
     private function matchUrl(string $url, ?string $expectedHost, string $expectedScheme, bool $strictScheme): bool
     {
         $uHost = $this->normalizeHost(parse_url($url, PHP_URL_HOST) ?: '');
-        $uScheme = (string)(parse_url($url, PHP_URL_SCHEME) ?: 'http');
+        $uScheme = (string) (parse_url($url, PHP_URL_SCHEME) ?: 'http');
 
         if (!$uHost || !$expectedHost) {
             return false;

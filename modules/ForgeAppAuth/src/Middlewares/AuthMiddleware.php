@@ -5,16 +5,14 @@ namespace Modules\ForgeAppAuth\Middlewares;
 
 use Modules\ForgeAppAuth\Services\UserContext;
 use Modules\ForgeRouter\Helpers\Redirect;
-use Modules\ForgeRouter\Http\Middleware;
+use Modules\ForgeRouter\Http\Middleware as MiddlewareImpl;
 use Modules\ForgeRouter\Http\Request;
 use Modules\ForgeRouter\Http\Response;
-use Modules\ForgeRouter\Middleware\Attributes\RegisterMiddleware;
-use Forge\Core\DI\Attributes\Service;
+use Modules\ForgeRouter\Middleware\Attributes\Middleware;
 use Forge\Core\Services\RedirectHandlerService;
 
-#[Service]
-#[RegisterMiddleware(group: 'auth')]
-final class AuthMiddleware extends Middleware
+#[Middleware(group: 'auth')]
+final class AuthMiddleware extends MiddlewareImpl
 {
     public function __construct(
         private readonly UserContext $userContext,

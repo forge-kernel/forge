@@ -8,9 +8,7 @@ use Modules\ForgeMultiTenant\DTO\Tenant;
 use Modules\ForgeMultiTenant\Enums\Strategy;
 use Modules\ForgeMultiTenant\Exceptions\TenantNotFoundException;
 use Forge\Core\Contracts\Database\QueryBuilderInterface;
-use Forge\Core\DI\Attributes\Injectable;
 
-#[Injectable]
 final class TenantManager
 {
     private ?Tenant $current = null;

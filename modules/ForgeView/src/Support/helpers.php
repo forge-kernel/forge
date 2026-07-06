@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 use Forge\Core\Contracts\ViewInterface;
 use Forge\Core\DI\Container;
-use Forge\Core\Helpers\Html;
+use Modules\ForgeView\Helpers\Html;
 use Forge\Core\Module\ModuleResourceResolver;
 use Forge\Core\Security\AssetRegistry;
 

@@ -4,11 +4,9 @@ declare(strict_types=1);
 
 namespace Modules\ForgeHub\Services;
 
-use Forge\Core\DI\Attributes\Service;
 use Forge\Core\Helpers\FileExistenceCache;
 use Forge\Traits\FileHelper;
 
-#[Service]
 final class CronJobService
 {
     use FileHelper;
@@ -80,7 +78,7 @@ final class CronJobService
         }
 
         if (is_numeric($value)) {
-            return (string)(int)$value;
+            return (string) (int) $value;
         }
 
         return $value;
@@ -466,25 +464,25 @@ final class CronJobService
             ];
 
             if (preg_match('/^(\d+)-(\d+)$/', $part, $matches)) {
-                $start = (int)$matches[1];
-                $end = (int)$matches[2];
+                $start = (int) $matches[1];
+                $end = (int) $matches[2];
                 if ($start < $ranges[$index][0] || $end > $ranges[$index][1] || $start > $end) {
                     return false;
                 }
             } elseif (preg_match('/^\*\/(\d+)$/', $part, $matches)) {
-                $step = (int)$matches[1];
+                $step = (int) $matches[1];
                 if ($step < 1 || $step > $ranges[$index][1]) {
                     return false;
                 }
             } elseif (preg_match('/^(\d+)$/', $part)) {
-                $value = (int)$part;
+                $value = (int) $part;
                 if ($value < $ranges[$index][0] || $value > $ranges[$index][1]) {
                     return false;
                 }
             } elseif (preg_match('/^(\d+),(\d+)(?:,(\d+))*$/', $part)) {
                 $values = explode(',', $part);
                 foreach ($values as $value) {
-                    $intValue = (int)$value;
+                    $intValue = (int) $value;
                     if ($intValue < $ranges[$index][0] || $intValue > $ranges[$index][1]) {
                         return false;
                     }
@@ -518,8 +516,8 @@ final class CronJobService
         }
 
         if ($minute !== '*' && $hour !== '*' && $day === '*' && $month === '*' && $weekday === '*') {
-            $hour12 = (int)$hour > 12 ? (int)$hour - 12 : (int)$hour;
-            $ampm = (int)$hour >= 12 ? 'PM' : 'AM';
+            $hour12 = (int) $hour > 12 ? (int) $hour - 12 : (int) $hour;
+            $ampm = (int) $hour >= 12 ? 'PM' : 'AM';
             if ($hour12 === 0) {
                 $hour12 = 12;
             }
@@ -532,7 +530,7 @@ final class CronJobService
 
         if ($month !== '*') {
             $monthNames = ['', 'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
-            $monthName = isset($monthNames[(int)$month]) ? $monthNames[(int)$month] : $month;
+            $monthName = isset($monthNames[(int) $month]) ? $monthNames[(int) $month] : $month;
             return "Yearly in {$monthName}";
         }
 

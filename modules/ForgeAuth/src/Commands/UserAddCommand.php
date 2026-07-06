@@ -15,21 +15,20 @@ use Forge\CLI\Command;
 use Forge\CLI\Traits\Wizard;
 use Forge\Core\Services\TemplateGenerator;
 use Modules\ForgeLogger\Services\ForgeLoggerService;
-use Forge\Core\DI\Attributes\Service;
 use Throwable;
 
 #[
     Cli(
-        command: "auth:user:add",
-        description: "Add a new user to the database and assign roles/permissions",
-        usage: "auth:user:add [--identifier=ID] [--email=EMAIL] [--password=PASSWORD] [--roles=ROLE1,ROLE2] [--permissions=PERM1,PERM2]",
-        examples: [
-            "auth:user:add",
-            "auth:user:add --identifier=john --email=john@example.com --password=secret",
-            "auth:user:add --identifier=admin --email=admin@example.com --roles=ADMIN --permissions=users.read,users.write",
-            "auth:user:add --identifier=user1 --email=user1@example.com --roles=USER,EDITOR",
-        ],
-    ),
+    command: "auth:user:add",
+    description: "Add a new user to the database and assign roles/permissions",
+    usage: "auth:user:add [--identifier=ID] [--email=EMAIL] [--password=PASSWORD] [--roles=ROLE1,ROLE2] [--permissions=PERM1,PERM2]",
+    examples: [
+        "auth:user:add",
+        "auth:user:add --identifier=john --email=john@example.com --password=secret",
+        "auth:user:add --identifier=admin --email=admin@example.com --roles=ADMIN --permissions=users.read,users.write",
+        "auth:user:add --identifier=user1 --email=user1@example.com --roles=USER,EDITOR",
+    ],
+),
 ]
 final class UserAddCommand extends Command
 {
@@ -37,10 +36,10 @@ final class UserAddCommand extends Command
 
     #[
         Arg(
-            name: "identifier",
-            description: "User identifier/username",
-            required: false,
-        ),
+        name: "identifier",
+        description: "User identifier/username",
+        required: false,
+    ),
     ]
     private ?string $identifier = null;
 
@@ -49,49 +48,49 @@ final class UserAddCommand extends Command
 
     #[
         Arg(
-            name: "password",
-            description: "User password (will prompt if not provided)",
-            required: false,
-        ),
+        name: "password",
+        description: "User password (will prompt if not provided)",
+        required: false,
+    ),
     ]
     private ?string $password = null;
 
     #[
         Arg(
-            name: "roles",
-            description: "Comma-separated list of role names",
-            required: false,
-        ),
+        name: "roles",
+        description: "Comma-separated list of role names",
+        required: false,
+    ),
     ]
     private ?string $roles = null;
 
     #[
         Arg(
-            name: "permissions",
-            description: "Comma-separated list of permission names (legacy support)",
-            required: false,
-        ),
+        name: "permissions",
+        description: "Comma-separated list of permission names (legacy support)",
+        required: false,
+    ),
     ]
     private ?string $permissions = null;
 
     #[
         Arg(
-            name: "status",
-            description: "User status: active, inactive, suspended",
-            validate: "active|inactive|suspended",
-            default: "active",
-            required: false,
-        ),
+        name: "status",
+        description: "User status: active, inactive, suspended",
+        validate: "active|inactive|suspended",
+        default: "active",
+        required: false,
+    ),
     ]
     private string $status = "active";
 
     #[
         Arg(
-            name: "interactive",
-            description: "Force interactive mode even with all params provided",
-            default: false,
-            required: false,
-        ),
+        name: "interactive",
+        description: "Force interactive mode even with all params provided",
+        default: false,
+        required: false,
+    ),
     ]
     private bool $interactive = false;
 
@@ -101,7 +100,8 @@ final class UserAddCommand extends Command
         private readonly RoleService $roleService,
         private readonly TemplateGenerator $templateGenerator,
         private readonly ForgeLoggerService $logger,
-    ) {}
+    ) {
+    }
 
     public function execute(array $args): int
     {

@@ -4,9 +4,7 @@ declare(strict_types=1);
 namespace Modules\ForgeMultiTenant\Services;
 
 use Forge\Core\Config\Config;
-use Forge\Core\DI\Attributes\Injectable;
 
-#[Injectable]
 final class CentralDomain
 {
     private static ?string $host = null;

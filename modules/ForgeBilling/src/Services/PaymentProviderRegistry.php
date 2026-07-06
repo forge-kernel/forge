@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Modules\ForgeBilling\Services;
 
 use Modules\ForgeBilling\Contracts\PaymentProviderInterface;
-use Forge\Core\DI\Attributes\Service;
 use RuntimeException;
 
 final class PaymentProviderRegistry

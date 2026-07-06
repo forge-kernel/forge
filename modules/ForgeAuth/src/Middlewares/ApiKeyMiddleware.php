@@ -5,17 +5,16 @@ declare(strict_types=1);
 namespace Modules\ForgeAuth\Middlewares;
 
 use Modules\ForgeAuth\Services\ApiKeyService;
-use Forge\Core\DI\Attributes\Service;
 use Modules\ForgeRouter\Http\Request;
 use Modules\ForgeRouter\Http\Response;
 use Forge\Core\DI\Container;
 
-#[Service]
 final class ApiKeyMiddleware
 {
     public function __construct(
         private readonly ApiKeyService $apiKeyService,
-    ) {}
+    ) {
+    }
 
     public function handle(Request $request, callable $next): Response
     {
@@ -38,7 +37,7 @@ final class ApiKeyMiddleware
         }
 
         $keyRecord = $this->apiKeyService->validateApiKey($apiKey);
-        
+
         if (!$keyRecord) {
             return $this->createResponse(
                 $request,
@@ -46,7 +45,7 @@ final class ApiKeyMiddleware
                 401,
             );
         }
-        
+
         $keyInfo = $this->apiKeyService->getApiKeyInfo($apiKey);
         if (!$keyInfo) {
             return $this->createResponse(

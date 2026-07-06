@@ -3,7 +3,7 @@ declare(strict_types=1);
 
 namespace Modules\ForgeAppAuth\Dto;
 
-use Forge\Core\Dto\BaseDto;
+use Modules\ForgeSqlOrm\Dto\BaseDto;
 
 final class UserMetadataDto extends BaseDto
 {

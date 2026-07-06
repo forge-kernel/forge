@@ -26,7 +26,7 @@ final class ControllerMapCacheWarmer implements CacheWarmerInterface
     {
         $structureResolver = $this->container->has(StructureResolver::class)
             ? $this->container->get(StructureResolver::class)
-            : null;
+            : new StructureResolver();
 
         $config = $this->container->has(Config::class)
             ? $this->container->get(Config::class)
@@ -34,24 +34,58 @@ final class ControllerMapCacheWarmer implements CacheWarmerInterface
 
         $controllerDirs = $this->resolveControllerDirs($structureResolver, $config);
 
-        $loader = new ControllerLoader($this->container, $controllerDirs, $structureResolver);
+        $loader = new ControllerLoader($this->container, $controllerDirs);
         $controllers = $loader->registerControllers();
 
         $this->writeCache($controllers);
     }
 
-    private function resolveControllerDirs(?StructureResolver $structureResolver, ?Config $config): array
+    private function resolveControllerDirs(StructureResolver $structureResolver, ?Config $config): array
     {
-        if ($structureResolver) {
-            $appControllersPath = $structureResolver->getAppPath('controllers');
-            $controllerDirs = [BASE_PATH . '/' . $appControllersPath];
-        } else {
-            $controllerDirs = [BASE_PATH . '/app/Controllers'];
+        $dirs = [];
+
+        foreach ($structureResolver->getAppPaths('controllers') as $path) {
+            $fullPath = BASE_PATH . '/' . $path;
+            if (is_dir($fullPath)) {
+                $dirs[] = [
+                    'path' => $fullPath,
+                    'namespace' => $structureResolver->getAppNamespace('controllers'),
+                ];
+            }
         }
 
-        $moduleControllerDirs = OptimizedDirectoryScanner::getControllerDirectories($config);
+        foreach ($structureResolver->getAppPaths('http') as $path) {
+            $fullPath = BASE_PATH . '/' . $path;
+            if (is_dir($fullPath)) {
+                $dirs[] = [
+                    'path' => $fullPath,
+                    'namespace' => $structureResolver->getAppNamespace('http'),
+                ];
+            }
+        }
 
-        return array_merge($controllerDirs, $moduleControllerDirs);
+        $moduleDirs = OptimizedDirectoryScanner::getModuleDirectories($config);
+        foreach ($moduleDirs as $moduleName => $modulePath) {
+            if (!is_dir($modulePath . '/src/Controllers') && !is_dir($modulePath . '/src/Http')) {
+                continue;
+            }
+
+            if (is_dir($modulePath . '/src/Controllers')) {
+                $dirs[] = [
+                    'path' => $modulePath . '/src/Controllers',
+                    'namespace' => $structureResolver->getModuleNamespace($moduleName, 'controllers'),
+                ];
+            }
+
+            if (is_dir($modulePath . '/src/Http')) {
+                $dirs[] = [
+                    'path' => $modulePath . '/src/Http',
+                    'namespace' => $structureResolver->getModuleNamespace($moduleName, 'http'),
+                ];
+            }
+        }
+
+        return $dirs;
     }
 
     private function writeCache(array $controllers): void
@@ -63,7 +97,6 @@ final class ControllerMapCacheWarmer implements CacheWarmerInterface
 
         $export = var_export([
             'controllers' => $controllers,
-            'routeData' => [],
         ], true);
 
         $tmp = tempnam($dir, 'ctrl_');

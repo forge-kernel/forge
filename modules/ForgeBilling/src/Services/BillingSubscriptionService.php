@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Modules\ForgeBilling\Services;
 
 use Modules\ForgeBilling\Dto\BillingPlan;
-use Forge\Core\DI\Attributes\Service;
 use Modules\ForgeBilling\Dto\BillingSubscription;
 use Modules\ForgeBilling\Enums\SubscriptionStatus;
 use Forge\Core\Contracts\Database\QueryBuilderInterface;

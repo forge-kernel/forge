@@ -8,16 +8,14 @@ use Forge\CLI\Traits\OutputHelper;
 use Forge\Core\Config\Config;
 use Forge\Core\Config\Environment;
 use Forge\Core\Contracts\Database\QueryBuilderInterface;
-use Forge\Core\DI\Attributes\Service;
-use Modules\ForgeRouter\Http\Middleware;
+use Modules\ForgeRouter\Http\Middleware as MiddlewareImpl;
 use Modules\ForgeRouter\Http\Request;
 use Modules\ForgeRouter\Http\Response;
-use Modules\ForgeRouter\Middleware\Attributes\RegisterMiddleware;
+use Modules\ForgeRouter\Middleware\Attributes\Middleware;
 use Modules\ForgeRouter\Traits\ResponseHelper;
 
-#[Service]
-#[RegisterMiddleware(group: "global", order: 0, allowDuplicate: false, overrideClass: null, enabled: true)]
-class RateLimitMiddleware extends Middleware
+#[Middleware(group: "global", order: 0, allowDuplicate: false, overrideClass: null, enabled: true)]
+class RateLimitMiddleware extends MiddlewareImpl
 {
     use OutputHelper;
     use ResponseHelper;

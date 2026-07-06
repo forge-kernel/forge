@@ -5,16 +5,14 @@ declare(strict_types=1);
 namespace Modules\ForgeRouter\Http\Middlewares;
 
 use Forge\Core\Config\Config;
-use Forge\Core\DI\Attributes\Service;
-use Modules\ForgeRouter\Http\Middleware;
+use Modules\ForgeRouter\Http\Middleware as MiddlewareImpl;
 use Modules\ForgeRouter\Http\Request;
 use Modules\ForgeRouter\Http\Response;
-use Modules\ForgeRouter\Middleware\Attributes\RegisterMiddleware;
+use Modules\ForgeRouter\Middleware\Attributes\Middleware;
 use Modules\ForgeRouter\Traits\ResponseHelper;
 
-#[Service]
-#[RegisterMiddleware(group: 'api', order: 0, allowDuplicate: true, enabled: true)]
-class IpWhiteListMiddleware extends Middleware
+#[Middleware(group: 'api', order: 0, allowDuplicate: true, enabled: true)]
+class IpWhiteListMiddleware extends MiddlewareImpl
 {
     use ResponseHelper;
 

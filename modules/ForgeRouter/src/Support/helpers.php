@@ -8,7 +8,7 @@ use Modules\ForgeRouter\Collectors\TimelineCollector;
 use Modules\ForgeRouter\Collectors\ViewCollector;
 use Modules\ForgeRouter\Http\Request;
 use Forge\Core\DI\Container;
-use Forge\Core\Services\TokenManager;
+use Modules\ForgeRouter\Services\TokenManager;
 
 if (!function_exists('request')) {
     function request(): Request

@@ -11,10 +11,7 @@ use Modules\ForgeDatabaseSQL\DB\Schema\MySqlFormatter;
 use Modules\ForgeDatabaseSQL\DB\Schema\PostgreSqlFormatter;
 use Modules\ForgeDatabaseSQL\DB\Schema\SqliteFormatter;
 use Forge\Core\Contracts\Database\DatabaseConnectionInterface;
-use Forge\Core\DI\Attributes\Migration as MigrationAttribute;
 use Forge\Core\DI\Container;
-use Forge\Core\Helpers\FileExistenceCache;
-use Forge\Core\Services\AttributeDiscoveryService;
 use Forge\Core\Structure\StructureResolver;
 use Forge\Traits\StringHelper;
 use Forge\CLI\Traits\OutputHelper;
@@ -187,67 +184,8 @@ final class Migrator
             }
         }
 
-        $attributeFiles = $this->discoverAttributeBasedMigrations(
-            $scope,
-            $module,
-        );
-        $files = array_merge($files, $attributeFiles);
-
         $files = array_unique($files);
         sort($files);
-
-        return $files;
-    }
-
-    /**
-     * Discover migrations using #[Migration] attribute
-     *
-     * @return array<string> List of full file paths
-     */
-    private function discoverAttributeBasedMigrations(
-        string $scope,
-        ?string $module,
-    ): array {
-        if (!$this->pathResolver) {
-            return [];
-        }
-
-        $discoveryService = new AttributeDiscoveryService();
-        $basePaths = $this->pathResolver->getBasePathsForDiscovery(
-            $scope,
-            $module,
-        );
-
-        $classMap = $discoveryService->discover($basePaths, [
-            MigrationAttribute::class,
-        ]);
-
-        $files = [];
-        foreach ($classMap as $className => $metadata) {
-            if (class_exists($className)) {
-                try {
-                    $reflection = new ReflectionClass($className);
-                    if ($reflection->isSubclassOf(Migration::class)) {
-                        $filepath = $metadata["file"] ?? "";
-                        if (
-                            $filepath &&
-                            FileExistenceCache::exists($filepath)
-                        ) {
-                            if (
-                                $this->pathResolver->matchesScopeAndModule(
-                                    $filepath,
-                                    $scope,
-                                    $module,
-                                )
-                            ) {
-                                $files[] = $filepath;
-                            }
-                        }
-                    }
-                } catch (ReflectionException $e) {
-                }
-            }
-        }
 
         return $files;
     }

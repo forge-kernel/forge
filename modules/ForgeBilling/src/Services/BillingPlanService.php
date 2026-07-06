@@ -7,7 +7,6 @@ namespace Modules\ForgeBilling\Services;
 use Modules\ForgeBilling\Dto\BillingPlan;
 use Forge\Core\Contracts\Database\QueryBuilderInterface;
 use Forge\Core\Helpers\UUID;
-use Forge\Core\DI\Attributes\Service;
 
 final class BillingPlanService
 {

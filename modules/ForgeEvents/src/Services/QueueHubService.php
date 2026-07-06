@@ -7,27 +7,23 @@ namespace Modules\ForgeEvents\Services;
 use Modules\ForgeEvents\Queues\DatabaseQueue;
 use Modules\ForgeSqlOrm\ORM\Paginator;
 use Forge\Core\Contracts\Database\QueryBuilderInterface;
-use Forge\Core\DI\Attributes\Service;
 use Forge\Core\Helpers\Url;
 
-#[Service]
 class QueueHubService
 {
     public function __construct(
         private readonly QueryBuilderInterface $queryBuilder
-    )
-    {
+    ) {
     }
 
     public function getJobs(
-        array  $filters,
+        array $filters,
         string $sortColumn,
         string $sortDirection,
-        int    $page,
-        int    $perPage,
-        bool   $includeDetails = false
-    ): Paginator
-    {
+        int $page,
+        int $perPage,
+        bool $includeDetails = false
+    ): Paginator {
         $countQuery = $this->buildFilteredQuery($filters);
         $total = $countQuery->count();
 
@@ -119,10 +115,10 @@ class QueueHubService
             ->first();
 
         return [
-            'total' => (int)($stats['total'] ?? 0),
-            'pending' => (int)($stats['pending'] ?? 0),
-            'processing' => (int)($stats['processing'] ?? 0),
-            'failed' => (int)($stats['failed'] ?? 0),
+            'total' => (int) ($stats['total'] ?? 0),
+            'pending' => (int) ($stats['pending'] ?? 0),
+            'processing' => (int) ($stats['processing'] ?? 0),
+            'failed' => (int) ($stats['failed'] ?? 0),
         ];
     }
 
@@ -146,9 +142,9 @@ class QueueHubService
             $databaseQueue = new DatabaseQueue($this->queryBuilder);
             $databaseQueue->push(
                 $job['payload'],
-                (int)($job['priority'] ?? 100),
+                (int) ($job['priority'] ?? 100),
                 0,
-                (int)($job['max_retries'] ?? 1),
+                (int) ($job['max_retries'] ?? 1),
                 $job['queue'] ?? 'default'
             );
 
@@ -266,12 +262,12 @@ class QueueHubService
         $payloadData = $this->parsePayload($job['payload'] ?? '');
 
         $enriched = [
-            'id' => (int)$job['id'],
+            'id' => (int) $job['id'],
             'queue' => $job['queue'] ?? 'default',
             'status' => $status,
-            'priority' => (int)($job['priority'] ?? 100),
-            'attempts' => (int)($job['attempts'] ?? 0),
-            'max_retries' => (int)($job['max_retries'] ?? 1),
+            'priority' => (int) ($job['priority'] ?? 100),
+            'attempts' => (int) ($job['attempts'] ?? 0),
+            'max_retries' => (int) ($job['max_retries'] ?? 1),
             'created_at' => $job['created_at'] ?? null,
             'process_at' => $job['process_at'] ?? null,
             'reserved_at' => $job['reserved_at'] ?? null,
@@ -284,9 +280,9 @@ class QueueHubService
                 'payload' => $payloadData,
                 'metadata' => [
                     'queue' => $job['queue'] ?? 'default',
-                    'priority' => (int)($job['priority'] ?? 100),
-                    'attempts' => (int)($job['attempts'] ?? 0),
-                    'max_retries' => (int)($job['max_retries'] ?? 1),
+                    'priority' => (int) ($job['priority'] ?? 100),
+                    'attempts' => (int) ($job['attempts'] ?? 0),
+                    'max_retries' => (int) ($job['max_retries'] ?? 1),
                 ],
             ];
         }

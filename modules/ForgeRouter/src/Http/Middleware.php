@@ -5,7 +5,7 @@ namespace Modules\ForgeRouter\Http;
 
 use Modules\ForgeRouter\Http\Request;
 use Modules\ForgeRouter\Http\Response;
-use Forge\Exceptions\InvalidMiddlewareResponse;
+use Modules\ForgeRouter\Exceptions\InvalidMiddlewareResponse;
 
 abstract class Middleware
 {

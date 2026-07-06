@@ -4,13 +4,11 @@ declare(strict_types=1);
 
 namespace Modules\ForgeHub\Services;
 
-use Forge\Core\DI\Attributes\Service;
 use Forge\Core\Helpers\FileExistenceCache;
 use RecursiveDirectoryIterator;
 use RecursiveIteratorIterator;
 use Throwable;
 
-#[Service]
 final class CommandCacheService
 {
     public const COMMANDS_CACHE_FILE = BASE_PATH . '/storage/framework/cache/forgehub_commands.php';
@@ -158,7 +156,7 @@ final class CommandCacheService
     private function getAllCommandFiles(): array
     {
         $files = [];
-        
+
         // App commands directory
         $appCommandsPath = BASE_PATH . '/app/Commands';
         if (is_dir($appCommandsPath)) {
@@ -173,9 +171,11 @@ final class CommandCacheService
             );
 
             foreach ($iterator as $file) {
-                if ($file->isFile() && 
-                    $file->getExtension() === 'php' && 
-                    str_ends_with($file->getFilename(), 'Command.php')) {
+                if (
+                    $file->isFile() &&
+                    $file->getExtension() === 'php' &&
+                    str_ends_with($file->getFilename(), 'Command.php')
+                ) {
                     $files[] = $file->getRealPath();
                 }
             }
@@ -192,9 +192,11 @@ final class CommandCacheService
         );
 
         foreach ($iterator as $file) {
-            if ($file->isFile() && 
-                $file->getExtension() === 'php' && 
-                str_ends_with($file->getFilename(), 'Command.php')) {
+            if (
+                $file->isFile() &&
+                $file->getExtension() === 'php' &&
+                str_ends_with($file->getFilename(), 'Command.php')
+            ) {
                 $files[] = $file->getRealPath();
             }
         }

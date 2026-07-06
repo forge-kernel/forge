@@ -8,18 +8,16 @@ use Forge\Core\Config\Config;
 use Forge\Core\Config\Environment;
 use Forge\Core\Contracts\Contracts\Database\DatabaseConnectionInterface;
 use Forge\Core\Contracts\Database\QueryBuilderInterface;
-use Forge\Core\DI\Attributes\Service;
 use Forge\Core\DI\Container;
-use Modules\ForgeRouter\Http\Middleware;
+use Modules\ForgeRouter\Http\Middleware as MiddlewareImpl;
 use Modules\ForgeRouter\Http\Request;
 use Modules\ForgeRouter\Http\Response;
-use Modules\ForgeRouter\Middleware\Attributes\RegisterMiddleware;
+use Modules\ForgeRouter\Middleware\Attributes\Middleware;
 use Modules\ForgeRouter\Traits\ResponseHelper;
 use Throwable;
 
-#[Service]
-#[RegisterMiddleware(group: 'global', order: 1, allowDuplicate: true, enabled: true)]
-class CircuitBreakerMiddleware extends Middleware
+#[Middleware(group: 'global', order: 1, allowDuplicate: true, enabled: true)]
+class CircuitBreakerMiddleware extends MiddlewareImpl
 {
     use ResponseHelper;
 

@@ -4,9 +4,6 @@ declare(strict_types=1);
 
 namespace Modules\ForgeHub\Services;
 
-use Forge\Core\DI\Attributes\Service;
-
-#[Service]
 final class MonitoringService
 {
     public function getCpuLoad(): array
@@ -142,11 +139,11 @@ final class MonitoringService
 
         foreach (explode("\n", $meminfo) as $line) {
             if (preg_match('/^MemTotal:\s+(\d+)\s+kB/i', $line, $matches)) {
-                $total = (int)$matches[1] * 1024;
+                $total = (int) $matches[1] * 1024;
             } elseif (preg_match('/^MemFree:\s+(\d+)\s+kB/i', $line, $matches)) {
-                $free = (int)$matches[1] * 1024;
+                $free = (int) $matches[1] * 1024;
             } elseif (preg_match('/^MemAvailable:\s+(\d+)\s+kB/i', $line, $matches)) {
-                $available = (int)$matches[1] * 1024;
+                $available = (int) $matches[1] * 1024;
             }
         }
 
@@ -182,7 +179,7 @@ final class MonitoringService
             ];
         }
 
-        $total = (int)trim($totalOutput);
+        $total = (int) trim($totalOutput);
         if ($total <= 0) {
             return [
                 'total' => 0,
@@ -210,15 +207,15 @@ final class MonitoringService
 
         foreach (explode("\n", $vmStat) as $line) {
             if (preg_match('/Pages free:\s+(\d+)/', $line, $matches)) {
-                $freePages = (int)$matches[1];
+                $freePages = (int) $matches[1];
             } elseif (preg_match('/Pages inactive:\s+(\d+)/', $line, $matches)) {
-                $inactivePages = (int)$matches[1];
+                $inactivePages = (int) $matches[1];
             } elseif (preg_match('/Pages speculative:\s+(\d+)/', $line, $matches)) {
-                $speculativePages = (int)$matches[1];
+                $speculativePages = (int) $matches[1];
             } elseif (preg_match('/Pages wired down:\s+(\d+)/', $line, $matches)) {
-                $wiredPages = (int)$matches[1];
+                $wiredPages = (int) $matches[1];
             } elseif (preg_match('/Pages active:\s+(\d+)/', $line, $matches)) {
-                $activePages = (int)$matches[1];
+                $activePages = (int) $matches[1];
             }
         }
 
@@ -256,7 +253,7 @@ final class MonitoringService
         foreach ($lines as $line) {
             $line = trim($line);
             if (is_numeric($line)) {
-                $total = (int)$line;
+                $total = (int) $line;
                 break;
             }
         }
@@ -268,7 +265,7 @@ final class MonitoringService
             foreach ($freeLines as $line) {
                 $line = trim($line);
                 if (is_numeric($line)) {
-                    $free = (int)$line * 1024;
+                    $free = (int) $line * 1024;
                     break;
                 }
             }
@@ -290,14 +287,14 @@ final class MonitoringService
         if (PHP_OS_FAMILY === 'Linux') {
             $uptime = @file_get_contents('/proc/uptime');
             if ($uptime !== false) {
-                $seconds = (float)explode(' ', trim($uptime))[0];
+                $seconds = (float) explode(' ', trim($uptime))[0];
                 return $this->formatUptime($seconds);
             }
         } elseif (PHP_OS_FAMILY === 'Darwin') {
             $output = @shell_exec('sysctl -n kern.boottime');
             if ($output !== null) {
                 if (preg_match('/sec = (\d+)/', $output, $matches)) {
-                    $bootTime = (int)$matches[1];
+                    $bootTime = (int) $matches[1];
                     $uptime = time() - $bootTime;
                     return $this->formatUptime($uptime);
                 }
@@ -332,12 +329,12 @@ final class MonitoringService
         if (PHP_OS_FAMILY === 'Linux' || PHP_OS_FAMILY === 'Darwin') {
             $output = @shell_exec('ps aux | wc -l');
             if ($output !== null) {
-                return (int)trim($output) - 1;
+                return (int) trim($output) - 1;
             }
         } elseif (PHP_OS_FAMILY === 'Windows') {
             $output = @shell_exec('tasklist | find /c /v ""');
             if ($output !== null) {
-                return (int)trim($output) - 1;
+                return (int) trim($output) - 1;
             }
         }
 
@@ -352,7 +349,7 @@ final class MonitoringService
         }
 
         $last = strtolower($value[strlen($value) - 1]);
-        $value = (int)$value;
+        $value = (int) $value;
 
         return match ($last) {
             'g' => $value * 1024 * 1024 * 1024,

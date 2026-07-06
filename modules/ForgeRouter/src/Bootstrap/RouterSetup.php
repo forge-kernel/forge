@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Modules\ForgeRouter\Bootstrap;
 
 use Forge\Core\Bootstrap\OptimizedDirectoryScanner;
-use Forge\Core\Config\Config;
 use Forge\Core\Debug\Metrics;
 use Forge\Core\DI\Container;
 use Forge\Core\Helpers\FileExistenceCache;
@@ -14,9 +13,7 @@ use Modules\ForgeRouter\Middleware\EngineMiddlewareRegistry;
 use Modules\ForgeRouter\Middleware\MiddlewareLoader;
 use Modules\ForgeRouter\Routing\ControllerLoader;
 use Modules\ForgeRouter\Routing\Router;
-use Forge\Core\Services\AttributeDiscoveryService;
 use Forge\Core\Structure\StructureResolver;
-use Modules\ForgeRouter\Attributes\Routable;
 use Forge\Exceptions\MissingServiceException;
 use ReflectionException;
 
@@ -42,64 +39,17 @@ final class RouterSetup
         Metrics::start("router_controller_dir_scan");
         $structureResolver = $container->has(StructureResolver::class)
             ? $container->get(StructureResolver::class)
-            : null;
+            : new StructureResolver();
 
-        if ($structureResolver) {
-            $appControllersPath = $structureResolver->getAppPath('controllers');
-            $controllerDirs = [BASE_PATH . '/' . $appControllersPath];
-        } else {
-            $controllerDirs = [BASE_PATH . "/app/Controllers"];
-        }
-
-        $config = $container->has(Config::class) ? $container->get(Config::class) : null;
-        $moduleControllerDirs = OptimizedDirectoryScanner::getControllerDirectories($config);
-
-        // Merge with existing controller directories
-        $controllerDirs = array_merge($controllerDirs, $moduleControllerDirs);
+        $controllerDirs = self::resolveControllerDirectories($structureResolver);
         Metrics::stop("router_controller_dir_scan");
 
         Metrics::start("router_controller_cache_load");
-        $structureResolver = $container->has(StructureResolver::class)
-            ? $container->get(StructureResolver::class)
-            : null;
-        $loader = new ControllerLoader($container, $controllerDirs, $structureResolver);
+        $loader = new ControllerLoader($container, $controllerDirs);
         $cacheResult = self::loadControllersWithCache($loader);
         $controllers = $cacheResult['controllers'];
         $cachedRouteData = $cacheResult['routeData'];
         Metrics::stop("router_controller_cache_load");
-
-        $routableMetadata = [];
-        if ($container->has(AttributeDiscoveryService::class)) {
-            $discoveryService = $container->get(AttributeDiscoveryService::class);
-            $routableMetadata = $discoveryService->getClassesWithAttributeMetadata(Routable::class);
-            if (empty($routableMetadata)) {
-                $basePaths = OptimizedDirectoryScanner::getAttributeDiscoveryPaths($config);
-                $discoveryService->discover($basePaths, [Routable::class]);
-                $routableMetadata = $discoveryService->getClassesWithAttributeMetadata(Routable::class);
-            }
-        }
-
-        $existingClasses = [];
-        foreach ($controllers as $c) {
-            $existingClasses[$c['class']] = true;
-        }
-
-        $hasNewRoutable = false;
-        foreach ($routableMetadata as $className => $metadata) {
-            if (!isset($existingClasses[$className])) {
-                $container->register($className);
-                $controllers[] = [
-                    'class' => $className,
-                    'file' => $metadata['file'],
-                    'mtime' => $metadata['mtime'],
-                ];
-                $hasNewRoutable = true;
-            }
-        }
-
-        if ($hasNewRoutable) {
-            $cachedRouteData = null;
-        }
 
         Metrics::start("router_middleware_loader");
         /** @var MiddlewareLoader $middlewareLoader */
@@ -186,7 +136,7 @@ final class RouterSetup
         Metrics::stop("router_init");
 
         Metrics::start("router_register_controllers");
-        if ($cachedRouteData !== null) {
+        if ($cachedRouteData !== null && $cachedRouteData !== []) {
             foreach ($controllers as $controllerMeta) {
                 $class = $controllerMeta['class'];
                 if (isset($cachedRouteData[$class])) {
@@ -201,21 +151,76 @@ final class RouterSetup
                 $allRouteData[$class] = $routes;
             }
             self::writeControllerCache($controllers, $allRouteData);
-
-            foreach ($controllers as $controllerMeta) {
-                $class = $controllerMeta['class'] ?? '';
-                if ($class && !isset($routableMetadata[$class])) {
-                    trigger_error(
-                        "Controller class \"{$class}\" uses legacy folder-based discovery. Add #[Routable] attribute to the class.",
-                        E_USER_DEPRECATED
-                    );
-                }
-            }
-
         }
         Metrics::stop("router_register_controllers");
 
         return $router;
+    }
+
+    /**
+     * @return array<int, array{path: string, namespace: string}>
+     */
+    private static function resolveControllerDirectories(StructureResolver $structureResolver): array
+    {
+        $dirs = [];
+
+        foreach ($structureResolver->getAppPaths('controllers') as $path) {
+            $fullPath = BASE_PATH . '/' . $path;
+            if (is_dir($fullPath)) {
+                $dirs[] = [
+                    'path' => $fullPath,
+                    'namespace' => $structureResolver->getAppNamespace('controllers'),
+                ];
+            }
+        }
+
+        foreach ($structureResolver->getAppPaths('http') as $path) {
+            $fullPath = BASE_PATH . '/' . $path;
+            if (is_dir($fullPath)) {
+                $dirs[] = [
+                    'path' => $fullPath,
+                    'namespace' => $structureResolver->getAppNamespace('http'),
+                ];
+            }
+        }
+
+        $modulesRoot = BASE_PATH . '/' . $structureResolver->getModulesRoot();
+        if (is_dir($modulesRoot)) {
+            foreach (scandir($modulesRoot) as $moduleName) {
+                if ($moduleName === '.' || $moduleName === '..') {
+                    continue;
+                }
+                if (ModuleHelper::isModuleDisabled($moduleName)) {
+                    continue;
+                }
+
+                try {
+                    foreach ($structureResolver->getModulePaths($moduleName, 'controllers') as $modulePath) {
+                        $fullPath = $modulesRoot . '/' . $moduleName . '/' . $modulePath;
+                        if (is_dir($fullPath)) {
+                            $dirs[] = [
+                                'path' => $fullPath,
+                                'namespace' => $structureResolver->getModuleNamespace($moduleName, 'controllers'),
+                            ];
+                        }
+                    }
+
+                    foreach ($structureResolver->getModulePaths($moduleName, 'http') as $modulePath) {
+                        $fullPath = $modulesRoot . '/' . $moduleName . '/' . $modulePath;
+                        if (is_dir($fullPath)) {
+                            $dirs[] = [
+                                'path' => $fullPath,
+                                'namespace' => $structureResolver->getModuleNamespace($moduleName, 'http'),
+                            ];
+                        }
+                    }
+                } catch (\InvalidArgumentException) {
+                    continue;
+                }
+            }
+        }
+
+        return $dirs;
     }
 
     private static function loadControllersWithCache(ControllerLoader $loader): array

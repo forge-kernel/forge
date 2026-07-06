@@ -9,7 +9,7 @@ use Modules\ForgeRouter\Http\Kernel;
 use Modules\ForgeRouter\Http\Request;
 use Modules\ForgeRouter\Http\Response;
 use Modules\ForgeRouter\Routing\Router;
-use Forge\Core\Services\TokenManager;
+use Modules\ForgeRouter\Services\TokenManager;
 
 trait HttpTesting
 {
@@ -40,10 +40,9 @@ trait HttpTesting
     private function sendRequest(
         string $method,
         string $uri,
-        array  $body = [],
-        array  $headers = [],
-    ): Response
-    {
+        array $body = [],
+        array $headers = [],
+    ): Response {
         $query = [];
         $uriParts = parse_url($uri);
         $path = $uriParts["path"] ?? "/";
@@ -86,19 +85,17 @@ trait HttpTesting
 
     protected function post(
         string $uri,
-        array  $data = [],
-        array  $headers = [],
-    ): Response
-    {
+        array $data = [],
+        array $headers = [],
+    ): Response {
         return $this->sendRequest("POST", $uri, $data, $headers);
     }
 
     protected function patch(
         string $uri,
-        array  $data = [],
-        array  $headers = [],
-    ): Response
-    {
+        array $data = [],
+        array $headers = [],
+    ): Response {
         return $this->sendRequest("PATCH", $uri, $data, $headers);
     }
 }

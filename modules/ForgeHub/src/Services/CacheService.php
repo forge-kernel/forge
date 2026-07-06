@@ -5,11 +5,7 @@ declare(strict_types=1);
 namespace Modules\ForgeHub\Services;
 
 use Forge\Core\Cache\CacheManager;
-use Forge\Core\DI\Attributes\Service;
-use Forge\Core\Helpers\FileExistenceCache;
-use Forge\Core\Config\Environment;
 
-#[Service]
 final class CacheService
 {
     public function __construct(

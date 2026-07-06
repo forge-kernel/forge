@@ -10,7 +10,7 @@ use Modules\ForgeRouter\Http\Request;
 use Modules\ForgeRouter\Http\Response;
 use Modules\ForgeRouter\Routing\Endpoint;
 use Modules\ForgeRouter\Attributes\Routable;
-use Forge\Exceptions\UserNotFoundException;
+use Modules\AppAuth\Exceptions\UserNotFoundException;
 use Modules\ForgeRouter\Traits\ResponseHelper;
 use Modules\ForgeRouter\Traits\PaginationHelper;
 

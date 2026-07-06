@@ -8,10 +8,8 @@ use Modules\ForgeAuth\Contracts\AuthUserInterface;
 use Modules\ForgeNotification\Services\ForgeNotificationService;
 use Forge\Core\Config\Config;
 use Forge\Core\Contracts\Database\QueryBuilderInterface;
-use Forge\Core\DI\Attributes\Service;
 use Forge\Core\DI\Container;
 
-#[Service]
 final class PasswordResetService
 {
     private const string TABLE = 'password_resets';

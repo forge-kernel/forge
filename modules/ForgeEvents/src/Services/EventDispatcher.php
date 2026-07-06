@@ -17,7 +17,7 @@ use Forge\Core\Cache\Attributes\NoCache;
 use Forge\Core\Config\Config;
 use Forge\Core\Contracts\Database\QueryBuilderInterface;
 use Forge\Core\Contracts\EventDispatcherInterface;
-use Forge\Core\DI\Attributes\Service;
+use Forge\Core\DI\Attributes\Injectable;
 use Forge\Core\DI\Container;
 use Forge\Core\Module\Attributes\Provides;
 use Forge\Exceptions\MissingServiceException;
@@ -28,7 +28,7 @@ use ReflectionException;
 use RuntimeException;
 use Throwable;
 
-#[Service(singleton: true)]
+#[Injectable(singleton: true)]
 #[Provides(EventDispatcher::class, version: '0.2.1')]
 #[NoCache(reason: 'Contains unserializable database connections')]
 final class EventDispatcher implements EventDispatcherInterface

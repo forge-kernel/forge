@@ -8,7 +8,6 @@ use Modules\ForgeBilling\Dto\BillingPlan;
 use Modules\ForgeBilling\Dto\BillingSubscription;
 use Modules\ForgeBilling\Dto\Invoice;
 use Modules\ForgeBilling\Dto\PaymentMethod;
-use Forge\Core\DI\Attributes\Service;
 
 final class BillingPortalService
 {

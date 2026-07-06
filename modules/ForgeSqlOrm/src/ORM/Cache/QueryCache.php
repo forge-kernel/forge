@@ -5,9 +5,7 @@ declare(strict_types=1);
 namespace Modules\ForgeSqlOrm\ORM\Cache;
 
 use Modules\ForgeSqlOrm\Contracts\CacheInterface;
-use Forge\Core\DI\Attributes\Service;
 
-#[Service]
 final class QueryCache implements CacheInterface
 {
     private array $cache = [];
@@ -65,4 +63,3 @@ final class QueryCache implements CacheInterface
         return "{$table}:{$method}:{$argsHash}";
     }
 }
-

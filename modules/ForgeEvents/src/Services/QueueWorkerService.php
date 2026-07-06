@@ -4,11 +4,9 @@ declare(strict_types=1);
 
 namespace Modules\ForgeEvents\Services;
 
-use Forge\Core\DI\Attributes\Service;
 use Forge\Core\Helpers\FileExistenceCache;
 use Forge\Traits\FileHelper;
 
-#[Service]
 final class QueueWorkerService
 {
     use FileHelper;
@@ -483,7 +481,7 @@ final class QueueWorkerService
         $outputFile = $this->getOutputFilePath($id);
 
         if (file_exists($outputFile)) {
-            return (int)@filesize($outputFile);
+            return (int) @filesize($outputFile);
         }
 
         return 0;

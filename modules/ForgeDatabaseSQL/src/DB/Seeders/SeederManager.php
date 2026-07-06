@@ -5,17 +5,12 @@ declare(strict_types=1);
 
 namespace Modules\ForgeDatabaseSQL\DB\Seeders;
 
-use Modules\ForgeDatabaseSQL\DB\Seeders\Attributes\Seedable;
-use Modules\ForgeDatabaseSQL\DB\Seeders\Attributes\Seeder as SeederAttribute;
 use Modules\ForgeDatabaseSQL\DB\Seeders\Seeder;
-use Forge\Core\Bootstrap\OptimizedDirectoryScanner;
 use Forge\Core\Contracts\Database\DatabaseConnectionInterface;
 use Forge\Core\Helpers\ModuleHelper;
-use Forge\Core\Services\AttributeDiscoveryService;
 use Forge\Core\Structure\StructureResolver;
 use Forge\Traits\StringHelper;
 use PDO;
-use ReflectionException;
 use RuntimeException;
 use Throwable;
 
@@ -25,9 +20,6 @@ final class SeederManager
 
     private const string SEEDERS_TABLE = 'forge_seeders';
     private const string MODULES_PATH = BASE_PATH . '/modules';
-
-    /** @var array<string>|null */
-    private ?array $attributeDiscoveredSeederFiles = null;
 
     public function __construct(
         private DatabaseConnectionInterface $connection,
@@ -187,114 +179,19 @@ final class SeederManager
         return is_dir($fullPath) ? $fullPath : null;
     }
 
-    /**
-     * @return array<string>
-     */
-    private function getAttributeDiscoveredSeederFiles(): array
-    {
-        if ($this->attributeDiscoveredSeederFiles !== null) {
-            return $this->attributeDiscoveredSeederFiles;
-        }
-
-        $basePaths = OptimizedDirectoryScanner::getAttributeDiscoveryPaths();
-        if (empty($basePaths)) {
-            $this->attributeDiscoveredSeederFiles = [];
-            return [];
-        }
-
-        $discoveryService = new AttributeDiscoveryService();
-        $classMap = $discoveryService->discover($basePaths, [Seedable::class, SeederAttribute::class]);
-
-        $files = [];
-        foreach ($classMap as $className => $metadata) {
-            if (!in_array(Seedable::class, $metadata['attributes'] ?? [], true) && !in_array(SeederAttribute::class, $metadata['attributes'] ?? [], true)) {
-                continue;
-            }
-
-            $file = $metadata['file'] ?? null;
-            if ($file === null) {
-                continue;
-            }
-
-            if (!class_exists($className, false)) {
-                @include_once $file;
-            }
-
-            if (!class_exists($className, false) || !is_subclass_of($className, Seeder::class, false)) {
-                continue;
-            }
-            $files[] = $file;
-        }
-
-        $this->attributeDiscoveredSeederFiles = $files;
-        return $files;
-    }
-
     private function getAllAppSeederFiles(): array
     {
-        $legacy = $this->getAppSeederFiles();
-        $appPath = $this->resolveAppSeedersPath();
-        if ($appPath === null) {
-            return $legacy;
-        }
-
-        $tenantDir = $appPath . '/Tenants';
-        $attribute = [];
-        foreach ($this->getAttributeDiscoveredSeederFiles() as $file) {
-            if (str_starts_with($file, $appPath . '/') && !str_starts_with($file, $tenantDir . '/')) {
-                $attribute[] = $file;
-            }
-        }
-
-        return array_values(array_unique(array_merge($attribute, $legacy)));
+        return $this->getAppSeederFiles();
     }
 
     private function getAllTenantSeederFiles(): array
     {
-        $legacy = $this->getTenantSeederFiles();
-        $appPath = $this->resolveAppSeedersPath();
-        if ($appPath === null) {
-            return $legacy;
-        }
-
-        $tenantDir = $appPath . '/Tenants';
-        $attribute = [];
-        foreach ($this->getAttributeDiscoveredSeederFiles() as $file) {
-            if (str_starts_with($file, $tenantDir . '/')) {
-                $attribute[] = $file;
-            }
-        }
-
-        return array_values(array_unique(array_merge($attribute, $legacy)));
+        return $this->getTenantSeederFiles();
     }
 
     private function getAllModuleSeederFiles(?string $target = null): array
     {
-        $legacy = $this->getModuleSeeders($target);
-        $attribute = [];
-
-        foreach ($this->getAvailableModules() as $moduleName) {
-            if ($target && $moduleName !== $target) {
-                continue;
-            }
-
-            if (ModuleHelper::isModuleDisabled($moduleName)) {
-                continue;
-            }
-
-            $modulePath = $this->resolveModuleSeedersPath($moduleName);
-            if ($modulePath === null) {
-                continue;
-            }
-
-            foreach ($this->getAttributeDiscoveredSeederFiles() as $file) {
-                if (str_starts_with($file, $modulePath . '/')) {
-                    $attribute[] = $file;
-                }
-            }
-        }
-
-        return array_values(array_unique(array_merge($attribute, $legacy)));
+        return $this->getModuleSeeders($target);
     }
 
     /**
@@ -486,17 +383,5 @@ final class SeederManager
         }
 
         return $seeders;
-    }
-
-    private function getAvailableModules(): array
-    {
-        if (!is_dir(self::MODULES_PATH)) {
-            return [];
-        }
-
-        return array_filter(scandir(self::MODULES_PATH), function ($item) {
-            return is_dir(self::MODULES_PATH . "/" . $item) &&
-                !in_array($item, [".", ".."]);
-        });
     }
 }

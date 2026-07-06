@@ -4,23 +4,21 @@ declare(strict_types=1);
 
 namespace Modules\ForgeRouter\Http\Middlewares;
 
-use Forge\Core\DI\Attributes\Service;
-use Modules\ForgeRouter\Http\Middleware;
+use Modules\ForgeRouter\Http\Middleware as MiddlewareImpl;
 use Modules\ForgeRouter\Http\Request;
 use Modules\ForgeRouter\Http\Response;
-use Modules\ForgeRouter\Middleware\Attributes\RegisterMiddleware;
+use Modules\ForgeRouter\Middleware\Attributes\Middleware;
 use SimpleXMLElement;
 
-#[Service]
-#[RegisterMiddleware(group: 'api', order: 2, allowDuplicate: true, enabled: true)]
-class ApiMiddleware extends Middleware
+#[Middleware(group: 'api', order: 2, allowDuplicate: true, enabled: true)]
+class ApiMiddleware extends MiddlewareImpl
 {
     public function handle(Request $request, callable $next): Response
     {
         $response = $next($request);
 
         $response->setHeader('X-API-Version', '1.0.0')
-                 ->setHeader('X-Content-Type-Options', 'nosniff');
+            ->setHeader('X-Content-Type-Options', 'nosniff');
 
         $accept = $request->getHeader('Accept');
         if (str_contains($accept, 'application/xml')) {
@@ -53,17 +51,17 @@ class ApiMiddleware extends Middleware
             if (is_array($value)) {
                 if (is_numeric($key)) {
                     $subnode = $xml->addChild('item');
-                    $subnode->addAttribute('index', (string)$key);
+                    $subnode->addAttribute('index', (string) $key);
                 } else {
                     $subnode = $xml->addChild($key);
                 }
                 $this->arrayToXml($value, $subnode);
             } else {
                 if (is_numeric($key)) {
-                    $child = $xml->addChild('item', htmlspecialchars((string)$value));
-                    $child->addAttribute('index', (string)$key);
+                    $child = $xml->addChild('item', htmlspecialchars((string) $value));
+                    $child->addAttribute('index', (string) $key);
                 } else {
-                    $xml->addChild($key, htmlspecialchars((string)$value));
+                    $xml->addChild($key, htmlspecialchars((string) $value));
                 }
             }
         }
