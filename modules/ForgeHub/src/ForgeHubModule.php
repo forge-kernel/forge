@@ -10,8 +10,6 @@ use Forge\Core\Module\Attributes\Compatibility;
 use Forge\Core\Module\Attributes\ConfigDefaults;
 use Forge\Core\Module\Attributes\Module;
 use Forge\Core\Module\Attributes\Repository;
-use Modules\ForgeHub\Contracts\ForgeHubInterface;
-use Modules\ForgeHub\Services\ForgeHubService;
 use Modules\ForgeHub\Services\HubItemRegistry;
 use Modules\ForgeHub\Services\ObservabilityService;
 use Modules\ForgeHub\Services\ObservabilityServiceInterface;
@@ -22,7 +20,7 @@ use Forge\Core\Security\PermissionsEnum;
 
 #[Module(
     name: 'ForgeHub',
-    version: '2.5.10',
+    version: '2.5.11',
     description: 'Administration Hub for Forge Framework',
     order: 6,
     author: 'Forge Team',
@@ -63,8 +61,6 @@ final class ForgeHubModule
     public function register(Container $container): void
     {
         $this->setupConfigDefaults($container);
-
-        $container->bind(ForgeHubInterface::class, ForgeHubService::class);
         $container->bind(ObservabilityServiceInterface::class, ObservabilityService::class);
 
         if ($container->has(HubItemRegistry::class)) {
