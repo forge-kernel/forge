@@ -8,20 +8,22 @@ use Forge\Core\Config\Config;
 use Forge\Core\Module\Attributes\ConfigDefaults;
 use Forge\Core\Module\Attributes\Requires;
 use Modules\ForgeEvents\Attributes\EventListener;
-use Forge\Core\Bootstrap\OptimizedDirectoryScanner;
 use Modules\ForgeEvents\Services\EventDispatcher;
 use Forge\Core\DI\Container;
 use Forge\Core\Module\Attributes\Compatibility;
 use Forge\Core\Module\Attributes\Module;
 use Forge\Core\Module\Attributes\Repository;
-use Forge\Core\Services\AttributeDiscoveryService;
+use Forge\Core\Helpers\ModuleHelper;
+use Forge\Core\Structure\StructureResolver;
+use RecursiveDirectoryIterator;
+use RecursiveIteratorIterator;
 use ReflectionClass;
 use ReflectionException;
 use ReflectionMethod;
 
 #[Module(
     name: "ForgeEvents",
-    version: "1.4.11",
+    version: "1.4.12",
     description: "An Event Queue system by forge",
     order: 99,
     author: 'Forge Team',
@@ -51,41 +53,90 @@ final class ForgeEventsModule
             return;
         }
 
-        $discoveryService = new AttributeDiscoveryService();
-        $basePaths = OptimizedDirectoryScanner::getAttributeDiscoveryPaths();
-        $classMap = $discoveryService->discover($basePaths, [EventListener::class]);
+        $structureResolver = $container->has(StructureResolver::class)
+            ? $container->get(StructureResolver::class)
+            : new StructureResolver();
 
-        foreach ($classMap as $className => $metadata) {
-            if (!class_exists($className)) {
-                $filepath = $metadata['file'] ?? '';
-                if ($filepath && file_exists($filepath)) {
-                    require_once $filepath;
+        foreach ($structureResolver->getAppPaths('events') as $path) {
+            $fullPath = BASE_PATH . '/' . $path;
+            if (is_dir($fullPath)) {
+                $this->scanDirectory(
+                    $fullPath,
+                    $structureResolver->getAppNamespace('events'),
+                    $eventDispatcher,
+                    $container
+                );
+            }
+        }
+
+        $modulesRoot = $structureResolver->getModulesRoot();
+        $modulesPath = BASE_PATH . '/' . $modulesRoot;
+        if (is_dir($modulesPath)) {
+            foreach (scandir($modulesPath) as $moduleName) {
+                if ($moduleName === '.' || $moduleName === '..') {
+                    continue;
+                }
+                if (ModuleHelper::isModuleDisabled($moduleName)) {
+                    continue;
+                }
+
+                try {
+                    foreach ($structureResolver->getModulePaths($moduleName, 'events') as $modulePath) {
+                        $fullPath = $modulesPath . '/' . $moduleName . '/' . $modulePath;
+                        if (is_dir($fullPath)) {
+                            $this->scanDirectory(
+                                $fullPath,
+                                $structureResolver->getModuleNamespace($moduleName, 'events'),
+                                $eventDispatcher,
+                                $container
+                            );
+                        }
+                    }
+                } catch (\InvalidArgumentException) {
+                    continue;
                 }
             }
+        }
+    }
 
-            if (!class_exists($className)) {
+    private function scanDirectory(
+        string $dir,
+        string $namespace,
+        EventDispatcher $eventDispatcher,
+        Container $container,
+    ): void {
+        $iterator = new RecursiveIteratorIterator(
+            new RecursiveDirectoryIterator($dir, RecursiveDirectoryIterator::SKIP_DOTS)
+        );
+
+        foreach ($iterator as $file) {
+            if ($file->getExtension() !== 'php') {
+                continue;
+            }
+
+            $relativePath = substr($file->getPathname(), strlen($dir) + 1);
+            $fqcn = $namespace . '\\' . str_replace('/', '\\', substr($relativePath, 0, -4));
+
+            if (!class_exists($fqcn)) {
                 continue;
             }
 
             try {
-                $reflection = new ReflectionClass($className);
-                $methods = $reflection->getMethods(ReflectionMethod::IS_PUBLIC);
-
-                foreach ($methods as $method) {
-                    $attributes = $method->getAttributes(EventListener::class);
-                    foreach ($attributes as $attribute) {
+                $reflection = new ReflectionClass($fqcn);
+                foreach ($reflection->getMethods(ReflectionMethod::IS_PUBLIC) as $method) {
+                    foreach ($method->getAttributes(EventListener::class) as $attribute) {
                         $listener = $attribute->newInstance();
-                        $eventClass = $listener->eventClass;
-
-                        $listenerInstance = $container->has($className)
-                            ? $container->get($className)
+                        $listenerInstance = $container->has($fqcn)
+                            ? $container->get($fqcn)
                             : $reflection->newInstance();
-
-                        $eventDispatcher->addListener($eventClass, [$listenerInstance, $method->getName()]);
+                        $eventDispatcher->addListener(
+                            $listener->eventClass,
+                            [$listenerInstance, $method->getName()]
+                        );
                     }
                 }
-            } catch (ReflectionException $e) {
-
+            } catch (ReflectionException) {
+                continue;
             }
         }
     }
