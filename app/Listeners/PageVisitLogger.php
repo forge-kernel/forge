@@ -6,9 +6,7 @@ namespace App\Listeners;
 
 use App\Events\TestPageVisitedEvent;
 use Modules\ForgeEvents\Attributes\EventListener;
-use Forge\Core\DI\Attributes\Service;
 
-#[Service]
 class PageVisitLogger
 {
     #[EventListener(TestPageVisitedEvent::class)]

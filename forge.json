@@ -1,25 +1,25 @@
 {
-  "name": "Forge Kernel",
-  "kernel": {
-    "name": "forge-kernel",
-    "version": "latest"
-  },
-  "modules": {
-    "forge-storage": "latest",
-    "forge-logger": "latest",
-    "forge-error-handler": "latest",
-    "forge-auth": "latest",
-    "forge-testing": "latest",
-    "forge-package-manager": "latest",
-    "forge-deployment": "latest",
-    "forge-debug-bar": "latest",
-    "forge-welcome": "latest",
-    "forge-wire": "latest",
-    "app-auth": "latest",
-    "forge-multi-tenant": "latest",
-    "forge-hub": "latest",
-    "forge-view": "latest",
-    "forge-router": "latest",
-    "forge-components": "latest"
-  }
+    "name": "Forge Kernel",
+    "kernel": {
+        "name": "forge-kernel",
+        "version": "latest"
+    },
+    "modules": {
+        "forge-storage": "latest",
+        "forge-logger": "latest",
+        "forge-error-handler": "latest",
+        "forge-auth": "latest",
+        "forge-testing": "latest",
+        "forge-package-manager": "latest",
+        "forge-deployment": "latest",
+        "forge-debug-bar": "latest",
+        "forge-welcome": "latest",
+        "forge-wire": "latest",
+        "app-auth": "latest",
+        "forge-multi-tenant": "latest",
+        "forge-hub": "latest",
+        "forge-view": "latest",
+        "forge-router": "latest",
+        "forge-components": "latest"
+    }
 }

@@ -5,10 +5,8 @@ declare(strict_types=1);
 namespace App\Services;
 
 use App\Dto\ProductDTO;
-use Forge\Core\DI\Attributes\Service;
 use Forge\Core\Session\SessionInterface;
 
-#[Service]
 final class ProductService
 {
     /** @var ProductDTO[] */
@@ -37,13 +35,13 @@ final class ProductService
     /** @return array{items: list<array>, total:int} */
     public function list(string $q, string $sort, string $dir, int $page, int $perPage): array
     {
-        $data = array_map(fn (ProductDTO $p) => $p->toArray(), $this->items);
+        $data = array_map(fn(ProductDTO $p) => $p->toArray(), $this->items);
 
         if ($q !== '') {
             $qq = mb_strtolower($q);
             $data = array_values(array_filter(
                 $data,
-                fn ($p) =>
+                fn($p) =>
                 str_contains(mb_strtolower($p['name']), $qq)
             ));
         }
@@ -59,7 +57,7 @@ final class ProductService
         });
 
         $total = count($data);
-        $page  = max(1, $page);
+        $page = max(1, $page);
         $start = ($page - 1) * $perPage;
         $items = array_slice($data, $start, $perPage);
 
@@ -89,6 +87,6 @@ final class ProductService
 
     public function delete(int $id): void
     {
-        $this->items = array_values(array_filter($this->items, fn ($p) => $p->id !== $id));
+        $this->items = array_values(array_filter($this->items, fn($p) => $p->id !== $id));
     }
 }

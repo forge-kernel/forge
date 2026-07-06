@@ -7,10 +7,8 @@ namespace App\Services;
 use Modules\AppAuth\Models\User;
 use Modules\ForgeSqlOrm\ORM\Model;
 use Forge\Core\Cache\Attributes\Cache;
-use Forge\Core\DI\Attributes\Service;
 use Forge\Traits\CacheLifecycleHooks;
 
-#[Service]
 class UserService
 {
     use CacheLifecycleHooks;

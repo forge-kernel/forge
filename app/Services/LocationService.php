@@ -2,9 +2,6 @@
 
 namespace App\Services;
 
-use Forge\Core\DI\Attributes\Service;
-
-#[Service]
 class LocationService
 {
     /** @return array<int, array{value:string,label:string}> */
@@ -36,19 +33,19 @@ class LocationService
     public function cities(string $country, string $state): array
     {
         return match ([$country, $state]) {
-            ['US','CA'] => [
+            ['US', 'CA'] => [
                 ['value' => 'sf', 'label' => 'San Francisco'],
                 ['value' => 'la', 'label' => 'Los Angeles'],
             ],
-            ['US','NY'] => [
+            ['US', 'NY'] => [
                 ['value' => 'nyc', 'label' => 'New York City'],
                 ['value' => 'buf', 'label' => 'Buffalo'],
             ],
-            ['CA','ON'] => [
+            ['CA', 'ON'] => [
                 ['value' => 'tor', 'label' => 'Toronto'],
                 ['value' => 'ott', 'label' => 'Ottawa'],
             ],
-            ['CA','BC'] => [
+            ['CA', 'BC'] => [
                 ['value' => 'van', 'label' => 'Vancouver'],
                 ['value' => 'vic', 'label' => 'Victoria'],
             ],

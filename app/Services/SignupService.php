@@ -5,10 +5,8 @@ declare(strict_types=1);
 namespace App\Services;
 
 use App\DTO\SignupDTO;
-use Forge\Core\DI\Attributes\Service;
 use Forge\Core\Session\SessionInterface;
 
-#[Service]
 final class SignupService
 {
     private const KEY = '_demo_signups';
@@ -30,7 +28,7 @@ final class SignupService
     {
         $rows = $this->all();
         $id = random_int(1000, 999999);
-        $rows[] = ['id'=>$id] + $dto->toArray();
+        $rows[] = ['id' => $id] + $dto->toArray();
         $this->session->set(self::KEY, $rows);
         return $id;
     }
