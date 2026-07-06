@@ -45,7 +45,7 @@ use Forge\Core\Module\LifecycleHookName;
 ])]
 #[Module(
     name: 'ForgeBilling',
-    version: '0.2.7',
+    version: '0.2.8',
     description: 'Billing portal with plans, invoices, and payment provider support',
     order: 5,
     author: 'Forge Team',
