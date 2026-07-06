@@ -8,7 +8,6 @@ use Forge\Core\Module\Attributes\Requires;
 use Modules\ForgeStorage\Contracts\StorageDriverInterface;
 use Modules\ForgeStorage\Services\ProviderResolver;
 use Forge\Core\Config\Config;
-use Forge\Core\DI\Attributes\Service;
 use Forge\Core\DI\Container;
 use Forge\Core\Module\Attributes\Compatibility;
 use Forge\Core\Module\Attributes\ConfigDefaults;
@@ -19,7 +18,7 @@ use Forge\Core\Module\Attributes\Repository;
 
 #[Module(
     name: 'ForgeStorage',
-    version: '1.3.6',
+    version: '1.3.7',
     description: 'Simple file upload storage module with multiple provider support',
     author: 'Forge Team',
     license: 'MIT',
