@@ -260,7 +260,7 @@ return array (
     'hubItems' => 
     array (
     ),
-    'mtime' => 1783470105,
+    'mtime' => 1783519490,
     'modulePath' => '/Users/acidlake/Development/UPPER/Forge/repos/forge-v3/modules/ForgeSprinkle',
   ),
   'Modules\\AppAuth\\AppAuthModule' => 

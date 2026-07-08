@@ -26,4 +26,10 @@ final class Sprinkle
     {
         return $this->view(view: 'sprinkle/index');
     }
+    #[Endpoint("/sprinkle/raw")]
+    #[Layout("root")]
+    public function raw(): Response
+    {
+        return $this->view(view: 'sprinkle/raw');
+    }
 }

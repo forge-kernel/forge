@@ -46,12 +46,12 @@ final class ForgeSprinkleModule
     private function registerSprinkleAssets(): void
     {
         $this->registerAsset(
-            assetHtml: '<link rel="stylesheet" href="/assets/modules/forge-sprinkle/css/sprinkle.min.css">',
+            assetHtml: '<link rel="stylesheet" href="/assets/modules/forge-sprinkle/css/sprinkle.css">',
             beforeTag: '</head>',
         );
 
         $this->registerAsset(
-            assetHtml: '<script src="/assets/modules/forge-sprinkle/js/sprinkle.min.js" defer></script>',
+            assetHtml: '<script src="/assets/modules/forge-sprinkle/js/sprinkle.js" defer></script>',
             beforeTag: '</body>',
         );
     }

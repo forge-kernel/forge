@@ -53,8 +53,6 @@
   /* ── 1. autosize ── */
 
   ForgeSprinkle.register('textarea[autosize]', function autosize(el) {
-    el.style.overflow = 'hidden'
-    el.style.resize = 'none'
     function fit() {
       el.style.height = 'auto'
       el.style.height = el.scrollHeight + 'px'
@@ -66,8 +64,6 @@
   /* ── 2. sticky ── */
 
   ForgeSprinkle.register('[sticky]', function sticky(el) {
-    el.style.position = 'sticky'
-    el.style.top = '0'
     var s = document.createElement('div')
     s.className = 'sprinkle-sticky-sentinel'
     if (!el.parentNode) return
@@ -85,8 +81,19 @@
     return el.tagName === 'INPUT' || el.tagName === 'TEXTAREA' ? el.value : el.textContent
   }
 
+  var liveRegion
+  function ensureLive() {
+    if (!liveRegion) {
+      liveRegion = document.createElement('div')
+      liveRegion.setAttribute('aria-live', 'polite')
+      liveRegion.className = 'sprinkle-sr-only'
+      document.body.appendChild(liveRegion)
+    }
+  }
   function showCopied(el) {
     el.classList.add('sprinkle-copied')
+    ensureLive()
+    liveRegion.textContent = 'Copied'
     setTimeout(function () { el.classList.remove('sprinkle-copied') }, 1500)
   }
 
@@ -104,7 +111,6 @@
   /* ── 4. zoomable ── */
 
   ForgeSprinkle.register('img[zoomable]', function zoomable(el) {
-    el.style.cursor = 'zoom-in'
     el.addEventListener('click', function () {
       var bg = document.createElement('div')
       bg.className = 'sprinkle-zoomed-bg'
@@ -137,6 +143,7 @@
     function set() {
       el.classList.add('sprinkle-loading')
       el.disabled = true
+      el.setAttribute('aria-busy', 'true')
     }
     el.addEventListener('click', function () {
       if (!el.type || el.type === 'submit') {
@@ -299,38 +306,45 @@
     if (!iconName && (clear || srch)) iconName = 'close'
     if (clear) iconName = 'close'
     if (iconName) {
-      var s = document.createElement('img')
-      s.className = 'sprinkle-icon-suffix'
-      s.alt = ''
-      if (isToggle) {
-        s.classList.add('sprinkle-icon-interactive')
-        s.src = path + suff + '.svg'
-        s.addEventListener('click', function () {
-          var show = el.type === 'password'
-          el.type = show ? 'text' : 'password'
-          s.src = path + (show ? suff + '-off' : suff) + '.svg'
-        })
-      } else if (isClear) {
-        s.classList.add('sprinkle-icon-interactive')
-        s.src = path + iconName + '.svg'
-        s.addEventListener('click', function () {
-          el.value = ''
-          el.dispatchEvent(new Event('input', { bubbles: true }))
-          el.focus()
-        })
+      if (isToggle || isClear) {
+        var btn = document.createElement('button')
+        btn.type = 'button'
+        btn.className = 'sprinkle-icon-suffix sprinkle-icon-interactive'
+        var img = document.createElement('img')
+        img.alt = ''
+        btn.appendChild(img)
+        if (isToggle) {
+          btn.setAttribute('aria-label', 'Show password')
+          img.src = path + suff + '.svg'
+          btn.addEventListener('click', function () {
+            var show = el.type === 'password'
+            el.type = show ? 'text' : 'password'
+            img.src = path + (show ? suff + '-off' : suff) + '.svg'
+            btn.setAttribute('aria-label', show ? 'Hide password' : 'Show password')
+            if (!show) el.focus()
+          })
+        } else {
+          btn.setAttribute('aria-label', 'Clear input')
+          img.src = path + iconName + '.svg'
+          btn.addEventListener('click', function () {
+            el.value = ''
+            el.dispatchEvent(new Event('input', { bubbles: true }))
+            el.focus()
+          })
+        }
+        wrap.appendChild(btn)
       } else {
+        var s = document.createElement('img')
+        s.className = 'sprinkle-icon-suffix'
+        s.alt = ''
         s.src = path + iconName + '.svg'
+        wrap.appendChild(s)
       }
-      wrap.appendChild(s)
     }
   })
 
   /* ── 14. auto-width ── */
-
-  ForgeSprinkle.register('input[auto-width], textarea[auto-width]', function autoWidth(el) {
-    el.style.width = '100%'
-    el.style.boxSizing = 'border-box'
-  })
+  /* handled entirely by CSS: input[auto-width] { width:100%; box-sizing:border-box } */
 
   /* ── 15. accordion ── */
 
@@ -739,7 +753,11 @@
             c._sprinkleErrorShow()
           }
         }
-        if (valid) { form.submit(); return }
+        if (valid) {
+          if (form.hasAttribute('enhance')) return
+          form.submit()
+          return
+        }
         if (first) first.focus()
       })
     }
@@ -771,12 +789,6 @@
     el.pattern = '[0-9]{' + N + '}'
     el.maxLength = N
     el.autocomplete = 'one-time-code'
-
-    el.style.position = 'absolute'
-    el.style.opacity = '0'
-    el.style.width = '1px'
-    el.style.height = '1px'
-    el.style.overflow = 'hidden'
 
     var container = document.createElement('div')
     container.className = 'sprinkle-otp'
@@ -1088,6 +1100,7 @@
     try { saved = localStorage.getItem('sprinkle-theme') } catch (e) {}
     if (saved === 'dark') applyTheme(true)
     else if (saved === 'light') applyTheme(false)
+    else applyTheme(window.matchMedia('(prefers-color-scheme: dark)').matches)
   }
 
   function isDarkTheme() {
@@ -1117,6 +1130,201 @@
         if (open[i] !== e.target) open[i].removeAttribute('open')
       }
     }, true)
+  })
+
+  /* ── 38. form enhance ── */
+
+  ForgeSprinkle.register('form[enhance]', function enhanceForm(form) {
+    if (form._sprinkleEnhanceInit) return
+    form._sprinkleEnhanceInit = true
+
+    form.setAttribute('novalidate', '')
+
+    var selector = 'input:not([type="submit"]):not([type="reset"]):not([type="button"]):not([type="hidden"]), textarea, select'
+    form.querySelectorAll(selector).forEach(function (el) {
+      if (!el.hasAttribute('error-message')) {
+        el.setAttribute('error-message', '')
+        matchNode(el)
+      }
+    })
+
+    var msgEl = document.createElement('div')
+    msgEl.className = 'sprinkle-form-msg'
+    msgEl.style.display = 'none'
+    form.insertBefore(msgEl, form.firstChild)
+
+    function showMsg(type, text) {
+      msgEl.className = 'sprinkle-form-msg sprinkle-form-msg-' + type
+      msgEl.textContent = text
+      msgEl.style.display = ''
+    }
+
+    function clearMsg() {
+      msgEl.style.display = 'none'
+      msgEl.textContent = ''
+    }
+
+    function clearServerError() {
+      if (this._sprinkleServerError) {
+        this._sprinkleServerError = null
+        this.setCustomValidity('')
+        if (this._sprinkleErrorClear) this._sprinkleErrorClear()
+      }
+    }
+
+    form.addEventListener('submit', function (e) {
+      e.preventDefault()
+      clearMsg()
+
+      if (!form.checkValidity()) return
+
+      var btns = form.querySelectorAll('button[type="submit"], input[type="submit"]')
+      btns.forEach(function (btn) {
+        btn.classList.add('sprinkle-loading')
+        btn.disabled = true
+        btn.setAttribute('aria-busy', 'true')
+      })
+
+      var url = form.getAttribute('action') || window.location.href
+      var method = (form.getAttribute('method') || 'GET').toUpperCase()
+
+      fetch(url, {
+        method: method,
+        body: new FormData(form),
+        headers: { 'Accept': 'application/json' }
+      })
+      .then(function (res) {
+        return res.json().then(function (data) {
+          return { status: res.status, ok: res.ok, data: data }
+        }).catch(function () {
+          return { status: res.status, ok: res.ok, data: null }
+        })
+      })
+      .then(function (result) {
+        var data = result.data
+
+        if (data && data.errors) {
+          for (var name in data.errors) {
+            var el = form.elements[name]
+            if (!el) continue
+            el._sprinkleServerError = data.errors[name]
+            el.setCustomValidity(data.errors[name])
+            if (el._sprinkleErrorShow) el._sprinkleErrorShow()
+            el.addEventListener('input', clearServerError)
+          }
+        }
+
+        if (result.ok && data && data.success !== false) {
+          showMsg('success', data.message || 'Form submitted successfully.')
+          form.reset()
+        } else {
+          showMsg('error', data && data.message ? data.message : 'An error occurred. Please try again.')
+        }
+      })
+      .catch(function () {
+        showMsg('error', 'A network error occurred. Please check your connection and try again.')
+      })
+      .finally(function () {
+        btns.forEach(function (btn) {
+          btn.classList.remove('sprinkle-loading')
+          btn.disabled = false
+          btn.removeAttribute('aria-busy')
+        })
+      })
+    })
+  })
+
+  /* ── 39. boost ── */
+
+  var boostCache = {}
+  var boostUrl = window.location.href.split('#')[0]
+
+  function processSubtree(root) {
+    if (hasSprinkleAttr(root)) matchNode(root)
+    var all = root.querySelectorAll('*')
+    for (var i = 0; i < all.length; i++) {
+      if (hasSprinkleAttr(all[i])) matchNode(all[i])
+    }
+  }
+
+  function boostNavigate(url, opts) {
+    opts = opts || {}
+    url = url.split('#')[0]
+    if (url === boostUrl) return
+    boostUrl = url
+
+    document.body.classList.add('sprinkle-boost-loading')
+
+    var cached = boostCache[url]
+    delete boostCache[url]
+
+    var promise = cached || fetch(url).then(function (r) {
+      if (!r.ok) throw new Error('fetch failed')
+      return r.text()
+    })
+
+    return promise.then(function (html) {
+      var m = html.match(/<title[^>]*>([\s\S]*?)<\/title>/i)
+      if (m) document.title = m[1].trim()
+
+      var doc = new DOMParser().parseFromString(html, 'text/html')
+      var target = document.querySelector('[boost-container]') || document.querySelector('main') || document.body
+      var src = doc.querySelector('[boost-container]') || doc.querySelector('main') || doc.body
+
+      target.innerHTML = src.innerHTML
+      processSubtree(target)
+
+      if (!opts.replace) history.pushState(null, '', url)
+      window.scrollTo({ top: 0, behavior: 'smooth' })
+
+      var h = target.querySelector('h1, h2')
+      if (h) { h.setAttribute('tabindex', '-1'); h.focus({ preventScroll: true }) }
+    })
+    .catch(function () {
+      boostUrl = null
+      window.location.href = url
+    })
+    .finally(function () {
+      document.body.classList.remove('sprinkle-boost-loading')
+    })
+  }
+
+  ForgeSprinkle.register('[boost]', function boostLink(el) {
+    if (el.tagName === 'A') {
+      var href = el.getAttribute('href')
+      if (!href || href === '#' || href.indexOf('javascript:') === 0) return
+      if (href.indexOf('://') > 0 && href.indexOf(location.origin) !== 0) return
+
+      if (el.getAttribute('boost') === 'hover') {
+        el.addEventListener('mouseenter', function () {
+          if (!boostCache[href]) boostCache[href] = fetch(href).then(function (r) { return r.text() })
+        }, { once: true })
+        el.addEventListener('touchstart', function () {
+          if (!boostCache[href]) boostCache[href] = fetch(href).then(function (r) { return r.text() })
+        }, { once: true })
+      }
+
+      el.addEventListener('click', function (e) {
+        if (e.metaKey || e.ctrlKey || e.shiftKey || e.altKey || e.button) return
+        e.preventDefault()
+        boostNavigate(href)
+      })
+    } else {
+      el.addEventListener('click', function (e) {
+        var a = e.target.closest('a')
+        if (!a) return
+        var href = a.getAttribute('href')
+        if (!href || href === '#' || href.indexOf('javascript:') === 0) return
+        if (href.indexOf('://') > 0 && href.indexOf(location.origin) !== 0) return
+        if (e.metaKey || e.ctrlKey || e.shiftKey || e.altKey || e.button) return
+        e.preventDefault()
+        boostNavigate(href)
+      })
+    }
+  })
+
+  window.addEventListener('popstate', function () {
+    boostNavigate(location.href, { replace: true })
   })
 
   /* ── commandfor polyfill ── */

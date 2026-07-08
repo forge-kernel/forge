@@ -1,129 +1,49 @@
 /* ── theme variables ── */
 
-:root {
-  --sprinkle-stuck-bg: #fff;
-  --sprinkle-date-bg: Field;
-  --sprinkle-date-color: FieldText;
-  --sprinkle-date-border: #ccc;
+:root, [data-sprinkle-theme="light"] {
+  --sprinkle-bg: #fff;
+  --sprinkle-text: #1a1a1a;
+  --sprinkle-border: #e0e0e0;
+  --sprinkle-shadow: 0 4px 12px rgba(0,0,0,0.1);
   --sprinkle-error-color: #d32f2f;
-  --sprinkle-otp-bg: #fff;
-  --sprinkle-otp-border: #ccc;
-  --sprinkle-otp-color: inherit;
+  --sprinkle-drawer-z: 500;
+  --sprinkle-modal-backdrop: rgba(0,0,0,0.4);
+  --sprinkle-sidebar-bg: #f5f5f5;
+  --sprinkle-sidebar-border: #e0e0e0;
+  --sprinkle-sidebar-width: 260px;
+  --sprinkle-dd-hover: #f5f5f5;
   --sprinkle-tip-bg: #1a1a1a;
   --sprinkle-tip-color: #fff;
   --sprinkle-tip-arrow: #1a1a1a;
-  --sprinkle-drawer-bg: #fff;
-  --sprinkle-drawer-color: inherit;
-  --sprinkle-modal-bg: #fff;
-  --sprinkle-modal-color: inherit;
-  --sprinkle-modal-backdrop: rgba(0,0,0,0.4);
-  --sprinkle-modal-header-border: #e0e0e0;
-  --sprinkle-modal-footer-border: #e0e0e0;
-  --sprinkle-dd-bg: #fff;
-  --sprinkle-dd-color: #1a1a1a;
-  --sprinkle-dd-border: #e0e0e0;
-  --sprinkle-dd-shadow: 0 4px 12px rgba(0,0,0,0.1);
-  --sprinkle-dd-hover: #f5f5f5;
-  --sprinkle-dd-hr-border: #e0e0e0;
-  --sprinkle-sidebar-bg: #f5f5f5;
-  --sprinkle-sidebar-border: #e0e0e0;
-  --sprinkle-content-bg: #fff;
-  --sprinkle-shell-color: inherit;
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --sprinkle-stuck-bg: #222;
-    --sprinkle-date-bg: #222;
-    --sprinkle-date-color: #eee;
-    --sprinkle-date-border: #555;
-    --sprinkle-error-color: #ff6b6b;
-    --sprinkle-otp-bg: #222;
-    --sprinkle-otp-border: #555;
-    --sprinkle-otp-color: #eee;
-    --sprinkle-tip-bg: #eee;
-    --sprinkle-tip-color: #111;
-    --sprinkle-tip-arrow: #eee;
-    --sprinkle-drawer-bg: #222;
-    --sprinkle-drawer-color: #eee;
-    --sprinkle-modal-bg: #222;
-    --sprinkle-modal-color: #eee;
-    --sprinkle-modal-backdrop: rgba(0,0,0,0.6);
-    --sprinkle-modal-header-border: #444;
-    --sprinkle-modal-footer-border: #444;
-    --sprinkle-dd-bg: #222;
-    --sprinkle-dd-color: #eee;
-    --sprinkle-dd-border: #444;
-    --sprinkle-dd-shadow: 0 4px 12px rgba(0,0,0,0.3);
-    --sprinkle-dd-hover: #333;
-    --sprinkle-dd-hr-border: #444;
-    --sprinkle-sidebar-bg: #1a1a1a;
-    --sprinkle-sidebar-border: #333;
-    --sprinkle-content-bg: #222;
-    --sprinkle-shell-color: #eee;
-  }
+  --sprinkle-date-bg: Field;
+  --sprinkle-date-color: FieldText;
+  --sprinkle-date-border: #ccc;
+  --sprinkle-success-bg: #e8f5e9;
+  --sprinkle-success-color: #2e7d32;
+  --sprinkle-form-msg-bg: #ffebee;
+  --sprinkle-boost-color: #4a90d9;
 }
 
 [data-sprinkle-theme="dark"] {
-  --sprinkle-stuck-bg: #222;
-  --sprinkle-date-bg: #222;
-  --sprinkle-date-color: #eee;
-  --sprinkle-date-border: #555;
+  --sprinkle-bg: #222;
+  --sprinkle-text: #eee;
+  --sprinkle-border: #444;
+  --sprinkle-shadow: 0 4px 12px rgba(0,0,0,0.3);
   --sprinkle-error-color: #ff6b6b;
-  --sprinkle-otp-bg: #222;
-  --sprinkle-otp-border: #555;
-  --sprinkle-otp-color: #eee;
+  --sprinkle-modal-backdrop: rgba(0,0,0,0.6);
+  --sprinkle-sidebar-bg: #1a1a1a;
+  --sprinkle-sidebar-border: #333;
+  --sprinkle-dd-hover: #333;
   --sprinkle-tip-bg: #eee;
   --sprinkle-tip-color: #111;
   --sprinkle-tip-arrow: #eee;
-  --sprinkle-drawer-bg: #222;
-  --sprinkle-drawer-color: #eee;
-  --sprinkle-modal-bg: #222;
-  --sprinkle-modal-color: #eee;
-  --sprinkle-modal-backdrop: rgba(0,0,0,0.6);
-  --sprinkle-modal-header-border: #444;
-  --sprinkle-modal-footer-border: #444;
-  --sprinkle-dd-bg: #222;
-  --sprinkle-dd-color: #eee;
-  --sprinkle-dd-border: #444;
-  --sprinkle-dd-shadow: 0 4px 12px rgba(0,0,0,0.3);
-  --sprinkle-dd-hover: #333;
-  --sprinkle-dd-hr-border: #444;
-  --sprinkle-sidebar-bg: #1a1a1a;
-  --sprinkle-sidebar-border: #333;
-  --sprinkle-content-bg: #222;
-  --sprinkle-shell-color: #eee;
-}
-
-[data-sprinkle-theme="light"] {
-  --sprinkle-stuck-bg: #fff;
-  --sprinkle-date-bg: Field;
-  --sprinkle-date-color: FieldText;
-  --sprinkle-date-border: #ccc;
-  --sprinkle-error-color: #d32f2f;
-  --sprinkle-otp-bg: #fff;
-  --sprinkle-otp-border: #ccc;
-  --sprinkle-otp-color: inherit;
-  --sprinkle-tip-bg: #1a1a1a;
-  --sprinkle-tip-color: #fff;
-  --sprinkle-tip-arrow: #1a1a1a;
-  --sprinkle-drawer-bg: #fff;
-  --sprinkle-drawer-color: inherit;
-  --sprinkle-modal-bg: #fff;
-  --sprinkle-modal-color: inherit;
-  --sprinkle-modal-backdrop: rgba(0,0,0,0.4);
-  --sprinkle-modal-header-border: #e0e0e0;
-  --sprinkle-modal-footer-border: #e0e0e0;
-  --sprinkle-dd-bg: #fff;
-  --sprinkle-dd-color: #1a1a1a;
-  --sprinkle-dd-border: #e0e0e0;
-  --sprinkle-dd-shadow: 0 4px 12px rgba(0,0,0,0.1);
-  --sprinkle-dd-hover: #f5f5f5;
-  --sprinkle-dd-hr-border: #e0e0e0;
-  --sprinkle-sidebar-bg: #f5f5f5;
-  --sprinkle-sidebar-border: #e0e0e0;
-  --sprinkle-content-bg: #fff;
-  --sprinkle-shell-color: inherit;
+  --sprinkle-date-bg: #222;
+  --sprinkle-date-color: #eee;
+  --sprinkle-date-border: #555;
+  --sprinkle-success-bg: #1b3d1b;
+  --sprinkle-success-color: #81c784;
+  --sprinkle-form-msg-bg: #3e1a1a;
+  --sprinkle-boost-color: #5ba0e9;
 }
 
 /* ── icon wrap ── */
@@ -192,6 +112,31 @@ input[suffix] {
 .sprinkle-icon-interactive {
   pointer-events: auto;
   cursor: pointer;
+  border: 0;
+  background: none;
+  padding: 0;
+  font: inherit;
+  color: inherit;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.sprinkle-icon-interactive img {
+  pointer-events: none;
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+.sprinkle-sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0,0,0,0);
+  white-space: nowrap;
+  border: 0;
 }
 
 /* ── character-count ── */
@@ -208,8 +153,8 @@ input[suffix] {
 /* ── loading ── */
 
 .sprinkle-loading {
+  color: transparent;
   pointer-events: none;
-  opacity: .7;
   position: relative;
 }
 
@@ -253,10 +198,18 @@ input[suffix] {
 
 /* ── sticky ── */
 
+[sticky] {
+  position: sticky;
+  top: 0;
+  padding: 0.5rem 1rem;
+  background: var(--sprinkle-bg);
+  border-radius: 6px;
+}
+
 .sprinkle-stuck {
   z-index: 100;
   box-shadow: 0 1px 6px rgba(0, 0, 0, .1);
-  background: var(--sprinkle-stuck-bg);
+  background: var(--sprinkle-bg);
 }
 
 .sprinkle-sticky-sentinel {
@@ -370,6 +323,13 @@ input[suffix] {
   transform: translateX(1em);
 }
 
+/* ── autosize ── */
+
+textarea[autosize] {
+  overflow: hidden;
+  resize: none;
+}
+
 /* ── auto-width ── */
 
 input[auto-width],
@@ -462,6 +422,45 @@ input[date-input]:focus {
   line-height: 1.4;
 }
 
+/* ── form enhance messages ── */
+
+.sprinkle-form-msg {
+  display: block;
+  padding: 12px 16px;
+  border-radius: 4px;
+  font-size: 14px;
+  margin-bottom: 16px;
+  line-height: 1.4;
+}
+.sprinkle-form-msg-success {
+  background: var(--sprinkle-success-bg);
+  color: var(--sprinkle-success-color);
+}
+.sprinkle-form-msg-error {
+  background: var(--sprinkle-form-msg-bg);
+  color: var(--sprinkle-error-color);
+}
+
+/* ── boost ── */
+
+.sprinkle-boost-loading {
+  cursor: progress;
+}
+.sprinkle-boost-loading::before {
+  content: '';
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 3px;
+  background: var(--sprinkle-boost-color);
+  z-index: 9999;
+  animation: sprinkle-boost-load 2s ease-out forwards;
+}
+@keyframes sprinkle-boost-load {
+  0% { width: 0; }
+  100% { width: 90%; }
+}
+
 /* ── otp ── */
 
 .sprinkle-otp {
@@ -475,11 +474,11 @@ input[date-input]:focus {
   text-align: center;
   font-size: 20px;
   font-family: inherit;
-  border: 1px solid var(--sprinkle-otp-border);
+  border: 1px solid var(--sprinkle-border);
   border-radius: 6px;
   outline: none;
-  background: var(--sprinkle-otp-bg);
-  color: var(--sprinkle-otp-color);
+  background: var(--sprinkle-bg);
+  color: var(--sprinkle-text);
 }
 
 .sprinkle-otp-box:focus {
@@ -489,6 +488,16 @@ input[date-input]:focus {
 
 .sprinkle-otp-box.sprinkle-otp-filled {
   border-color: #888;
+}
+
+/* ── otp input hiding (JS creates visible boxes) ── */
+
+input[otp] {
+  position: absolute;
+  opacity: 0;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
 }
 
 /* ── 29. avatar ── */
@@ -502,10 +511,15 @@ img[avatar] {
 img[avatar="sm"] { width: 24px; }
 img[avatar="lg"] { width: 64px; }
 
+[zoomable] {
+  cursor: zoom-in;
+}
+
 /* ── 30. tooltip ── */
 
 [tooltip] {
   position: relative;
+  cursor: help;
 }
 
 [tooltip]::after {
@@ -610,10 +624,15 @@ ul[breadcrumb] {
   gap: 0 0.5em;
   padding: 0;
   margin: 0;
+  font-size: 0.9rem;
 }
 ul[breadcrumb] li {
   display: inline-flex;
   align-items: center;
+}
+ul[breadcrumb] li:last-child {
+  font-weight: 600;
+  color: var(--sprinkle-text, inherit);
 }
 ul[breadcrumb] li::after {
   content: "/";
@@ -644,10 +663,12 @@ dialog[drawer] {
   height: 100%;
   width: 300px;
   max-width: 80vw;
+  max-height: 100%;
   box-sizing: border-box;
+  z-index: var(--sprinkle-drawer-z);
   overflow-y: auto;
-  background: var(--sprinkle-drawer-bg);
-  color: var(--sprinkle-drawer-color);
+  background: var(--sprinkle-bg);
+  color: var(--sprinkle-text);
   transform: translateX(-100%);
   transition: transform 0.25s ease, overlay 0.25s allow-discrete, display 0.25s allow-discrete;
 }
@@ -661,6 +682,7 @@ dialog[drawer="top"] {
   left: 0;
   bottom: auto;
   width: 100%;
+  max-width: 100%;
   height: auto;
   transform: translateY(-100%);
 }
@@ -669,6 +691,7 @@ dialog[drawer="bottom"] {
   top: auto;
   left: 0;
   width: 100%;
+  max-width: 100%;
   height: auto;
   transform: translateY(100%);
 }
@@ -708,8 +731,8 @@ dialog[modal] {
   width: 100%;
   max-height: 80vh;
   overflow-y: auto;
-  background: var(--sprinkle-modal-bg);
-  color: var(--sprinkle-modal-color);
+  background: var(--sprinkle-bg);
+  color: var(--sprinkle-text);
   box-shadow: 0 4px 24px rgba(0,0,0,0.15);
   opacity: 0;
   transform: scale(0.95);
@@ -739,7 +762,7 @@ dialog[modal="lg"] { max-width: min(90vw, 720px); }
   padding: 1rem 1.5rem;
 }
 .sprinkle-modal-header {
-  border-bottom: 1px solid var(--sprinkle-modal-header-border);
+  border-bottom: 1px solid var(--sprinkle-border);
   font-weight: 600;
   font-size: 1.1em;
   display: flex;
@@ -747,7 +770,7 @@ dialog[modal="lg"] { max-width: min(90vw, 720px); }
   justify-content: space-between;
 }
 .sprinkle-modal-footer {
-  border-top: 1px solid var(--sprinkle-modal-footer-border);
+  border-top: 1px solid var(--sprinkle-border);
   display: flex;
   justify-content: flex-end;
   gap: 0.5rem;
@@ -774,7 +797,19 @@ details[dropdown] {
 }
 details[dropdown] > summary {
   list-style: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5em;
+  padding: 0.375rem 1rem;
+  border: 1px solid var(--sprinkle-border);
+  border-radius: 6px;
+  background: var(--sprinkle-bg);
   cursor: pointer;
+  user-select: none;
+}
+details[dropdown] > summary img {
+  margin: 0;
+  vertical-align: middle;
 }
 details[dropdown] > summary::-webkit-details-marker {
   display: none;
@@ -784,9 +819,10 @@ details[dropdown] > :not(summary) {
   top: calc(100% + 4px);
   left: 0;
   min-width: 180px;
-  background: var(--sprinkle-dd-bg);
-  color: var(--sprinkle-dd-color);
-  border: 1px solid var(--sprinkle-dd-border);
+  list-style: none;
+  background: var(--sprinkle-bg);
+  color: var(--sprinkle-text);
+  border: 1px solid var(--sprinkle-border);
   border-radius: 6px;
   box-shadow: var(--sprinkle-dd-shadow);
   padding: 0.75rem 0;
@@ -853,7 +889,7 @@ details[dropdown] > :not(summary) li > button:hover {
 details[dropdown] > :not(summary) hr {
   margin: 0.375rem 0;
   border: none;
-  border-top: 1px solid var(--sprinkle-dd-hr-border);
+  border-top: 1px solid var(--sprinkle-border);
 }
 
 /* ── 35. shell ── */
@@ -861,13 +897,17 @@ details[dropdown] > :not(summary) hr {
 [shell] {
   display: grid;
   height: 100%;
+  grid-template-columns: auto 1fr;
   box-sizing: border-box;
-  color: var(--sprinkle-shell-color);
+  color: var(--sprinkle-text);
 }
 
 [sidebar] {
   overflow-y: auto;
   background: var(--sprinkle-sidebar-bg);
+  width: var(--sprinkle-sidebar-width);
+  padding: 0.75rem;
+  box-sizing: border-box;
 }
 
 [sidebar="left"] {
@@ -888,7 +928,9 @@ details[dropdown] > :not(summary) hr {
 
 [content] {
   overflow-y: auto;
-  background: var(--sprinkle-content-bg);
+  background: var(--sprinkle-bg);
+  padding: 1.5rem;
+  box-sizing: border-box;
 }
 
 /* ── 36. nav ── */

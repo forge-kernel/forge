@@ -423,9 +423,16 @@ body {margin: 0}
 <main content class="doc-content">
 
 <div class="doc-header">
+
   <div>
     <h1>ForgeSprinkle</h1>
     <p>HTML attribute enhancements. Each directive maps an attribute to a small behavior or style. Everything works (or does nothing) when JavaScript is off.</p>
+    <nav>
+        <ul breadcrumb boost="hover">
+          <li><a href="/sprinkle">Sprinkle styled</a></li>
+          <li><a href="/sprinkle/raw">Sprinkle unstyled</a></li>
+        </ul>
+    </nav>
   </div>
   <button theme-toggle aria-label="Switch to dark theme">
     <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg>
@@ -836,7 +843,7 @@ body {margin: 0}
   <p>Floating menu panel below <code>&lt;summary&gt;</code>. Left-aligned by default; <code>dropdown="right"</code> for right-alignment. Fade+slide transition. Combine with <code>close-outside</code> for menu behavior.</p>
   <div class="doc-demo">
     <details dropdown close-outside>
-      <summary style="display:inline-flex;align-items:center;gap:0.5em;padding:0.375rem 1rem;border:1px solid var(--doc-border);border-radius:4px;background:var(--sprinkle-content-bg);cursor:pointer">
+      <summary>
         <img src="https://i.abcnewsfe.com/a/10669fab-5a56-4555-8012-0b3d83369352/avatar-the-way-of-water-07-ht-jt-220907_1662579296232_hpMain_1x1.jpg?w=992" avatar="sm" style="margin:0" />
         <span>My Account</span>
       </summary>
@@ -864,7 +871,7 @@ body {margin: 0}
   <p>Closes the <code>&lt;details&gt;</code> when clicking outside the element. Designed for dropdown menus.</p>
   <div class="doc-demo">
     <details close-outside>
-      <summary style="display:inline-flex;align-items:center;gap:0.5em;padding:0.375rem 1rem;border:1px solid var(--doc-border);border-radius:4px;background:var(--sprinkle-content-bg);cursor:pointer">Click me</summary>
+      <summary>Click me</summary>
       <p style="margin:0.5rem 0 0">Try clicking outside to close.</p>
     </details>
   </div>
@@ -907,7 +914,7 @@ body {margin: 0}
   <p class="doc-meta">On: any element</p>
   <p><code>position: sticky; top: 0</code>. Adds <code>.sprinkle-stuck</code> class (with shadow) when stuck.</p>
   <div class="doc-demo">
-    <div sticky style="padding:0.5rem 1rem;background:#f0f0f0;border:1px solid #ddd;border-radius:4px">
+    <div sticky>
       Scroll down — I stick to the top.
     </div>
     <div style="height:60px;display:flex;align-items:end;font-size:0.8rem;color:#999">Scroll container for demo</div>
@@ -920,7 +927,7 @@ body {margin: 0}
   <p class="doc-meta">On: <code>&lt;img&gt;</code></p>
   <p>Click the image to open a fullscreen overlay. Click the overlay or press Escape to close.</p>
   <div class="doc-demo">
-    <img src="https://i.abcnewsfe.com/a/10669fab-5a56-4555-8012-0b3d83369352/avatar-the-way-of-water-07-ht-jt-220907_1662579296232_hpMain_1x1.jpg?w=992" zoomable alt="Demo" style="width:80px;height:80px;object-fit:cover;border-radius:4px;cursor:zoom-in" />
+    <img src="https://i.abcnewsfe.com/a/10669fab-5a56-4555-8012-0b3d83369352/avatar-the-way-of-water-07-ht-jt-220907_1662579296232_hpMain_1x1.jpg?w=992" zoomable alt="Demo" style="width:80px;height:80px;object-fit:cover;border-radius:4px" />
   </div>
   <div class="doc-code">&lt;img <span class="doc-attr">src</span>=<span class="doc-val">"photo.jpg"</span> <span class="doc-attr">zoomable</span> /&gt;</div>
 </div>
@@ -980,7 +987,7 @@ body {margin: 0}
   <p>Fade-in tooltip using <code>attr(tooltip)</code> as content. Auto-positions to available space (top, bottom, left, right). Auto-removes native <code>title</code>. Hover or focus-visible to trigger.</p>
   <div class="doc-demo doc-row">
     <button class="doc-btn" tooltip="This cannot be undone">Delete</button>
-    <span tooltip="Verified account" style="cursor:help">✅ Verified</span>
+    <span tooltip="Verified account">✅ Verified</span>
   </div>
   <div class="doc-code">&lt;button <span class="doc-attr">tooltip</span>=<span class="doc-val">"This cannot be undone"</span>&gt;Delete&lt;/button&gt;
 &lt;span <span class="doc-attr">tooltip</span>=<span class="doc-val">"Verified account"</span>&gt;✅ Verified&lt;/span&gt;</div>
