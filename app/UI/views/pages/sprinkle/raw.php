@@ -18,6 +18,7 @@
           <li><a href="#file-name">file-name</a></li>
           <li><a href="#leading-suffix">leading / suffix</a></li>
           <li><a href="#prefix">prefix</a></li>
+          <li><a href="#combo-box">combo-box</a></li>
         </ul>
       </details>
     </li>
@@ -58,6 +59,9 @@
         <ul>
           <li><a href="#shell">shell</a></li>
           <li><a href="#nav">nav</a></li>
+          <li><a href="#nav-horizontal">nav="horizontal"</a></li>
+          <li><a href="#card">card</a></li>
+          <li><a href="#count-up">count-up</a></li>
         </ul>
       </details>
     </li>
@@ -188,6 +192,71 @@
   <input type="url" prefix="upper.do" placeholder="subdomain" />
   <pre>&lt;input type="url" prefix /&gt;
 &lt;input type="url" prefix="upper.do" /&gt;</pre>
+</div>
+
+<div id="combo-box">
+  <h3><code>combo-box</code></h3>
+  <p>On: &lt;select&gt;</p>
+  <form onsubmit="event.preventDefault(); alert('Selected: '+this.tenant_id.value)">
+    <select name="tenant_id" combo-box searchable>
+      <option value="1" data-avatar="https://i.abcnewsfe.com/a/10669fab-5a56-4555-8012-0b3d83369352/avatar-the-way-of-water-07-ht-jt-220907_1662579296232_hpMain_1x1.jpg?w=992">Upper Platform</option>
+      <option value="2" data-avatar="https://i.abcnewsfe.com/a/10669fab-5a56-4555-8012-0b3d83369352/avatar-the-way-of-water-07-ht-jt-220907_1662579296232_hpMain_1x1.jpg?w=992" selected>Nimbus Runtime</option>
+      <option value="3" data-avatar="https://i.abcnewsfe.com/a/10669fab-5a56-4555-8012-0b3d83369352/avatar-the-way-of-water-07-ht-jt-220907_1662579296232_hpMain_1x1.jpg?w=992">Forge Core</option>
+    </select>
+  </form>
+  <pre>&lt;select name="tenant_id" combo-box searchable&gt;
+  &lt;option value="1" data-avatar="…"&gt;Upper Platform&lt;/option&gt;
+  &lt;option value="2" data-avatar="…" selected&gt;Nimbus Runtime&lt;/option&gt;
+  &lt;option value="3" data-avatar="…"&gt;Forge Core&lt;/option&gt;
+&lt;/select&gt;</pre>
+
+  <p>With <code>leading</code> and <code>suffix</code> icons:</p>
+  <select combo-box leading="search" suffix="settings">
+    <option value="a">Option A</option>
+    <option value="b" selected>Option B</option>
+    <option value="c">Option C</option>
+  </select>
+  <pre>&lt;select combo-box leading="search" suffix="settings"&gt;
+  &lt;option value="a"&gt;Option A&lt;/option&gt;
+  &lt;option value="b" selected&gt;Option B&lt;/option&gt;
+  &lt;option value="c"&gt;Option C&lt;/option&gt;
+&lt;/select&gt;</pre>
+
+  <p>Multi-select with <code>multiple</code>:</p>
+  <select name="tags[]" multiple combo-box searchable>
+    <option value="php">PHP</option>
+    <option value="js" selected>JavaScript</option>
+    <option value="css" selected>CSS</option>
+    <option value="html">HTML</option>
+    <option value="sql">SQL</option>
+    <option value="python">Python</option>
+  </select>
+  <pre>&lt;select name="tags[]" multiple combo-box searchable&gt;
+  &lt;option value="php"&gt;PHP&lt;/option&gt;
+  &lt;option value="js" selected&gt;JavaScript&lt;/option&gt;
+  &lt;option value="css" selected&gt;CSS&lt;/option&gt;
+  &lt;option value="html"&gt;HTML&lt;/option&gt;
+  &lt;option value="sql"&gt;SQL&lt;/option&gt;
+  &lt;option value="python"&gt;Python&lt;/option&gt;
+&lt;/select&gt;</pre>
+
+  <p>With <code>category</code> groups:</p>
+  <select name="framework" combo-box searchable>
+    <option value="react" category="Frontend">React</option>
+    <option value="vue" category="Frontend">Vue</option>
+    <option value="angular" category="Frontend">Angular</option>
+    <option value="laravel" category="Backend">Laravel</option>
+    <option value="django" category="Backend">Django</option>
+    <option value="rails" category="Backend">Ruby on Rails</option>
+    <option value="postgres" category="Database">PostgreSQL</option>
+    <option value="mysql" category="Database">MySQL</option>
+    <option value="mongo" category="Database">MongoDB</option>
+  </select>
+  <pre>&lt;select name="framework" combo-box searchable&gt;
+  &lt;option value="react" category="Frontend"&gt;React&lt;/option&gt;
+  &lt;option value="vue" category="Frontend"&gt;Vue&lt;/option&gt;
+  …
+&lt;/select&gt;</pre>
 </div>
 
 <hr>
@@ -359,6 +428,152 @@
   &lt;/aside&gt;
   &lt;main content&gt;…&lt;/main&gt;
 &lt;/div&gt;</pre>
+</div>
+
+<div id="card">
+  <h3><code>card</code></h3>
+  <p>On: &lt;fieldset&gt;</p>
+
+  <p>Basic card with <code>&lt;legend&gt;</code>:</p>
+  <fieldset card>
+    <legend>Profile</legend>
+    <main>
+      <p>Name: Jane Doe</p>
+      <p>Role: Engineer</p>
+    </main>
+  </fieldset>
+  <pre>&lt;fieldset card&gt;
+  &lt;legend&gt;Profile&lt;/legend&gt;
+  &lt;main&gt;
+    &lt;p&gt;Name: Jane Doe&lt;/p&gt;
+    &lt;p&gt;Role: Engineer&lt;/p&gt;
+  &lt;/main&gt;
+&lt;/fieldset&gt;</pre>
+
+  <p>Card with <code>&lt;header&gt;</code>, <code>&lt;main&gt;</code>, and <code>&lt;footer&gt;</code>:</p>
+  <fieldset card>
+    <header>Notifications</header>
+    <main>
+      <p>You have 3 unread messages.</p>
+    </main>
+    <footer>
+      <button loading>Mark all read</button>
+    </footer>
+  </fieldset>
+  <pre>&lt;fieldset card&gt;
+  &lt;header&gt;Notifications&lt;/header&gt;
+  &lt;main&gt;
+    &lt;p&gt;You have 3 unread messages.&lt;/p&gt;
+  &lt;/main&gt;
+  &lt;footer&gt;
+    &lt;button loading&gt;Mark all read&lt;/button&gt;
+  &lt;/footer&gt;
+&lt;/fieldset&gt;</pre>
+
+  <p>Clickable card with <code>href</code> — click anywhere on the card to navigate (Ctrl+click, middle-click, right-click all work via the <code>.card-link</code> anchor):</p>
+  <fieldset card href="/sprinkle">
+    <header>Forge Sprinkle</header>
+    <main>
+      <p>Lightweight HTML attribute enhancements. No build step required.</p>
+    </main>
+    <footer>
+      <a href="/sprinkle" class="card-link">Learn more →</a>
+    </footer>
+  </fieldset>
+  <pre>&lt;fieldset card href="/sprinkle"&gt;
+  &lt;header&gt;Forge Sprinkle&lt;/header&gt;
+  &lt;main&gt;…&lt;/main&gt;
+  &lt;footer&gt;
+    &lt;a href="/sprinkle" class="card-link"&gt;Learn more →&lt;/a&gt;
+  &lt;/footer&gt;
+&lt;/fieldset&gt;</pre>
+
+  <p>Grid of cards:</p>
+  <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 1rem;">
+    <fieldset card>
+      <header>Getting Started</header>
+      <main>
+        <p>Install the CSS and JS, add attributes to your HTML, and you're done.</p>
+      </main>
+      <footer><a href="#">Docs →</a></footer>
+    </fieldset>
+    <fieldset card>
+      <header>Components</header>
+      <main>
+        <p>Dropdowns, accordions, modals, drawers, combo-box, and more.</p>
+      </main>
+      <footer><a href="#">Explore →</a></footer>
+    </fieldset>
+    <fieldset card>
+      <header>Accessibility</header>
+      <main>
+        <p>Built on native HTML semantics. ARIA attributes are handled automatically.</p>
+      </main>
+      <footer><a href="#">Learn →</a></footer>
+    </fieldset>
+  </div>
+  <pre>&lt;div style="display: grid; …"&gt;
+  &lt;fieldset card&gt;
+    &lt;header&gt;Getting Started&lt;/header&gt;
+    &lt;main&gt;…&lt;/main&gt;
+    &lt;footer&gt;&lt;a href="#"&gt;Docs →&lt;/a&gt;&lt;/footer&gt;
+  &lt;/fieldset&gt;
+  …
+&lt;/div&gt;</pre>
+
+  <h3 id="count-up"><code>count-up</code></h3>
+  <p>Spins from <code>start</code> (default 0) to the static value when scrolled into view. Uses <code>IntersectionObserver</code> — fires once.</p>
+  <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 1rem;">
+    <fieldset card>
+      <legend>Total Deployments</legend>
+      <main>
+        <strong count-up duration="2500">7,342</strong>
+      </main>
+    </fieldset>
+    <fieldset card>
+      <legend>Active Users</legend>
+      <main>
+        <span count-up duration="2000">12,847</span>
+      </main>
+    </fieldset>
+    <fieldset card>
+      <legend>Uptime</legend>
+      <main>
+        <span count-up start="90" duration="1500">99.97%</span>
+      </main>
+    </fieldset>
+  </div>
+  <pre>&lt;strong count-up duration="2500"&gt;7,342&lt;/strong&gt;
+  &lt;span count-up duration="2000"&gt;12,847&lt;/span&gt;
+  &lt;span count-up start="90" duration="1500"&gt;99.97%&lt;/span&gt;</pre>
+
+  <p>On <code>&lt;progress&gt;</code> — animates the <code>value</code> attribute to fill the bar from 0 to target:</p>
+  <fieldset card>
+    <legend>Storage Used</legend>
+    <main>
+      <progress count-up value="2500" max="3000"></progress>
+      <p style="margin-top:0.5rem"><span count-up duration="2000">2,500</span> / 3,000 GB</p>
+    </main>
+  </fieldset>
+  <pre>&lt;progress count-up value="2500" max="100000"&gt;&lt;/progress&gt;
+&lt;span count-up duration="2000"&gt;2,500&lt;/span&gt; / 100,000 GB</pre>
+</div>
+
+<div id="nav-horizontal">
+  <h3><code>nav="horizontal"</code></h3>
+  <p>On: &lt;ul&gt;</p>
+  <ul nav="horizontal">
+    <li><a href="#" active>Overview</a></li>
+    <li><a href="#">Analytics</a></li>
+    <li><a href="#">Settings</a></li>
+    <li><a href="#">Help</a></li>
+  </ul>
+  <pre>&lt;ul nav="horizontal"&gt;
+  &lt;li&gt;&lt;a href="#" active&gt;Overview&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href="#"&gt;Analytics&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href="#"&gt;Settings&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href="#"&gt;Help&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;</pre>
 </div>
 
 <hr>

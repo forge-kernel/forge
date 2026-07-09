@@ -1023,7 +1023,7 @@
         return
       }
       if (!el.open) return
-      var items = el.querySelectorAll('a, button, [role="menuitem"], li > a, li > button')
+      var items = el.querySelectorAll('a, button, [role="menuitem"], li > a, li > button, li[role="option"], [search-box]')
       var focusable = Array.from(items).filter(function (item) {
         return !item.disabled && item.offsetParent !== null
       })
@@ -1043,6 +1043,293 @@
         focusable[focusable.length - 1].focus()
       }
     })
+  })
+
+  /* ── 40. combo-box / multi-select ── */
+
+  ForgeSprinkle.register('select[combo-box]', function comboBox(el) {
+    if (el._sprinkleComboBoxInit) return
+    el._sprinkleComboBoxInit = true
+    if (!el.parentNode) return
+
+    el.style.display = 'none'
+
+    var path = svgPath()
+    var doc = el.ownerDocument
+    var isMulti = el.multiple
+
+    var listId = (el.name || el.id || 'combo') + '-listbox'
+
+    var wrap = doc.createElement('div')
+    wrap.className = 'sprinkle-combo-wrap'
+    wrap.setAttribute('role', 'combobox')
+    wrap.setAttribute('aria-haspopup', 'listbox')
+    wrap.setAttribute('aria-expanded', 'false')
+    wrap.setAttribute('aria-controls', listId)
+
+    var details = doc.createElement('details')
+    details.className = 'sprinkle-combo'
+    details.setAttribute('dropdown', '')
+    details.setAttribute('close-outside', '')
+
+    var summary = doc.createElement('summary')
+    summary.setAttribute('role', 'button')
+    summary.setAttribute('tabindex', '0')
+
+    var label = el.getAttribute('aria-label') || el.getAttribute('label') || ''
+    if (!label && el.id) {
+      var lblEl = doc.querySelector('label[for="' + el.id + '"]')
+      if (lblEl) label = lblEl.textContent.trim()
+    }
+    if (!label) label = el.name || ''
+    if (label) {
+      wrap.setAttribute('aria-label', label)
+      summary.setAttribute('aria-label', label)
+    }
+
+    var selectedSet = []
+
+    function getSelected() {
+      if (isMulti) {
+        selectedSet = []
+        for (var i = 0; i < el.options.length; i++) {
+          if (el.options[i].selected) selectedSet.push(i)
+        }
+      } else {
+        var si = el.selectedIndex
+        selectedSet = si >= 0 ? [si] : [0]
+      }
+    }
+    getSelected()
+
+    function buildSummary() {
+      summary.innerHTML = ''
+
+      var lead = el.getAttribute('leading')
+      if (lead) {
+        var limg = doc.createElement('img')
+        limg.src = path + lead + '.svg'
+        limg.className = 'sprinkle-icon-leading'
+        limg.alt = ''
+        summary.appendChild(limg)
+      }
+
+      if (isMulti) {
+        var txt = doc.createElement('span')
+        txt.textContent = selectedSet.length ? selectedSet.length + ' selected' : 'Select...'
+        summary.appendChild(txt)
+      } else {
+        var opt = el.options[selectedSet[0]]
+        if (opt) {
+          var avatar = opt.getAttribute('data-avatar')
+          if (avatar) {
+            var aimg = doc.createElement('img')
+            aimg.src = avatar
+            aimg.setAttribute('avatar', 'sm')
+            aimg.alt = ''
+            summary.appendChild(aimg)
+          }
+          var txt2 = doc.createElement('span')
+          txt2.textContent = opt.textContent
+          summary.appendChild(txt2)
+        }
+      }
+
+      var suff = el.getAttribute('suffix')
+      if (suff) {
+        var simg = doc.createElement('img')
+        simg.src = path + suff + '.svg'
+        simg.className = 'sprinkle-icon-suffix'
+        simg.alt = ''
+        summary.appendChild(simg)
+      }
+    }
+
+    buildSummary()
+
+    var panel = doc.createElement('div')
+    panel.setAttribute('listbox', '')
+    panel.setAttribute('role', 'listbox')
+    panel.id = listId
+    if (isMulti) panel.setAttribute('aria-multiselectable', 'true')
+
+    var searchable = el.hasAttribute('searchable')
+    var searchInput
+
+    function clearSearch() {
+      if (!searchInput) return
+      searchInput.value = ''
+      var lis = panel.querySelectorAll('li[role="option"]')
+      for (var i = 0; i < lis.length; i++) {
+        lis[i].style.display = ''
+      }
+    }
+
+    if (searchable) {
+      searchInput = doc.createElement('input')
+      searchInput.type = 'text'
+      searchInput.setAttribute('search-box', '')
+      searchInput.setAttribute('aria-label', 'Search options')
+      searchInput.placeholder = el.getAttribute('search-placeholder') || 'Search options...'
+      searchInput.addEventListener('input', function () {
+        var q = searchInput.value.toLowerCase().trim()
+        var lis = panel.querySelectorAll('li[role="option"]')
+        for (var i = 0; i < lis.length; i++) {
+          lis[i].style.display = (!q || lis[i].textContent.toLowerCase().indexOf(q) !== -1) ? '' : 'none'
+        }
+        var cats = panel.querySelectorAll('.sprinkle-combo-category')
+        if (q) {
+          for (var j = 0; j < cats.length; j++) {
+            var cat = cats[j]
+            var next = cat.nextElementSibling
+            var hasVisible = false
+            while (next && !next.classList.contains('sprinkle-combo-category')) {
+              if (next.style.display !== 'none') { hasVisible = true; break }
+              next = next.nextElementSibling
+            }
+            cat.style.display = hasVisible ? '' : 'none'
+          }
+        } else {
+          for (var j = 0; j < cats.length; j++) cats[j].style.display = ''
+        }
+      })
+      searchInput.addEventListener('click', function (e) { e.stopPropagation() })
+      panel.appendChild(searchInput)
+    }
+
+    var ul = doc.createElement('ul')
+
+    function refreshList() {
+      var lis = ul.querySelectorAll('li[role="option"]')
+      for (var i = 0; i < lis.length; i++) {
+        lis[i].removeAttribute('active')
+        lis[i].removeAttribute('aria-selected')
+        var check = lis[i].querySelector('.sprinkle-combo-check')
+        if (check) check.style.display = 'none'
+      }
+      for (var si = 0; si < selectedSet.length; si++) {
+        var idx = selectedSet[si]
+        var active = lis[idx]
+        if (active) {
+          active.setAttribute('active', '')
+          active.setAttribute('aria-selected', 'true')
+          var check = active.querySelector('.sprinkle-combo-check')
+          if (check) check.style.display = ''
+        }
+      }
+    }
+
+    function selectOption(idx) {
+      if (isMulti) {
+        var pos = selectedSet.indexOf(idx)
+        if (pos >= 0) {
+          selectedSet.splice(pos, 1)
+          el.options[idx].selected = false
+        } else {
+          selectedSet.push(idx)
+          selectedSet.sort(function (a, b) { return a - b })
+          el.options[idx].selected = true
+        }
+        el.dispatchEvent(new (window.Event || window.CustomEvent)('change', { bubbles: true }))
+        buildSummary()
+        refreshList()
+      } else {
+        selectedSet = [idx]
+        el.selectedIndex = idx
+        el.dispatchEvent(new (window.Event || window.CustomEvent)('change', { bubbles: true }))
+        buildSummary()
+        refreshList()
+        clearSearch()
+        details.removeAttribute('open')
+      }
+    }
+
+    var currentCat = null
+
+    function addCategory(cat) {
+      if (!cat) return
+      var catLi = doc.createElement('li')
+      catLi.className = 'sprinkle-combo-category'
+      catLi.setAttribute('role', 'separator')
+      catLi.setAttribute('aria-label', cat)
+      catLi.textContent = cat
+      ul.appendChild(catLi)
+    }
+
+    for (var i = 0; i < el.options.length; i++) {
+      var opt = el.options[i]
+      var cat = opt.getAttribute('category')
+      if (cat !== currentCat) {
+        addCategory(cat)
+        currentCat = cat
+      }
+      ;(function (idx) {
+        var li = doc.createElement('li')
+        li.setAttribute('role', 'option')
+        li.setAttribute('data-value', opt.value)
+        li.setAttribute('data-category', cat || '')
+        li.setAttribute('aria-posinset', String(idx + 1))
+        li.setAttribute('aria-setsize', String(el.options.length))
+        li.tabIndex = -1
+
+        if (isMulti) {
+          var ck = doc.createElement('span')
+          ck.className = 'sprinkle-combo-check'
+          ck.textContent = '✓'
+          li.appendChild(ck)
+        }
+
+        var av = opt.getAttribute('data-avatar')
+        if (av) {
+          var img = doc.createElement('img')
+          img.src = av
+          img.setAttribute('avatar', 'sm')
+          img.alt = ''
+          li.appendChild(img)
+        }
+
+        li.appendChild(doc.createTextNode(opt.textContent))
+
+        li.addEventListener('click', function () { selectOption(idx) })
+        li.addEventListener('keydown', function (e) {
+          if (e.key === 'Enter' || e.key === ' ') {
+            e.preventDefault()
+            selectOption(idx)
+          }
+        })
+        ul.appendChild(li)
+      })(i)
+    }
+
+    refreshList()
+
+    panel.appendChild(ul)
+    details.appendChild(summary)
+    details.appendChild(panel)
+    wrap.appendChild(details)
+
+    details.addEventListener('toggle', function () {
+      if (details.open) {
+        if (searchInput) setTimeout(function () { searchInput.focus() }, 0)
+        wrap.setAttribute('aria-expanded', 'true')
+      } else {
+        wrap.setAttribute('aria-expanded', 'false')
+        clearSearch()
+      }
+    })
+
+    el.addEventListener('change', function () {
+      var prev = selectedSet.slice()
+      getSelected()
+      if (prev.length !== selectedSet.length || prev.some(function (v, i) { return v !== selectedSet[i] })) {
+        buildSummary()
+        refreshList()
+      }
+    })
+
+    el.parentNode.insertBefore(wrap, el.nextSibling)
+
+    matchNode(details)
   })
 
   /* ── 35. shell ── */
@@ -1127,6 +1414,17 @@
   /* ── 37. nav ── */
 
   ForgeSprinkle.register('ul[nav]', function nav(el) {
+    if (el._sprinkleNavInit) return
+    el._sprinkleNavInit = true
+
+    function setAria() {
+      var links = el.querySelectorAll('a[active]')
+      for (var i = 0; i < links.length; i++) {
+        links[i].setAttribute('aria-current', 'page')
+      }
+    }
+    setAria()
+
     el.addEventListener('toggle', function (e) {
       if (e.target.tagName !== 'DETAILS' || !e.target.hasAttribute('nav-group')) return
       if (!e.target.open) return
@@ -1354,6 +1652,64 @@
 
   window.addEventListener('popstate', function () {
     boostNavigate(location.href, { replace: true })
+  })
+
+  /* ── 41. card ── */
+
+  ForgeSprinkle.register('fieldset[card]', function card(el) {
+    if (el._sprinkleCardInit) return
+    el._sprinkleCardInit = true
+
+    if (!el.hasAttribute('href')) return
+
+    el.addEventListener('click', function (e) {
+      if (e.target.closest('a, button, input, textarea, select, [role="button"]')) return
+      var link = el.querySelector('.card-link')
+      if (link) link.click()
+    })
+
+    el.style.cursor = 'pointer'
+  })
+
+  /* ── 42. count-up ── */
+
+  ForgeSprinkle.register('[count-up]', function countUp(el) {
+    if (el._sprinkleCountUp) return
+    el._sprinkleCountUp = true
+
+    var isProgress = el.tagName === 'PROGRESS'
+    var target, startVal = parseFloat(el.getAttribute('start')) || 0
+    var dur = parseInt(el.getAttribute('duration'), 10) || 2000
+
+    if (isProgress) {
+      target = parseFloat(el.getAttribute('value'))
+      if (isNaN(target)) return
+    } else {
+      var m = el.textContent.match(/^([^0-9]*)([\d,]+(?:\.\d+)?)(.*)$/)
+      if (!m) return
+      target = parseFloat(m[2].replace(/,/g, ''))
+    }
+
+    var io = new IntersectionObserver(function (entries) {
+      if (!entries[0].isIntersecting) return
+      io.disconnect()
+
+      var startTime = null
+      ;(function step(ts) {
+        if (startTime === null) startTime = ts
+        var p = Math.min((ts - startTime) / dur, 1)
+        var eased = 1 - (1 - p) * (1 - p)
+        var val = startVal + (target - startVal) * eased
+        if (isProgress) {
+          el.value = val
+        } else {
+          el.textContent = m[1] + Math.round(val).toLocaleString() + m[3]
+        }
+        if (p < 1) requestAnimationFrame(step)
+      })(performance.now())
+    }, { threshold: 0.3 })
+
+    io.observe(el)
   })
 
   /* ── commandfor polyfill ── */
