@@ -1,3 +1,4 @@
+<?php $layoutProps = ['title' => 'title updated'] ?>
 <style>
 /* ── doc page custom properties (theme-aware) ── */
 

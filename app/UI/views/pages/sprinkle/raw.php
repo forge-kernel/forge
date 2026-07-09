@@ -1,3 +1,4 @@
+<?php $layoutProps = ['title' => 'no style']; ?>
 <style>body{margin: 0;}</style>
 <div shell>
 

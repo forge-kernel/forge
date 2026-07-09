@@ -64,6 +64,8 @@
   /* ── 2. sticky ── */
 
   ForgeSprinkle.register('[sticky]', function sticky(el) {
+    if (el._sprinkleStickyInit) return
+    el._sprinkleStickyInit = true
     var s = document.createElement('div')
     s.className = 'sprinkle-sticky-sentinel'
     if (!el.parentNode) return
@@ -252,6 +254,8 @@
   /* ── 12. switch ── */
 
   ForgeSprinkle.register('input[type="checkbox"][switch]', function switchCheck(el) {
+    if (el._sprinkleSwitchInit) return
+    el._sprinkleSwitchInit = true
     if (!el.parentNode) return
     var wrap = document.createElement('span')
     wrap.className = 'sprinkle-switch-wrap'
@@ -349,6 +353,8 @@
   /* ── 15. accordion ── */
 
   ForgeSprinkle.register('details[accordion]', function accordion(el) {
+    if (el._sprinkleAccordionInit) return
+    el._sprinkleAccordionInit = true
     el.classList.add('sprinkle-accordion')
     if (!el.parentNode) return
     var body = document.createElement('div')
@@ -426,7 +432,7 @@
         if (el._sprinkleClose) el._sprinkleClose()
         else el.removeAttribute('open')
       }
-    })
+    }, true)
   })
 
   /* ── 17. open-group / close-group ── */
@@ -1191,7 +1197,8 @@
       fetch(url, {
         method: method,
         body: new FormData(form),
-        headers: { 'Accept': 'application/json' }
+        headers: { 'Accept': 'application/json' },
+        cache: 'no-store'
       })
       .then(function (res) {
         return res.json().then(function (data) {
@@ -1258,12 +1265,17 @@
     var cached = boostCache[url]
     delete boostCache[url]
 
-    var promise = cached || fetch(url).then(function (r) {
+    var promise = cached || fetch(url, { cache: 'no-store' }).then(function (r) {
       if (!r.ok) throw new Error('fetch failed')
       return r.text()
     })
 
     return promise.then(function (html) {
+      if (!html || !html.trim()) {
+        document.location.href = url
+        return
+      }
+
       var m = html.match(/<title[^>]*>([\s\S]*?)<\/title>/i)
       if (m) document.title = m[1].trim()
 
@@ -1271,18 +1283,21 @@
       var target = document.querySelector('[boost-container]') || document.querySelector('main') || document.body
       var src = doc.querySelector('[boost-container]') || doc.querySelector('main') || doc.body
 
+      if (!src) { document.location.href = url; return }
+
       target.innerHTML = src.innerHTML
       processSubtree(target)
 
       if (!opts.replace) history.pushState(null, '', url)
-      window.scrollTo({ top: 0, behavior: 'smooth' })
+      window.scrollTo({ top: 0, left: 0 })
 
       var h = target.querySelector('h1, h2')
       if (h) { h.setAttribute('tabindex', '-1'); h.focus({ preventScroll: true }) }
     })
-    .catch(function () {
+    .catch(function (err) {
       boostUrl = null
-      window.location.href = url
+      console.error('[boost]', err && err.message ? err.message : err)
+      document.location.href = url
     })
     .finally(function () {
       document.body.classList.remove('sprinkle-boost-loading')
@@ -1297,10 +1312,10 @@
 
       if (el.getAttribute('boost') === 'hover') {
         el.addEventListener('mouseenter', function () {
-          if (!boostCache[href]) boostCache[href] = fetch(href).then(function (r) { return r.text() })
+          if (!boostCache[href]) boostCache[href] = fetch(href, { cache: 'no-store' }).then(function (r) { return r.text() })
         }, { once: true })
         el.addEventListener('touchstart', function () {
-          if (!boostCache[href]) boostCache[href] = fetch(href).then(function (r) { return r.text() })
+          if (!boostCache[href]) boostCache[href] = fetch(href, { cache: 'no-store' }).then(function (r) { return r.text() })
         }, { once: true })
       }
 
@@ -1310,6 +1325,20 @@
         boostNavigate(href)
       })
     } else {
+      if (el.getAttribute('boost') === 'hover') {
+        function prefetch(e) {
+          var a = e.target.closest('a')
+          if (!a || a._boostPrefetched) return
+          var href = a.getAttribute('href')
+          if (!href || href === '#' || href.indexOf('javascript:') === 0) return
+          if (href.indexOf('://') > 0 && href.indexOf(location.origin) !== 0) return
+          a._boostPrefetched = true
+          if (!boostCache[href]) boostCache[href] = fetch(href, { cache: 'no-store' }).then(function (r) { return r.text() })
+        }
+        el.addEventListener('mouseover', prefetch, true)
+        el.addEventListener('touchstart', prefetch, true)
+      }
+
       el.addEventListener('click', function (e) {
         var a = e.target.closest('a')
         if (!a) return
