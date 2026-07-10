@@ -33,6 +33,12 @@
     return m ? m.getAttribute('content') : '/assets/svg/'
   }
 
+  function pad(n) { return String(n).padStart(2, '0') }
+  function fmtDate(d) { return d.getFullYear() + '-' + pad(d.getMonth() + 1) + '-' + pad(d.getDate()) }
+
+  var CSS_SR_ONLY = 'position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0'
+  var CSS_DP_TRIGGER = 'font:inherit;padding:0.35em 2.2em 0.35em 0.5em;border:1px solid var(--sprinkle-dp-trigger-border);border-radius:4px;background:var(--sprinkle-dp-trigger-bg);color:var(--sprinkle-dp-trigger-color);min-width:14ch;box-sizing:border-box;cursor:pointer;text-align:left;position:relative'
+
   window.ForgeSprinkle = {
     register: function (selector, handler) {
       directives.push([selector, handler])
@@ -578,58 +584,26 @@
     })
   })
 
-  /* ── 18. no-past ── */
+  /* ── 18/19. no-past / no-future ── */
 
-  ForgeSprinkle.register('input[no-past]', function noPast(el) {
+  ForgeSprinkle.register('input[no-past], input[no-future]', function noPastFuture(el) {
     if (el.type !== 'date' && el.type !== 'datetime-local') return
     if (el._sprinkleDateInputInit) return
+    var isPast = el.hasAttribute('no-past')
     var d = new Date()
-    var y = d.getFullYear()
-    var mo = String(d.getMonth() + 1).padStart(2, '0')
-    var da = String(d.getDate()).padStart(2, '0')
-    var today = y + '-' + mo + '-' + da
+    var today = fmtDate(d)
     if (el.type === 'datetime-local') {
-      var h = String(d.getHours()).padStart(2, '0')
-      var mi = String(d.getMinutes()).padStart(2, '0')
-      el.setAttribute('min', today + 'T' + h + ':' + mi)
+      el.setAttribute(isPast ? 'min' : 'max', today + 'T' + pad(d.getHours()) + ':' + pad(d.getMinutes()))
     } else {
-      el.setAttribute('min', today)
+      el.setAttribute(isPast ? 'min' : 'max', today)
     }
     el.addEventListener('change', function () {
       if (!el.value) return
       var sel = new Date(el.value + (el.type === 'date' ? 'T00:00:00' : ''))
-      if (sel < new Date()) {
+      var cmp = isPast ? sel < new Date() : sel > new Date()
+      if (cmp) {
         el.value = ''
-        el.setCustomValidity('Past dates are not allowed')
-      } else {
-        el.setCustomValidity('')
-      }
-    })
-  })
-
-  /* ── 19. no-future ── */
-
-  ForgeSprinkle.register('input[no-future]', function noFuture(el) {
-    if (el.type !== 'date' && el.type !== 'datetime-local') return
-    if (el._sprinkleDateInputInit) return
-    var d = new Date()
-    var y = d.getFullYear()
-    var mo = String(d.getMonth() + 1).padStart(2, '0')
-    var da = String(d.getDate()).padStart(2, '0')
-    var today = y + '-' + mo + '-' + da
-    if (el.type === 'datetime-local') {
-      var h = String(d.getHours()).padStart(2, '0')
-      var mi = String(d.getMinutes()).padStart(2, '0')
-      el.setAttribute('max', today + 'T' + h + ':' + mi)
-    } else {
-      el.setAttribute('max', today)
-    }
-    el.addEventListener('change', function () {
-      if (!el.value) return
-      var sel = new Date(el.value + (el.type === 'date' ? 'T00:00:00' : ''))
-      if (sel > new Date()) {
-        el.value = ''
-        el.setCustomValidity('Future dates are not allowed')
+        el.setCustomValidity(isPast ? 'Past dates are not allowed' : 'Future dates are not allowed')
       } else {
         el.setCustomValidity('')
       }
@@ -729,7 +703,7 @@
       var isDT = v.indexOf('T') !== -1
       var d = new Date(dateOnly(v) + 'T00:00:00')
       d.setDate(d.getDate() + n)
-      var r = d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0')
+      var r = fmtDate(d)
       return isDT ? r + 'T' + (v.split('T')[1] || '00:00') : r
     }
     if (el.value && partner.value) calcDelta()
@@ -789,11 +763,6 @@
       if (p.length < 3) return null
       var d = new Date(+p[0], +p[1] - 1, +p[2])
       return (d.getFullYear() === +p[0] && d.getMonth() === +p[1] - 1 && d.getDate() === +p[2]) ? d : null
-    }
-
-    function fmtDate(d) {
-      return d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' +
-             String(d.getDate()).padStart(2, '0')
     }
 
     function fmtDisplay(d) {
@@ -860,122 +829,76 @@
     var isRange = !!(rangeGroup && rangeRole)
     var rangePartner = null
 
+    /* ── build trigger ── */
+
+    function buildTrigger() {
+      var label = el.getAttribute('aria-label') || ''
+      if (!label && el.id) {
+        var l = doc.querySelector('label[for="' + el.id + '"]')
+        if (l) label = l.textContent.trim()
+      }
+      if (!label) label = el.getAttribute('name') || 'Choose date'
+
+      var t = doc.createElement('button')
+      t.type = 'button'
+      t.className = 'sprinkle-dp-trigger'
+      t.style.cssText = CSS_DP_TRIGGER
+      t.setAttribute('aria-label', label)
+      t.setAttribute('aria-haspopup', 'dialog')
+      t.setAttribute('aria-expanded', 'false')
+      if (el.hasAttribute('required')) t.setAttribute('required', '')
+
+      var icon = doc.createElement('span')
+      icon.className = 'sprinkle-dp-icon'
+      icon.setAttribute('aria-hidden', 'true')
+
+      t._updateLabel = function (txt) {
+        t.textContent = ''
+        t.appendChild(doc.createTextNode(txt || label))
+        t.appendChild(icon)
+      }
+
+      if (el.parentNode) el.parentNode.insertBefore(t, el.nextSibling)
+      return t
+    }
+
+    el.style.cssText = CSS_SR_ONLY
+
     if (isRange) {
-      var pRole = rangeRole === 'start' ? 'end' : 'start'
       rangePartner = document.querySelector(
-        'input[date-range="' + rangeGroup + '"][data-range-type="' + pRole + '"]'
+        'input[date-range="' + rangeGroup + '"][data-range-type="' + (rangeRole === 'start' ? 'end' : 'start') + '"]'
       )
+
       if (el._sprinkleDpShared) {
-        el.style.cssText = 'position:absolute;width:1px;height:1px;padding:0;margin:-1px;' +
-          'overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0'
-
-        var trigger = doc.createElement('button')
-        trigger.type = 'button'
-        trigger.className = 'sprinkle-dp-trigger'
-        trigger.style.cssText = 'font:inherit;padding:0.35em 2.2em 0.35em 0.5em;' +
-          'border:1px solid var(--sprinkle-dp-trigger-border);border-radius:4px;' +
-          'background:var(--sprinkle-dp-trigger-bg);color:var(--sprinkle-dp-trigger-color);' +
-          'min-width:14ch;box-sizing:border-box;cursor:pointer;text-align:left;position:relative'
-
-        var triggerLabel = el.getAttribute('aria-label') || ''
-        if (!triggerLabel && el.id) {
-          var lblEl = doc.querySelector('label[for="' + el.id + '"]')
-          if (lblEl) triggerLabel = lblEl.textContent.trim()
-        }
-        if (!triggerLabel) triggerLabel = el.getAttribute('name') || 'Choose date'
-        trigger.setAttribute('aria-label', triggerLabel)
-        trigger.setAttribute('aria-haspopup', 'dialog')
-        trigger.setAttribute('aria-expanded', 'false')
-        if (el.hasAttribute('required')) trigger.setAttribute('required', '')
-
-        var iconSpan = doc.createElement('span')
-        iconSpan.className = 'sprinkle-dp-icon'
-        iconSpan.setAttribute('aria-hidden', 'true')
-
+        var trigger = buildTrigger()
         var sharedPopup = el._sprinkleDpShared
-        function updatePartnerTrigger() {
-          trigger.textContent = ''
-          var d = parseDate(el.value)
-          if (d) {
-            trigger.appendChild(doc.createTextNode(fmtDisplay(d)))
-          } else {
-            trigger.appendChild(doc.createTextNode(triggerLabel))
-          }
-          trigger.appendChild(iconSpan)
-        }
-        updatePartnerTrigger()
-
-        if (el.parentNode) {
-          el.parentNode.insertBefore(trigger, el.nextSibling)
-        }
-
         el._sprinkleDpTrigger = trigger
-        el._sprinkleDpUpdateTrigger = updatePartnerTrigger
+        el._sprinkleDpUpdateTrigger = function () {
+          var d = parseDate(el.value)
+          trigger._updateLabel(d ? fmtDisplay(d) : '')
+        }
 
-        trigger.addEventListener('click', function () {
+        function toggleShared() {
           if (sharedPopup.getAttribute('aria-hidden') === 'true') sharedPopup._sprinkleDpOpen()
           else sharedPopup._sprinkleDpClose()
-        })
-
+        }
+        trigger.addEventListener('click', toggleShared)
         trigger.addEventListener('keydown', function (e) {
-          if (e.key === 'Enter' || e.key === ' ') {
-            e.preventDefault()
-            if (sharedPopup.getAttribute('aria-hidden') === 'true') sharedPopup._sprinkleDpOpen()
-            else sharedPopup._sprinkleDpClose()
-          } else if (e.key === 'ArrowDown' || e.key === 'ArrowUp') {
-            e.preventDefault()
-            sharedPopup._sprinkleDpOpen()
-          }
+          if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); toggleShared() }
+          else if (e.key === 'ArrowDown' || e.key === 'ArrowUp') { e.preventDefault(); sharedPopup._sprinkleDpOpen() }
         })
 
+        el._sprinkleDpUpdateTrigger()
         return
       }
     }
 
-    /* ── hide original input ── */
-
-    el.style.cssText = 'position:absolute;width:1px;height:1px;padding:0;margin:-1px;' +
-      'overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0'
-
-    /* ── build trigger ── */
-
-    var trigger = doc.createElement('button')
-    trigger.type = 'button'
-    trigger.className = 'sprinkle-dp-trigger'
-    trigger.style.cssText = 'font:inherit;padding:0.35em 2.2em 0.35em 0.5em;' +
-      'border:1px solid var(--sprinkle-dp-trigger-border);border-radius:4px;' +
-      'background:var(--sprinkle-dp-trigger-bg);color:var(--sprinkle-dp-trigger-color);' +
-      'min-width:14ch;box-sizing:border-box;cursor:pointer;text-align:left;position:relative'
-
-    var triggerLabel = el.getAttribute('aria-label') || ''
-    if (!triggerLabel && el.id) {
-      var lblEl = doc.querySelector('label[for="' + el.id + '"]')
-      if (lblEl) triggerLabel = lblEl.textContent.trim()
-    }
-    if (!triggerLabel) triggerLabel = el.getAttribute('name') || 'Choose date'
-    trigger.setAttribute('aria-label', triggerLabel)
-    trigger.setAttribute('aria-haspopup', 'dialog')
-    trigger.setAttribute('aria-expanded', 'false')
-    if (el.hasAttribute('required')) trigger.setAttribute('required', '')
-
-    var iconSpan = doc.createElement('span')
-    iconSpan.className = 'sprinkle-dp-icon'
-    iconSpan.setAttribute('aria-hidden', 'true')
+    var trigger = buildTrigger()
 
     function updateTrigger() {
-      trigger.textContent = ''
-      if (selectedDate) {
-        trigger.appendChild(doc.createTextNode(fmtDisplay(selectedDate)))
-      } else {
-        trigger.appendChild(doc.createTextNode(triggerLabel))
-      }
-      trigger.appendChild(iconSpan)
+      trigger._updateLabel(selectedDate ? fmtDisplay(selectedDate) : '')
     }
     updateTrigger()
-
-    if (el.parentNode) {
-      el.parentNode.insertBefore(trigger, el.nextSibling)
-    }
 
     /* ── build calendar panel ── */
 
@@ -1829,9 +1752,9 @@
     el.addEventListener('change', validate)
   })
 
-  /* ── 29. avatar (CSS-only, empty handler for observer compat) ── */
+  /* ── 29. avatar / breadcrumb (CSS-only, empty handler for observer compat) ── */
 
-  ForgeSprinkle.register('img[avatar]', function avatar(el) {})
+  ForgeSprinkle.register('img[avatar], ul[breadcrumb]', function noop() {})
 
   /* ── 30. tooltip ── */
 
@@ -1862,25 +1785,9 @@
     el.addEventListener('focusin', position)
   })
 
-  /* ── 31. breadcrumb ── */
+  /* ── 31/32. dialog: drawer / modal ── */
 
-  ForgeSprinkle.register('ul[breadcrumb]', function breadcrumb(el) {})
-
-  /* ── 32. drawer ── */
-
-  ForgeSprinkle.register('dialog[drawer]', function drawer(el) {
-    el.addEventListener('click', function (e) {
-      var btn = e.target.closest('[command-for="' + el.id + '"], [commandfor="' + el.id + '"]')
-      if (btn && btn.getAttribute('command') === 'close') {
-        e.preventDefault()
-        el.close()
-      }
-    })
-  })
-
-  /* ── 33. modal ── */
-
-  ForgeSprinkle.register('dialog[modal]', function modal(el) {
+  ForgeSprinkle.register('dialog[drawer], dialog[modal]', function dialog(el) {
     el.addEventListener('click', function (e) {
       var btn = e.target.closest('[command-for="' + el.id + '"], [commandfor="' + el.id + '"]')
       if (btn && btn.getAttribute('command') === 'close') {
