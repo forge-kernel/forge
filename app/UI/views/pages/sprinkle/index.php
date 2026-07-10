@@ -429,7 +429,7 @@ body {margin: 0}
     <h1>ForgeSprinkle</h1>
     <p>HTML attribute enhancements. Each directive maps an attribute to a small behavior or style. Everything works (or does nothing) when JavaScript is off.</p>
     <nav>
-        <ul breadcrumb boost="hover">
+        <ul nav="horizontal">
           <li><a href="/sprinkle">Sprinkle styled</a></li>
           <li><a href="/sprinkle/raw">Sprinkle unstyled</a></li>
         </ul>
@@ -629,8 +629,8 @@ body {margin: 0}
   <p class="doc-meta">On: <code>&lt;input type="date|datetime-local"&gt;</code></p>
   <p>Pairs start and end inputs. Both need the same <code>date-range</code> value. Use <code>data-range-type="start|end"</code> to assign roles. Opening the end picker jumps to the start date. Delta between values is preserved when adjusting.</p>
   <div class="doc-demo doc-row">
-    <input type="date" date-range="trip" data-range-type="start" name="trip_start" />
-    <input type="date" date-range="trip" data-range-type="end" name="trip_end" />
+      <input type="date" date-input date-range="trip" data-range-type="start" name="trip_start" />
+      <input type="date" date-input date-range="trip" data-range-type="end" name="trip_end" />
   </div>
   <div class="doc-code">&lt;input <span class="doc-attr">type</span>=<span class="doc-val">"date"</span> <span class="doc-attr">date-range</span>=<span class="doc-val">"trip"</span> <span class="doc-attr">data-range-type</span>=<span class="doc-val">"start"</span> /&gt;
 &lt;input <span class="doc-attr">type</span>=<span class="doc-val">"date"</span> <span class="doc-attr">date-range</span>=<span class="doc-val">"trip"</span> <span class="doc-attr">data-range-type</span>=<span class="doc-val">"end"</span> /&gt;</div>

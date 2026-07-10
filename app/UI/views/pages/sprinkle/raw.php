@@ -15,7 +15,7 @@
           <li><a href="#character-count">character-count</a></li>
           <li><a href="#auto-select">auto-select</a></li>
           <li><a href="#enter-submit">enter-submit</a></li>
-          <li><a href="#file-name">file-name</a></li>
+          <li><a href="#drop-zone">drop-zone</a></li>
           <li><a href="#leading-suffix">leading / suffix</a></li>
           <li><a href="#prefix">prefix</a></li>
           <li><a href="#combo-box">combo-box</a></li>
@@ -106,7 +106,7 @@
 
 <main content>
 <nav>
-    <ul breadcrumb boost="hover">
+    <ul nav="horizontal">
       <li><a href="/sprinkle">Sprinkle styled</a></li>
       <li><a href="/sprinkle/raw">Sprinkle unstyled</a></li>
     </ul>
@@ -168,11 +168,29 @@
   <pre>&lt;textarea enter-submit&gt;&lt;/textarea&gt;</pre>
 </div>
 
-<div id="file-name">
-  <h3><code>file-name</code></h3>
-  <p>On: &lt;input type="file"&gt;</p>
-  <input type="file" file-name multiple />
-  <pre>&lt;input type="file" file-name multiple /&gt;</pre>
+<div id="drop-zone">
+  <h3><code>drop-zone</code></h3>
+  <p>On: &lt;label&gt; wrapping &lt;input type="file"&gt;. Supports drag-and-drop, click to browse, image preview, multiple files, and removal.</p>
+
+  <p>Single image (avatar):</p>
+  <label drop-zone>
+    <span>Drag your avatar here or click to browse</span>
+    <input type="file" name="avatar" accept="image/*" />
+  </label>
+  <pre>&lt;label drop-zone&gt;
+  &lt;span&gt;Drag your avatar here or click to browse&lt;/span&gt;
+  &lt;input type="file" name="avatar" accept="image/*" /&gt;
+&lt;/label&gt;</pre>
+
+  <p>Multiple files (any type):</p>
+  <label drop-zone>
+    <span>Drag files here or click to browse</span>
+    <input type="file" name="files" multiple />
+  </label>
+  <pre>&lt;label drop-zone&gt;
+  &lt;span&gt;Drag files here or click to browse&lt;/span&gt;
+  &lt;input type="file" name="files" multiple /&gt;
+&lt;/label&gt;</pre>
 </div>
 
 <div id="leading-suffix">

@@ -229,26 +229,145 @@
     })
   })
 
-  /* ── 11. file-name ── */
+  /* ── 11. drop-zone ── */
 
-  ForgeSprinkle.register('input[file-name]', function enhanceFile(el) {
-    if (el.getAttribute('type') !== 'file') return
-    if (!el.parentNode) return
-    var info = document.createElement('span')
-    info.className = 'sprinkle-file-info'
-    el.parentNode.insertBefore(info, el.nextSibling)
-    function update() {
-      if (el.files.length === 0) {
-        info.textContent = ''
-        return
-      }
-      var parts = []
-      for (var i = 0; i < el.files.length; i++) {
-        parts.push(el.files[i].name)
-      }
-      info.textContent = parts.join(', ')
+  ForgeSprinkle.register('label[drop-zone]', function dropZone(el) {
+    if (el._sprinkleDropZone) return
+    el._sprinkleDropZone = true
+
+    var input = el.querySelector('input[type="file"]')
+    if (!input) return
+
+    var isMultiple = input.multiple
+    var doc = el.ownerDocument
+
+    var preview = el.querySelector('.sprinkle-drop-preview')
+    if (!preview) {
+      preview = doc.createElement('div')
+      preview.className = 'sprinkle-drop-preview'
+      preview.setAttribute('aria-live', 'polite')
+      el.appendChild(preview)
     }
-    el.addEventListener('change', update)
+
+    var currentFiles = Array.from(input.files)
+    var objectUrls = []
+
+    function revokeUrls() {
+      for (var i = 0; i < objectUrls.length; i++) URL.revokeObjectURL(objectUrls[i])
+      objectUrls = []
+    }
+
+    function syncInput() {
+      var dt = new DataTransfer()
+      for (var i = 0; i < currentFiles.length; i++) dt.items.add(currentFiles[i])
+      input.files = dt.files
+    }
+
+    function formatSize(bytes) {
+      if (bytes < 1024) return bytes + ' B'
+      if (bytes < 1048576) return (bytes / 1024).toFixed(1) + ' KB'
+      return (bytes / 1048576).toFixed(1) + ' MB'
+    }
+
+    var dragCount = 0
+
+    el.addEventListener('dragenter', function (e) {
+      e.preventDefault()
+      e.stopPropagation()
+      dragCount++
+      el.classList.add('sprinkle-drop-active')
+    })
+
+    el.addEventListener('dragover', function (e) {
+      e.preventDefault()
+      e.stopPropagation()
+    })
+
+    el.addEventListener('dragleave', function (e) {
+      e.preventDefault()
+      e.stopPropagation()
+      dragCount--
+      if (dragCount <= 0) {
+        dragCount = 0
+        el.classList.remove('sprinkle-drop-active')
+      }
+    })
+
+    el.addEventListener('drop', function (e) {
+      e.preventDefault()
+      e.stopPropagation()
+      dragCount = 0
+      el.classList.remove('sprinkle-drop-active')
+
+      var files = e.dataTransfer.files
+      if (!files.length) return
+
+      if (isMultiple) {
+        for (var i = 0; i < files.length; i++) currentFiles.push(files[i])
+      } else {
+        currentFiles = [files[0]]
+      }
+
+      syncInput()
+      input.dispatchEvent(new Event('change', { bubbles: true }))
+      renderPreviews()
+    })
+
+    input.addEventListener('change', function () {
+      currentFiles = Array.from(input.files)
+      renderPreviews()
+    })
+
+    function renderPreviews() {
+      revokeUrls()
+      preview.innerHTML = ''
+      if (!currentFiles.length) return
+
+      for (var i = 0; i < currentFiles.length; i++) {
+        ;(function (file, idx) {
+          var item = doc.createElement('div')
+          item.className = 'sprinkle-drop-file'
+
+          if (file.type.startsWith('image/')) {
+            var img = doc.createElement('img')
+            img.src = URL.createObjectURL(file)
+            objectUrls.push(img.src)
+            img.alt = file.name
+            item.appendChild(img)
+          }
+
+          var info = doc.createElement('div')
+          info.className = 'sprinkle-drop-info'
+
+          var name = doc.createElement('span')
+          name.className = 'sprinkle-drop-name'
+          name.textContent = file.name
+          info.appendChild(name)
+
+          var size = doc.createElement('span')
+          size.className = 'sprinkle-drop-size'
+          size.textContent = formatSize(file.size)
+          info.appendChild(size)
+
+          item.appendChild(info)
+
+          var removeBtn = doc.createElement('button')
+          removeBtn.type = 'button'
+          removeBtn.className = 'sprinkle-drop-remove'
+          removeBtn.setAttribute('aria-label', 'Remove ' + file.name)
+          removeBtn.innerHTML = '&times;'
+          removeBtn.addEventListener('click', function (e) {
+            e.stopPropagation()
+            currentFiles.splice(idx, 1)
+            syncInput()
+            renderPreviews()
+          })
+          item.appendChild(removeBtn)
+
+          preview.appendChild(item)
+        })(currentFiles[i], i)
+      }
+    }
   })
 
   /* ── 12. switch ── */
@@ -424,6 +543,11 @@
   ForgeSprinkle.register('[close-outside]', function closeOutside(el) {
     document.addEventListener('click', function (e) {
       if (!el.open) return
+      var target = e.target
+      while (target) {
+        if (target !== el && target.open && (target.tagName === 'DIALOG' || target.tagName === 'DETAILS')) return
+        target = target.parentElement
+      }
       if (el.tagName === 'DIALOG') {
         if (el.contains(e.target) && el !== e.target) return
         el.close()
@@ -458,6 +582,7 @@
 
   ForgeSprinkle.register('input[no-past]', function noPast(el) {
     if (el.type !== 'date' && el.type !== 'datetime-local') return
+    if (el._sprinkleDateInputInit) return
     var d = new Date()
     var y = d.getFullYear()
     var mo = String(d.getMonth() + 1).padStart(2, '0')
@@ -486,6 +611,7 @@
 
   ForgeSprinkle.register('input[no-future]', function noFuture(el) {
     if (el.type !== 'date' && el.type !== 'datetime-local') return
+    if (el._sprinkleDateInputInit) return
     var d = new Date()
     var y = d.getFullYear()
     var mo = String(d.getMonth() + 1).padStart(2, '0')
@@ -514,6 +640,7 @@
 
   ForgeSprinkle.register('input[disable-days]', function disableDays(el) {
     if (el.type !== 'date' && el.type !== 'datetime-local') return
+    if (el._sprinkleDateInputInit) return
     var dayMap = { sun: 0, mon: 1, tue: 2, wed: 3, thu: 4, fri: 5, sat: 6 }
     function isDisabled(date) {
       var rule = el.getAttribute('disable-days')
@@ -539,6 +666,7 @@
   /* ── 21. business-hours ── */
 
   ForgeSprinkle.register('input[type="datetime-local"][business-hours]', function businessHours(el) {
+    if (el._sprinkleDateInputInit) return
     function parseTime(str) {
       var m = str.trim().match(/^(\d{1,2}):(\d{2})(?:\s*(AM|PM))?$/i)
       if (!m) return null
@@ -578,6 +706,8 @@
   /* ── 22. date-range ── */
 
   ForgeSprinkle.register('input[date-range]', function dateRange(el) {
+    if (el._sprinkleDateInputInit) return
+    if (el.hasAttribute('date-input')) return
     var group = el.getAttribute('date-range')
     var role = el.getAttribute('data-range-type')
     if (!group || !role) return
@@ -636,10 +766,758 @@
     partner.addEventListener('blur', onBlur)
   })
 
-  /* ── 23. date-input (visual standardization) ── */
+  /* ── 23. date-input (custom date picker) ── */
 
   ForgeSprinkle.register('input[date-input]', function dateInput(el) {
     if (el.type !== 'date' && el.type !== 'datetime-local') return
+    if (el._sprinkleDateInputInit) return
+    el._sprinkleDateInputInit = true
+
+    var MONTHS = ['January','February','March','April','May','June',
+                  'July','August','September','October','November','December']
+    var MONTHS_SHORT = ['Jan','Feb','Mar','Apr','May','Jun',
+                        'Jul','Aug','Sep','Oct','Nov','Dec']
+    var WEEKDAYS = ['Su','Mo','Tu','We','Th','Fr','Sa']
+    var dayMap = { sun: 0, mon: 1, tue: 2, wed: 3, thu: 4, fri: 5, sat: 6 }
+    var doc = el.ownerDocument || document
+
+    /* ── helpers ── */
+
+    function parseDate(v) {
+      if (!v) return null
+      var p = (v.split('T')[0]).split('-')
+      if (p.length < 3) return null
+      var d = new Date(+p[0], +p[1] - 1, +p[2])
+      return (d.getFullYear() === +p[0] && d.getMonth() === +p[1] - 1 && d.getDate() === +p[2]) ? d : null
+    }
+
+    function fmtDate(d) {
+      return d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' +
+             String(d.getDate()).padStart(2, '0')
+    }
+
+    function fmtDisplay(d) {
+      return d ? MONTHS[d.getMonth()] + ' ' + d.getDate() + ', ' + d.getFullYear() : ''
+    }
+
+    function sameDay(a, b) {
+      return a && b && a.getFullYear() === b.getFullYear() &&
+             a.getMonth() === b.getMonth() && a.getDate() === b.getDate()
+    }
+
+    function startOfMonth(d) { return new Date(d.getFullYear(), d.getMonth(), 1) }
+
+    function addMonths(d, n) {
+      var r = new Date(d.getTime())
+      var day = r.getDate()
+      r.setMonth(r.getMonth() + n)
+      if (r.getDate() !== day) r.setDate(0)
+      return r
+    }
+
+    function daysIn(y, m) { return new Date(y, m + 1, 0).getDate() }
+    function firstDow(y, m) { return new Date(y, m, 1).getDay() }
+
+    /* ── state ── */
+
+    var selectedDate = parseDate(el.value)
+    var viewDate = selectedDate ? startOfMonth(selectedDate) : startOfMonth(new Date())
+
+    var minDate = parseDate(el.getAttribute('min'))
+    var maxDate = parseDate(el.getAttribute('max'))
+    if (el.hasAttribute('no-past')) {
+      var tp = new Date(); tp.setHours(0, 0, 0, 0)
+      if (!minDate || tp > minDate) minDate = tp
+    }
+    if (el.hasAttribute('no-future')) {
+      var tf = new Date(); tf.setHours(0, 0, 0, 0)
+      if (!maxDate || tf < maxDate) maxDate = tf
+    }
+    var disableDaysAttr = el.getAttribute('disable-days')
+
+    function isDOWDisabled(dow) {
+      if (!disableDaysAttr) return false
+      if (disableDaysAttr === 'weekends') return dow === 0 || dow === 6
+      if (disableDaysAttr === 'weekdays') return dow >= 1 && dow <= 5
+      var parts = disableDaysAttr.split(',')
+      for (var i = 0; i < parts.length; i++) {
+        if (dayMap[parts[i].trim().toLowerCase().slice(0, 3)] === dow) return true
+      }
+      return false
+    }
+
+    function isDateDisabled(d) {
+      if (isDOWDisabled(d.getDay())) return true
+      if (minDate && d < minDate) return true
+      if (maxDate && d > maxDate) return true
+      return false
+    }
+
+    /* ── range mode ── */
+
+    var rangeGroup = el.getAttribute('date-range')
+    var rangeRole = el.getAttribute('data-range-type')
+    var isRange = !!(rangeGroup && rangeRole)
+    var rangePartner = null
+
+    if (isRange) {
+      var pRole = rangeRole === 'start' ? 'end' : 'start'
+      rangePartner = document.querySelector(
+        'input[date-range="' + rangeGroup + '"][data-range-type="' + pRole + '"]'
+      )
+      if (el._sprinkleDpShared) {
+        el.style.cssText = 'position:absolute;width:1px;height:1px;padding:0;margin:-1px;' +
+          'overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0'
+
+        var trigger = doc.createElement('button')
+        trigger.type = 'button'
+        trigger.className = 'sprinkle-dp-trigger'
+        trigger.style.cssText = 'font:inherit;padding:0.35em 2.2em 0.35em 0.5em;' +
+          'border:1px solid var(--sprinkle-dp-trigger-border);border-radius:4px;' +
+          'background:var(--sprinkle-dp-trigger-bg);color:var(--sprinkle-dp-trigger-color);' +
+          'min-width:14ch;box-sizing:border-box;cursor:pointer;text-align:left;position:relative'
+
+        var triggerLabel = el.getAttribute('aria-label') || ''
+        if (!triggerLabel && el.id) {
+          var lblEl = doc.querySelector('label[for="' + el.id + '"]')
+          if (lblEl) triggerLabel = lblEl.textContent.trim()
+        }
+        if (!triggerLabel) triggerLabel = el.getAttribute('name') || 'Choose date'
+        trigger.setAttribute('aria-label', triggerLabel)
+        trigger.setAttribute('aria-haspopup', 'dialog')
+        trigger.setAttribute('aria-expanded', 'false')
+        if (el.hasAttribute('required')) trigger.setAttribute('required', '')
+
+        var iconSpan = doc.createElement('span')
+        iconSpan.className = 'sprinkle-dp-icon'
+        iconSpan.setAttribute('aria-hidden', 'true')
+
+        var sharedPopup = el._sprinkleDpShared
+        function updatePartnerTrigger() {
+          trigger.textContent = ''
+          var d = parseDate(el.value)
+          if (d) {
+            trigger.appendChild(doc.createTextNode(fmtDisplay(d)))
+          } else {
+            trigger.appendChild(doc.createTextNode(triggerLabel))
+          }
+          trigger.appendChild(iconSpan)
+        }
+        updatePartnerTrigger()
+
+        if (el.parentNode) {
+          el.parentNode.insertBefore(trigger, el.nextSibling)
+        }
+
+        el._sprinkleDpTrigger = trigger
+        el._sprinkleDpUpdateTrigger = updatePartnerTrigger
+
+        trigger.addEventListener('click', function () {
+          if (sharedPopup.getAttribute('aria-hidden') === 'true') sharedPopup._sprinkleDpOpen()
+          else sharedPopup._sprinkleDpClose()
+        })
+
+        trigger.addEventListener('keydown', function (e) {
+          if (e.key === 'Enter' || e.key === ' ') {
+            e.preventDefault()
+            if (sharedPopup.getAttribute('aria-hidden') === 'true') sharedPopup._sprinkleDpOpen()
+            else sharedPopup._sprinkleDpClose()
+          } else if (e.key === 'ArrowDown' || e.key === 'ArrowUp') {
+            e.preventDefault()
+            sharedPopup._sprinkleDpOpen()
+          }
+        })
+
+        return
+      }
+    }
+
+    /* ── hide original input ── */
+
+    el.style.cssText = 'position:absolute;width:1px;height:1px;padding:0;margin:-1px;' +
+      'overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0'
+
+    /* ── build trigger ── */
+
+    var trigger = doc.createElement('button')
+    trigger.type = 'button'
+    trigger.className = 'sprinkle-dp-trigger'
+    trigger.style.cssText = 'font:inherit;padding:0.35em 2.2em 0.35em 0.5em;' +
+      'border:1px solid var(--sprinkle-dp-trigger-border);border-radius:4px;' +
+      'background:var(--sprinkle-dp-trigger-bg);color:var(--sprinkle-dp-trigger-color);' +
+      'min-width:14ch;box-sizing:border-box;cursor:pointer;text-align:left;position:relative'
+
+    var triggerLabel = el.getAttribute('aria-label') || ''
+    if (!triggerLabel && el.id) {
+      var lblEl = doc.querySelector('label[for="' + el.id + '"]')
+      if (lblEl) triggerLabel = lblEl.textContent.trim()
+    }
+    if (!triggerLabel) triggerLabel = el.getAttribute('name') || 'Choose date'
+    trigger.setAttribute('aria-label', triggerLabel)
+    trigger.setAttribute('aria-haspopup', 'dialog')
+    trigger.setAttribute('aria-expanded', 'false')
+    if (el.hasAttribute('required')) trigger.setAttribute('required', '')
+
+    var iconSpan = doc.createElement('span')
+    iconSpan.className = 'sprinkle-dp-icon'
+    iconSpan.setAttribute('aria-hidden', 'true')
+
+    function updateTrigger() {
+      trigger.textContent = ''
+      if (selectedDate) {
+        trigger.appendChild(doc.createTextNode(fmtDisplay(selectedDate)))
+      } else {
+        trigger.appendChild(doc.createTextNode(triggerLabel))
+      }
+      trigger.appendChild(iconSpan)
+    }
+    updateTrigger()
+
+    if (el.parentNode) {
+      el.parentNode.insertBefore(trigger, el.nextSibling)
+    }
+
+    /* ── build calendar panel ── */
+
+    function buildPanel(initialDate, onSelect) {
+      var panel = doc.createElement('div')
+      panel.className = 'sprinkle-dp'
+
+      var header = doc.createElement('div')
+      header.className = 'sprinkle-dp-header'
+
+      var prevBtn = doc.createElement('button')
+      prevBtn.type = 'button'
+      prevBtn.className = 'sprinkle-dp-prev'
+      prevBtn.setAttribute('aria-label', 'Previous month')
+      prevBtn.innerHTML = '&#8249;'
+
+      var monthBtn = doc.createElement('button')
+      monthBtn.type = 'button'
+      monthBtn.className = 'sprinkle-dp-month'
+      monthBtn.setAttribute('aria-live', 'polite')
+
+      var nextBtn = doc.createElement('button')
+      nextBtn.type = 'button'
+      nextBtn.className = 'sprinkle-dp-next'
+      nextBtn.setAttribute('aria-label', 'Next month')
+      nextBtn.innerHTML = '&#8250;'
+
+      header.appendChild(prevBtn)
+      header.appendChild(monthBtn)
+      header.appendChild(nextBtn)
+      panel.appendChild(header)
+
+      var weekdays = doc.createElement('div')
+      weekdays.className = 'sprinkle-dp-weekdays'
+      weekdays.setAttribute('role', 'row')
+      for (var w = 0; w < 7; w++) {
+        var sp = doc.createElement('span')
+        sp.setAttribute('role', 'columnheader')
+        sp.setAttribute('aria-label', MONTHS[w] || '')
+        sp.textContent = WEEKDAYS[w]
+        weekdays.appendChild(sp)
+      }
+      panel.appendChild(weekdays)
+
+      var grid = doc.createElement('div')
+      grid.className = 'sprinkle-dp-grid'
+      grid.setAttribute('role', 'grid')
+      panel.appendChild(grid)
+
+      var clearBtn = doc.createElement('button')
+      clearBtn.type = 'button'
+      clearBtn.className = 'sprinkle-dp-clear'
+      clearBtn.textContent = 'Clear'
+      panel.appendChild(clearBtn)
+
+      var gd = {
+        panel: panel, header: header, prevBtn: prevBtn, monthBtn: monthBtn,
+        nextBtn: nextBtn, grid: grid, clearBtn: clearBtn, weekdays: weekdays,
+        viewDate: startOfMonth(initialDate),
+        showMonths: false,
+        onSelect: onSelect || null
+      }
+
+      prevBtn.addEventListener('click', function () {
+        if (gd.showMonths) {
+          gd.viewDate = new Date(gd.viewDate.getFullYear() - 1, gd.viewDate.getMonth(), 1)
+        } else {
+          gd.viewDate = addMonths(gd.viewDate, -1)
+        }
+        renderPanel(gd)
+      })
+
+      nextBtn.addEventListener('click', function () {
+        if (gd.showMonths) {
+          gd.viewDate = new Date(gd.viewDate.getFullYear() + 1, gd.viewDate.getMonth(), 1)
+        } else {
+          gd.viewDate = addMonths(gd.viewDate, 1)
+        }
+        renderPanel(gd)
+      })
+
+      monthBtn.addEventListener('click', function () {
+        gd.showMonths = !gd.showMonths
+        renderPanel(gd)
+      })
+
+      clearBtn.addEventListener('click', function () { (gd.onSelect || selectDate)(null) })
+
+      return gd
+    }
+
+    /* ── render calendar ── */
+
+    function renderPanel(gd) {
+      var y = gd.viewDate.getFullYear()
+      var m = gd.viewDate.getMonth()
+
+      gd.grid.innerHTML = ''
+
+      if (gd.showMonths) {
+        gd.monthBtn.textContent = '' + y
+        gd.weekdays.style.display = 'none'
+        gd.grid.setAttribute('aria-label', 'Months in ' + y)
+        gd.grid.style.display = ''
+        gd.grid.style.gridTemplateColumns = 'repeat(3, 1fr)'
+
+        for (var i = 0; i < 12; i++) {
+          ;(function(idx) {
+            var btn = doc.createElement('button')
+            btn.type = 'button'
+            btn.textContent = MONTHS_SHORT[idx]
+            btn.setAttribute('aria-label', MONTHS[idx] + ' ' + y)
+            btn.style.cssText = 'width:auto;font:inherit;border:none;background:none;' +
+              'cursor:pointer;border-radius:4px;color:var(--sprinkle-dp-text);font-size:0.85em'
+            if (idx === m) {
+              btn.style.background = 'var(--sprinkle-dp-accent)'
+              btn.style.color = 'var(--sprinkle-dp-accent-text)'
+              btn.style.fontWeight = '600'
+            }
+            var ms = new Date(y, idx, 1)
+            var me = new Date(y, idx + 1, 0)
+            var allDis = true
+            for (var d = 1; d <= me.getDate(); d++) {
+              if (!isDateDisabled(new Date(y, idx, d))) { allDis = false; break }
+            }
+            if (allDis) { btn.style.opacity = '0.4'; btn.style.cursor = 'default' }
+            btn.addEventListener('click', function () {
+              if (allDis) return
+              gd.viewDate = new Date(y, idx, 1)
+              gd.showMonths = false
+              renderPanel(gd)
+            })
+            gd.grid.appendChild(btn)
+          })(i)
+        }
+        gd.clearBtn.style.display = ''
+        return
+      }
+
+      gd.monthBtn.textContent = MONTHS[m] + ' ' + y
+      gd.weekdays.style.display = ''
+      gd.grid.style.display = ''
+      gd.grid.style.gridTemplateColumns = ''
+      gd.grid.setAttribute('aria-label', MONTHS[m] + ' ' + y)
+
+      var startDow = firstDow(y, m)
+      var totalDays = daysIn(y, m)
+      var today = new Date(); today.setHours(0, 0, 0, 0)
+
+      for (var p = 0; p < startDow; p++) {
+        var emp = doc.createElement('span')
+        emp.className = 'sprinkle-dp-empty'
+        emp.setAttribute('aria-hidden', 'true')
+        gd.grid.appendChild(emp)
+      }
+
+      for (var d = 1; d <= totalDays; d++) {
+        var cellDate = new Date(y, m, d)
+        var btn = doc.createElement('button')
+        btn.type = 'button'
+        btn.className = 'sprinkle-dp-day'
+        btn.setAttribute('role', 'gridcell')
+        btn.setAttribute('tabindex', '-1')
+        btn.setAttribute('data-date', fmtDate(cellDate))
+        btn.setAttribute('aria-label', fmtDisplay(cellDate))
+        btn.textContent = d
+
+        if (isDateDisabled(cellDate)) {
+          btn.setAttribute('aria-disabled', 'true')
+        }
+        if (sameDay(cellDate, today)) btn.classList.add('sprinkle-dp-today')
+        if (sameDay(cellDate, selectedDate)) {
+          btn.classList.add('sprinkle-dp-selected')
+          btn.setAttribute('aria-selected', 'true')
+          btn.setAttribute('tabindex', '0')
+        }
+
+        if (isRange && selectedDate) {
+          var rangeS = rangeRole === 'start' ? selectedDate : parseDate(rangePartner ? rangePartner.value : '')
+          var rangeE = rangeRole === 'start' ? parseDate(rangePartner ? rangePartner.value : '') : selectedDate
+          if (rangeS && rangeE) {
+            if (rangeS > rangeE) { var tmp = rangeS; rangeS = rangeE; rangeE = tmp }
+            if (sameDay(cellDate, rangeS)) btn.classList.add('sprinkle-dp-range-start')
+            else if (sameDay(cellDate, rangeE)) btn.classList.add('sprinkle-dp-range-end')
+            else if (cellDate > rangeS && cellDate < rangeE) btn.classList.add('sprinkle-dp-range-between')
+          }
+        }
+
+        if (!isDateDisabled(cellDate)) {
+          btn.addEventListener('click', (function (dt) {
+            return function () { (gd.onSelect || selectDate)(dt) }
+          })(cellDate))
+        }
+
+        gd.grid.appendChild(btn)
+      }
+
+      var totalCells = startDow + totalDays
+      var rem = totalCells % 7 === 0 ? 0 : 7 - (totalCells % 7)
+      var padded = totalCells + rem
+      var padTo = 42
+      var extra = padTo - padded
+      for (var n = 0; n < rem + extra; n++) {
+        var emp2 = doc.createElement('span')
+        emp2.className = 'sprinkle-dp-empty'
+        emp2.setAttribute('aria-hidden', 'true')
+        gd.grid.appendChild(emp2)
+      }
+
+      gd.clearBtn.style.display = ''
+    }
+
+    /* ── select date ── */
+
+    function selectDate(d, targetEl) {
+      if (d && isDateDisabled(d)) return
+
+      targetEl = targetEl || el
+
+      if (isRange) {
+        if (targetEl === el) {
+          selectedDate = d
+          if (d && rangePartner) {
+            var endVal = rangePartner.value
+            var endDate = parseDate(endVal)
+            if (endDate && endDate < d) {
+              rangePartner.value = fmtDate(d)
+              rangePartner.dispatchEvent(new Event('change', { bubbles: true }))
+            }
+          }
+        } else {
+          if (d && rangePartner) {
+            var startVal = el.value
+            var startDate = parseDate(startVal)
+            if (startDate && d < startDate) return
+          }
+          targetEl.value = d ? fmtDate(d) : ''
+          targetEl.dispatchEvent(new Event('input', { bubbles: true }))
+          targetEl.dispatchEvent(new Event('change', { bubbles: true }))
+        }
+        renderPanel(grids[0])
+        renderPanel(grids[1])
+      } else {
+        selectedDate = d
+        viewDate = startOfMonth(d || new Date())
+        grids[0].viewDate = viewDate
+        renderPanel(grids[0])
+        close()
+      }
+
+      updateTrigger()
+      syncHiddenInput()
+      el.dispatchEvent(new Event('input', { bubbles: true }))
+      el.dispatchEvent(new Event('change', { bubbles: true }))
+
+      if (isRange && rangePartner && rangePartner._sprinkleDpUpdateTrigger) {
+        rangePartner._sprinkleDpUpdateTrigger()
+      }
+    }
+
+    function syncHiddenInput() {
+      el.value = selectedDate ? fmtDate(selectedDate) : ''
+    }
+
+    /* ── build panels & popup ── */
+
+    var grids = []
+    var popup
+
+    if (isRange) {
+      popup = doc.createElement('div')
+      popup.className = 'sprinkle-dp-range-wrap'
+      popup.setAttribute('role', 'dialog')
+      popup.setAttribute('aria-modal', 'true')
+      popup.setAttribute('aria-label', 'Choose date range')
+      popup.setAttribute('aria-hidden', 'true')
+
+      var rangeInner = doc.createElement('div')
+      rangeInner.className = 'sprinkle-dp-range'
+
+      var p1 = buildPanel(viewDate, function (d) { selectDate(d, el) })
+      var p2 = buildPanel(addMonths(viewDate, 1), function (d) { selectDate(d, rangePartner) })
+      grids = [p1, p2]
+      rangeInner.appendChild(p1.panel)
+      rangeInner.appendChild(p2.panel)
+      popup.appendChild(rangeInner)
+
+      p1.prevBtn.addEventListener('click', function () {
+        p1.viewDate = addMonths(p1.viewDate, -1)
+        p2.viewDate = addMonths(p1.viewDate, 1)
+        renderPanel(p1)
+        renderPanel(p2)
+      })
+      p1.nextBtn.removeEventListener('click', p1.nextBtn.onclick)
+      p1.nextBtn.addEventListener('click', function () {
+        p1.viewDate = addMonths(p1.viewDate, 1)
+        p2.viewDate = addMonths(p1.viewDate, 1)
+        renderPanel(p1)
+        renderPanel(p2)
+      })
+
+      p2.prevBtn.addEventListener('click', function () {
+        p2.viewDate = addMonths(p2.viewDate, -1)
+        p1.viewDate = addMonths(p2.viewDate, -1)
+        renderPanel(p1)
+        renderPanel(p2)
+      })
+      p2.nextBtn.removeEventListener('click', p2.nextBtn.onclick)
+      p2.nextBtn.addEventListener('click', function () {
+        p2.viewDate = addMonths(p2.viewDate, 1)
+        renderPanel(p2)
+        p1.viewDate = addMonths(p2.viewDate, -1)
+        renderPanel(p1)
+      })
+
+      if (rangePartner) {
+        rangePartner._sprinkleDpShared = popup
+      }
+    } else {
+      popup = doc.createElement('div')
+      popup.className = 'sprinkle-dp'
+      popup.setAttribute('role', 'dialog')
+      popup.setAttribute('aria-modal', 'true')
+      popup.setAttribute('aria-label', 'Choose date')
+      popup.setAttribute('aria-hidden', 'true')
+
+      var single = buildPanel(viewDate)
+      grids = [single]
+      popup.appendChild(single.panel)
+    }
+
+    el._sprinkleDpPopup = popup
+    doc.body.appendChild(popup)
+
+    /* ── position ── */
+
+    function position() {
+      var rect = trigger.getBoundingClientRect()
+      var vh = window.innerHeight
+      var pw = popup.offsetWidth || (isRange ? 560 : 280)
+      var ph = popup.offsetHeight || 320
+
+      popup.style.left = ''
+      popup.style.top = ''
+
+      if (isRange) {
+        var partnerTrigger = rangePartner && rangePartner._sprinkleDpTrigger
+        if (partnerTrigger) {
+          var r1 = trigger.getBoundingClientRect()
+          var r2 = partnerTrigger.getBoundingClientRect()
+          var left = Math.min(r1.left, r2.left)
+          var right = Math.max(r1.right, r2.right)
+          popup.style.left = left + 'px'
+          if (right + 8 > window.innerWidth) {
+            popup.style.left = Math.max(8, window.innerWidth - pw - 8) + 'px'
+          }
+        } else {
+          popup.style.left = rect.left + 'px'
+        }
+      } else {
+        popup.style.left = rect.left + 'px'
+      }
+
+      var above = rect.top
+      var below = vh - rect.bottom
+      if (below >= ph + 8) {
+        popup.style.top = (rect.bottom + 4) + 'px'
+      } else if (above >= ph + 8) {
+        popup.style.top = (rect.top - ph - 4) + 'px'
+      } else {
+        popup.style.top = (rect.bottom + 4) + 'px'
+      }
+
+      var finalLeft = parseFloat(popup.style.left)
+      if (finalLeft + pw > window.innerWidth) {
+        popup.style.left = Math.max(8, window.innerWidth - pw - 8) + 'px'
+      }
+      if (finalLeft < 0) popup.style.left = '8px'
+    }
+
+    /* ── open / close ── */
+
+    function open() {
+      if (popup.getAttribute('aria-hidden') === 'false') return
+
+      var allOpen = doc.querySelectorAll('.sprinkle-dp[aria-hidden="false"],.sprinkle-dp-range-wrap[aria-hidden="false"]')
+      for (var oi = 0; oi < allOpen.length; oi++) {
+        if (allOpen[oi] !== popup && allOpen[oi]._sprinkleDpClose) allOpen[oi]._sprinkleDpClose()
+      }
+
+      if (isRange && rangePartner) {
+        var partnerVal = rangePartner.value
+        var partnerDate = parseDate(partnerVal)
+        if (rangeRole === 'start') {
+          grids[0].viewDate = selectedDate ? startOfMonth(selectedDate) : startOfMonth(new Date())
+          grids[1].viewDate = partnerDate ? startOfMonth(partnerDate) : addMonths(grids[0].viewDate, 1)
+        } else {
+          grids[1].viewDate = selectedDate ? startOfMonth(selectedDate) : startOfMonth(new Date())
+          grids[0].viewDate = partnerDate ? startOfMonth(partnerDate) : addMonths(grids[1].viewDate, -1)
+        }
+      } else {
+        grids[0].viewDate = startOfMonth(selectedDate || new Date())
+        grids[0].showMonths = false
+      }
+
+      renderPanel(grids[0])
+      if (isRange) renderPanel(grids[1])
+
+      popup.setAttribute('aria-hidden', 'false')
+      trigger.setAttribute('aria-expanded', 'true')
+      if (!popup.parentNode) doc.body.appendChild(popup)
+
+      position()
+
+      var focus = popup.querySelector('.sprinkle-dp-selected') ||
+                  popup.querySelector('.sprinkle-dp-today:not([aria-disabled])') ||
+                  popup.querySelector('.sprinkle-dp-day:not([aria-disabled])')
+      if (focus) setTimeout(function () { focus.focus() }, 0)
+    }
+
+    function close() {
+      popup.setAttribute('aria-hidden', 'true')
+      trigger.setAttribute('aria-expanded', 'false')
+      if (grids[0]) grids[0].showMonths = false
+      if (popup.parentNode) popup.parentNode.removeChild(popup)
+    }
+
+    popup._sprinkleDpOpen = open
+    popup._sprinkleDpClose = close
+
+    /* ── keyboard navigation ── */
+
+    popup.addEventListener('keydown', function (e) {
+      if (popup.getAttribute('aria-hidden') === 'true') return
+
+      if (e.key === 'Escape') {
+        e.preventDefault()
+        close()
+        trigger.focus()
+        return
+      }
+
+      var focused = doc.activeElement
+      if (!focused || !focused.classList.contains('sprinkle-dp-day')) return
+
+      var dateStr = focused.getAttribute('data-date')
+      var cur = parseDate(dateStr)
+      if (!cur) return
+
+      var next = null
+      switch (e.key) {
+        case 'ArrowRight': next = new Date(cur.getTime() + 86400000); break
+        case 'ArrowLeft':  next = new Date(cur.getTime() - 86400000); break
+        case 'ArrowDown':  next = new Date(cur.getTime() + 604800000); break
+        case 'ArrowUp':    next = new Date(cur.getTime() - 604800000); break
+        case 'Home':       next = new Date(cur.getFullYear(), cur.getMonth(), 1); break
+        case 'End':        next = new Date(cur.getFullYear(), cur.getMonth() + 1, 0); break
+        case 'PageDown':   next = e.shiftKey ?
+          new Date(cur.getFullYear() + 1, cur.getMonth(), cur.getDate()) :
+          addMonths(cur, 1); break
+        case 'PageUp':     next = e.shiftKey ?
+          new Date(cur.getFullYear() - 1, cur.getMonth(), cur.getDate()) :
+          addMonths(cur, -1); break
+        case 'Enter':
+        case ' ':
+          e.preventDefault()
+          var kTarget = (grids.length > 1 && grids[1].grid.contains(focused)) ? rangePartner : el
+          selectDate(cur, kTarget)
+          return
+      }
+
+      if (next) {
+        e.preventDefault()
+        var targetMonth = startOfMonth(next)
+        for (var i = 0; i < grids.length; i++) {
+          if (grids[i].viewDate.getTime() === targetMonth.getTime()) break
+        }
+        if (i === grids.length) {
+          grids[0].viewDate = targetMonth
+          if (isRange && grids.length > 1) {
+            grids[1].viewDate = addMonths(targetMonth, 1)
+          }
+          grids[0].showMonths = false
+          renderPanel(grids[0])
+          if (isRange) renderPanel(grids[1])
+        }
+
+        var cell = popup.querySelector('[data-date="' + fmtDate(next) + '"]')
+        if (cell && !cell.getAttribute('aria-disabled')) {
+          var allDays = popup.querySelectorAll('.sprinkle-dp-day')
+          for (var j = 0; j < allDays.length; j++) allDays[j].setAttribute('tabindex', '-1')
+          cell.setAttribute('tabindex', '0')
+          cell.focus()
+        }
+      }
+    })
+
+    /* ── event listeners ── */
+
+    trigger.addEventListener('click', function () {
+      if (popup.getAttribute('aria-hidden') === 'true') open()
+      else close()
+    })
+
+    trigger.addEventListener('keydown', function (e) {
+      if (e.key === 'Enter' || e.key === ' ') {
+        e.preventDefault()
+        if (popup.getAttribute('aria-hidden') === 'true') open()
+        else close()
+      } else if (e.key === 'ArrowDown' || e.key === 'ArrowUp') {
+        e.preventDefault()
+        open()
+      }
+    })
+
+    doc.addEventListener('mousedown', function (e) {
+      if (popup.getAttribute('aria-hidden') === 'true') return
+      if (!popup.contains(e.target) && !trigger.contains(e.target)) {
+        if (isRange && rangePartner) {
+          var pt = rangePartner._sprinkleDpTrigger
+          if (pt && pt.contains(e.target)) return
+        }
+        close()
+      }
+    })
+
+    var scrollHandler = function () {
+      if (popup.getAttribute('aria-hidden') === 'false') position()
+    }
+    window.addEventListener('scroll', scrollHandler, true)
+    window.addEventListener('resize', scrollHandler)
+
+    trigger._sprinkleDpPopup = popup
+    if (isRange && rangePartner) {
+      rangePartner._sprinkleDpTrigger = trigger
+    }
+
+    /* ── init ── */
+
+    syncHiddenInput()
+    renderPanel(grids[0])
+    if (isRange) renderPanel(grids[1])
   })
 
   /* ── 24. error-message ── */
@@ -1052,6 +1930,7 @@
     el._sprinkleComboBoxInit = true
     if (!el.parentNode) return
 
+    var nativeWidth = el.offsetWidth
     el.style.display = 'none'
 
     var path = svgPath()
@@ -1107,10 +1986,10 @@
 
       var lead = el.getAttribute('leading')
       if (lead) {
-        var limg = doc.createElement('img')
-        limg.src = path + lead + '.svg'
+        var limg = doc.createElement('span')
         limg.className = 'sprinkle-icon-leading'
-        limg.alt = ''
+        limg.style.maskImage = 'url(' + path + lead + '.svg)'
+        limg.style.webkitMaskImage = 'url(' + path + lead + '.svg)'
         summary.appendChild(limg)
       }
 
@@ -1137,10 +2016,10 @@
 
       var suff = el.getAttribute('suffix')
       if (suff) {
-        var simg = doc.createElement('img')
-        simg.src = path + suff + '.svg'
+        var simg = doc.createElement('span')
         simg.className = 'sprinkle-icon-suffix'
-        simg.alt = ''
+        simg.style.maskImage = 'url(' + path + suff + '.svg)'
+        simg.style.webkitMaskImage = 'url(' + path + suff + '.svg)'
         summary.appendChild(simg)
       }
     }
@@ -1220,6 +2099,7 @@
     }
 
     function selectOption(idx) {
+      if (el.options[idx] && el.options[idx].disabled) return
       if (isMulti) {
         var pos = selectedSet.indexOf(idx)
         if (pos >= 0) {
@@ -1264,6 +2144,7 @@
         currentCat = cat
       }
       ;(function (idx) {
+        var opt = el.options[idx]
         var li = doc.createElement('li')
         li.setAttribute('role', 'option')
         li.setAttribute('data-value', opt.value)
@@ -1271,6 +2152,10 @@
         li.setAttribute('aria-posinset', String(idx + 1))
         li.setAttribute('aria-setsize', String(el.options.length))
         li.tabIndex = -1
+
+        if (opt.disabled) {
+          li.setAttribute('aria-disabled', 'true')
+        }
 
         if (isMulti) {
           var ck = doc.createElement('span')
@@ -1290,13 +2175,15 @@
 
         li.appendChild(doc.createTextNode(opt.textContent))
 
-        li.addEventListener('click', function () { selectOption(idx) })
-        li.addEventListener('keydown', function (e) {
-          if (e.key === 'Enter' || e.key === ' ') {
-            e.preventDefault()
-            selectOption(idx)
-          }
-        })
+        if (!opt.disabled) {
+          li.addEventListener('click', function () { selectOption(idx) })
+          li.addEventListener('keydown', function (e) {
+            if (e.key === 'Enter' || e.key === ' ') {
+              e.preventDefault()
+              selectOption(idx)
+            }
+          })
+        }
         ul.appendChild(li)
       })(i)
     }
@@ -1307,6 +2194,8 @@
     details.appendChild(summary)
     details.appendChild(panel)
     wrap.appendChild(details)
+
+    if (nativeWidth > 0) wrap.style.minWidth = nativeWidth + 'px'
 
     details.addEventListener('toggle', function () {
       if (details.open) {
@@ -1378,6 +2267,24 @@
     if (content) {
       content.style.gridColumn = '' + cc
       content.style.gridRow = '' + cr
+    }
+
+    /* auto-add sidebar toggle if shell has a sidebar + content */
+    if (left && content && !el._sprinkleShellInit) {
+      el._sprinkleShellInit = true
+
+      if (window.innerWidth <= 768) {
+        el.setAttribute('sidebar-hidden', '')
+      }
+
+      var btn = document.createElement('button')
+      btn.className = 'sprinkle-sidebar-toggle'
+      btn.setAttribute('aria-label', 'Toggle sidebar')
+      btn.textContent = '\u2630'
+      btn.addEventListener('click', function () {
+        el.toggleAttribute('sidebar-hidden')
+      })
+      content.insertBefore(btn, content.firstChild)
     }
   })
 
@@ -1537,121 +2444,6 @@
         })
       })
     })
-  })
-
-  /* ── 39. boost ── */
-
-  var boostCache = {}
-  var boostUrl = window.location.href.split('#')[0]
-
-  function processSubtree(root) {
-    if (hasSprinkleAttr(root)) matchNode(root)
-    var all = root.querySelectorAll('*')
-    for (var i = 0; i < all.length; i++) {
-      if (hasSprinkleAttr(all[i])) matchNode(all[i])
-    }
-  }
-
-  function boostNavigate(url, opts) {
-    opts = opts || {}
-    url = url.split('#')[0]
-    if (url === boostUrl) return
-    boostUrl = url
-
-    document.body.classList.add('sprinkle-boost-loading')
-
-    var cached = boostCache[url]
-    delete boostCache[url]
-
-    var promise = cached || fetch(url, { cache: 'no-store' }).then(function (r) {
-      if (!r.ok) throw new Error('fetch failed')
-      return r.text()
-    })
-
-    return promise.then(function (html) {
-      if (!html || !html.trim()) {
-        document.location.href = url
-        return
-      }
-
-      var m = html.match(/<title[^>]*>([\s\S]*?)<\/title>/i)
-      if (m) document.title = m[1].trim()
-
-      var doc = new DOMParser().parseFromString(html, 'text/html')
-      var target = document.querySelector('[boost-container]') || document.querySelector('main') || document.body
-      var src = doc.querySelector('[boost-container]') || doc.querySelector('main') || doc.body
-
-      if (!src) { document.location.href = url; return }
-
-      target.innerHTML = src.innerHTML
-      processSubtree(target)
-
-      if (!opts.replace) history.pushState(null, '', url)
-      window.scrollTo({ top: 0, left: 0 })
-
-      var h = target.querySelector('h1, h2')
-      if (h) { h.setAttribute('tabindex', '-1'); h.focus({ preventScroll: true }) }
-    })
-    .catch(function (err) {
-      boostUrl = null
-      console.error('[boost]', err && err.message ? err.message : err)
-      document.location.href = url
-    })
-    .finally(function () {
-      document.body.classList.remove('sprinkle-boost-loading')
-    })
-  }
-
-  ForgeSprinkle.register('[boost]', function boostLink(el) {
-    if (el.tagName === 'A') {
-      var href = el.getAttribute('href')
-      if (!href || href === '#' || href.indexOf('javascript:') === 0) return
-      if (href.indexOf('://') > 0 && href.indexOf(location.origin) !== 0) return
-
-      if (el.getAttribute('boost') === 'hover') {
-        el.addEventListener('mouseenter', function () {
-          if (!boostCache[href]) boostCache[href] = fetch(href, { cache: 'no-store' }).then(function (r) { return r.text() })
-        }, { once: true })
-        el.addEventListener('touchstart', function () {
-          if (!boostCache[href]) boostCache[href] = fetch(href, { cache: 'no-store' }).then(function (r) { return r.text() })
-        }, { once: true })
-      }
-
-      el.addEventListener('click', function (e) {
-        if (e.metaKey || e.ctrlKey || e.shiftKey || e.altKey || e.button) return
-        e.preventDefault()
-        boostNavigate(href)
-      })
-    } else {
-      if (el.getAttribute('boost') === 'hover') {
-        function prefetch(e) {
-          var a = e.target.closest('a')
-          if (!a || a._boostPrefetched) return
-          var href = a.getAttribute('href')
-          if (!href || href === '#' || href.indexOf('javascript:') === 0) return
-          if (href.indexOf('://') > 0 && href.indexOf(location.origin) !== 0) return
-          a._boostPrefetched = true
-          if (!boostCache[href]) boostCache[href] = fetch(href, { cache: 'no-store' }).then(function (r) { return r.text() })
-        }
-        el.addEventListener('mouseover', prefetch, true)
-        el.addEventListener('touchstart', prefetch, true)
-      }
-
-      el.addEventListener('click', function (e) {
-        var a = e.target.closest('a')
-        if (!a) return
-        var href = a.getAttribute('href')
-        if (!href || href === '#' || href.indexOf('javascript:') === 0) return
-        if (href.indexOf('://') > 0 && href.indexOf(location.origin) !== 0) return
-        if (e.metaKey || e.ctrlKey || e.shiftKey || e.altKey || e.button) return
-        e.preventDefault()
-        boostNavigate(href)
-      })
-    }
-  })
-
-  window.addEventListener('popstate', function () {
-    boostNavigate(location.href, { replace: true })
   })
 
   /* ── 41. card ── */
