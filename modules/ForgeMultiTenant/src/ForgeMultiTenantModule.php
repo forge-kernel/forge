@@ -19,10 +19,11 @@ use Forge\Core\Module\Attributes\PostInstall;
 use Forge\Core\Module\Attributes\PostUninstall;
 use Forge\Core\Module\Attributes\Repository;
 use Forge\CLI\Traits\OutputHelper;
+use Modules\ForgeRouter\ForgeRouterModule;
 
 #[Module(
     name: 'ForgeMultiTenant',
-    version: '0.3.16',
+    version: '0.3.17',
     description: 'A Multi Tenant Module by Forge',
     order: 2,
     author: 'Forge Team',
@@ -61,6 +62,9 @@ final class ForgeMultiTenantModule
         $container->bind(RouteScopeFilterInterface::class, RouteScopeFilter::class);
 
         ResetManager::onBefore([RouteScopeFilter::class, 'reset']);
+
+        ForgeRouterModule::registerMiddleware(\Modules\ForgeMultiTenant\Middlewares\TenantMiddleware::class, 'web', 1);
+        ForgeRouterModule::registerMiddleware(\Modules\ForgeMultiTenant\Middlewares\ScopeMiddleware::class, 'web', 2);
     }
 
     private function setupConfigDefaults(Container $container): void
