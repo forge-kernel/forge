@@ -7,11 +7,9 @@ namespace Modules\ForgeRouter\Http\Middlewares;
 use Modules\ForgeRouter\Http\Middleware as MiddlewareImpl;
 use Modules\ForgeRouter\Http\Request;
 use Modules\ForgeRouter\Http\Response;
-use Modules\ForgeRouter\Middleware\Attributes\Middleware;
 use Modules\ForgeRouter\Services\TokenManager;
 use Modules\ForgeRouter\Traits\ResponseHelper;
 
-#[Middleware(group: 'web', order: 1, allowDuplicate: true, enabled: true)]
 final class CsrfMiddleware extends MiddlewareImpl
 {
     use ResponseHelper;

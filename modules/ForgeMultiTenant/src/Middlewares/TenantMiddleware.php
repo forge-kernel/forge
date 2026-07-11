@@ -15,7 +15,6 @@ use Forge\Core\DI\Container;
 use Modules\ForgeRouter\Http\Middleware;
 use Modules\ForgeRouter\Http\Request;
 use Modules\ForgeRouter\Http\Response;
-use Modules\ForgeRouter\Middleware\Attributes\RegisterMiddleware;
 use Forge\Core\Session\SessionInterface;
 use Forge\Core\Cache\CacheManager;
 use Modules\ForgeMultiTenant\Services\TenantManager;
@@ -25,7 +24,6 @@ use Forge\Exceptions\ResolveParameterException;
 use PDO;
 use ReflectionException;
 
-#[RegisterMiddleware(group: "web", order: 1, allowDuplicate: false, overrideClass: null, enabled: true)]
 final class TenantMiddleware extends Middleware
 {
 

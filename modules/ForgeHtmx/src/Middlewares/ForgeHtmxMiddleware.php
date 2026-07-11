@@ -9,10 +9,8 @@ use Forge\Traits\InjectsAssets;
 use Modules\ForgeRouter\Http\Middleware;
 use Modules\ForgeRouter\Http\Request;
 use Modules\ForgeRouter\Http\Response;
-use Modules\ForgeRouter\Middleware\Attributes\Middleware as MiddlewareAttribute;
 
 #[Injectable]
-#[MiddlewareAttribute(group: 'web', order: 2)]
 final class ForgeHtmxMiddleware extends Middleware
 {
     use InjectsAssets;

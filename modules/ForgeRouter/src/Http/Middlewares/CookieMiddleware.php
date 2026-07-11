@@ -8,9 +8,7 @@ use Modules\ForgeRouter\Http\Cookie;
 use Modules\ForgeRouter\Http\Middleware as MiddlewareImpl;
 use Modules\ForgeRouter\Http\Request;
 use Modules\ForgeRouter\Http\Response;
-use Modules\ForgeRouter\Middleware\Attributes\Middleware;
 
-#[Middleware(group: 'api', order: 2, allowDuplicate: true, enabled: true)]
 class CookieMiddleware extends MiddlewareImpl
 {
     public function handle(Request $request, callable $next): Response

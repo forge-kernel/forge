@@ -11,11 +11,9 @@ use Modules\ForgeRouter\Http\Attributes\UseMiddleware;
 use Modules\ForgeRouter\Traits\ResponseHelper;
 use Modules\ForgeView\Traits\ViewHelper;
 use Modules\ForgeRouter\Routing\Endpoint;
-use Modules\ForgeRouter\Attributes\Routable;
 use Modules\ForgeRouter\Http\Response;
 use Modules\ForgeRouter\Attributes\Layout;
 
-#[Routable]
 #[UseMiddleware("web")]
 #[Reactive]
 final class PollController

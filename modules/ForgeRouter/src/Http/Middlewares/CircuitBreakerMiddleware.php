@@ -12,11 +12,9 @@ use Forge\Core\DI\Container;
 use Modules\ForgeRouter\Http\Middleware as MiddlewareImpl;
 use Modules\ForgeRouter\Http\Request;
 use Modules\ForgeRouter\Http\Response;
-use Modules\ForgeRouter\Middleware\Attributes\Middleware;
 use Modules\ForgeRouter\Traits\ResponseHelper;
 use Throwable;
 
-#[Middleware(group: 'global', order: 1, allowDuplicate: true, enabled: true)]
 class CircuitBreakerMiddleware extends MiddlewareImpl
 {
     use ResponseHelper;

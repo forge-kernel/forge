@@ -14,12 +14,10 @@ use Forge\Core\DI\Container;
 use Modules\ForgeRouter\Http\Middleware;
 use Modules\ForgeRouter\Http\Request;
 use Modules\ForgeRouter\Http\Response;
-use Modules\ForgeRouter\Middleware\Attributes\RegisterMiddleware;
 use Modules\ForgeRouter\Traits\ResponseHelper;
 use ReflectionClass;
 use ReflectionMethod;
 
-#[RegisterMiddleware(group: 'web', order: 6)]
 final class FeatureGateMiddleware extends Middleware
 {
     use ResponseHelper;

@@ -9,10 +9,9 @@ use Forge\Core\Debug\Metrics;
 use Forge\Core\DI\Container;
 use Forge\Core\Helpers\FileExistenceCache;
 use Forge\Core\Helpers\ModuleHelper;
-use Modules\ForgeRouter\Middleware\EngineMiddlewareRegistry;
-use Modules\ForgeRouter\Middleware\MiddlewareLoader;
 use Modules\ForgeRouter\Routing\ControllerLoader;
 use Modules\ForgeRouter\Routing\Router;
+use Modules\ForgeRouter\ForgeRouterModule;
 use Forge\Core\Structure\StructureResolver;
 use Forge\Exceptions\MissingServiceException;
 use ReflectionException;
@@ -52,9 +51,18 @@ final class RouterSetup
         Metrics::stop("router_controller_cache_load");
 
         Metrics::start("router_middleware_loader");
-        /** @var MiddlewareLoader $middlewareLoader */
-        $middlewareLoader = $container->make(MiddlewareLoader::class);
-        $autoLoadedMap = $middlewareLoader->load();
+        $autoLoadedMap = [];
+
+        foreach (ForgeRouterModule::getRegisteredMiddleware() as $group => $items) {
+            foreach ($items as $item) {
+                $autoLoadedMap[$group][] = $item;
+            }
+        }
+
+        foreach ($autoLoadedMap as &$items) {
+            usort($items, fn($a, $b) => $a['order'] <=> $b['order']);
+        }
+        unset($items);
         Metrics::stop("router_middleware_loader");
 
         Metrics::start("router_middleware_merge");
@@ -78,55 +86,24 @@ final class RouterSetup
             }
 
             $configMiddlewares = $finalMiddlewareConfig[$group];
-            $configMiddlewareSet = array_flip($configMiddlewares);
+            $currentGroup = array_flip($configMiddlewares);
 
-            $hasExplicitEngineMiddlewares = false;
-            foreach ($configMiddlewares as $mw) {
-                if (EngineMiddlewareRegistry::isEngineMiddleware($mw)) {
-                    $hasExplicitEngineMiddlewares = true;
-                    break;
+            foreach ($middlewareData as $item) {
+                if (is_string($item)) {
+                    $item = ["class" => $item, "overrideClass" => null];
                 }
+
+                $autoClass = $item["class"] ?? null;
+                $overrideClass = $item["overrideClass"] ?? null;
+
+                if ($overrideClass) {
+                    unset($currentGroup[$overrideClass]);
+                }
+
+                $currentGroup[$autoClass] = true;
             }
 
-            if ($hasExplicitEngineMiddlewares) {
-                foreach ($middlewareData as $item) {
-                    if (is_string($item)) {
-                        $item = ["class" => $item, "overrideClass" => null];
-                    }
-
-                    $autoClass = $item["class"] ?? null;
-                    $overrideClass = $item["overrideClass"] ?? null;
-
-                    if ($overrideClass && isset($configMiddlewareSet[$overrideClass])) {
-                        unset($configMiddlewareSet[$overrideClass]);
-                    }
-
-                    if (!isset($configMiddlewareSet[$autoClass])) {
-                        $configMiddlewareSet[$autoClass] = true;
-                    }
-                }
-
-                $finalMiddlewareConfig[$group] = array_keys($configMiddlewareSet);
-            } else {
-                $currentGroup = array_flip($configMiddlewares);
-
-                foreach ($middlewareData as $item) {
-                    if (is_string($item)) {
-                        $item = ["class" => $item, "overrideClass" => null];
-                    }
-
-                    $autoClass = $item["class"] ?? null;
-                    $overrideClass = $item["overrideClass"] ?? null;
-
-                    if ($overrideClass) {
-                        unset($currentGroup[$overrideClass]);
-                    }
-
-                    $currentGroup[$autoClass] = true;
-                }
-
-                $finalMiddlewareConfig[$group] = array_keys($currentGroup);
-            }
+            $finalMiddlewareConfig[$group] = array_keys($currentGroup);
         }
 
         Metrics::stop("router_middleware_merge");

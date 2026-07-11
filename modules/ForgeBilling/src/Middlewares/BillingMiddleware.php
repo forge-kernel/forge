@@ -10,9 +10,7 @@ use Forge\Core\DI\Container;
 use Modules\ForgeRouter\Http\Middleware;
 use Modules\ForgeRouter\Http\Request;
 use Modules\ForgeRouter\Http\Response;
-use Modules\ForgeRouter\Middleware\Attributes\RegisterMiddleware;
 
-#[RegisterMiddleware(group: 'web', order: 7)]
 final class BillingMiddleware extends Middleware
 {
     public function handle(Request $request, callable $next): Response

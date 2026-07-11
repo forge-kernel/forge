@@ -6,10 +6,8 @@ namespace Modules\ForgeMultiTenant\Middlewares;
 use Modules\ForgeMultiTenant\Attributes\TenantScope;
 use Modules\ForgeRouter\Traits\ResponseHelper;
 use Modules\ForgeRouter\Http\{Middleware, Request, Response};
-use Modules\ForgeRouter\Middleware\Attributes\RegisterMiddleware;
 use ReflectionException;
 
-#[RegisterMiddleware(group: 'web', order: 2)]
 final class ScopeMiddleware extends Middleware
 {
     use ResponseHelper;

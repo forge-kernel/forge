@@ -8,9 +8,7 @@ use Forge\Core\Observability\ObservabilityManager;
 use Modules\ForgeRouter\Http\Middleware as MiddlewareImpl;
 use Modules\ForgeRouter\Http\Request;
 use Modules\ForgeRouter\Http\Response;
-use Modules\ForgeRouter\Middleware\Attributes\Middleware;
 
-#[Middleware(group: "global", order: -1, allowDuplicate: false, overrideClass: null, enabled: true)]
 final class ObservabilityMiddleware extends MiddlewareImpl
 {
     public function handle(Request $request, callable $next): Response

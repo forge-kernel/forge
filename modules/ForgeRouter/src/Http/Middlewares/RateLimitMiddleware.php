@@ -11,10 +11,8 @@ use Forge\Core\Contracts\Database\QueryBuilderInterface;
 use Modules\ForgeRouter\Http\Middleware as MiddlewareImpl;
 use Modules\ForgeRouter\Http\Request;
 use Modules\ForgeRouter\Http\Response;
-use Modules\ForgeRouter\Middleware\Attributes\Middleware;
 use Modules\ForgeRouter\Traits\ResponseHelper;
 
-#[Middleware(group: "global", order: 0, allowDuplicate: false, overrideClass: null, enabled: true)]
 class RateLimitMiddleware extends MiddlewareImpl
 {
     use OutputHelper;

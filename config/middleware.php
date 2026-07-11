@@ -6,37 +6,44 @@
  * This file controls which middlewares are applied to your routes.
  *
  * HOW IT WORKS:
- * - If you explicitly list kernel middlewares below, their order is respected
- * - If you omit kernel middlewares, they are auto-discovered and merged (backward compatible)
- * - To remove an kernel middleware, simply don't include it in the list
- * - To reorder middlewares, change their position in the array
+ * - This config is the source of truth for middleware ordering
+ * - Modules register their middlewares via ForgeRouterModule::registerMiddleware() in their register() method
+ * - Module-registered middlewares not listed here are merged as defaults (prepended to their group)
+ * - To override a module middleware's position, list it explicitly in the desired order
+ * - To remove a module middleware, don't include it in this config
  *
- * AVAILABLE KERNEL MIDDLEWARES:
+ * ESSENTIAL MIDDLEWARES (registered by ForgeRouter):
  *
  * Global Group (applies to all routes):
  * - \Modules\ForgeRouter\Http\Middlewares\ObservabilityMiddleware::class (order: -1) - Request tracing and observability
  * - \Modules\ForgeRouter\Http\Middlewares\RateLimitMiddleware::class (order: 0) - Rate limiting
  * - \Modules\ForgeRouter\Http\Middlewares\CircuitBreakerMiddleware::class (order: 1) - Circuit breaker
- * - \Modules\ForgeRouter\Http\Middlewares\CorsMiddleware::class (order: 2) - CORS headers
  * - \Modules\ForgeRouter\Http\Middlewares\SanitizeInputMiddleware::class (order: 3, disabled by default) - Input sanitization
- * - \Modules\ForgeRouter\Http\Middlewares\CompressionMiddleware::class (order: 4) - Response compression
  *
  * Web Group (applies to web routes):
  * - \Modules\ForgeRouter\Http\Middlewares\SessionMiddleware::class (order: 0) - Session management
  * - \Modules\ForgeRouter\Http\Middlewares\CsrfMiddleware::class (order: 1) - CSRF protection
- * - \Modules\ForgeRouter\Http\Middlewares\RelaxSecurityHeadersMiddleware::class (order: 3) - Security headers
  *
- * API Group (applies to API routes):
- * - \Modules\ForgeRouter\Http\Middlewares\IpWhiteListMiddleware::class (order: 0) - IP whitelist
- * - \Modules\ForgeRouter\Http\Middlewares\ApiKeyMiddleware::class (order: 1) - API key auth
- * - \Modules\ForgeRouter\Http\Middlewares\CookieMiddleware::class (order: 2) - Cookie handling
- * - \Modules\ForgeRouter\Http\Middlewares\ApiMiddleware::class (order: 2) - API response formatting
+ * AVAILABLE FOR CONFIG (add to groups as needed):
  *
- * EXAMPLE: Explicitly control kernel middleware order
+ * Global Group:
+ * - \Modules\ForgeRouter\Http\Middlewares\CorsMiddleware::class - CORS headers
+ * - \Modules\ForgeRouter\Http\Middlewares\CompressionMiddleware::class - Response compression
+ *
+ * Web Group:
+ * - \Modules\ForgeRouter\Http\Middlewares\RelaxSecurityHeadersMiddleware::class - Security headers
+ *
+ * API Group:
+ * - \Modules\ForgeRouter\Http\Middlewares\IpWhiteListMiddleware::class - IP whitelist
+ * - \Modules\ForgeRouter\Http\Middlewares\ApiKeyMiddleware::class - API key auth
+ * - \Modules\ForgeRouter\Http\Middlewares\CookieMiddleware::class - Cookie handling
+ * - \Modules\ForgeRouter\Http\Middlewares\ApiMiddleware::class - API response formatting
+ *
+ * EXAMPLE: Explicitly control middleware order
  * 'global' => [
  *     \Modules\ForgeRouter\Http\Middlewares\RateLimitMiddleware::class,
  *     \Modules\ForgeRouter\Http\Middlewares\CircuitBreakerMiddleware::class,
- *     // Omit SanitizeInputMiddleware to remove it
+ *     \Modules\ForgeRouter\Http\Middlewares\CorsMiddleware::class,
  *     \Modules\ForgeRouter\Http\Middlewares\CompressionMiddleware::class,
  *     // Your custom middleware
  *     \App\Middlewares\CustomMiddleware::class,

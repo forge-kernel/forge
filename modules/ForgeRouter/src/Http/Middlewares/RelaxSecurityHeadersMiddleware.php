@@ -7,10 +7,8 @@ namespace Modules\ForgeRouter\Http\Middlewares;
 use Modules\ForgeRouter\Http\Middleware as MiddlewareImpl;
 use Modules\ForgeRouter\Http\Request;
 use Modules\ForgeRouter\Http\Response;
-use Modules\ForgeRouter\Middleware\Attributes\Middleware;
 use Forge\Core\Security\AssetRegistry;
 
-#[Middleware(group: 'web', order: 3, allowDuplicate: true, enabled: true)]
 final class RelaxSecurityHeadersMiddleware extends MiddlewareImpl
 {
     public function handle(Request $request, callable $next): Response
