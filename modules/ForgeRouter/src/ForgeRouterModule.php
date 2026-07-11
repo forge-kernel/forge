@@ -21,12 +21,13 @@ use Forge\Core\Module\Attributes\Compatibility;
 use Forge\Core\Module\Attributes\Repository;
 use Forge\Core\Module\LifecycleHookName;
 use Forge\Core\ResetManager;
+use Modules\ForgeRouter\Middleware\MiddlewareRegistrar;
 use Throwable;
 
 #[Module(name: "ForgeRouter",
     description: "Forge Router and Http",
     author: "Forge Team",
-    version: '1.0.23',
+    version: '1.0.24',
     type: "core",
     license: "MIT",
     tags: ["router", "http"],
@@ -67,11 +68,31 @@ use Throwable;
 #[PostUninstall(command: "modules:forge-router:cleanup", args: ["--force"])]
 final class ForgeRouterModule
 {
+    use MiddlewareRegistrar;
+
     private static ?Kernel $kernel = null;
 
     public function register(Container $container): void
     {
         RouterHookManager::init();
+        self::clearRegisteredMiddleware();
+        self::registerEngineMiddlewares();
+    }
+
+    private static function registerEngineMiddlewares(): void
+    {
+        $essential = [
+            \Modules\ForgeRouter\Http\Middlewares\ObservabilityMiddleware::class => ['global', -1],
+            \Modules\ForgeRouter\Http\Middlewares\RateLimitMiddleware::class => ['global', 0],
+            \Modules\ForgeRouter\Http\Middlewares\CircuitBreakerMiddleware::class => ['global', 1],
+            \Modules\ForgeRouter\Http\Middlewares\SanitizeInputMiddleware::class => ['global', 3],
+            \Modules\ForgeRouter\Http\Middlewares\SessionMiddleware::class => ['web', 0],
+            \Modules\ForgeRouter\Http\Middlewares\CsrfMiddleware::class => ['web', 1],
+        ];
+
+        foreach ($essential as $class => [$group, $order]) {
+            self::registerMiddleware($class, $group, $order);
+        }
     }
 
     #[LifecycleHook(hook: LifecycleHookName::APP_BOOTED)]
