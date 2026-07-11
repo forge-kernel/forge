@@ -46,7 +46,7 @@ use Modules\ForgeRouter\ForgeRouterModule;
 ])]
 #[Module(
     name: 'ForgeBilling',
-    version: '0.2.9',
+    version: '0.2.10',
     description: 'Billing portal with plans, invoices, and payment provider support',
     order: 5,
     author: 'Forge Team',
