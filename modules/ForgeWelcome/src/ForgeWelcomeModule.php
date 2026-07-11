@@ -18,7 +18,7 @@ use Forge\CLI\Traits\OutputHelper;
 
 #[Module(
     name: 'ForgeWelcome',
-    version: '1.2.7',
+    version: '1.2.8',
     description: 'A playground by forge',
     order: 99,
     author: 'Forge Team',
