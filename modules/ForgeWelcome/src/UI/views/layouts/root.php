@@ -13,9 +13,6 @@
  * @var array<string, mixed> $layoutSections
  * @var array<string, mixed> $layoutSlots
  */
-
-use Forge\Core\Helpers\ModuleResources;
-
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -30,7 +27,6 @@ use Forge\Core\Helpers\ModuleResources;
 </head>
 <body class="<?= $layoutProps['bodyClass'] ?? '' ?>">
     <?= $content ?>
-    <?= ModuleResources::loadScripts('forge-ui') ?>
     <?= $layoutSections['body_end'] ?? '' ?>
 </body>
 </html>

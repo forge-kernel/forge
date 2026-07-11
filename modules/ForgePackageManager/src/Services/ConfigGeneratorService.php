@@ -373,17 +373,17 @@ final class ConfigGeneratorService
                 $namespace = $this->getNamespaceFromFile($file->getRealPath(), BASE_PATH);
                 if ($namespace) {
                     $className = $namespace . '\\' . pathinfo($file->getFilename(), PATHINFO_FILENAME);
-                    try {
-                        if (!class_exists($className, false)) {
-                            try {
-                                require_once $file->getRealPath();
-                            } catch (\Throwable $e) {
-                                continue;
-                            }
-                            if (!class_exists($className, false)) {
-                                continue;
-                            }
+                try {
+                    if (!class_exists($className, false) && !trait_exists($className, false) && !interface_exists($className, false)) {
+                        try {
+                            require_once $file->getRealPath();
+                        } catch (\Throwable $e) {
+                            continue;
                         }
+                        if (!class_exists($className, false) && !trait_exists($className, false) && !interface_exists($className, false)) {
+                            continue;
+                        }
+                    }
                         $reflectionClass = new ReflectionClass($className);
                         $attributes = $reflectionClass->getAttributes(Module::class);
                         if (!empty($attributes)) {

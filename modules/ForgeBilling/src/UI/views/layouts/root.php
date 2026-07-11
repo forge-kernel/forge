@@ -6,7 +6,7 @@
  * @var array<string, mixed> $layoutSlots
  */
 
-use Forge\Core\Helpers\ModuleResources;
+use Modules\ForgeView\Helpers\ModuleResources;
 ?>
 <!DOCTYPE html>
 <html lang="en">
