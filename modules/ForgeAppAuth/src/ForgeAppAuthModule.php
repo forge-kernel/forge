@@ -34,7 +34,7 @@ use Forge\Core\Module\Attributes\Structure;
 ])]
 #[Module(
     name: 'ForgeAppAuth',
-    version: '0.1.5',
+    version: '0.1.6',
     description: 'Distributable authentication implementation with login, register, forgot-password, and reset-password',
     order: 60,
     author: 'Forge Team',
@@ -48,8 +48,8 @@ use Forge\Core\Module\Attributes\Structure;
 #[Requires(module: "forge-database-sql", version: ">=0.9.12")]
 #[Requires(module: "forge-sql-orm", version: ">=0.6.5")]
 #[Requires(module: "forge-auth")]
-#[Provides(interface: UserProviderInterface::class, version: "0.1.5")]
-#[Provides(interface: UserContextInterface::class, version: "0.1.5")]
+#[Provides(interface: UserProviderInterface::class, version: "0.1.6")]
+#[Provides(interface: UserContextInterface::class, version: "0.1.6")]
 #[Compatibility(framework: '>=4.15.13', php: '>=8.3')]
 #[Repository(type: 'git', url: 'https://github.com/forge-kernel/kernel-module-registry')]
 #[ConfigDefaults(defaults: [
