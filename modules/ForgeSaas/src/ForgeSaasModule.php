@@ -16,6 +16,7 @@ use Forge\Core\Module\Attributes\PostInstall;
 use Forge\Core\Module\Attributes\PostUninstall;
 use Forge\Core\Module\Attributes\Repository;
 use Forge\Core\Module\Attributes\Structure;
+use Modules\ForgeRouter\ForgeRouterModule;
 
 #[Structure(structure: [
     'services' => 'src/Services',
@@ -28,7 +29,7 @@ use Forge\Core\Module\Attributes\Structure;
 ])]
 #[Module(
     name: 'ForgeSaas',
-    version: '0.1.7',
+    version: '0.1.8',
     description: 'SaaS plans, subscriptions, and feature gating for Forge Kernel',
     order: 4,
     author: 'Forge Team',
@@ -52,5 +53,8 @@ final class ForgeSaasModule
             fn() => new SubscriptionManager($container->get(CentralQueryBuilderInterface::class)),
             singleton: true,
         );
+
+        ForgeRouterModule::registerMiddleware(\Modules\ForgeSaas\Middlewares\SaasMiddleware::class, 'web', 5);
+        ForgeRouterModule::registerMiddleware(\Modules\ForgeSaas\Middlewares\FeatureGateMiddleware::class, 'web', 6);
     }
 }
