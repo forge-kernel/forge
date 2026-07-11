@@ -27,6 +27,7 @@ use Forge\Core\Module\Attributes\PostUninstall;
 use Forge\Core\Module\Attributes\Repository;
 use Forge\Core\Module\Attributes\Structure;
 use Forge\Core\Module\LifecycleHookName;
+use Modules\ForgeRouter\ForgeRouterModule;
 
 #[Structure(structure: [
     'controllers' => 'src/Controllers',
@@ -45,7 +46,7 @@ use Forge\Core\Module\LifecycleHookName;
 ])]
 #[Module(
     name: 'ForgeBilling',
-    version: '0.2.8',
+    version: '0.2.9',
     description: 'Billing portal with plans, invoices, and payment provider support',
     order: 5,
     author: 'Forge Team',
@@ -113,6 +114,8 @@ final class ForgeBillingModule
         });
 
         $this->registerBuiltInProviders($container);
+
+        ForgeRouterModule::registerMiddleware(\Modules\ForgeBilling\Middlewares\BillingMiddleware::class, 'web', 7);
     }
 
     private function registerBuiltInProviders(Container $container): void
