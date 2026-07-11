@@ -265,6 +265,7 @@ final class PackageManagerService implements PackageManagerInterface
             return;
         }
         $installErrors = false;
+        $allPostInstallCommands = [];
 
         $this->info("Installing modules from forge-lock.json...");
 
@@ -386,10 +387,12 @@ final class PackageManagerService implements PackageManagerInterface
 
             $modulePascalName = $this->toPascalCase($moduleName);
 
-            $this->resolveModuleDependencies(
+            $depCommands = $this->resolveModuleDependencies(
                 $moduleInstallPath,
                 $moduleName,
+                true,
             );
+            $allPostInstallCommands = array_merge($allPostInstallCommands, $depCommands);
 
             $this->updateForgeJson($moduleName, $versionToInstall);
 
@@ -399,17 +402,26 @@ final class PackageManagerService implements PackageManagerInterface
             );
 
             if (!empty($postInstallCommands)) {
-                $this->executePostInstallCommands(
-                    $postInstallCommands,
-                    $modulePascalName,
-                    $registryName,
-                    false,
-                );
+                foreach ($postInstallCommands as $cmd) {
+                    $allPostInstallCommands[] = [
+                        'command' => $cmd['command'],
+                        'args' => $cmd['args'],
+                        'moduleName' => $modulePascalName,
+                        'registryName' => $registryName ?? 'unknown',
+                        'autoTrustSource' => false,
+                    ];
+                }
             }
 
             $this->success(
                 "Module {$moduleName} version {$versionToInstall} installed from lock file successfully.",
             );
+        }
+
+        if (!empty($allPostInstallCommands)) {
+            $this->line();
+            $this->info("── Running PostInstall commands ──");
+            $this->executeBatchPostInstallCommands($allPostInstallCommands);
         }
 
         if ($installErrors) {
@@ -440,6 +452,7 @@ final class PackageManagerService implements PackageManagerInterface
         }
 
         $hadErrors = false;
+        $allPostInstallCommands = [];
 
         foreach ($modules as $moduleName => $version) {
             if ($moduleName === "forge-package-manager") {
@@ -455,7 +468,8 @@ final class PackageManagerService implements PackageManagerInterface
             $this->info("Installing {$moduleName}" . ($version ? " v{$version}" : "") . " from forge.json...");
 
             try {
-                $this->installModule($moduleName, $version);
+                $commands = $this->installModule($moduleName, $version, null, null, false, null, true);
+                $allPostInstallCommands = array_merge($allPostInstallCommands, $commands);
             } catch (\Throwable $e) {
                 $this->error(
                     "Failed to install {$moduleName}: " . $e->getMessage(),
@@ -467,6 +481,12 @@ final class PackageManagerService implements PackageManagerInterface
             if (!is_dir($this->getModulesPath() . $moduleDirName)) {
                 $hadErrors = true;
             }
+        }
+
+        if (!empty($allPostInstallCommands)) {
+            $this->line();
+            $this->info("── Running PostInstall commands ──");
+            $this->executeBatchPostInstallCommands($allPostInstallCommands);
         }
 
         if ($hadErrors) {
@@ -966,6 +986,104 @@ final class PackageManagerService implements PackageManagerInterface
     }
 
     /**
+     * Execute a batch of PostInstall commands collected from multiple modules.
+     * Handles trust prompting once per unique registry source.
+     *
+     * @param array<int, array{command: string, args: array<string>, moduleName: string, registryName: string, autoTrustSource: bool}> $allCommands
+     */
+    private function executeBatchPostInstallCommands(array $allCommands): void
+    {
+        if (empty($allCommands)) {
+            return;
+        }
+
+        $trustedRegistries = [];
+        $rejectedAll = false;
+
+        foreach ($allCommands as $cmd) {
+            if ($rejectedAll) {
+                break;
+            }
+
+            $registryName = $cmd['registryName'];
+            $moduleName = $cmd['moduleName'];
+            $autoTrustSource = $cmd['autoTrustSource'];
+
+            if (!isset($trustedRegistries[$registryName])) {
+                $isTrusted = $this->isSourceTrusted($registryName);
+                if (!$isTrusted && $autoTrustSource) {
+                    $this->trustSource($registryName);
+                    $this->success("Source '{$registryName}' has been automatically trusted.");
+                    $isTrusted = true;
+                }
+                $trustedRegistries[$registryName] = $isTrusted;
+            }
+
+            $isTrusted = $trustedRegistries[$registryName];
+
+            $args = implode(" ", $cmd['args']);
+            $command = "php forge.php {$cmd['command']} {$args}";
+
+            if ($isTrusted) {
+                $this->info("Running: {$command}");
+                exec($command, $output, $code);
+                $this->line();
+
+                if ($code !== 0) {
+                    $this->error("Command '{$command}' failed for module {$moduleName} (exit code {$code})");
+                    if (!empty($output)) {
+                        $this->error("Output:\n" . implode("\n", $output));
+                    }
+                } else {
+                    $this->success("Command '{$command}' executed successfully.");
+                }
+            } else {
+                $response = $this->confirmPostInstallCommand(
+                    $command,
+                    $moduleName,
+                    $registryName,
+                    1,
+                    1,
+                );
+
+                if ($response === "reject-all") {
+                    $rejectedAll = true;
+                    $this->info("Skipping command: {$command}");
+                } elseif ($response === "all") {
+                    $trustedRegistries[$registryName] = true;
+                    $this->info("Running: {$command}");
+                    exec($command, $output, $code);
+                    $this->line();
+
+                    if ($code !== 0) {
+                        $this->error("Command '{$command}' failed for module {$moduleName} (exit code {$code})");
+                        if (!empty($output)) {
+                            $this->error("Output:\n" . implode("\n", $output));
+                        }
+                    } else {
+                        $this->success("Command '{$command}' executed successfully.");
+                    }
+                } elseif ($response === "yes") {
+                    $this->info("Running: {$command}");
+                    exec($command, $output, $code);
+                    $this->line();
+
+                    if ($code !== 0) {
+                        $this->error("Command '{$command}' failed for module {$moduleName} (exit code {$code})");
+                        if (!empty($output)) {
+                            $this->error("Output:\n" . implode("\n", $output));
+                        }
+                    } else {
+                        $this->success("Command '{$command}' executed successfully.");
+                    }
+                } else {
+                    $this->info("Skipping command: {$command}");
+                }
+            }
+        }
+    }
+
+    /**
      * Prompt the user to trust the source after PostInstall commands have been shown.
      */
     private function promptTrustAfterPostInstall(
@@ -1017,12 +1135,13 @@ final class PackageManagerService implements PackageManagerInterface
         return $bestVersion;
     }
 
-    private function resolveModuleDependencies(string $stagingPath, string $moduleName): void
+    private function resolveModuleDependencies(string $stagingPath, string $moduleName, bool $deferPostInstall = false): array
     {
+        $collectedCommands = [];
         $modulePascalName = $this->toPascalCase($moduleName);
         $ref = $this->findModuleReflection($stagingPath, $modulePascalName);
         if ($ref === null) {
-            return;
+            return $collectedCommands;
         }
 
         $requiresAttrs = $ref->getAttributes(Requires::class);
@@ -1050,7 +1169,8 @@ final class PackageManagerService implements PackageManagerInterface
             $this->info("Module '{$moduleName}' requires '{$requiredModule}'. Installing dependency...");
 
             try {
-                $this->installModule($requiredModule, $instance->version, null, null, true, null);
+                $depCommands = $this->installModule($requiredModule, $instance->version, null, null, true, null, $deferPostInstall);
+                $collectedCommands = array_merge($collectedCommands, $depCommands);
             } catch (\Throwable $e) {
                 array_pop($this->resolvingDependencies);
                 throw new \RuntimeException(
@@ -1062,8 +1182,15 @@ final class PackageManagerService implements PackageManagerInterface
 
             array_pop($this->resolvingDependencies);
         }
+
+        return $collectedCommands;
     }
 
+    /**
+     * Install a module and optionally defer PostInstall commands.
+     *
+     * @return array<int, array{command: string, args: array<string>, moduleName: string, registryName: string, autoTrustSource: bool}> Collected PostInstall commands when deferred, empty array otherwise.
+     */
     public function installModule(
         string $moduleName,
         ?string $version = null,
@@ -1071,7 +1198,8 @@ final class PackageManagerService implements PackageManagerInterface
         ?string $preservedPath = null,
         bool $autoTrustSource = false,
         ?string $configMode = null,
-    ): void {
+        bool $deferPostInstall = false,
+    ): array {
         $explicitLatest = $version === 'latest' || $version === '*';
         $resolveLatest = $version === null || $explicitLatest;
 
@@ -1082,13 +1210,13 @@ final class PackageManagerService implements PackageManagerInterface
 
         if ($moduleName === self::FRAMEWORK_MODULE_NAME) {
             $this->installFrameworkModule($resolveLatest ? null : $version);
-            return;
+            return [];
         }
 
         $moduleInfo = $this->getModuleInfo($moduleName, $version);
         if (!$moduleInfo) {
             $this->error("Module '{$moduleName}' not found in registries.");
-            return;
+            return [];
         }
 
         if (!$resolveLatest) {
@@ -1097,7 +1225,7 @@ final class PackageManagerService implements PackageManagerInterface
                 $this->error(
                     "No available version satisfies constraint '{$version}' for module '{$moduleName}'.",
                 );
-                return;
+                return [];
             }
         } else {
             $versionToInstall = $moduleInfo["latest"] ?? null;
@@ -1111,7 +1239,7 @@ final class PackageManagerService implements PackageManagerInterface
             $this->error(
                 "Version '{$versionToInstall}' for module '{$moduleName}' not found.",
             );
-            return;
+            return [];
         }
 
         $forgeJsonVersion = $explicitLatest ? 'latest' : $versionToInstall;
@@ -1122,7 +1250,7 @@ final class PackageManagerService implements PackageManagerInterface
             $this->error(
                 "No registry found for module '{$moduleName}'. Please ensure registries are configured in config/source_list.php",
             );
-            return;
+            return [];
         }
         $sourceType = $registryDetails["type"] ?? "git";
         $sourceConfig = $registryDetails;
@@ -1156,7 +1284,7 @@ final class PackageManagerService implements PackageManagerInterface
             $this->integrityHash = $integrityHash;
             if (!$integrityHash) {
                 $this->error("Failed to download module {$moduleName}.");
-                return;
+                return [];
             }
         } elseif (!file_exists($moduleCachePath)) {
             $this->info(
@@ -1170,7 +1298,7 @@ final class PackageManagerService implements PackageManagerInterface
             $this->integrityHash = $integrityHash;
             if (!$integrityHash) {
                 $this->error("Failed to download module {$moduleName}.");
-                return;
+                return [];
             }
         } else {
             $this->info(
@@ -1181,7 +1309,7 @@ final class PackageManagerService implements PackageManagerInterface
                 $this->error(
                     "Failed to calculate integrity hash for cached module {$moduleName}.",
                 );
-                return;
+                return [];
             }
         }
 
@@ -1206,7 +1334,7 @@ final class PackageManagerService implements PackageManagerInterface
             )
         ) {
             $this->error("Failed to extract module {$moduleName}.");
-            return;
+            return [];
         }
 
         $registryName = $registryDetails["name"] ?? "unknown";
@@ -1218,14 +1346,14 @@ final class PackageManagerService implements PackageManagerInterface
             \Forge\Core\Autoloader::addPath($moduleNamespacePrefix, $stagingSrcPath);
         }
 
-        $this->resolveModuleDependencies($stagingPath, $moduleName);
+        $collectedCommands = $this->resolveModuleDependencies($stagingPath, $moduleName, $deferPostInstall);
 
         $postInstallCommands = $this->detectPostInstallCommands(
             $stagingPath,
             $modulePascalName,
         );
 
-        if (!empty($postInstallCommands) && !$this->isSourceTrusted($registryName)) {
+        if (!$deferPostInstall && !empty($postInstallCommands) && !$this->isSourceTrusted($registryName)) {
             $confirmed = $this->promptTrustAfterPostInstall(
                 $moduleName,
                 $registryName,
@@ -1236,7 +1364,7 @@ final class PackageManagerService implements PackageManagerInterface
                 $this->removeDirectory($stagingPath);
                 \Forge\Core\Autoloader::removePath($moduleNamespacePrefix);
                 $this->warning("Installation of {$moduleName} cancelled by user.");
-                return;
+                return [];
             }
         }
 
@@ -1248,7 +1376,7 @@ final class PackageManagerService implements PackageManagerInterface
             $this->error("Failed to finalize module {$moduleName} installation.");
             $this->removeDirectory($stagingPath);
             \Forge\Core\Autoloader::removePath($moduleNamespacePrefix);
-            return;
+            return [];
         }
 
         $installSrcPath = $moduleInstallPath . '/src';
@@ -1278,7 +1406,17 @@ final class PackageManagerService implements PackageManagerInterface
             $configMode,
         );
 
-        if (!empty($postInstallCommands)) {
+        if ($deferPostInstall) {
+            foreach ($postInstallCommands as $cmd) {
+                $collectedCommands[] = [
+                    'command' => $cmd['command'],
+                    'args' => $cmd['args'],
+                    'moduleName' => $modulePascalName,
+                    'registryName' => $registryName,
+                    'autoTrustSource' => $autoTrustSource,
+                ];
+            }
+        } elseif (!empty($postInstallCommands)) {
             $this->executePostInstallCommands(
                 $postInstallCommands,
                 $modulePascalName,
@@ -1290,6 +1428,8 @@ final class PackageManagerService implements PackageManagerInterface
         $this->success(
             "Module {$moduleName} version {$versionToInstall} installed successfully.",
         );
+
+        return $deferPostInstall ? $collectedCommands : [];
     }
 
     private function getModulesDataForRegistry(

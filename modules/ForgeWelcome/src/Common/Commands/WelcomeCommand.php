@@ -3,21 +3,26 @@ declare(strict_types=1);
 
 namespace Modules\ForgeWelcome\Common\Commands;
 
-use Forge\CLI\Command as CommandBase;
-use Forge\CLI\Attributes\Command;
-use Forge\Core\Config\Config;
+use Forge\CLI\Command;
+use Forge\CLI\Attributes\Arg;
+use Forge\CLI\Attributes\Cli;
+use Forge\CLI\Traits\CliGenerator;
+use Forge\Traits\StringHelper;
 
-#[Command(command: 'forge-welcome:greet', description: 'An example command to greet the user')]
-class WelcomeCommand extends CommandBase
+#[CLI(command: 'forge-welcome:greet', description: 'An example command to greet the user')]
+final class WelcomeCommand extends Command
 {
-    public function __construct(private Config $config)
-    {
-        $settingOne = $config->get('forgewelcome.example');
-    }
+    use StringHelper;
+    use CliGenerator;
+
+    #[Arg(name: 'name', description: 'Whats your name')]
+    private string $name = '';
+
     public function execute(array $args): int
     {
-        $name = $this->argument('name', $args) ?? 'Guest';
-        $this->info("Hello, " . $name . " from the ForgeWelcome");
+        $this->wizard($args);
+
+        $this->log("Hi {$this->name} ", 'testingCommand');
         return 0;
     }
 }
