@@ -27,7 +27,7 @@ use Throwable;
 #[Module(name: "ForgeRouter",
     description: "Forge Router and Http",
     author: "Forge Team",
-    version: '1.0.24',
+    version: '1.0.25',
     type: "core",
     license: "MIT",
     tags: ["router", "http"],
@@ -98,6 +98,11 @@ final class ForgeRouterModule
     #[LifecycleHook(hook: LifecycleHookName::APP_BOOTED)]
     public function boot(): void
     {
+        // Skip routing when the setup/maintenance panel is active
+        if (defined('FORGE_SETUP_MODE')) {
+            return;
+        }
+
         ResetManager::triggerBefore();
 
         Metrics::start("router_hook_discover");
