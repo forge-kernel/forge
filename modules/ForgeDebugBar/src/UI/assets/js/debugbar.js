@@ -7,6 +7,8 @@
     var panelsContainer = document.querySelector('.fdb-panels');
     if (!panelsContainer) return;
 
+    var lastActiveTab = null;
+
     function closeAll() {
         var activeTabs = bar.querySelectorAll('.fdb-tab--active');
         var activePanels = panelsContainer.querySelectorAll('.fdb-panel--active');
@@ -27,6 +29,11 @@
         panel.classList.add('fdb-panel--active');
     }
 
+    function getActiveTab() {
+        var active = bar.querySelector('.fdb-tab--active');
+        return active ? active.getAttribute('data-tab') : null;
+    }
+
     bar.addEventListener('click', function (e) {
         var tab = e.target.closest('.fdb-tab');
         if (!tab) return;
@@ -41,15 +48,36 @@
     var brand = bar.querySelector('.fdb-bar__brand');
     if (brand) {
         brand.addEventListener('click', function () {
-            closeAll();
+            var isCollapsed = bar.classList.contains('fdb-bar--collapsed');
+
+            if (isCollapsed) {
+                bar.classList.remove('fdb-bar--collapsed');
+                if (lastActiveTab) {
+                    openTab(lastActiveTab);
+                    lastActiveTab = null;
+                }
+            } else {
+                lastActiveTab = getActiveTab();
+                closeAll();
+                bar.classList.add('fdb-bar--collapsed');
+            }
         });
     }
 
     document.addEventListener('keydown', function (e) {
         if (e.key === 'Escape') {
-            closeAll();
+            if (bar.classList.contains('fdb-bar--collapsed')) {
+                bar.classList.remove('fdb-bar--collapsed');
+                if (lastActiveTab) {
+                    openTab(lastActiveTab);
+                    lastActiveTab = null;
+                }
+            } else {
+                closeAll();
+            }
         }
         if (e.key === 'ArrowRight' || e.key === 'ArrowLeft') {
+            if (bar.classList.contains('fdb-bar--collapsed')) return;
             var activeTab = bar.querySelector('.fdb-tab--active');
             if (!activeTab) return;
             var allTabs = bar.querySelectorAll('.fdb-tab');

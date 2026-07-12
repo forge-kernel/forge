@@ -72,7 +72,7 @@ final class TenantMigrateCommand extends Command
 
     private function dryRun(object $tenant): void
     {
-        $pending = $this->migrator->previewRun('app', null, 'tenants');
+        $pending = $this->migrator->previewRun('all', null, 'tenants');
         if (empty($pending)) {
             $this->comment("  ✔ No pending migrations");
             return;

@@ -467,6 +467,12 @@ final class Router
         }
 
         if ($route === null) {
+            if (function_exists('add_timeline_event')) {
+                add_timeline_event('route.not_found', 'warning', [
+                    'uri' => $normalizedPath,
+                    'method' => $method,
+                ]);
+            }
             $errorCode = 404;
             require_once BASE_PATH . "/modules/ForgeRouter/src/Templates/error_page.php";
             return $this->createErrorResponse($request, "", (int) $errorCode);
@@ -496,6 +502,14 @@ final class Router
             $route["uri"] .
             "|" .
             implode(",", $allMiddlewares);
+
+        if (function_exists('add_timeline_event')) {
+            add_timeline_event('route.matched', 'lifecycle', [
+                'uri' => $route["uri"],
+                'method' => $route["http_method"],
+                'controller' => $route["controller"] . '::' . $route["method"],
+            ]);
+        }
 
         if (!isset($this->pipelineCache[$pipelineKey])) {
             $this->pipelineCache[$pipelineKey] = array_reduce(
@@ -575,9 +589,24 @@ final class Router
         $controllerInstance = $this->container->make($controllerClass);
         Metrics::stop("controller_make");
 
+        if (function_exists('add_timeline_event')) {
+            add_timeline_event('controller.executing', 'lifecycle', [
+                'controller' => $controllerClass,
+                'method' => $methodName,
+            ]);
+        }
+
         Metrics::start("controller_method_run");
         $result = $controllerInstance->$methodName(...$arguments);
         Metrics::stop("controller_method_run");
+
+        if (function_exists('add_timeline_event')) {
+            add_timeline_event('controller.executed', 'lifecycle', [
+                'controller' => $controllerClass,
+                'method' => $methodName,
+                'return_type' => get_debug_type($result),
+            ]);
+        }
 
         return $result;
     }

@@ -21,6 +21,9 @@ use Forge\Core\Module\Attributes\PostUninstall;
 use Forge\Core\Module\Attributes\Repository;
 use Forge\CLI\Traits\OutputHelper;
 use Modules\ForgeRouter\ForgeRouterModule;
+use Modules\ForgeRouter\Http\Middlewares\RateLimitMiddleware;
+use Modules\ForgeRouter\Http\Middlewares\CircuitBreakerMiddleware;
+use Modules\ForgeRouter\Http\Middlewares\ApiKeyMiddleware;
 
 #[Module(
     name: 'ForgeMultiTenant',
@@ -72,6 +75,25 @@ final class ForgeMultiTenantModule
 
         ForgeRouterModule::registerMiddleware(\Modules\ForgeMultiTenant\Middlewares\TenantMiddleware::class, 'web', 1);
         ForgeRouterModule::registerMiddleware(\Modules\ForgeMultiTenant\Middlewares\ScopeMiddleware::class, 'web', 2);
+
+        ForgeRouterModule::registerMiddleware(
+            \Modules\ForgeMultiTenant\Middlewares\TenantAwareRateLimitMiddleware::class,
+            'global',
+            1,
+            RateLimitMiddleware::class
+        );
+        ForgeRouterModule::registerMiddleware(
+            \Modules\ForgeMultiTenant\Middlewares\TenantAwareCircuitBreakerMiddleware::class,
+            'global',
+            2,
+            CircuitBreakerMiddleware::class
+        );
+        ForgeRouterModule::registerMiddleware(
+            \Modules\ForgeMultiTenant\Middlewares\TenantAwareApiKeyMiddleware::class,
+            'api',
+            100,
+            ApiKeyMiddleware::class
+        );
     }
 
     private function setupConfigDefaults(Container $container): void

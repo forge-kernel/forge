@@ -245,6 +245,10 @@ final class View
         $viewFile = $this->finder->findView($view, $this->module);
         Metrics::stop("view_finder_findView");
 
+        if (function_exists('collect_view_data')) {
+            collect_view_data($viewFile, $data);
+        }
+
         Metrics::start("view_execute_file");
         $result = $this->executeFile($viewFile, $data, true);
         Metrics::stop("view_execute_file");
@@ -362,6 +366,10 @@ final class View
         Metrics::start("view_finder_findComponent");
         $file = $view->finder->findComponent($viewSubPath, $view->module);
         Metrics::stop("view_finder_findComponent");
+
+        if (function_exists('collect_view_data')) {
+            collect_view_data($file, $data);
+        }
 
         Metrics::start("view_component_execute");
         $result = $view->executeFile($file, $data);

@@ -1,29 +1,12 @@
 <?php
 
-use Forge\Core\DI\Container;
+use Modules\ForgeDebugBar\Collectors\MessageCollector;
 
-if (!function_exists("add_timeline_event")) {
-    function add_timeline_event(string $name, string $label, array $data = []): void
-    {
-        if (filter_var(env("APP_DEBUG", false), FILTER_VALIDATE_BOOLEAN)) {
-            try {
-                $timelineCollector = Container::getInstance()->get(\Modules\ForgeRouter\Collectors\TimelineCollector::class);
-                $timelineCollector->addEvent($name, $label, $data);
-            } catch (\Throwable) {
-            }
-        }
-    }
-}
-
-if (!function_exists("collect_view_data")) {
-    function collect_view_data(string $view, mixed $data = []): void
+if (!function_exists('debug_log')) {
+    function debug_log(mixed $message, string $label = 'info'): void
     {
         try {
-            $container = Container::getInstance();
-            if ($container->has(\Modules\ForgeRouter\Collectors\ViewCollector::class)) {
-                $viewCollector = $container->get(\Modules\ForgeRouter\Collectors\ViewCollector::class);
-                $viewCollector->addView($view, $data);
-            }
+            MessageCollector::instance()->addMessage($message, $label);
         } catch (\Throwable) {
         }
     }

@@ -82,6 +82,10 @@ final class ForgeErrorHandlerService implements ErrorHandlerInterface
 
     public function phpExceptionHandler(Throwable $e): void
     {
+        if (function_exists('collect_exception')) {
+            collect_exception($e);
+        }
+
         try {
             $request = Request::createFromGlobals();
             $this->handle($e, $request)->send();

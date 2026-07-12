@@ -24,6 +24,7 @@ final class Home
     #[Layout("main")]
     public function home(): Response
     {
+        debug_log('message from home', 'info');
         return $this->view(view: 'home/index', data: [
             "title" => "Welcome to Forge Kernel",
         ]);

@@ -135,7 +135,7 @@ final class Migrator
                 ,
                 $migrationType,
                 $migrationModule,
-                $migrationGroup,
+                $migrationGroups,
             ] = $this->extractMigrationMetadata($path);
 
             if ($module !== null) {
@@ -147,7 +147,7 @@ final class Migrator
                 }
             }
 
-            if ($group !== null && $migrationGroup !== $group) {
+            if ($group !== null && !in_array($group, $migrationGroups, true)) {
                 continue;
             }
 
@@ -196,7 +196,7 @@ final class Migrator
      * Uses reflection and path analysis to determine migration metadata.
      *
      * @param string $path Full path to the migration file.
-     * @return array{0: string, 1: string, 2: ?string, 3: ?string} [ClassName, Type, Module, Group]
+     * @return array{0: string, 1: string, 2: ?string, 3: array<int, string|null>} [ClassName, Type, Module, Groups]
      * @throws ReflectionException
      */
     private function extractMigrationMetadata(string $path): array
@@ -205,14 +205,14 @@ final class Migrator
         $className = $this->getMigrationClassName($path);
         $reflection = new ReflectionClass($className);
 
-        $group = null;
+        $groups = [];
         $type = "app";
         $module = null;
 
         $attributes = $reflection->getAttributes(GroupMigration::class);
-        if (!empty($attributes)) {
-            $instance = $attributes[0]->newInstance();
-            $group = $instance->name ?? null;
+        foreach ($attributes as $attr) {
+            $instance = $attr->newInstance();
+            $groups[] = $instance->name ?? null;
         }
 
         $relativePath = str_replace(BASE_PATH . "/", "", $path);
@@ -226,7 +226,7 @@ final class Migrator
             $type = "app";
         }
 
-        return [$className, $type, $module, $group];
+        return [$className, $type, $module, $groups];
     }
 
     private function getMigrationClassName(string $path): string
@@ -399,7 +399,8 @@ final class Migrator
             return;
         }
 
-        [, $type, $module, $group] = $this->extractMigrationMetadata($path);
+        [, $type, $module, $groups] = $this->extractMigrationMetadata($path);
+        $group = $groups[0] ?? null;
 
         $migration = $this->resolveMigration($path);
 
@@ -760,9 +761,10 @@ final class Migrator
         try {
             foreach ($pendingMigrations as $migrationPath) {
                 $migrationName = basename($migrationPath);
-                [, $type, $module, $group] = $this->extractMigrationMetadata(
+                [, $type, $module, $groups] = $this->extractMigrationMetadata(
                     $migrationPath,
                 );
+                $group = $groups[0] ?? null;
 
                 echo "Marking migration as complete: {$migrationName}\n";
 
