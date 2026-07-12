@@ -10,6 +10,10 @@ final class TenantNotFoundException extends RuntimeException
 {
     public function __construct(string $id)
     {
-        parent::__construct("Tenant [{$id}] not found.");
+        $message = $id === 'no-context'
+            ? 'No tenant context available. This route requires a tenant to be resolved.'
+            : "Tenant [{$id}] not found.";
+
+        parent::__construct($message);
     }
 }

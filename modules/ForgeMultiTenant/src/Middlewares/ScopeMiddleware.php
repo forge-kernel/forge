@@ -24,10 +24,10 @@ final class ScopeMiddleware extends Middleware
         $required = $attr?->value ?? 'both';
 
         if ($required === 'central' && $tenant !== null) {
-            return $this->createErrorResponse($request, 'This route is only available on the central domain');
+            return $this->createErrorResponse($request, 'This page is not available', 403);
         }
         if ($required === 'tenant' && $tenant === null) {
-            return $this->createErrorResponse($request, 'This route requires a tenant context');
+            return $this->createErrorResponse($request, 'Page not found', 404);
         }
 
         return $next($request);

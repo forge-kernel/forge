@@ -209,9 +209,16 @@ final class RouterSetup
             if (is_array($data) && isset($data['controllers']) && is_array($data['controllers'])) {
                 $controllers = $data['controllers'];
                 if (!self::hasControllerFilesChanged($controllers)) {
+                    $routeData = $data['routeData'] ?? null;
+
+                    if (is_array($routeData) && !array_is_list($routeData)) {
+                        $host = $_SERVER['HTTP_HOST'] ?? '';
+                        $routeData = $routeData[$host] ?? null;
+                    }
+
                     return [
                         'controllers' => $controllers,
-                        'routeData' => array_key_exists('routeData', $data) ? $data['routeData'] : null,
+                        'routeData' => $routeData,
                     ];
                 }
             }
@@ -260,9 +267,26 @@ final class RouterSetup
             mkdir($dir, 0777, true);
         }
 
+        $host = $_SERVER['HTTP_HOST'] ?? '';
+
+        $existing = [];
+        if (is_file($cacheFile)) {
+            $existing = require $cacheFile;
+            if (!is_array($existing)) {
+                $existing = [];
+            }
+        }
+
+        $cachedRouteData = $existing['routeData'] ?? [];
+        if (!is_array($cachedRouteData) || array_is_list($cachedRouteData)) {
+            $cachedRouteData = [];
+        }
+
+        $cachedRouteData[$host] = $routeData;
+
         $export = var_export([
             'controllers' => $controllers,
-            'routeData' => $routeData,
+            'routeData' => $cachedRouteData,
         ], true);
         $content = '<?php return ' . $export . ';';
 
