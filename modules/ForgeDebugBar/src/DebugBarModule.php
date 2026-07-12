@@ -40,7 +40,7 @@ use Forge\Traits\InjectsAssets;
 ])]
 #[Module(
     name: 'ForgeDebugBar',
-    version: '1.3.12',
+    version: '1.3.13',
     description: 'A debug bar by Forge',
     order: 3,
     author: 'Forge Team',
