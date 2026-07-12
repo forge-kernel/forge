@@ -27,7 +27,7 @@ use Throwable;
 #[Module(name: "ForgeRouter",
     description: "Forge Router and Http",
     author: "Forge Team",
-    version: '1.0.26',
+    version: '1.0.27',
     type: "core",
     license: "MIT",
     tags: ["router", "http"],
@@ -75,7 +75,6 @@ final class ForgeRouterModule
     public function register(Container $container): void
     {
         RouterHookManager::init();
-        self::clearRegisteredMiddleware();
         self::registerEngineMiddlewares();
     }
 
