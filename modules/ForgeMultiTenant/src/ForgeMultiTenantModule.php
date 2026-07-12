@@ -23,7 +23,7 @@ use Modules\ForgeRouter\ForgeRouterModule;
 
 #[Module(
     name: 'ForgeMultiTenant',
-    version: '0.4.0',
+    version: '0.4.1',
     description: 'A Multi Tenant Module by Forge',
     order: 2,
     author: 'Forge Team',
