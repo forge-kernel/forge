@@ -25,7 +25,8 @@ final class Home
     public function home(): Response
     {
         debug_log('message from home', 'info');
-        collect_exception(new \RuntimeException('this is a test'));
+        collect_exception(new \RuntimeException('an error ocurred loading the languages'));
+
         return $this->view(view: 'home/index', data: [
             "title" => "Welcome to Forge Kernel",
         ]);
