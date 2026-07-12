@@ -23,7 +23,7 @@ use Modules\ForgeRouter\ForgeRouterModule;
 
 #[Module(
     name: 'ForgeMultiTenant',
-    version: '0.3.17',
+    version: '0.4.0',
     description: 'A Multi Tenant Module by Forge',
     order: 2,
     author: 'Forge Team',
@@ -38,6 +38,8 @@ use Modules\ForgeRouter\ForgeRouterModule;
 #[ConfigDefaults(defaults: [
     "forge_multi_tenant" => [
         'central_domain' => 'forge.localhost',
+        'unknown_tenant_page' => null,
+        'unknown_tenant_view' => null,
     ]
 ])]
 #[PostInstall(command: 'db:migrate', args: ['--type=module', '--module=ForgeMultiTenant'])]
@@ -71,5 +73,7 @@ final class ForgeMultiTenantModule
     {
         $config = $container->get(Config::class);
         $config->set('forge_multi_tenant.central_domain', env('FORGE_MULTI_TENANT_CENTRAL_DOMAIN', 'forge.localhost'));
+        $config->set('forge_multi_tenant.unknown_tenant_page', env('FORGE_MULTI_TENANT_UNKNOWN_PAGE', null));
+        $config->set('forge_multi_tenant.unknown_tenant_view', env('FORGE_MULTI_TENANT_UNKNOWN_VIEW', null));
     }
 }
