@@ -102,6 +102,21 @@ if (!function_exists('collect_exception')) {
                 $collector = $container->get(ExceptionCollector::class);
                 $collector->addException($exception);
             }
+
+            if (session_status() === PHP_SESSION_ACTIVE && isset($_SESSION)) {
+                $file = $exception->getFile();
+                if (str_starts_with($file, BASE_PATH)) {
+                    $file = substr($file, strlen(BASE_PATH));
+                }
+
+                $_SESSION['_debugbar_exceptions'][] = [
+                    'type'    => get_class($exception),
+                    'message' => $exception->getMessage(),
+                    'code'    => $exception->getCode(),
+                    'file'    => $file . ':' . $exception->getLine(),
+                    'trace'   => $exception->getTraceAsString(),
+                ];
+            }
         } catch (\Throwable $e) {
         }
     }

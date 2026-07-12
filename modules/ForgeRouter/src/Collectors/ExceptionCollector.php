@@ -55,6 +55,17 @@ final class ExceptionCollector implements RequestCollectorInterface
     }
 
     /**
+     * Merge pre-formatted exception data (e.g. from session persistence).
+     *
+     * @param array $exceptions Array of exception data arrays
+     * @return void
+     */
+    public function mergeExceptions(array $exceptions): void
+    {
+        $this->exceptions = array_merge($this->exceptions, $exceptions);
+    }
+
+    /**
      * Get all collected exceptions.
      *
      * @return array
