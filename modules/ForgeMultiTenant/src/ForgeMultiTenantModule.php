@@ -10,6 +10,7 @@ use Forge\Core\Module\Attributes\Requires;
 use Forge\Core\ResetManager;
 use Modules\ForgeMultiTenant\Services\RouteScopeFilter;
 use Modules\ForgeMultiTenant\Services\TenantManager;
+use Modules\ForgeMultiTenant\Services\TenantQueryRewriter;
 use Modules\ForgeRouter\Contracts\RouteScopeFilterInterface;
 use Forge\Core\DI\Container;
 use Forge\Core\Module\Attributes\Compatibility;
@@ -23,7 +24,7 @@ use Modules\ForgeRouter\ForgeRouterModule;
 
 #[Module(
     name: 'ForgeMultiTenant',
-    version: '0.4.1',
+    version: '0.4.2',
     description: 'A Multi Tenant Module by Forge',
     order: 2,
     author: 'Forge Team',
@@ -57,8 +58,12 @@ final class ForgeMultiTenantModule
     {
         $this->setupConfigDefaults($container);
 
-        $container->bind(TenantManager::class, function (Container $container) {
+        $container->singleton(TenantManager::class, function (Container $container) {
             return new TenantManager($container->get(QueryBuilderInterface::class));
+        });
+
+        $container->singleton(TenantQueryRewriter::class, function () {
+            return new TenantQueryRewriter();
         });
 
         $container->bind(RouteScopeFilterInterface::class, RouteScopeFilter::class);
