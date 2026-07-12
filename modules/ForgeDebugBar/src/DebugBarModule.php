@@ -40,7 +40,7 @@ use Forge\Traits\InjectsAssets;
 ])]
 #[Module(
     name: 'ForgeDebugBar',
-    version: '1.3.13',
+    version: '1.3.14',
     description: 'A debug bar by Forge',
     order: 3,
     author: 'Forge Team',
@@ -79,6 +79,7 @@ class DebugBarModule
 
         $this->registerCoreCollectors($debugbar, $request);
         $this->registerCrossModuleCollectors($debugbar, $request);
+        $this->mergeSessionExceptions();
         $this->registerTabs($debugbar);
 
         $this->registerDebugBarAssets();
@@ -163,6 +164,25 @@ class DebugBarModule
         $debugbar->registerTab('state', 'State', 'ForgeDebugBar:panels/state', options: ['data_key' => 'session']);
         $debugbar->registerTab('resources', 'Resources', 'ForgeDebugBar:panels/resources', options: ['data_key' => 'memory']);
         $debugbar->registerTab('timeline', 'Timeline', 'ForgeDebugBar:panels/timeline', options: ['data_key' => 'timeline']);
+    }
+
+    private function mergeSessionExceptions(): void
+    {
+        try {
+            if (session_status() !== PHP_SESSION_ACTIVE || empty($_SESSION['_debugbar_exceptions'])) {
+                return;
+            }
+
+            $pending = $_SESSION['_debugbar_exceptions'];
+            unset($_SESSION['_debugbar_exceptions']);
+
+            $container = Container::getInstance();
+            if ($container->has(ExceptionCollector::class)) {
+                $collector = $container->get(ExceptionCollector::class);
+                $collector->mergeExceptions($pending);
+            }
+        } catch (\Throwable) {
+        }
     }
 
     private function storeLatestDataForHub(): void
