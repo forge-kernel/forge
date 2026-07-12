@@ -40,7 +40,7 @@ use Forge\Traits\InjectsAssets;
 ])]
 #[Module(
     name: 'ForgeDebugBar',
-    version: '1.3.15',
+    version: '1.3.16',
     description: 'A debug bar by Forge',
     order: 3,
     author: 'Forge Team',
@@ -70,6 +70,12 @@ class DebugBarModule
         $config->set("forge_debug_bar.enabled", env("FORGE_DEBUG_BAR_ENABLED", true));
 
         ResetManager::onBefore([DebugBar::class, 'reset']);
+
+        \Modules\ForgeRouter\ForgeRouterModule::registerMiddleware(
+            \Modules\ForgeDebugBar\Http\Middlewares\DebugBarExceptionMiddleware::class,
+            'web',
+            2
+        );
     }
 
     #[RouterHookAttribute(RouterHookName::AFTER_REQUEST)]
