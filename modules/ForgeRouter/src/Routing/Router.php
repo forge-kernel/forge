@@ -474,8 +474,10 @@ final class Router
                 ]);
             }
             $errorCode = 404;
-            require_once BASE_PATH . "/modules/ForgeRouter/src/Templates/error_page.php";
-            return $this->createErrorResponse($request, "", (int) $errorCode);
+            ob_start();
+            require BASE_PATH . "/modules/ForgeRouter/src/Templates/error_page.php";
+            $errorHtml = ob_get_clean();
+            return new \Modules\ForgeRouter\Http\Response($errorHtml, (int) $errorCode);
         }
 
         if (!empty($route["usesDeprecatedRoute"])) {

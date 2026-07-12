@@ -27,6 +27,21 @@ class SessionMiddleware extends MiddlewareImpl
         try {
             $response = $next($request);
         } finally {
+            if (function_exists('collect_exception')) {
+                try {
+                    $container = \Forge\Core\DI\Container::getInstance();
+                    if ($container->has(\Modules\ForgeRouter\Collectors\ExceptionCollector::class)) {
+                        $collector = $container->get(\Modules\ForgeRouter\Collectors\ExceptionCollector::class);
+                        $exceptions = $collector->getExceptions();
+                        if (!empty($exceptions)) {
+                            $_SESSION['_debugbar_exceptions'] = $exceptions;
+                        } else {
+                            unset($_SESSION['_debugbar_exceptions']);
+                        }
+                    }
+                } catch (\Throwable) {
+                }
+            }
             $this->session->save();
         }
 

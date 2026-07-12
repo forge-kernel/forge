@@ -56,13 +56,27 @@ final class ExceptionCollector implements RequestCollectorInterface
 
     /**
      * Merge pre-formatted exception data (e.g. from session persistence).
+     * Skips exceptions that already exist in the collection (by type+message+file).
      *
      * @param array $exceptions Array of exception data arrays
      * @return void
      */
     public function mergeExceptions(array $exceptions): void
     {
-        $this->exceptions = array_merge($this->exceptions, $exceptions);
+        foreach ($exceptions as $ex) {
+            $key = ($ex['type'] ?? '') . '|' . ($ex['message'] ?? '') . '|' . ($ex['file'] ?? '');
+            $duplicate = false;
+            foreach ($this->exceptions as $existing) {
+                $existingKey = ($existing['type'] ?? '') . '|' . ($existing['message'] ?? '') . '|' . ($existing['file'] ?? '');
+                if ($key === $existingKey) {
+                    $duplicate = true;
+                    break;
+                }
+            }
+            if (!$duplicate) {
+                $this->exceptions[] = $ex;
+            }
+        }
     }
 
     /**

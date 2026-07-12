@@ -694,38 +694,206 @@
   word-break: break-word;
 }
 
-.fdb-errors__entry {
-  padding: 10px 0;
-  border-bottom: 1px solid #f1f5f9;
-}
-
-.fdb-errors__entry:last-child {
-  border-bottom: none;
-}
-
 .fdb-errors__header {
   display: flex;
   align-items: center;
   gap: 8px;
-  margin-bottom: 4px;
+  margin-bottom: 14px;
+}
+
+.fdb-errors__count {
+  font-size: 12px;
+  font-weight: 600;
+  color: #64748b;
+}
+
+.fdb-errors__card {
+  background: #fff;
+  border: 1px solid #e2e8f0;
+  border-left: 3px solid #dc2626;
+  border-radius: 6px;
+  padding: 14px 16px;
+  margin-bottom: 10px;
+  transition: box-shadow 0.15s;
+}
+
+.fdb-errors__card:last-child {
+  margin-bottom: 0;
+}
+
+.fdb-errors__card:hover {
+  box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+}
+
+.fdb-errors__card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  margin-bottom: 8px;
+}
+
+.fdb-errors__card-title {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.fdb-errors__index {
+  font-size: 11px;
+  font-weight: 600;
+  color: #94a3b8;
+  font-variant-numeric: tabular-nums;
+}
+
+.fdb-errors__code {
+  font-size: 11px;
+  font-weight: 500;
+  color: #94a3b8;
+  font-family: 'SF Mono', monospace;
 }
 
 .fdb-errors__message {
   font-weight: 600;
-  margin: 4px 0;
+  margin: 0 0 8px;
   font-size: 13px;
   color: #1e293b;
+  line-height: 1.5;
+  word-break: break-word;
+}
+
+.fdb-errors__location {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  font-family: 'SF Mono', 'Fira Code', 'Cascadia Code', monospace;
+  color: #64748b;
+  background: #f8fafc;
+  padding: 4px 10px;
+  border-radius: 4px;
+  border: 1px solid #f1f5f9;
+  margin-bottom: 10px;
+}
+
+.fdb-errors__location-icon {
+  width: 14px;
+  height: 14px;
+  color: #94a3b8;
+  flex-shrink: 0;
 }
 
 .fdb-errors__file {
-  color: #64748b;
-  font-size: 12px;
-  font-family: 'SF Mono', monospace;
-  margin: 2px 0;
+  word-break: break-all;
+}
+
+/* Stack Trace */
+.fdb-errors__trace {
+  margin-top: 10px;
+  border: 1px solid #e2e8f0;
+  border-radius: 6px;
+  overflow: hidden;
+}
+
+.fdb-errors__trace[open] .fdb-errors__trace-chevron {
+  transform: rotate(0deg);
+}
+
+.fdb-errors__trace-summary {
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 12px;
   background: #f8fafc;
-  padding: 2px 6px;
+  border-bottom: 1px solid #e2e8f0;
+  font-weight: 600;
+  color: #475569;
+  font-size: 12px;
+  user-select: none;
+  list-style: none;
+  transition: background 0.1s;
+}
+
+.fdb-errors__trace-summary::-webkit-details-marker {
+  display: none;
+}
+
+.fdb-errors__trace-summary:hover {
+  background: #f1f5f9;
+}
+
+.fdb-errors__trace-chevron {
+  width: 14px;
+  height: 14px;
+  color: #94a3b8;
+  flex-shrink: 0;
+  transform: rotate(-90deg);
+  transition: transform 0.15s ease;
+}
+
+.fdb-errors__trace-count {
+  font-weight: 400;
+  color: #94a3b8;
+  font-size: 11px;
+  margin-left: auto;
+}
+
+.fdb-errors__trace-body {
+  background: #1e293b;
+  padding: 10px 0;
+  max-height: 240px;
+  overflow-y: auto;
+}
+
+.fdb-errors__trace-line {
+  display: flex;
+  align-items: baseline;
+  gap: 0;
+  padding: 2px 12px;
+  font-family: 'SF Mono', 'Fira Code', 'Cascadia Code', monospace;
+  font-size: 12px;
+  line-height: 1.7;
+  transition: background 0.1s;
+}
+
+.fdb-errors__trace-line:hover {
+  background: rgba(255,255,255,0.05);
+}
+
+.fdb-errors__trace-num {
+  color: #64748b;
+  min-width: 32px;
+  flex-shrink: 0;
+  user-select: none;
+}
+
+.fdb-errors__trace-call {
+  color: #e2e8f0;
+  word-break: break-all;
+}
+
+.fdb-errors__trace-location {
+  color: #64748b;
+  margin-left: 4px;
+  flex-shrink: 0;
+}
+
+.fdb-errors__trace-body::-webkit-scrollbar {
+  width: 6px;
+}
+
+.fdb-errors__trace-body::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.fdb-errors__trace-body::-webkit-scrollbar-thumb {
+  background: #475569;
   border-radius: 3px;
-  display: inline-block;
+}
+
+.fdb-errors__trace-body::-webkit-scrollbar-thumb:hover {
+  background: #64748b;
 }
 
 .fdb-database__entry {

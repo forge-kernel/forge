@@ -96,26 +96,24 @@ if (!function_exists('collect_database_query')) {
 if (!function_exists('collect_exception')) {
     function collect_exception(\Throwable $exception): void
     {
+        static $sessionMerged = false;
+
         try {
             $container = Container::getInstance();
             if ($container->has(ExceptionCollector::class)) {
                 $collector = $container->get(ExceptionCollector::class);
-                $collector->addException($exception);
-            }
 
-            if (session_status() === PHP_SESSION_ACTIVE && isset($_SESSION)) {
-                $file = $exception->getFile();
-                if (str_starts_with($file, BASE_PATH)) {
-                    $file = substr($file, strlen(BASE_PATH));
+                if (
+                    !$sessionMerged
+                    && session_status() === PHP_SESSION_ACTIVE
+                    && !empty($_SESSION['_debugbar_exceptions'])
+                ) {
+                    $sessionMerged = true;
+                    $collector->mergeExceptions($_SESSION['_debugbar_exceptions']);
+                    unset($_SESSION['_debugbar_exceptions']);
                 }
 
-                $_SESSION['_debugbar_exceptions'][] = [
-                    'type'    => get_class($exception),
-                    'message' => $exception->getMessage(),
-                    'code'    => $exception->getCode(),
-                    'file'    => $file . ':' . $exception->getLine(),
-                    'trace'   => $exception->getTraceAsString(),
-                ];
+                $collector->addException($exception);
             }
         } catch (\Throwable $e) {
         }
