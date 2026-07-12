@@ -4,7 +4,6 @@ define("BASE_PATH", __DIR__);
 const FRAMEWORK_REPO_URL = 'https://github.com/forge-kernel/kernel-registry';
 const FRAMEWORK_FORGE_JSON_PATH_IN_REPO = 'forge.json';
 const FRAMEWORK_REPO_BRANCH = 'main';
-const FRAMEWORK_MODULE_REGISTRY = BASE_PATH . '/kernel/Core/Module/module_registry.php';
 const LOCAL_FORGE_JSON_PATH = BASE_PATH . '/forge.json';
 
 $specifiedVersion = null;
@@ -144,7 +143,6 @@ if (!extractZip($zipFilePath, $extractionPath)) {
 }
 
 unlink($zipFilePath);
-unlink(FRAMEWORK_MODULE_REGISTRY);
 
 // Update the forge.json file with the installed version
 if ($specifiedVersion === 'latest') {
