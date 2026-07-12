@@ -40,7 +40,7 @@ use Forge\Traits\InjectsAssets;
 ])]
 #[Module(
     name: 'ForgeDebugBar',
-    version: '1.3.11',
+    version: '1.3.12',
     description: 'A debug bar by Forge',
     order: 3,
     author: 'Forge Team',
@@ -161,7 +161,7 @@ class DebugBarModule
         $debugbar->registerTab('router', 'Router', 'ForgeDebugBar:panels/router', options: ['data_key' => 'route']);
         $debugbar->registerTab('templates', 'Templates', 'ForgeDebugBar:panels/templates', options: ['data_key' => 'views']);
         $debugbar->registerTab('state', 'State', 'ForgeDebugBar:panels/state', options: ['data_key' => 'session']);
-        $debugbar->registerTab('resources', 'Resources', 'ForgeDebugBar:panels/resources', options: ['data_key' => 'resources']);
+        $debugbar->registerTab('resources', 'Resources', 'ForgeDebugBar:panels/resources', options: ['data_key' => 'memory']);
         $debugbar->registerTab('timeline', 'Timeline', 'ForgeDebugBar:panels/timeline', options: ['data_key' => 'timeline']);
     }
 
