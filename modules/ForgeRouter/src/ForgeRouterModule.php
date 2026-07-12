@@ -12,6 +12,7 @@ use Modules\ForgeRouter\Http\Kernel;
 use Modules\ForgeRouter\Http\Request;
 use Forge\Core\Debug\Metrics;
 use Forge\Core\DI\Container;
+use Modules\ForgeRouter\Collectors;
 use Forge\Core\Module\Attributes\ConfigDefaults;
 use Forge\Core\Module\Attributes\LifecycleHook;
 use Forge\Core\Module\Attributes\Module;
@@ -27,7 +28,7 @@ use Throwable;
 #[Module(name: "ForgeRouter",
     description: "Forge Router and Http",
     author: "Forge Team",
-    version: '1.0.27',
+    version: '1.0.28',
     type: "core",
     license: "MIT",
     tags: ["router", "http"],
@@ -76,6 +77,23 @@ final class ForgeRouterModule
     {
         RouterHookManager::init();
         self::registerEngineMiddlewares();
+        self::registerCollectors($container);
+    }
+
+    private static function registerCollectors(Container $container): void
+    {
+        $collectors = [
+            Collectors\TimelineCollector::class,
+            Collectors\ViewCollector::class,
+            Collectors\ExceptionCollector::class,
+            Collectors\DatabaseCollector::class,
+        ];
+
+        foreach ($collectors as $collector) {
+            if (!$container->has($collector)) {
+                $container->singleton($collector, $collector);
+            }
+        }
     }
 
     private static function registerEngineMiddlewares(): void
@@ -115,6 +133,13 @@ final class ForgeRouterModule
         $container->setInstance(Request::class, $request);
         Metrics::stop("router_request_create");
 
+        if (function_exists('add_timeline_event')) {
+            add_timeline_event('request.received', 'lifecycle', [
+                'method' => $request->getMethod(),
+                'uri' => $request->getUri(),
+            ]);
+        }
+
         try {
             Metrics::start("router_setup");
             $router = RouterSetup::setup($container);
@@ -131,6 +156,12 @@ final class ForgeRouterModule
             $response = $kernel->handler($request);
             Metrics::stop("router_kernel_handler");
 
+            if (function_exists('add_timeline_event')) {
+                add_timeline_event('response.created', 'lifecycle', [
+                    'status' => $response->getStatusCode(),
+                ]);
+            }
+
             Metrics::start("router_after_request_hook");
             RouterHookManager::triggerHook(RouterHookName::AFTER_REQUEST, $request, $response);
             Metrics::stop("router_after_request_hook");
@@ -138,6 +169,10 @@ final class ForgeRouterModule
             Metrics::start("router_response_send");
             $response->send();
             Metrics::stop("router_response_send");
+
+            if (function_exists('add_timeline_event')) {
+                add_timeline_event('response.sent', 'lifecycle');
+            }
 
             Metrics::start("router_after_response_hook");
             RouterHookManager::triggerHook(RouterHookName::AFTER_RESPONSE, $request, $response);
@@ -158,6 +193,10 @@ final class ForgeRouterModule
 
     private static function handleException(Throwable $e): void
     {
+        if (function_exists('collect_exception')) {
+            collect_exception($e);
+        }
+
         $container = Container::getInstance();
         $request = Request::createFromGlobals();
 
