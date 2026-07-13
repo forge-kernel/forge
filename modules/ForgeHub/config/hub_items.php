@@ -64,8 +64,16 @@ return array (
         ),
       ),
     ),
-    'mtime' => 1783897681,
+    'mtime' => 1783897829,
     'modulePath' => '/Users/acidlake/Development/UPPER/Forge/repos/forge-v3/modules/ForgeDebugBar',
+  ),
+  'Modules\\ForgeTemplates\\ForgeTemplatesModule' => 
+  array (
+    'hubItems' => 
+    array (
+    ),
+    'mtime' => 1783909129,
+    'modulePath' => '/Users/acidlake/Development/UPPER/Forge/repos/forge-v3/modules/ForgeTemplates',
   ),
   'Modules\\ForgeSaas\\ForgeSaasModule' => 
   array (
@@ -348,7 +356,7 @@ return array (
     'hubItems' => 
     array (
     ),
-    'mtime' => 1783897705,
+    'mtime' => 1783897821,
     'modulePath' => '/Users/acidlake/Development/UPPER/Forge/repos/forge-v3/modules/ForgeRouter',
   ),
   'Modules\\ForgeStaticGen\\ForgeStaticGenModule' => 

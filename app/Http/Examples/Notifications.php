@@ -4,14 +4,17 @@ declare(strict_types=1);
 
 namespace App\Http\Examples;
 
+use App\Dto\InvitationDTO;
 use Modules\ForgeMultiTenant\Attributes\TenantScope;
-use Modules\ForgeNotification\Services\ForgeNotificationService;
+use Modules\ForgeNotification\Enums\NotificationChannel;
+use Modules\ForgeNotification\Payload\EmailPayload;
+use Modules\ForgeNotification\Traits\SendsNotifications;
 use Modules\ForgeRouter\Http\Attributes\UseMiddleware;
 use Modules\ForgeRouter\Http\Response;
 use Modules\ForgeRouter\Routing\Endpoint;
 use Modules\ForgeRouter\Attributes\Routable;
 use Modules\ForgeRouter\Traits\ResponseHelper;
-use Exception;
+use Modules\ForgeTemplates\Traits\TemplateHelper;
 
 #[Routable(prefix: '/examples')]
 #[TenantScope("central")]
@@ -19,21 +22,18 @@ use Exception;
 final class Notifications
 {
     use ResponseHelper;
-
-    public function __construct(
-        public readonly ForgeNotificationService $notification,
-    ) {
-    }
+    use TemplateHelper;
+    use SendsNotifications;
 
     #[Endpoint("/email")]
     public function testEmail(): Response
     {
-        notify()->email()
-            ->to('test@example.com')
-            ->from('noreply@forge.test')
-            ->subject('Test Email from Forge')
-            ->body('This is a test email sent via ForgeNotification system!')
-            ->send();
+        sendNotification(NotificationChannel::email, new EmailPayload(
+            to: 'test@example.com',
+            subject: 'Test Email from Forge',
+            html: '<h1>Hello from Forge!</h1><p>This is a test email.</p>',
+        ));
+
         return $this->jsonResponse(["message" => "Email message sent"]);
     }
 
@@ -43,61 +43,60 @@ final class Notifications
         $results = [];
 
         try {
-            // Test 1: Simple email notification (synchronous)
-            notify()->email()
-                ->to('test@example.com')
-                ->from('noreply@forge.test')
-                ->subject('Test Email from Forge')
-                ->body('This is a test email sent via ForgeNotification system!')
-                ->send();
+            // Test 1: Simple email notification
+            sendNotification(NotificationChannel::email, new EmailPayload(
+                to: 'test@example.com',
+                subject: 'Test Email from Forge',
+                text: 'This is a test email sent via ForgeNotification system!',
+            ));
 
-            $results['email_sync'] = ['status' => 'success', 'message' => 'Email sent synchronously'];
-        } catch (Exception $e) {
+            $results['email_sync'] = ['status' => 'success', 'message' => 'Email sent'];
+        } catch (\Throwable $e) {
+            collect_exception($e);
             $results['email_sync'] = ['status' => 'error', 'message' => $e->getMessage()];
         }
 
         try {
-            // Test 2: HTML email notification
-            notify()->email()
-                ->to('test@example.com')
-                ->from('noreply@forge.test')
-                ->subject('Test HTML Email')
-                ->html('<h1>Hello from Forge!</h1><p>This is an <strong>HTML</strong> email.</p>')
-                ->send();
+            // Test 2: HTML email with template (array data)
+            $html = $this->useTemplate('emails/welcome', [
+                'name' => 'John Doe',
+                'appName' => 'Forge',
+                'supportEmail' => 'support@forge.test',
+            ]);
 
-            $results['email_html'] = ['status' => 'success', 'message' => 'HTML email sent'];
-        } catch (Exception $e) {
-            $results['email_html'] = ['status' => 'error', 'message' => $e->getMessage()];
+            sendNotification(NotificationChannel::email, new EmailPayload(
+                to: 'test@example.com',
+                subject: 'Welcome to Forge!',
+                html: $html,
+            ));
+
+            $results['email_template_array'] = ['status' => 'success', 'message' => 'Template email (array) sent'];
+        } catch (\Throwable $e) {
+            collect_exception($e);
+            $results['email_template_array'] = ['status' => 'error', 'message' => $e->getMessage()];
         }
 
         try {
-            // Test 3: Queued email notification (asynchronous)
-            notify()->email()
-                ->to('test@example.com')
-                ->from('noreply@forge.test')
-                ->subject('Queued Email Test')
-                ->body('This email was queued for async sending!')
-                ->queue();
+            // Test 3: HTML email with template (DTO data)
+            $dto = new InvitationDTO(
+                recipientName: 'Jane Smith',
+                inviterName: 'John Doe',
+                workspaceName: 'Acme Corp',
+                inviteUrl: 'https://forge.test/invite/abc123',
+            );
 
-            $results['email_queued'] = ['status' => 'success', 'message' => 'Email queued for async sending'];
-        } catch (Exception $e) {
-            $results['email_queued'] = ['status' => 'error', 'message' => $e->getMessage()];
-        }
+            $html = $this->useTemplate('emails/invitation', $dto);
 
-        try {
-            // Test 4: Email with CC and BCC
-            notify()->email()
-                ->to('test@example.com')
-                ->from('noreply@forge.test')
-                ->subject('Email with CC and BCC')
-                ->body('This email has CC and BCC recipients')
-                ->cc(['cc@example.com'])
-                ->bcc(['bcc@example.com'])
-                ->send();
+            sendNotification(NotificationChannel::email, new EmailPayload(
+                to: 'test@example.com',
+                subject: 'You\'ve been invited to Acme Corp',
+                html: $html,
+            ));
 
-            $results['email_cc_bcc'] = ['status' => 'success', 'message' => 'Email with CC/BCC sent'];
-        } catch (Exception $e) {
-            $results['email_cc_bcc'] = ['status' => 'error', 'message' => $e->getMessage()];
+            $results['email_template_dto'] = ['status' => 'success', 'message' => 'Template email (DTO) sent'];
+        } catch (\Throwable $e) {
+            collect_exception($e);
+            $results['email_template_dto'] = ['status' => 'error', 'message' => $e->getMessage()];
         }
 
         return $this->jsonResponse($results);

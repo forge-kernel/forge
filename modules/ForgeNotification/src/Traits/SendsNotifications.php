@@ -2,22 +2,18 @@
 
 declare(strict_types=1);
 
+namespace Modules\ForgeNotification\Traits;
+
+use Forge\Core\DI\Container;
 use Modules\ForgeNotification\Enums\NotificationChannel;
 use Modules\ForgeNotification\Payload\EmailPayload;
 use Modules\ForgeNotification\Payload\PushPayload;
 use Modules\ForgeNotification\Payload\SmsPayload;
 use Modules\ForgeNotification\Services\ForgeNotificationService;
-use Forge\Core\DI\Container;
 
-if (!function_exists('sendNotification')) {
-    /**
-     * Send a notification via the specified channel.
-     * This is the main entry point for sending notifications.
-     *
-     * @param NotificationChannel $channel The channel to send via
-     * @param EmailPayload|SmsPayload|PushPayload $payload The notification data
-     */
-    function sendNotification(NotificationChannel $channel, EmailPayload|SmsPayload|PushPayload $payload): void
+trait SendsNotifications
+{
+    protected function sendNotification(NotificationChannel $channel, EmailPayload|SmsPayload|PushPayload $payload): void
     {
         try {
             Container::getInstance()
