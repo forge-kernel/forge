@@ -1,6 +1,5 @@
 <?php
 
-
 use Modules\ForgeMultiTenant\DTO\Tenant;
 use Modules\ForgeMultiTenant\Exceptions\TenantNotFoundException;
 use Modules\ForgeMultiTenant\Services\TenantManager;
@@ -13,6 +12,19 @@ if (!function_exists('tenant')) {
         return $tenantMng->current();
     }
 }
+
+
+if (!function_exists('get_tenant_id')) {
+    function get_tenant_id(): ?string
+    {
+        $tenantId = '';
+        if (tenant() != null) {
+            $tenantId = tenant()->id;
+        }
+        return $tenantId;
+    }
+}
+
 
 if (!function_exists('requireTenant')) {
     function requireTenant(): Tenant
