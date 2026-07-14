@@ -16,6 +16,7 @@ use Forge\Core\Module\Attributes\PostInstall;
 use Forge\Core\Module\Attributes\PostUninstall;
 use Forge\Core\Module\Attributes\Repository;
 use Forge\Core\Module\Attributes\Structure;
+use Forge\Core\Module\Traits\IncludesFiles;
 use Modules\ForgeRouter\ForgeRouterModule;
 
 #[Structure(structure: [
@@ -25,11 +26,10 @@ use Modules\ForgeRouter\ForgeRouterModule;
     'dto' => 'src/Dto',
     'seeders' => 'src/Database/Seeders',
     'middlewares' => 'src/Middlewares',
-    'support' => 'src/Support',
 ])]
 #[Module(
     name: 'ForgeSaas',
-    version: '0.1.8',
+    version: '0.1.9',
     description: 'SaaS plans, subscriptions, and feature gating for Forge Kernel',
     order: 4,
     author: 'Forge Team',
@@ -46,6 +46,15 @@ use Modules\ForgeRouter\ForgeRouterModule;
 #[PostUninstall(command: 'db:migrate:rollback', args: ['--type=module', '--module=ForgeSaas'])]
 final class ForgeSaasModule
 {
+    use IncludesFiles;
+
+    protected function includes(): array
+    {
+        return [
+            __DIR__ . '/Support/helpers.php',
+        ];
+    }
+
     public function register(Container $container): void
     {
         $container->bind(
