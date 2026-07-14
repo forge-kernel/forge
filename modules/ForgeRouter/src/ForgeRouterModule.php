@@ -22,6 +22,7 @@ use Forge\Core\Module\Attributes\Compatibility;
 use Forge\Core\Module\Attributes\Repository;
 use Forge\Core\Module\LifecycleHookName;
 use Forge\Core\Module\Traits\IncludesFiles;
+use Forge\Core\Module\Traits\RegistersCommands;
 use Forge\Core\ResetManager;
 use Modules\ForgeRouter\Middleware\MiddlewareRegistrar;
 use Throwable;
@@ -29,7 +30,7 @@ use Throwable;
 #[Module(name: "ForgeRouter",
     description: "Forge Router and Http",
     author: "Forge Team",
-    version: '1.0.33',
+    version: '1.0.34',
     type: "core",
     license: "MIT",
     tags: ["router", "http"],
@@ -71,12 +72,24 @@ use Throwable;
 final class ForgeRouterModule
 {
     use IncludesFiles;
+    use RegistersCommands;
     use MiddlewareRegistrar;
 
     protected function includes(): array
     {
         return [
             __DIR__ . '/Support/helpers.php',
+        ];
+    }
+
+    protected function commands(): array
+    {
+        return [
+            \Modules\ForgeRouter\Commands\CleanupCommand::class,
+            \Modules\ForgeRouter\Commands\GenerateControllerCommand::class,
+            \Modules\ForgeRouter\Commands\GenerateMiddlewareCommand::class,
+            \Modules\ForgeRouter\Commands\InitCommand::class,
+            \Modules\ForgeRouter\Commands\ServeCommand::class,
         ];
     }
 
