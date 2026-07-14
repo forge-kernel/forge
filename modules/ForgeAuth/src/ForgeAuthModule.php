@@ -16,6 +16,7 @@ use Forge\Core\Module\Attributes\Repository;
 use Forge\Core\Module\Attributes\Requires;
 use Forge\Core\Module\Attributes\Structure;
 use Forge\Core\Module\Traits\IncludesFiles;
+use Forge\Core\Module\Traits\RegistersCommands;
 use Forge\Core\ResetManager;
 use Modules\ForgeAuth\Contracts\ForgeAuthInterface;
 use Modules\ForgeAuth\Services\ForgeAuthService;
@@ -23,7 +24,7 @@ use Modules\ForgeAuth\Services\TokenManagerService;
 use Forge\CLI\Traits\OutputHelper;
 
 #[Module(name: 'ForgeAuth',
-    version: '2.0.12',
+    version: '2.0.13',
     description: 'An Auth module by forge.',
     order: 99,
     author: 'Forge Team',
@@ -33,7 +34,7 @@ use Forge\CLI\Traits\OutputHelper;
 )]
 #[Requires(module: "forge-database-sql", version: ">=0.9.12")]
 #[Requires(module: "forge-sql-orm", version: ">=0.6.5")]
-#[Provides(interface: ForgeAuthInterface::class, version: "2.0.12")]
+#[Provides(interface: ForgeAuthInterface::class, version: "2.0.13")]
 #[Compatibility(framework: '>=4.15.10', php: '>=8.3')]
 #[Repository(type: 'git', url: 'https://github.com/forge-kernel/kernel-module-registry')]
 #[ConfigDefaults(defaults: [
@@ -75,17 +76,12 @@ use Forge\CLI\Traits\OutputHelper;
 ])]
 #[PostInstall(command: 'db:migrate', args: ['--type=module', '--module=ForgeAuth'])]
 #[PostUninstall(command: 'db:migrate', args: ['--type=module', '--module=ForgeAuth'])]
+
 final class ForgeAuthModule
 {
     use IncludesFiles;
+    use RegistersCommands;
     use OutputHelper;
-
-    protected function includes(): array
-    {
-        return [
-            __DIR__ . '/Support/helpers.php',
-        ];
-    }
 
     public function register(Container $container): void
     {
@@ -110,5 +106,26 @@ final class ForgeAuthModule
         $config->set('forge_auth.password.max_password_length', env('FORGE_MAX_PASSWORD_LENGTH', 256));
         $config->set('forge_auth.auth.redirect.after_login', env('FORGE_AFTER_LOGIN_REDIRECT', '/'));
         $config->set('forge_auth.auth.redirect.after_logout', env('FORGE_AFTER_LOGOUT_REDIRECT', '/'));
+    }
+
+    protected function includes(): array
+    {
+        return [
+            __DIR__ . '/Support/helpers.php',
+        ];
+    }
+
+    protected function commands(): array
+    {
+        return [
+            \Modules\ForgeAuth\Commands\RoleAddPermissionCommand::class,
+            \Modules\ForgeAuth\Commands\RoleCreateCommand::class,
+            \Modules\ForgeAuth\Commands\RoleDeleteCommand::class,
+            \Modules\ForgeAuth\Commands\RoleRemovePermissionCommand::class,
+            \Modules\ForgeAuth\Commands\RoleSyncCommand::class,
+            \Modules\ForgeAuth\Commands\UserAddCommand::class,
+            \Modules\ForgeAuth\Commands\UserAssignRoleBulkCommand::class,
+            \Modules\ForgeAuth\Commands\UserAssignRoleCommand::class,
+        ];
     }
 }
