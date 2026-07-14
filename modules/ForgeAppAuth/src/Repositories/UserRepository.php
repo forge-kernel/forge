@@ -68,6 +68,7 @@ class UserRepository extends RecordRepository implements UserProviderInterface
 
     public function updatePassword(int $userId, string $newPassword): bool
     {
+        /** @var User $user */
         $user = User::query()->where('id', '=', $userId)->first();
         if (!$user) {
             return false;

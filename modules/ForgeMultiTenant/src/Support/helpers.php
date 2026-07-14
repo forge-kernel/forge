@@ -24,3 +24,19 @@ if (!function_exists('requireTenant')) {
         return $tenant;
     }
 }
+
+if (!function_exists('tenant_url')) {
+    function tenant_url(?string $scheme = 'https'): ?string
+    {
+        $tenant = tenant();
+        if ($tenant === null) {
+            return null;
+        }
+
+        $host = $tenant->subdomain
+            ? "{$tenant->subdomain}.{$tenant->domain}"
+            : $tenant->domain;
+
+        return "{$scheme}://{$host}";
+    }
+}

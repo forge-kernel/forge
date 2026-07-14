@@ -8,7 +8,7 @@
     We're excited to have you on board.
 </p>
 <?php if ($supportEmail): ?>
-    <p style="margin: 0; font-size: 14px; color: #9ca3af; border-top: 1px solid #e5e7eb; padding-top: 16px;">
-        Questions? Reply to <a href="mailto:<?= e($supportEmail) ?>" style="color: #fc7205; text-decoration: none;"><?= htmlspecialchars($supportEmail) ?></a>
-    </p>
+        <p style="margin: 0; font-size: 14px; color: #9ca3af; border-top: 1px solid #e5e7eb; padding-top: 16px;">
+            Questions? Reply to <a href="mailto:<?= e($supportEmail) ?>" style="color: #fc7205; text-decoration: none;"><?= e($supportEmail) ?></a>
+        </p>
 <?php endif; ?>
