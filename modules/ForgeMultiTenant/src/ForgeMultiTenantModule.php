@@ -19,6 +19,7 @@ use Forge\Core\Module\Attributes\Module;
 use Forge\Core\Module\Attributes\PostInstall;
 use Forge\Core\Module\Attributes\PostUninstall;
 use Forge\Core\Module\Attributes\Repository;
+use Forge\Core\Module\Traits\IncludesFiles;
 use Forge\CLI\Traits\OutputHelper;
 use Modules\ForgeRouter\ForgeRouterModule;
 use Modules\ForgeRouter\Http\Middlewares\RateLimitMiddleware;
@@ -27,7 +28,7 @@ use Modules\ForgeRouter\Http\Middlewares\ApiKeyMiddleware;
 
 #[Module(
     name: 'ForgeMultiTenant',
-    version: '0.4.4',
+    version: '0.4.5',
     description: 'A Multi Tenant Module by Forge',
     order: 2,
     author: 'Forge Team',
@@ -55,7 +56,15 @@ use Modules\ForgeRouter\Http\Middlewares\ApiKeyMiddleware;
 #[PostUninstall(command: 'db:seed:rollback', args: ['--type=module', '--module=ForgeMultiTenant'])]
 final class ForgeMultiTenantModule
 {
+    use IncludesFiles;
     use OutputHelper;
+
+    protected function includes(): array
+    {
+        return [
+            __DIR__ . '/Support/helpers.php',
+        ];
+    }
 
     public function register(Container $container): void
     {
