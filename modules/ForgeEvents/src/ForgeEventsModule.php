@@ -19,11 +19,12 @@ use RecursiveDirectoryIterator;
 use RecursiveIteratorIterator;
 use ReflectionClass;
 use ReflectionException;
+use Forge\Core\Module\Traits\RegistersCommands;
 use ReflectionMethod;
 
 #[Module(
     name: "ForgeEvents",
-    version: "1.4.12",
+    version: "1.4.13",
     description: "An Event Queue system by forge",
     order: 99,
     author: 'Forge Team',
@@ -42,6 +43,8 @@ use ReflectionMethod;
 ])]
 final class ForgeEventsModule
 {
+    use RegistersCommands;
+
     public function register(Container $container): void
     {
         $this->setupConfigDefaults($container);
@@ -97,6 +100,13 @@ final class ForgeEventsModule
                 }
             }
         }
+    }
+
+    protected function commands(): array
+    {
+        return [
+            \Modules\ForgeEvents\Commands\QueueWorkCommand::class,
+        ];
     }
 
     private function scanDirectory(
