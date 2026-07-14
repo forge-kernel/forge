@@ -17,6 +17,7 @@ use Forge\Core\Module\Attributes\PostUninstall;
 use Forge\Core\Module\Attributes\Repository;
 use Forge\Core\Module\Attributes\Structure;
 use Forge\Core\Module\Traits\IncludesFiles;
+use Forge\Core\Module\Traits\RegistersCommands;
 use Modules\ForgeRouter\ForgeRouterModule;
 
 #[Structure(structure: [
@@ -29,7 +30,7 @@ use Modules\ForgeRouter\ForgeRouterModule;
 ])]
 #[Module(
     name: 'ForgeSaas',
-    version: '0.1.9',
+    version: '0.1.10',
     description: 'SaaS plans, subscriptions, and feature gating for Forge Kernel',
     order: 4,
     author: 'Forge Team',
@@ -47,11 +48,23 @@ use Modules\ForgeRouter\ForgeRouterModule;
 final class ForgeSaasModule
 {
     use IncludesFiles;
+    use RegistersCommands;
 
     protected function includes(): array
     {
         return [
             __DIR__ . '/Support/helpers.php',
+        ];
+    }
+
+    protected function commands(): array
+    {
+        return [
+            \Modules\ForgeSaas\Commands\SaasPlanCreateCommand::class,
+            \Modules\ForgeSaas\Commands\SaasPlanDeleteCommand::class,
+            \Modules\ForgeSaas\Commands\SaasPlanDisableCommand::class,
+            \Modules\ForgeSaas\Commands\SaasPlanListCommand::class,
+            \Modules\ForgeSaas\Commands\SaasTenantAssignPlanCommand::class,
         ];
     }
 
