@@ -15,10 +15,11 @@ use Forge\Core\Module\Attributes\Module;
 use Forge\Core\Module\Attributes\PostInstall;
 use Forge\Core\Module\Attributes\PostUninstall;
 use Forge\Core\Module\Attributes\Repository;
+use Forge\Core\Module\Traits\IncludesFiles;
 
 #[Module(
     name: 'ForgeStorage',
-    version: '1.3.7',
+    version: '1.3.8',
     description: 'Simple file upload storage module with multiple provider support',
     author: 'Forge Team',
     license: 'MIT',
@@ -54,6 +55,15 @@ use Forge\Core\Module\Attributes\Repository;
 #[PostUninstall(command: 'db:migrate:rollback', args: ['--type=module', '--module=forge-storage'])]
 final class ForgeStorageModule
 {
+    use IncludesFiles;
+
+    protected function includes(): array
+    {
+        return [
+            __DIR__ . '/Support/helpers.php',
+        ];
+    }
+
     public function __construct(private Config $config)
     {
     }
