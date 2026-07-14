@@ -41,7 +41,7 @@ use Forge\Traits\InjectsAssets;
 ])]
 #[Module(
     name: 'ForgeDebugBar',
-    version: '1.3.18',
+    version: '1.3.19',
     description: 'A debug bar by Forge',
     order: 3,
     author: 'Forge Team',
@@ -55,7 +55,8 @@ use Forge\Traits\InjectsAssets;
 #[Compatibility(framework: '>=4.15.11', php: '>=8.3')]
 #[ConfigDefaults(defaults: [
     'forge_debug_bar' => [
-        'enabled' => true
+        'enabled' => true,
+        'metrics' => true,
     ]
 ])]
 #[PostInstall(command: 'asset:link', args: ['--type=module', '--module=forge-debug-bar'])]
@@ -77,6 +78,7 @@ class DebugBarModule
         /** @var Config $config */
         $config = $container->get(Config::class);
         $config->set("forge_debug_bar.enabled", env("FORGE_DEBUG_BAR_ENABLED", true));
+        $config->set("forge_debug_bar.metrics", env("FORGE_DEBUG_BAR_METRICS", true));
 
         ResetManager::onBefore([DebugBar::class, 'reset']);
 
@@ -91,28 +93,20 @@ class DebugBarModule
     public function onAfterRequest(Request $request, Response $response): void
     {
         $debugbar = $this->getDebugbarInstance();
+        $config = Container::getInstance()->get(Config::class);
+        $metricsEnabled = $config->get('forge_debug_bar.metrics', true);
 
-        $this->registerCoreCollectors($debugbar, $request);
-        $this->registerCrossModuleCollectors($debugbar, $request);
-        $this->registerTabs($debugbar);
+        $this->registerCoreCollectors($debugbar, $request, $metricsEnabled);
+        $this->registerCrossModuleCollectors($debugbar, $request, $metricsEnabled);
+        $this->registerTabs($debugbar, $metricsEnabled);
 
         $this->registerDebugBarAssets();
         $this->injectAssets($response);
         $this->storeLatestDataForHub();
     }
 
-    private function registerCoreCollectors(DebugBar $debugbar, Request $request): void
+    private function registerCoreCollectors(DebugBar $debugbar, Request $request, bool $metricsEnabled): void
     {
-        $requestData = RequestCollector::collect($request);
-        $debugbar->addCollector('request', function () use ($requestData) {
-            return $requestData;
-        });
-
-        $sessionData = SessionCollector::collect();
-        $debugbar->addCollector('session', function () use ($sessionData) {
-            return $sessionData;
-        });
-
         $debugbar->addCollector('memory', function () {
             return MemoryCollector::instance()->getMemoryUsage();
         });
@@ -125,14 +119,32 @@ class DebugBarModule
             return MessageCollector::collect($startTime);
         });
 
+        if (!$metricsEnabled) {
+            return;
+        }
+
+        $requestData = RequestCollector::collect($request);
+        $debugbar->addCollector('request', function () use ($requestData) {
+            return $requestData;
+        });
+
+        $sessionData = SessionCollector::collect();
+        $debugbar->addCollector('session', function () use ($sessionData) {
+            return $sessionData;
+        });
+
         $routeData = RouteCollector::collect();
         $debugbar->addCollector('route', function () use ($routeData) {
             return $routeData;
         });
     }
 
-    private function registerCrossModuleCollectors(DebugBar $debugbar, Request $request): void
+    private function registerCrossModuleCollectors(DebugBar $debugbar, Request $request, bool $metricsEnabled): void
     {
+        if (!$metricsEnabled) {
+            return;
+        }
+
         try {
             $container = Container::getInstance();
 
@@ -167,8 +179,14 @@ class DebugBarModule
         }
     }
 
-    private function registerTabs(DebugBar $debugbar): void
+    private function registerTabs(DebugBar $debugbar, bool $metricsEnabled): void
     {
+        $debugbar->registerTab('resources', 'Resources', 'ForgeDebugBar:panels/resources', options: ['data_key' => 'memory']);
+
+        if (!$metricsEnabled) {
+            return;
+        }
+
         $debugbar->registerTab('overview', 'Overview', 'ForgeDebugBar:panels/overview', options: ['data_key' => 'request']);
         $debugbar->registerTab('console', 'Console', 'ForgeDebugBar:panels/console', options: ['data_key' => 'messages']);
         $debugbar->registerTab('errors', 'Errors', 'ForgeDebugBar:panels/errors', options: ['data_key' => 'exceptions']);
@@ -176,7 +194,6 @@ class DebugBarModule
         $debugbar->registerTab('router', 'Router', 'ForgeDebugBar:panels/router', options: ['data_key' => 'route']);
         $debugbar->registerTab('templates', 'Templates', 'ForgeDebugBar:panels/templates', options: ['data_key' => 'views']);
         $debugbar->registerTab('state', 'State', 'ForgeDebugBar:panels/state', options: ['data_key' => 'session']);
-        $debugbar->registerTab('resources', 'Resources', 'ForgeDebugBar:panels/resources', options: ['data_key' => 'memory']);
         $debugbar->registerTab('timeline', 'Timeline', 'ForgeDebugBar:panels/timeline', options: ['data_key' => 'timeline']);
     }
 
