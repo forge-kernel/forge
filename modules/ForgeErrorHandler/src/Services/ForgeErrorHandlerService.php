@@ -6,6 +6,7 @@ namespace Modules\ForgeErrorHandler\Services;
 use Modules\ForgeRouter\Contracts\ErrorHandlerInterface;
 use Forge\Core\Module\Attributes\Provides;
 use Modules\ForgeRouter\Http\{Request, Response};
+use Modules\ForgeRouter\Services\ErrorPageRenderer;
 use Forge\Core\Config\Environment;
 use Forge\Traits\PathHelper;
 use Throwable;
@@ -435,7 +436,11 @@ final class ForgeErrorHandlerService implements ErrorHandlerInterface
 
     private function renderUserFriendlyPage(): string
     {
-        return <<<HTML
+        try {
+            $renderer = \Forge\Core\DI\Container::getInstance()->make(ErrorPageRenderer::class);
+            return $renderer->render(500);
+        } catch (\Throwable) {
+            return <<<HTML
 <!DOCTYPE html>
 <html>
 <head>
@@ -452,6 +457,7 @@ final class ForgeErrorHandlerService implements ErrorHandlerInterface
 </body>
 </html>
 HTML;
+        }
     }
 
     private function emergencyOutput(Throwable $e): void

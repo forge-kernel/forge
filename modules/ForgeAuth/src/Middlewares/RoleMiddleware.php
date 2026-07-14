@@ -4,10 +4,12 @@ declare(strict_types=1);
 
 namespace Modules\ForgeAuth\Middlewares;
 
+use Forge\Core\DI\Container;
 use Modules\ForgeAuth\Services\RoleService;
 use Modules\ForgeAuth\Traits\HasCurrentUser;
 use Modules\ForgeRouter\Http\Request;
 use Modules\ForgeRouter\Http\Response;
+use Modules\ForgeRouter\Services\ErrorPageRenderer;
 
 final class RoleMiddleware
 {
@@ -36,11 +38,9 @@ final class RoleMiddleware
             }
         }
 
-        ob_start();
-        $errorCode = 403;
-        require BASE_PATH . "/kernel/Templates/Views/error_page.php";
-        $content = ob_get_clean();
+        $renderer = Container::getInstance()->make(ErrorPageRenderer::class);
+        $content = $renderer->render(403);
 
-        return new Response($content, (int) $errorCode);
+        return new Response($content, 403);
     }
 }

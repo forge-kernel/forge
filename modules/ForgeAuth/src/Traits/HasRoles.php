@@ -8,6 +8,7 @@ use Modules\ForgeAuth\Contracts\AuthUserInterface;
 use Modules\ForgeAuth\Services\RoleService;
 use Forge\Core\DI\Container;
 use Modules\ForgeRouter\Http\Response;
+use Modules\ForgeRouter\Services\ErrorPageRenderer;
 
 trait HasRoles
 {
@@ -27,19 +28,15 @@ trait HasRoles
         $user = $this->getCurrentUser();
 
         if (!$user) {
-            ob_start();
-            $errorCode = 401;
-            require BASE_PATH . "/kernel/Templates/Views/error_page.php";
-            $content = ob_get_clean();
+            $renderer = Container::getInstance()->make(ErrorPageRenderer::class);
+            $content = $renderer->render(401);
             (new Response($content, 401))->send();
             exit;
         }
 
         if (!$this->hasPermission($user, $permissionName)) {
-            ob_start();
-            $errorCode = 403;
-            require BASE_PATH . "/kernel/Templates/Views/error_page.php";
-            $content = ob_get_clean();
+            $renderer = Container::getInstance()->make(ErrorPageRenderer::class);
+            $content = $renderer->render(403);
             (new Response($content, 403))->send();
             exit;
         }
@@ -59,19 +56,15 @@ trait HasRoles
         $user = $this->getCurrentUser();
 
         if (!$user) {
-            ob_start();
-            $errorCode = 401;
-            require BASE_PATH . "/kernel/Templates/Views/error_page.php";
-            $content = ob_get_clean();
+            $renderer = Container::getInstance()->make(ErrorPageRenderer::class);
+            $content = $renderer->render(401);
             (new Response($content, 401))->send();
             exit;
         }
 
         if (!$this->hasAnyPermission($user, $permissionNames)) {
-            ob_start();
-            $errorCode = 403;
-            require BASE_PATH . "/kernel/Templates/Views/error_page.php";
-            $content = ob_get_clean();
+            $renderer = Container::getInstance()->make(ErrorPageRenderer::class);
+            $content = $renderer->render(403);
             (new Response($content, 403))->send();
             exit;
         }
@@ -95,7 +88,7 @@ trait HasRoles
     public function hasAllRoles(AuthUserInterface $user, array $roleNames): bool
     {
         foreach ($roleNames as $roleName) {
-            if (!$this->hasRole($user, $roleName)) {
+            if (!$this->hasAllRoles($user, $roleNames)) {
                 return false;
             }
         }

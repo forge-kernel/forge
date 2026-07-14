@@ -16,6 +16,7 @@ use Modules\ForgeRouter\Http\Attributes\UseMiddleware;
 use Forge\Exceptions\MissingServiceException;
 use ReflectionClass;
 use Modules\ForgeRouter\Http\Request;
+use Modules\ForgeRouter\Services\ErrorPageRenderer;
 use Modules\ForgeRouter\Traits\ResponseHelper;
 use ReflectionMethod;
 
@@ -473,11 +474,9 @@ final class Router
                     'method' => $method,
                 ]);
             }
-            $errorCode = 404;
-            ob_start();
-            require BASE_PATH . "/modules/ForgeRouter/src/Templates/error_page.php";
-            $errorHtml = ob_get_clean();
-            return new \Modules\ForgeRouter\Http\Response($errorHtml, (int) $errorCode);
+            $renderer = $this->container->make(ErrorPageRenderer::class);
+            $errorHtml = $renderer->render(404);
+            return new \Modules\ForgeRouter\Http\Response($errorHtml, 404);
         }
 
         if (!empty($route["usesDeprecatedRoute"])) {

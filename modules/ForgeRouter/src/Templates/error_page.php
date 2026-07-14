@@ -1,177 +1,123 @@
 <?php
- use Forge\Core\Helpers\Format;
 
- $errorCode = isset($errorCode) ? htmlspecialchars($errorCode) : null;
- $errorMessage = '';
- $pageTitle = '';
- $displayCode = '';
+declare(strict_types=1);
 
- switch ($errorCode) {
-     case 400:
-         $displayCode = '400';
-         $pageTitle = 'Bad Request';
-         $errorMessage = 'The server could not understand your request.';
-         break;
-     case 401:
-         $displayCode = '401';
-         $pageTitle = 'Unauthorized';
-         $errorMessage = 'You are not authorized to view this page. Please log in.';
-         break;
-     case 403:
-         $displayCode = '403';
-         $pageTitle = 'Forbidden';
-         $errorMessage = 'You do not have permission to access this resource.';
-         break;
-     case 404:
-         $displayCode = '404';
-         $pageTitle = 'Oops! Page not found';
-         $errorMessage = 'The page you are looking for could not be found.';
-         break;
-     case 500:
-         $displayCode = '500';
-         $pageTitle = 'Internal Server Error';
-         $errorMessage = 'Something went wrong on our server. Please try again later.';
-         break;
-     case 503:
-         $displayCode = '503';
-         $pageTitle = 'Service Unavailable';
-         $errorMessage = 'The server is currently unavailable. Please try again later.';
-         break;
-     default:
-         $displayCode = 'Oops!';
-         $pageTitle = 'An Unexpected Error Occurred';
-         $errorMessage = 'An unexpected error has occurred.';
-         break;
- }
- ?>
+/** @var int $errorCode */
+/** @var string $pageTitle */
+/** @var string $errorMessage */
+
+$errorCode = isset($errorCode) ? (int) $errorCode : 500;
+$pageTitle = $pageTitle ?? 'Error';
+$errorMessage = $errorMessage ?? 'An unexpected error has occurred.';
+?>
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title><?=$errorCode?> <?=$pageTitle?></title>
+    <title><?= $errorCode ?> <?= htmlspecialchars($pageTitle) ?></title>
     <style>
-    * {
-        -webkit-box-sizing: border-box;
-        box-sizing: border-box;
-    }
-
-    body {
-        padding: 0;
-        margin: 0;
-    }
-
-    #notfound {
-        position: relative;
-        height: 100vh;
-    }
-
-    #notfound .notfound {
-        position: absolute;
-        left: 50%;
-        top: 50%;
-        -webkit-transform: translate(-50%, -50%);
-        -ms-transform: translate(-50%, -50%);
-        transform: translate(-50%, -50%);
-    }
-
-    .notfound {
-        max-width: 520px;
-        width: 100%;
-        line-height: 1.4;
-        text-align: center;
-    }
-
-    .notfound .notfound-404 {
-        position: relative;
-        height: 240px;
-    }
-
-    .notfound .notfound-404 h1 {
-        font-family: 'Montserrat', sans-serif;
-        position: absolute;
-        left: 50%;
-        top: 50%;
-        -webkit-transform: translate(-50%, -50%);
-        -ms-transform: translate(-50%, -50%);
-        transform: translate(-50%, -50%);
-        font-size: 252px;
-        font-weight: 900;
-        margin: 0px;
-        color: #262626;
-        text-transform: uppercase;
-        letter-spacing: -40px;
-        margin-left: -20px;
-    }
-
-    .notfound .notfound-404 h1>span {
-        text-shadow: -8px 0px 0px #fff;
-    }
-
-    .notfound .notfound-404 h3 {
-        font-family: 'Cabin', sans-serif;
-        position: relative;
-        font-size: 16px;
-        font-weight: 700;
-        text-transform: uppercase;
-        color: #262626;
-        margin: 0px;
-        letter-spacing: 3px;
-        padding-left: 6px;
-    }
-
-    .notfound h2 {
-        font-family: 'Cabin', sans-serif;
-        font-size: 20px;
-        font-weight: 400;
-        text-transform: uppercase;
-        color: #000;
-        margin-top: 0px;
-        margin-bottom: 25px;
-    }
-
-    @media only screen and (max-width: 767px) {
-        .notfound .notfound-404 {
-            height: 200px;
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
         }
 
-        .notfound .notfound-404 h1 {
-            font-size: 200px;
-        }
-    }
-
-    @media only screen and (max-width: 480px) {
-        .notfound .notfound-404 {
-            height: 162px;
-        }
-
-        .notfound .notfound-404 h1 {
-            font-size: 162px;
-            height: 150px;
-            line-height: 162px;
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background-color: #fafafa;
+            color: #333;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 2rem;
         }
 
-        .notfound h2 {
-            font-size: 16px;
+        .error-page {
+            text-align: center;
+            max-width: 500px;
         }
-    }
+
+        .error-code {
+            font-size: 7rem;
+            font-weight: 700;
+            color: #e5e7eb;
+            line-height: 1;
+            letter-spacing: -0.05em;
+        }
+
+        .error-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: #111;
+            margin: 1rem 0 0.5rem;
+        }
+
+        .error-message {
+            font-size: 1rem;
+            color: #6b7280;
+            line-height: 1.6;
+            margin-bottom: 2rem;
+        }
+
+        .error-actions {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 0.625rem 1.25rem;
+            font-size: 0.875rem;
+            font-weight: 500;
+            text-decoration: none;
+            border-radius: 0.375rem;
+            transition: all 0.15s ease;
+            cursor: pointer;
+            border: none;
+        }
+
+        .btn-primary {
+            background-color: #111;
+            color: #fff;
+        }
+
+        .btn-primary:hover {
+            background-color: #333;
+        }
+
+        .btn-secondary {
+            background-color: #f3f4f6;
+            color: #374151;
+        }
+
+        .btn-secondary:hover {
+            background-color: #e5e7eb;
+        }
+
+        @media (max-width: 480px) {
+            .error-code {
+                font-size: 5rem;
+            }
+
+            .error-title {
+                font-size: 1.25rem;
+            }
+        }
     </style>
 </head>
-
 <body>
-    <div class="error-container">
-        <div id="notfound">
-            <div class="notfound">
-                <div class="notfound-404">
-                    <h3><?=$pageTitle?></h3>
-                    <?= Format::errorCode($errorCode) ?>
-                </div>
-                <h2><?=$errorMessage?></h2>
-                <p><a href="javascript:history.back()">Go Back</a></p>
-            </div>
+    <div class="error-page">
+        <div class="error-code"><?= $errorCode ?></div>
+        <h1 class="error-title"><?= htmlspecialchars($pageTitle) ?></h1>
+        <p class="error-message"><?= htmlspecialchars($errorMessage) ?></p>
+        <div class="error-actions">
+            <a href="javascript:history.back()" class="btn btn-primary">Go Back</a>
+            <a href="/" class="btn btn-secondary">Homepage</a>
         </div>
     </div>
 </body>
-
 </html>
