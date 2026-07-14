@@ -21,6 +21,7 @@ use Forge\Core\Module\Attributes\PostUninstall;
 use Forge\Core\Module\Attributes\Compatibility;
 use Forge\Core\Module\Attributes\Repository;
 use Forge\Core\Module\LifecycleHookName;
+use Forge\Core\Module\Traits\IncludesFiles;
 use Forge\Core\ResetManager;
 use Modules\ForgeRouter\Middleware\MiddlewareRegistrar;
 use Throwable;
@@ -28,7 +29,7 @@ use Throwable;
 #[Module(name: "ForgeRouter",
     description: "Forge Router and Http",
     author: "Forge Team",
-    version: '1.0.32',
+    version: '1.0.33',
     type: "core",
     license: "MIT",
     tags: ["router", "http"],
@@ -69,7 +70,15 @@ use Throwable;
 #[PostUninstall(command: "modules:forge-router:cleanup", args: ["--force"])]
 final class ForgeRouterModule
 {
+    use IncludesFiles;
     use MiddlewareRegistrar;
+
+    protected function includes(): array
+    {
+        return [
+            __DIR__ . '/Support/helpers.php',
+        ];
+    }
 
     private static ?Kernel $kernel = null;
 
