@@ -30,7 +30,7 @@ use Throwable;
 #[Module(name: "ForgeRouter",
     description: "Forge Router and Http",
     author: "Forge Team",
-    version: '1.0.35',
+    version: '1.0.36',
     type: "core",
     license: "MIT",
     tags: ["router", "http"],
@@ -89,6 +89,8 @@ final class ForgeRouterModule
             \Modules\ForgeRouter\Commands\GenerateControllerCommand::class,
             \Modules\ForgeRouter\Commands\GenerateMiddlewareCommand::class,
             \Modules\ForgeRouter\Commands\InitCommand::class,
+            \Modules\ForgeRouter\Commands\MaintenanceDownCommand::class,
+            \Modules\ForgeRouter\Commands\MaintenanceUpCommand::class,
             \Modules\ForgeRouter\Commands\ServeCommand::class,
         ];
     }
