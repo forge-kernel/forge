@@ -20,6 +20,7 @@ use Forge\Core\Module\Attributes\PostInstall;
 use Forge\Core\Module\Attributes\PostUninstall;
 use Forge\Core\Module\Attributes\Repository;
 use Forge\Core\Module\Traits\IncludesFiles;
+use Forge\Core\Module\Traits\RegistersCommands;
 use Forge\CLI\Traits\OutputHelper;
 use Modules\ForgeRouter\ForgeRouterModule;
 use Modules\ForgeRouter\Http\Middlewares\RateLimitMiddleware;
@@ -28,7 +29,7 @@ use Modules\ForgeRouter\Http\Middlewares\ApiKeyMiddleware;
 
 #[Module(
     name: 'ForgeMultiTenant',
-    version: '0.4.5',
+    version: '0.4.6',
     description: 'A Multi Tenant Module by Forge',
     order: 2,
     author: 'Forge Team',
@@ -57,12 +58,22 @@ use Modules\ForgeRouter\Http\Middlewares\ApiKeyMiddleware;
 final class ForgeMultiTenantModule
 {
     use IncludesFiles;
+    use RegistersCommands;
     use OutputHelper;
 
     protected function includes(): array
     {
         return [
             __DIR__ . '/Support/helpers.php',
+        ];
+    }
+
+    protected function commands(): array
+    {
+        return [
+            \Modules\ForgeMultiTenant\Commands\TenantListCommand::class,
+            \Modules\ForgeMultiTenant\Commands\TenantMigrateCommand::class,
+            \Modules\ForgeMultiTenant\Commands\TenantSeedCommand::class,
         ];
     }
 
