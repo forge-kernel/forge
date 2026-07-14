@@ -27,6 +27,8 @@ use Forge\Core\Module\Attributes\PostUninstall;
 use Forge\Core\Module\Attributes\Repository;
 use Forge\Core\Module\Attributes\Structure;
 use Forge\Core\Module\LifecycleHookName;
+use Forge\Core\Module\Traits\IncludesFiles;
+use Forge\Core\Module\Traits\RegistersCommands;
 use Modules\ForgeRouter\ForgeRouterModule;
 
 #[Structure(structure: [
@@ -46,7 +48,7 @@ use Modules\ForgeRouter\ForgeRouterModule;
 ])]
 #[Module(
     name: 'ForgeBilling',
-    version: '0.2.10',
+    version: '0.2.11',
     description: 'Billing portal with plans, invoices, and payment provider support',
     order: 5,
     author: 'Forge Team',
@@ -66,6 +68,16 @@ use Modules\ForgeRouter\ForgeRouterModule;
 #[PostUninstall(command: 'db:migrate:rollback', args: ['--type=module', '--module=ForgeBilling'])]
 final class ForgeBillingModule
 {
+    use IncludesFiles;
+    use RegistersCommands;
+
+    protected function includes(): array
+    {
+        return [
+            __DIR__ . '/Support/helpers.php',
+        ];
+    }
+
     public function register(Container $container): void
     {
         $container->singleton(BillableResolverInterface::class, fn() => new BillableResolver($container));
@@ -177,6 +189,17 @@ final class ForgeBillingModule
                     ]);
             }
         );
+    }
+
+    protected function commands(): array
+    {
+        return [
+            \Modules\ForgeBilling\Commands\BillingGenerateInvoicesCommand::class,
+            \Modules\ForgeBilling\Commands\BillingPlanCreateCommand::class,
+            \Modules\ForgeBilling\Commands\BillingPlanDisableCommand::class,
+            \Modules\ForgeBilling\Commands\BillingPlanListCommand::class,
+            \Modules\ForgeBilling\Commands\BillingTenantAssignCommand::class,
+        ];
     }
 
     private function nextPeriodEnd(string $interval): \DateTimeImmutable
