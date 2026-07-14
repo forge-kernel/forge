@@ -29,6 +29,7 @@ use Modules\ForgeRouter\Events\RouterHookAttribute;
 use Modules\ForgeRouter\Events\RouterHookName;
 use Modules\ForgeRouter\Http\Request;
 use Modules\ForgeRouter\Http\Response;
+use Forge\Core\Module\Traits\IncludesFiles;
 use Forge\Traits\InjectsAssets;
 
 #[Structure(structure: [
@@ -40,7 +41,7 @@ use Forge\Traits\InjectsAssets;
 ])]
 #[Module(
     name: 'ForgeDebugBar',
-    version: '1.3.16',
+    version: '1.3.17',
     description: 'A debug bar by Forge',
     order: 3,
     author: 'Forge Team',
@@ -62,6 +63,14 @@ use Forge\Traits\InjectsAssets;
 class DebugBarModule
 {
     use InjectsAssets;
+    use IncludesFiles;
+
+    protected function includes(): array
+    {
+        return [
+            __DIR__ . '/Support/helpers.php',
+        ];
+    }
 
     public function register(Container $container): void
     {
