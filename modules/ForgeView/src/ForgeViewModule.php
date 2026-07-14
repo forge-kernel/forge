@@ -10,12 +10,13 @@ use Forge\Core\Module\Attributes\Compatibility;
 use Forge\Core\Module\Attributes\Module;
 use Forge\Core\Module\Attributes\Provides;
 use Forge\Core\Module\Attributes\Repository;
+use Forge\Core\Module\Traits\IncludesFiles;
 use Forge\Core\ResetManager;
 use Modules\ForgeView\ViewState;
 
 #[Module(
     name: 'ForgeView',
-    version: '0.1.9',
+    version: '0.1.10',
     description: 'A View engine provided by forge',
     order: 4,
     author: 'Forge Team',
@@ -23,11 +24,20 @@ use Modules\ForgeView\ViewState;
     type: 'core',
     tags: ['view-engine', 'view'])]
 #[Compatibility(framework: '>=0.1.0', php: '>=8.3')]
-#[Provides(interface: ViewInterface::class, version: '0.1.9')]
+#[Provides(interface: ViewInterface::class, version: '0.1.10')]
 #[Repository(type: 'git', url: 'https://github.com/forge-kernel/kernel-module-registry')]
 
 final class ForgeViewModule
 {
+    use IncludesFiles;
+
+    protected function includes(): array
+    {
+        return [
+            __DIR__ . '/Support/helpers.php',
+        ];
+    }
+
     public function register(Container $container): void
     {
         $container->singleton(ViewInterface::class, View::class);
