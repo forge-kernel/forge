@@ -16,7 +16,7 @@ use Forge\Core\Module\Traits\RegistersCommands;
 
 #[Module(
     name: 'ForgePackageManager',
-    version: '3.3.29',
+    version: '3.3.30',
     description: 'A Package Manager By Forge',
     order: 1,
     isCli: true,
@@ -34,6 +34,7 @@ use Forge\Core\Module\Traits\RegistersCommands;
         'cache_ttl' => 3600,
     ],
 ])]
+
 final class ForgePackageManagerModule
 {
     use RegistersCommands;
@@ -53,6 +54,7 @@ final class ForgePackageManagerModule
             \Modules\ForgePackageManager\Commands\InstallCommand::class,
             \Modules\ForgePackageManager\Commands\InstallModuleCommand::class,
             \Modules\ForgePackageManager\Commands\ListModuleCommand::class,
+            \Modules\ForgePackageManager\Commands\RemoveModuleCommand::class,
         ];
     }
 
