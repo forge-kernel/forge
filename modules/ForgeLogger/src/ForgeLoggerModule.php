@@ -13,11 +13,12 @@ use Forge\Core\Module\Attributes\Module;
 use Forge\Core\Module\Attributes\Structure;
 use Forge\Core\Module\Attributes\Repository;
 use Modules\ForgeLogger\Services\ForgeLoggerService;
+use Forge\Core\Module\Traits\RegistersCommands;
 use Forge\CLI\Traits\OutputHelper;
 
 #[Module(
     name: 'ForgeLogger',
-    version: '0.5.8',
+    version: '0.5.9',
     description: 'A logger by Forge.',
     order: 90,
     author: 'Forge Team',
@@ -44,11 +45,19 @@ use Forge\CLI\Traits\OutputHelper;
 final class ForgeLoggerModule
 {
     use OutputHelper;
+    use RegistersCommands;
 
     public function register(Container $container): void
     {
         $this->setupConfigDefaults($container);
         $container->bind(LoggerInterface::class, ForgeLoggerService::class);
+    }
+
+    protected function commands(): array
+    {
+        return [
+            \Modules\ForgeLogger\Commands\ForgeLoggerCommand::class,
+        ];
     }
 
     private function setupConfigDefaults(Container $container): void
