@@ -10,10 +10,11 @@ use Forge\Core\Module\Attributes\ConfigDefaults;
 use Forge\Core\Module\Attributes\Module;
 use Forge\Core\Module\Attributes\Provides;
 use Forge\Core\Module\Attributes\Requires;
+use Forge\Core\Module\Traits\RegistersCommands;
 
 #[Module(
     name: 'ForgeStaticGen',
-    version: "0.2.3",
+    version: "0.2.4",
     description: "A Basic Static Site Generator by Forge",
     isCli: true,
     author: 'Forge Team',
@@ -23,10 +24,12 @@ use Forge\Core\Module\Attributes\Requires;
 )]
 #[Requires(interface: ForgeMarkDownInterface::class, version: "0.1.1")]
 #[Compatibility(framework: ">=0.1.0", php: ">=8.3")]
-#[Provides(interface: ForgeStaticGenInterface::class, version: "0.2.3")]
+#[Provides(interface: ForgeStaticGenInterface::class, version: "0.2.4")]
 #[ConfigDefaults(defaults: [])]
 class ForgeStaticGenModule
 {
+    use RegistersCommands;
+
     public function register(Container $container): void
     {
         $mdParser = $container->get(ForgeMarkDownInterface::class);
@@ -36,5 +39,12 @@ class ForgeStaticGenModule
         });
 
         $container->bind(LayoutBuilder::class, LayoutBuilder::class);
+    }
+
+    protected function commands(): array
+    {
+        return [
+            \Modules\ForgeStaticGen\Commands\StaticGenBuildCommand::class,
+        ];
     }
 }
