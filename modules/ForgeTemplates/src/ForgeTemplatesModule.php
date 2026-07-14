@@ -8,10 +8,11 @@ use Forge\Core\Module\Attributes\Compatibility;
 use Forge\Core\Module\Attributes\Module;
 use Forge\Core\Module\Attributes\Repository;
 use Forge\Core\Module\Attributes\Structure;
+use Forge\Core\Module\Traits\IncludesFiles;
 
 #[Module(
     name: 'ForgeTemplates',
-    version: '0.1.0',
+    version: '0.1.1',
     description: 'Template engine for composing notification messages from PHP template files',
     order: 3,
     author: 'Forge Team',
@@ -26,4 +27,12 @@ use Forge\Core\Module\Attributes\Structure;
 ])]
 final class ForgeTemplatesModule
 {
+    use IncludesFiles;
+
+    protected function includes(): array
+    {
+        return [
+            __DIR__ . '/Support/helpers.php',
+        ];
+    }
 }
