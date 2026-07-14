@@ -8,116 +8,67 @@ declare(strict_types=1);
 
 $errorCode = isset($errorCode) ? (int) $errorCode : 500;
 $pageTitle = $pageTitle ?? 'Error';
-$errorMessage = $errorMessage ?? 'An unexpected error has occurred.';
 ?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title><?= $errorCode ?> <?= htmlspecialchars($pageTitle) ?></title>
+    <title><?= $errorCode ?> | <?= htmlspecialchars($pageTitle) ?></title>
     <style>
-        * {
+        html,
+        body {
             margin: 0;
-            padding: 0;
-            box-sizing: border-box;
+            height: 100%;
         }
 
         body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
-            background-color: #fafafa;
-            color: #333;
             display: flex;
             justify-content: center;
             align-items: center;
-            min-height: 100vh;
-            padding: 2rem;
+            background: #fff;
+            color: #636b6f;
+            font-family: -apple-system,
+                BlinkMacSystemFont,
+                "Segoe UI",
+                Roboto,
+                Helvetica,
+                Arial,
+                sans-serif;
+            -webkit-font-smoothing: antialiased;
         }
 
-        .error-page {
-            text-align: center;
-            max-width: 500px;
-        }
-
-        .error-code {
-            font-size: 7rem;
-            font-weight: 700;
-            color: #e5e7eb;
-            line-height: 1;
-            letter-spacing: -0.05em;
-        }
-
-        .error-title {
-            font-size: 1.5rem;
-            font-weight: 600;
-            color: #111;
-            margin: 1rem 0 0.5rem;
-        }
-
-        .error-message {
-            font-size: 1rem;
-            color: #6b7280;
-            line-height: 1.6;
-            margin-bottom: 2rem;
-        }
-
-        .error-actions {
+        .error {
             display: flex;
-            gap: 1rem;
-            justify-content: center;
-            flex-wrap: wrap;
+            align-items: center;
         }
 
-        .btn {
-            display: inline-block;
-            padding: 0.625rem 1.25rem;
-            font-size: 0.875rem;
-            font-weight: 500;
-            text-decoration: none;
-            border-radius: 0.375rem;
-            transition: all 0.15s ease;
-            cursor: pointer;
-            border: none;
+        .code {
+            font-size: 36px;
+            font-weight: 300;
+            line-height: 1;
         }
 
-        .btn-primary {
-            background-color: #111;
-            color: #fff;
+        .separator {
+            width: 1px;
+            height: 48px;
+            background: #636b6f;
+            margin: 0 18px;
+            opacity: .7;
         }
 
-        .btn-primary:hover {
-            background-color: #333;
-        }
-
-        .btn-secondary {
-            background-color: #f3f4f6;
-            color: #374151;
-        }
-
-        .btn-secondary:hover {
-            background-color: #e5e7eb;
-        }
-
-        @media (max-width: 480px) {
-            .error-code {
-                font-size: 5rem;
-            }
-
-            .error-title {
-                font-size: 1.25rem;
-            }
+        .message {
+            font-size: 24px;
+            font-weight: 300;
+            line-height: 1;
         }
     </style>
 </head>
 <body>
-    <div class="error-page">
-        <div class="error-code"><?= $errorCode ?></div>
-        <h1 class="error-title"><?= htmlspecialchars($pageTitle) ?></h1>
-        <p class="error-message"><?= htmlspecialchars($errorMessage) ?></p>
-        <div class="error-actions">
-            <a href="javascript:history.back()" class="btn btn-primary">Go Back</a>
-            <a href="/" class="btn btn-secondary">Homepage</a>
-        </div>
+    <div class="error">
+        <div class="code"><?= $errorCode ?></div>
+        <div class="separator"></div>
+        <div class="message"><?= htmlspecialchars($pageTitle) ?></div>
     </div>
 </body>
 </html>

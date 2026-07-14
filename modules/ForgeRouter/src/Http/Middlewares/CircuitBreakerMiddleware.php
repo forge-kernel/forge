@@ -12,6 +12,7 @@ use Forge\Core\DI\Container;
 use Modules\ForgeRouter\Http\Middleware as MiddlewareImpl;
 use Modules\ForgeRouter\Http\Request;
 use Modules\ForgeRouter\Http\Response;
+use Modules\ForgeRouter\Services\ErrorPageRenderer;
 use Modules\ForgeRouter\Traits\ResponseHelper;
 use Throwable;
 
@@ -44,7 +45,6 @@ class CircuitBreakerMiddleware extends MiddlewareImpl
         }
 
         if (Container::getInstance()->has(DatabaseConnectionInterface::class)) {
-            $maintenancePage = file_get_contents(BASE_PATH . "/kernel/Core/Http/ErrorPages/maintenance.html");
             $queryBuilder = clone $this->queryBuilder;
 
             $maxFailures = $this->config->get('forge_router.circuit_breaker.max_failures', $env->get('CIRCUIT_BREAKER_MAX_FAILURES', 5));
@@ -64,7 +64,8 @@ class CircuitBreakerMiddleware extends MiddlewareImpl
                 $firstFailureTime = strtotime($record['first_failure']);
 
                 if ($failCount >= $maxFailures && ($now - $firstFailureTime) < $resetTime) {
-                    return $this->createErrorResponse($request, $maintenancePage, 503);
+                    $content = $this->renderMaintenancePage($request);
+                    return $this->createErrorResponse($request, $content, 503);
                 }
 
                 if (($now - $firstFailureTime) >= $resetTime) {
@@ -92,6 +93,20 @@ class CircuitBreakerMiddleware extends MiddlewareImpl
         }
 
         return $response;
+    }
+
+    private function renderMaintenancePage(Request $request): string
+    {
+        if ($request->getHeader('Accept') === 'application/json') {
+            return json_encode(['error' => 'Service Unavailable']);
+        }
+
+        try {
+            $renderer = Container::getInstance()->make(ErrorPageRenderer::class);
+            return $renderer->render(503);
+        } catch (\Throwable) {
+            return ErrorPageRenderer::renderStatic(503);
+        }
     }
 
     private function resetFailureCount(int $recordId, QueryBuilderInterface $queryBuilder): void

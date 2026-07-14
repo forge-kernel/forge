@@ -30,6 +30,19 @@ final class ErrorPageRenderer
         return ob_get_clean();
     }
 
+    public static function renderStatic(int $code, ?string $message = null): string
+    {
+        $template = self::DEFAULT_TEMPLATE;
+
+        $errorCode = $code;
+        $errorMessage = $message ?? self::getDefaultMessage($code);
+        $pageTitle = self::getDefaultTitle($code);
+
+        ob_start();
+        require $template;
+        return ob_get_clean();
+    }
+
     private function resolveTemplate(int $code): string
     {
         $fileName = "{$code}.php";
@@ -85,7 +98,7 @@ final class ErrorPageRenderer
         return null;
     }
 
-    private function getDefaultMessage(int $code): string
+    public static function getDefaultMessage(int $code): string
     {
         return match ($code) {
             400 => 'The server could not understand your request.',
@@ -103,7 +116,7 @@ final class ErrorPageRenderer
         };
     }
 
-    private function getDefaultTitle(int $code): string
+    public static function getDefaultTitle(int $code): string
     {
         return match ($code) {
             400 => 'Bad Request',
