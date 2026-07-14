@@ -15,8 +15,7 @@ use Forge\CLI\Attributes\CoreCommand;
 use Throwable;
 
 #[CoreCommand]
-#[
-    Cli(
+#[Cli(
     command: "db:migrate",
     description: "Run database migrations",
     usage: "db:migrate [--type=app|module|all] [--module=ModuleName] [--group=group_name] [--preview]",
@@ -28,8 +27,7 @@ use Throwable;
         "db:migrate --preview",
         "db:migrate   (starts wizard)",
     ],
-),
-]
+)]
 final class MigrateCommand extends Command
 {
     use StringHelper;
