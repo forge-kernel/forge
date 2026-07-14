@@ -16,6 +16,7 @@ use Forge\Core\Config\Config;
 use Modules\ForgeRouter\Http\Middleware;
 use Modules\ForgeRouter\Http\Request;
 use Modules\ForgeRouter\Http\Response;
+use Modules\ForgeRouter\Services\ErrorPageRenderer;
 use Forge\Core\Session\SessionInterface;
 use Forge\Core\Cache\CacheManager;
 use Modules\ForgeMultiTenant\Services\TenantManager;
@@ -129,6 +130,12 @@ HTML;
             return (new Response($content, 404))->setHeader('Content-Type', 'text/html');
         }
 
-        return new Response(self::UNKNOWN_TENANT_HTML, 404, ['Content-Type' => 'text/html']);
+        try {
+            $renderer = Container::getInstance()->make(ErrorPageRenderer::class);
+            $content = $renderer->render(404, 'This workspace could not be found.');
+            return (new Response($content, 404))->setHeader('Content-Type', 'text/html');
+        } catch (\Throwable) {
+            return new Response(self::UNKNOWN_TENANT_HTML, 404, ['Content-Type' => 'text/html']);
+        }
     }
 }
