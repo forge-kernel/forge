@@ -12,10 +12,11 @@ use Forge\Core\Module\Attributes\Compatibility;
 use Forge\Core\Module\Attributes\ConfigDefaults;
 use Forge\Core\Module\Attributes\Module;
 use Forge\Core\Module\Attributes\Repository;
+use Forge\Core\Module\Traits\RegistersCommands;
 
 #[Module(
     name: 'ForgePackageManager',
-    version: '3.3.28',
+    version: '3.3.29',
     description: 'A Package Manager By Forge',
     order: 1,
     isCli: true,
@@ -35,6 +36,8 @@ use Forge\Core\Module\Attributes\Repository;
 ])]
 final class ForgePackageManagerModule
 {
+    use RegistersCommands;
+
     public function register(Container $container): void
     {
         if (PHP_SAPI === 'cli') {
@@ -42,6 +45,15 @@ final class ForgePackageManagerModule
         }
 
         $this->setupConfigDefaults($container);
+    }
+
+    protected function commands(): array
+    {
+        return [
+            \Modules\ForgePackageManager\Commands\InstallCommand::class,
+            \Modules\ForgePackageManager\Commands\InstallModuleCommand::class,
+            \Modules\ForgePackageManager\Commands\ListModuleCommand::class,
+        ];
     }
 
     private function setupConfigDefaults(Container $container): void
