@@ -17,11 +17,12 @@ use Forge\Core\Module\Attributes\Compatibility;
 use Forge\Core\Module\Attributes\ConfigDefaults;
 use Forge\Core\Module\Attributes\Module;
 use Forge\Core\Module\Attributes\Repository;
+use Forge\Core\Module\Traits\RegistersCommands;
 use Forge\CLI\Traits\OutputHelper;
 
 #[Module(
     name: 'ForgeDatabaseSQL',
-    version: '0.9.23',
+    version: '0.9.24',
     description: 'SQL database support (SQLite, MySQL, PostgreSQL)',
     order: 0,
     author: 'Forge Team',
@@ -44,7 +45,7 @@ use Forge\CLI\Traits\OutputHelper;
     'middlewares' => 'src/Middlewares',
 ])]
 #[Compatibility(framework: '>=4.15.10', php: '>=8.3')]
-#[Provides(interface: DatabaseConnectionInterface::class, version: '0.9.23')]
+#[Provides(interface: DatabaseConnectionInterface::class, version: '0.9.24')]
 #[Repository(type: 'git', url: 'https://github.com/forge-kernel/kernel-module-registry')]
 #[ConfigDefaults(defaults: [
     "forge_database_sql" => []
@@ -52,12 +53,23 @@ use Forge\CLI\Traits\OutputHelper;
 final class ForgeDatabaseSQLModule
 {
     use OutputHelper;
+    use RegistersCommands;
 
     public function register(Container $container): void
     {
         $env = Environment::getInstance();
         DatabaseSetup::setup($container, $env);
         $this->setupDatabaseSessionDriver($container, $env);
+    }
+
+    protected function commands(): array
+    {
+        return [
+            \Modules\ForgeDatabaseSQL\Commands\MigrateCommand::class,
+            \Modules\ForgeDatabaseSQL\Commands\SeedCommand::class,
+            \Modules\ForgeDatabaseSQL\Commands\SeedPreviewCommand::class,
+            \Modules\ForgeDatabaseSQL\Commands\SeedRollbackCommand::class,
+        ];
     }
 
     private function setupDatabaseSessionDriver(Container $container, Environment $env): void

@@ -11,6 +11,7 @@ use Forge\Core\Module\Attributes\ConfigDefaults;
 use Forge\Core\Module\Attributes\Module;
 use Forge\Core\Module\Attributes\Requires;
 use Forge\Core\Module\Attributes\Structure;
+use Forge\Core\Module\Traits\RegistersCommands;
 
 #[Module(
     name: 'ForgeStaticHtml',
@@ -44,11 +45,20 @@ use Forge\Core\Module\Attributes\Structure;
 ])]
 final class ForgeStaticHtmlModule
 {
+    use RegistersCommands;
+
     public function register(Container $container): void
     {
         $container->bind(StaticGenerator::class, function () use ($container): StaticGenerator {
             $config = $container->get(Config::class);
             return new StaticGenerator($config->get('forge_static_html', []));
         });
+    }
+
+    protected function commands(): array
+    {
+        return [
+            \Modules\ForgeStaticHtml\Commands\GenerateStaticCommand::class,
+        ];
     }
 }

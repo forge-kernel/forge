@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Modules\ForgeRouter\Bootstrap;
 
-use Forge\Core\Bootstrap\OptimizedDirectoryScanner;
 use Forge\Core\Debug\Metrics;
 use Forge\Core\DI\Container;
 use Forge\Core\Helpers\FileExistenceCache;
@@ -256,7 +255,7 @@ final class RouterSetup
         }
 
         // Use optimized batch file checking
-        return OptimizedDirectoryScanner::hasFilesChanged($filesToCheck);
+        return FileExistenceCache::hasFilesChanged($filesToCheck);
     }
 
     private static function writeControllerCache(array $controllers, array $routeData = []): void

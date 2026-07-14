@@ -4,11 +4,11 @@ declare(strict_types=1);
 
 namespace Modules\ForgeRouter\Warmers;
 
-use Forge\Core\Bootstrap\OptimizedDirectoryScanner;
 use Forge\Core\Config\Config;
 use Forge\Core\Contracts\Cache\CacheWarmerInterface;
 use Forge\Core\DI\Attributes\Injectable;
 use Forge\Core\DI\Container;
+use Forge\Core\Module\ModuleLoader\Loader;
 use Forge\Core\Structure\StructureResolver;
 use Modules\ForgeRouter\Routing\ControllerLoader;
 
@@ -28,11 +28,7 @@ final class ControllerMapCacheWarmer implements CacheWarmerInterface
             ? $this->container->get(StructureResolver::class)
             : new StructureResolver();
 
-        $config = $this->container->has(Config::class)
-            ? $this->container->get(Config::class)
-            : null;
-
-        $controllerDirs = $this->resolveControllerDirs($structureResolver, $config);
+        $controllerDirs = $this->resolveControllerDirs($structureResolver);
 
         $loader = new ControllerLoader($this->container, $controllerDirs);
         $controllers = $loader->registerControllers();
@@ -40,7 +36,7 @@ final class ControllerMapCacheWarmer implements CacheWarmerInterface
         $this->writeCache($controllers);
     }
 
-    private function resolveControllerDirs(StructureResolver $structureResolver, ?Config $config): array
+    private function resolveControllerDirs(StructureResolver $structureResolver): array
     {
         $dirs = [];
 
@@ -64,7 +60,8 @@ final class ControllerMapCacheWarmer implements CacheWarmerInterface
             }
         }
 
-        $moduleDirs = OptimizedDirectoryScanner::getModuleDirectories($config);
+        $loader = $this->container->get(Loader::class);
+        $moduleDirs = $loader->getModuleDirectories();
         foreach ($moduleDirs as $moduleName => $modulePath) {
             if (!is_dir($modulePath . '/src/Controllers') && !is_dir($modulePath . '/src/Http')) {
                 continue;

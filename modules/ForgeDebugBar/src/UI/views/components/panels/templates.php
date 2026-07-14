@@ -83,14 +83,24 @@ if (!function_exists('fdb_tpl_render_leaf')) {
           </div>
           <?php if ($hasData): ?>
             <details class="fdb-details">
-              <summary class="fdb-details__summary fdb-templates__toggle"><?= count($viewData) ?> prop<?= count($viewData) !== 1 ? 's' : '' ?></summary>
+              <?php if (is_array($viewData)): ?>
+                <summary class="fdb-details__summary fdb-templates__toggle"><?= count($viewData) ?> prop<?= count($viewData) !== 1 ? 's' : '' ?></summary>
+              <?php else: ?>
+                <summary class="fdb-details__summary fdb-templates__toggle">1 prop</summary>
+              <?php endif; ?>
               <div class="fdb-templates__data">
-                <?php foreach ($viewData as $key => $value): ?>
+                <?php if (is_array($viewData)): ?>
+                  <?php foreach ($viewData as $key => $value): ?>
+                    <div class="fdb-templates__prop">
+                      <div class="fdb-templates__prop-key"><?= htmlspecialchars((string) $key) ?></div>
+                      <div class="fdb-templates__prop-value"><?= fdb_tpl_render_value($value) ?></div>
+                    </div>
+                  <?php endforeach; ?>
+                <?php else: ?>
                   <div class="fdb-templates__prop">
-                    <div class="fdb-templates__prop-key"><?= htmlspecialchars((string) $key) ?></div>
-                    <div class="fdb-templates__prop-value"><?= fdb_tpl_render_value($value) ?></div>
+                    <div class="fdb-templates__prop-value"><?= fdb_tpl_render_leaf($viewData) ?></div>
                   </div>
-                <?php endforeach; ?>
+                <?php endif; ?>
               </div>
             </details>
           <?php endif; ?>
