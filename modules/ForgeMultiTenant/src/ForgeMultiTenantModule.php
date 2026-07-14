@@ -27,7 +27,7 @@ use Modules\ForgeRouter\Http\Middlewares\ApiKeyMiddleware;
 
 #[Module(
     name: 'ForgeMultiTenant',
-    version: '0.4.3',
+    version: '0.4.4',
     description: 'A Multi Tenant Module by Forge',
     order: 2,
     author: 'Forge Team',
