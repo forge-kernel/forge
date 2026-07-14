@@ -16,19 +16,28 @@ use Forge\Core\Module\Attributes\Compatibility;
 use Forge\Core\Module\Attributes\ConfigDefaults;
 use Forge\Core\Module\Attributes\Module;
 use Forge\Core\Module\Attributes\Repository;
+use Forge\Core\Module\Traits\IncludesFiles;
 use Forge\CLI\Traits\OutputHelper;
 
-#[Module(name: 'ForgeSqlOrm', version: '0.6.11', description: 'SQL ORM Support (SQLite, MySQL, PostgreSQL)', order: 1, author: 'Forge Team', license: 'MIT', type: 'core', tags: ['database', 'sql', 'orm'])]
+#[Module(name: 'ForgeSqlOrm', version: '0.6.12', description: 'SQL ORM Support (SQLite, MySQL, PostgreSQL)', order: 1, author: 'Forge Team', license: 'MIT', type: 'core', tags: ['database', 'sql', 'orm'])]
 #[Compatibility(framework: '>=0.1.0', php: '>=8.3')]
 #[Requires(interface: DatabaseConnectionInterface::class, version: ">=0.1.0")]
-#[Provides(interface: QueryBuilderInterface::class, version: "0.6.11")]
+#[Provides(interface: QueryBuilderInterface::class, version: "0.6.12")]
 #[Repository(type: 'git', url: 'https://github.com/forge-kernel/kernel-module-registry')]
 #[ConfigDefaults(defaults: [
     "forge_sql_orm" => []
 ])]
 final class ForgeSqlOrmModule
 {
+    use IncludesFiles;
     use OutputHelper;
+
+    protected function includes(): array
+    {
+        return [
+            __DIR__ . '/Support/helpers.php',
+        ];
+    }
 
     public function register(Container $container): void
     {
