@@ -8,10 +8,11 @@ use Forge\Core\Module\Attributes\Compatibility;
 use Forge\Core\Module\Attributes\Module;
 use Forge\Core\Module\Attributes\Repository;
 use Forge\Core\Module\Traits\IncludesFiles;
+use Forge\Core\Module\Traits\RegistersCommands;
 
 #[Module(
     name: 'ForgeTailwind',
-    version: '0.2.6',
+    version: '0.2.7',
     description: 'A tailwind module by forge',
     order: 99,
     isCli: true,
@@ -25,11 +26,20 @@ use Forge\Core\Module\Traits\IncludesFiles;
 final class ForgeTailwindModule
 {
     use IncludesFiles;
+    use RegistersCommands;
 
     protected function includes(): array
     {
         return [
             __DIR__ . '/Support/helpers.php',
+        ];
+    }
+
+    protected function commands(): array
+    {
+        return [
+            \Modules\ForgeTailwind\Commands\BuildTailwindCommand::class,
+            \Modules\ForgeTailwind\Commands\WatchTailwindCommand::class,
         ];
     }
 }
