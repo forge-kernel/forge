@@ -10,7 +10,7 @@ $languages = available_languages();
 
 <div class="forge-language-switcher">
     <?php foreach ($languages as $code => $language): ?>
-        <a href="?lang=<?= $code ?>" class="<?= $current === $code
+        <a href="<?= language_switcher_url($code) ?>" class="<?= $current === $code
               ? 'active'
               : '' ?>">
             <?php if ($definition->showFlags): ?>

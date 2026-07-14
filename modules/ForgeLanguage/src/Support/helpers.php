@@ -37,3 +37,13 @@ if (!function_exists('available_languages')) {
         return $langService->available();
     }
 }
+
+if (!function_exists('language_switcher_url')) {
+    function language_switcher_url(string $code): string
+    {
+        $params = $_GET;
+        $params['lang'] = $code;
+
+        return '?' . http_build_query($params);
+    }
+}
