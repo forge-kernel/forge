@@ -7,10 +7,11 @@ namespace Modules\ForgeTesting;
 use Forge\Core\Module\Attributes\Compatibility;
 use Forge\Core\Module\Attributes\Module;
 use Forge\Core\Module\Attributes\Repository;
+use Forge\Core\Module\Traits\RegistersCommands;
 
 #[Module(
     name: "ForgeTesting",
-    version: "0.4.7",
+    version: "0.4.8",
     description: "A Test Suite Module By Forge",
     order: 9999,
     isCli: true,
@@ -23,4 +24,12 @@ use Forge\Core\Module\Attributes\Repository;
 #[Repository(type: "git", url: "https://github.com/forge-kernel/kernel-module-registry")]
 final class ForgeTestingModule
 {
+    use RegistersCommands;
+
+    protected function commands(): array
+    {
+        return [
+            \Modules\ForgeTesting\Commands\TestCommand::class,
+        ];
+    }
 }
