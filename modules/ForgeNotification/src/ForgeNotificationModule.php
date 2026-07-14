@@ -12,12 +12,13 @@ use Forge\Core\Module\Attributes\ConfigDefaults;
 use Forge\Core\Module\Attributes\Module;
 use Forge\Core\Module\Attributes\Repository;
 use Forge\Core\Module\Attributes\Requires;
+use Forge\Core\Module\Traits\IncludesFiles;
 use Modules\ForgeNotification\Services\ForgeNotificationService;
 use Forge\CLI\Traits\OutputHelper;
 
 #[Module(
     name: 'ForgeNotification',
-    version: '1.0.0',
+    version: '1.0.1',
     description: 'Multi-channel notification system with provider support, fluent API, and async queue integration',
     order: 99,
     author: 'Forge Team',
@@ -97,7 +98,15 @@ use Forge\CLI\Traits\OutputHelper;
 ])]
 final class ForgeNotificationModule
 {
+    use IncludesFiles;
     use OutputHelper;
+
+    protected function includes(): array
+    {
+        return [
+            __DIR__ . '/Support/helpers.php',
+        ];
+    }
 
     public function register(Container $container): void
     {
