@@ -11,7 +11,7 @@ use Forge\Core\Module\Traits\RegistersCommands;
 
 #[Module(
     name: "ForgeTesting",
-    version: "0.4.8",
+    version: "0.4.9",
     description: "A Test Suite Module By Forge",
     order: 9999,
     isCli: true,
