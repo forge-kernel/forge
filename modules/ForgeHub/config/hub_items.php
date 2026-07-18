@@ -204,7 +204,7 @@ return array (
         ),
       ),
     ),
-    'mtime' => 1784384045,
+    'mtime' => 1784406206,
     'modulePath' => '/Users/acidlake/Development/UPPER/Forge/repos/forge-v3/modules/ForgeHub',
   ),
   'Modules\\ForgeLanguage\\ForgeLanguageModule' => 
