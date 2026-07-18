@@ -14,7 +14,7 @@ use Forge\Core\Module\Traits\RegistersCommands;
 
 #[Module(
     name: 'ForgeStaticGen',
-    version: "0.2.4",
+    version: "0.2.5",
     description: "A Basic Static Site Generator by Forge",
     isCli: true,
     author: 'Forge Team',
@@ -24,7 +24,7 @@ use Forge\Core\Module\Traits\RegistersCommands;
 )]
 #[Requires(interface: ForgeMarkDownInterface::class, version: "0.1.1")]
 #[Compatibility(framework: ">=0.1.0", php: ">=8.3")]
-#[Provides(interface: ForgeStaticGenInterface::class, version: "0.2.4")]
+#[Provides(interface: ForgeStaticGenInterface::class, version: "0.2.5")]
 #[ConfigDefaults(defaults: [])]
 class ForgeStaticGenModule
 {
