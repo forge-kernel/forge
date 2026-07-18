@@ -24,7 +24,7 @@ use ReflectionMethod;
 
 #[Module(
     name: "ForgeEvents",
-    version: "1.4.13",
+    version: "1.4.14",
     description: "An Event Queue system by forge",
     order: 99,
     author: 'Forge Team',
@@ -65,7 +65,7 @@ final class ForgeEventsModule
             if (is_dir($fullPath)) {
                 $this->scanDirectory(
                     $fullPath,
-                    $structureResolver->getAppNamespace('events'),
+                    $structureResolver->getAppNamespace('events', $path),
                     $eventDispatcher,
                     $container
                 );
