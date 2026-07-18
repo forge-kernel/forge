@@ -12,7 +12,7 @@ use Forge\Core\Module\Traits\IncludesFiles;
 
 #[Module(
     name: 'ForgeTemplates',
-    version: '0.1.1',
+    version: '0.1.2',
     description: 'Template engine for composing notification messages from PHP template files',
     order: 3,
     author: 'Forge Team',
