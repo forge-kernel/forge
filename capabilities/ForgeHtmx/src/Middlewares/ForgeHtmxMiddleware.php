@@ -2,15 +2,13 @@
 
 declare(strict_types=1);
 
-namespace Modules\ForgeHtmx\Middlewares;
+namespace Capability\ForgeHtmx\Middlewares;
 
-use Forge\Core\DI\Attributes\Injectable;
 use Forge\Traits\InjectsAssets;
 use Modules\ForgeRouter\Http\Middleware;
 use Modules\ForgeRouter\Http\Request;
 use Modules\ForgeRouter\Http\Response;
 
-#[Injectable]
 final class ForgeHtmxMiddleware extends Middleware
 {
     use InjectsAssets;

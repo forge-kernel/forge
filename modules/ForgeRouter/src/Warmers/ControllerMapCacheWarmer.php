@@ -45,7 +45,7 @@ final class ControllerMapCacheWarmer implements CacheWarmerInterface
             if (is_dir($fullPath)) {
                 $dirs[] = [
                     'path' => $fullPath,
-                    'namespace' => $structureResolver->getAppNamespace('controllers'),
+                    'namespace' => $structureResolver->getAppNamespace('controllers', $path),
                 ];
             }
         }
@@ -55,7 +55,7 @@ final class ControllerMapCacheWarmer implements CacheWarmerInterface
             if (is_dir($fullPath)) {
                 $dirs[] = [
                     'path' => $fullPath,
-                    'namespace' => $structureResolver->getAppNamespace('http'),
+                    'namespace' => $structureResolver->getAppNamespace('http', $path),
                 ];
             }
         }
@@ -92,8 +92,15 @@ final class ControllerMapCacheWarmer implements CacheWarmerInterface
             mkdir($dir, 0777, true);
         }
 
+        $relativeControllers = array_map(function (array $meta) {
+            if (isset($meta['file'])) {
+                $meta['file'] = self::toRelativePath($meta['file']);
+            }
+            return $meta;
+        }, $controllers);
+
         $export = var_export([
-            'controllers' => $controllers,
+            'controllers' => $relativeControllers,
         ], true);
 
         $tmp = tempnam($dir, 'ctrl_');
@@ -104,5 +111,13 @@ final class ControllerMapCacheWarmer implements CacheWarmerInterface
         } else {
             file_put_contents(self::ROUTE_CACHE_FILE, '<?php return ' . $export . ';');
         }
+    }
+
+    private static function toRelativePath(string $path): string
+    {
+        if (str_starts_with($path, BASE_PATH . '/')) {
+            return substr($path, strlen(BASE_PATH) + 1);
+        }
+        return $path;
     }
 }

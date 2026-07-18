@@ -151,13 +151,32 @@ final class ViewFinder
 
     private function resolveModuleViewPath(string $module, string $relative): ?string
     {
-        $modulesRoot = BASE_PATH . '/' . StructureResolver::resolveModulesRoot();
+        foreach (StructureResolver::resolveModulesRoots() as $root) {
+            $modulesRoot = BASE_PATH . '/' . $root;
+            $moduleDir = "{$modulesRoot}/{$module}";
+            if (!is_dir($moduleDir)) {
+                continue;
+            }
 
-        if ($this->structureResolver) {
-            try {
-                $moduleViewsPath = $this->structureResolver->getModulePath($module, "views");
-                $modulePath = "{$modulesRoot}/{$module}/{$moduleViewsPath}/{$relative}.php";
-                
+            if ($this->structureResolver) {
+                try {
+                    $moduleViewsPath = $this->structureResolver->getModulePath($module, "views");
+                    $modulePath = "{$moduleDir}/{$moduleViewsPath}/{$relative}.php";
+                    
+                    $fileCacheKey = "file_exists:" . $modulePath;
+                    if (!isset(self::$componentPathCache[$fileCacheKey])) {
+                        self::$componentPathCache[$fileCacheKey] = is_file($modulePath);
+                    }
+                    if (self::$componentPathCache[$fileCacheKey]) {
+                        return $modulePath;
+                    }
+                } catch (\InvalidArgumentException $e) {
+                    // Ignore and fall through to fallback
+                }
+            }
+
+            foreach (["UI"] as $res) {
+                $modulePath = "{$moduleDir}/src/{$res}/views/{$relative}.php";
                 $fileCacheKey = "file_exists:" . $modulePath;
                 if (!isset(self::$componentPathCache[$fileCacheKey])) {
                     self::$componentPathCache[$fileCacheKey] = is_file($modulePath);
@@ -165,19 +184,6 @@ final class ViewFinder
                 if (self::$componentPathCache[$fileCacheKey]) {
                     return $modulePath;
                 }
-            } catch (\InvalidArgumentException $e) {
-                // Ignore and fall through to fallback
-            }
-        }
-
-        foreach (["UI"] as $res) {
-            $modulePath = "{$modulesRoot}/{$module}/src/{$res}/views/{$relative}.php";
-            $fileCacheKey = "file_exists:" . $modulePath;
-            if (!isset(self::$componentPathCache[$fileCacheKey])) {
-                self::$componentPathCache[$fileCacheKey] = is_file($modulePath);
-            }
-            if (self::$componentPathCache[$fileCacheKey]) {
-                return $modulePath;
             }
         }
 
@@ -203,28 +209,31 @@ final class ViewFinder
 
     private function buildModulePaths(string $module, string $relative, string $type): array
     {
-        $modulesRoot = BASE_PATH . '/' . StructureResolver::resolveModulesRoot();
         $paths = [];
 
-        if ($this->structureResolver) {
-            try {
-                $modulePath = $this->structureResolver->getModulePath($module, $type);
-                $paths[] = "{$modulesRoot}/{$module}/{$modulePath}/{$relative}.php";
+        foreach (StructureResolver::resolveModulesRoots() as $root) {
+            $modulesRoot = BASE_PATH . '/' . $root;
+
+            if ($this->structureResolver) {
+                try {
+                    $modulePath = $this->structureResolver->getModulePath($module, $type);
+                    $paths[] = "{$modulesRoot}/{$module}/{$modulePath}/{$relative}.php";
+
+                    if ($type === "components") {
+                        $moduleViewsPath = $this->structureResolver->getModulePath($module, "views");
+                        $paths[] = "{$modulesRoot}/{$module}/{$moduleViewsPath}/components/{$relative}.php";
+                    }
+                } catch (\InvalidArgumentException $e) {
+                    // Ignore
+                }
+            }
+
+            foreach (["UI"] as $res) {
+                $paths[] = "{$modulesRoot}/{$module}/src/{$res}/{$type}/{$relative}.php";
 
                 if ($type === "components") {
-                    $moduleViewsPath = $this->structureResolver->getModulePath($module, "views");
-                    $paths[] = "{$modulesRoot}/{$module}/{$moduleViewsPath}/components/{$relative}.php";
+                    $paths[] = "{$modulesRoot}/{$module}/src/{$res}/views/components/{$relative}.php";
                 }
-            } catch (\InvalidArgumentException $e) {
-                // Ignore
-            }
-        }
-
-        foreach (["UI"] as $res) {
-            $paths[] = "{$modulesRoot}/{$module}/src/{$res}/{$type}/{$relative}.php";
-
-            if ($type === "components") {
-                $paths[] = "{$modulesRoot}/{$module}/src/{$res}/views/components/{$relative}.php";
             }
         }
 

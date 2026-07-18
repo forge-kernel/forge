@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Http;
 
-use Modules\ForgeHtmx\Traits\HtmxResponseHelper;
+use Capability\ForgeHtmx\Traits\HtmxResponseHelper;
 use Modules\ForgeRouter\Http\Attributes\UseMiddleware;
 use Modules\ForgeRouter\Http\Response;
 use Modules\ForgeRouter\Routing\Endpoint;
@@ -13,6 +13,7 @@ use Modules\ForgeView\Traits\ViewHelper;
 use Modules\ForgeLanguage\Definitions\LanguageSwitcherDefinition;
 
 #[UseMiddleware("web")]
+
 final class Home
 {
     use ViewHelper;

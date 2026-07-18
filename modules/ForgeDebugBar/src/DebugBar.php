@@ -3,6 +3,7 @@
 namespace Modules\ForgeDebugBar;
 
 use Forge\Core\Config\Config;
+use Forge\Core\Structure\StructureResolver;
 use Modules\ForgeRouter\Contracts\DebugBarInterface;
 use Forge\Core\DI\Container;
 use Modules\ForgeRouter\Http\Response;
@@ -98,7 +99,8 @@ class DebugBar implements DebugBarInterface
 
   public function render(): string
   {
-    $modulePath = BASE_PATH . '/modules/ForgeDebugBar/src/views/debugbar.php';
+    $moduleRoot = StructureResolver::findModuleRoot(BASE_PATH, 'ForgeDebugBar') ?? StructureResolver::resolveModulesRoot();
+    $modulePath = BASE_PATH . '/' . $moduleRoot . '/ForgeDebugBar/src/views/debugbar.php';
     if (!file_exists($modulePath)) {
       return '';
     }

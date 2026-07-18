@@ -209,7 +209,7 @@ final class RoleSyncCommand extends Command
     private function getCurrentEnumRoles(): array
     {
         $roleEnumPath =
-            \Modules\ForgeAuth\Services\EnumGeneratorService::ROLE_ENUM_PATH;
+            \Modules\ForgeAuth\Services\EnumGeneratorService::getRoleEnumPath();
         if (!file_exists($roleEnumPath)) {
             return [];
         }
@@ -239,7 +239,7 @@ final class RoleSyncCommand extends Command
     private function getCurrentEnumPermissions(): array
     {
         $permissionEnumPath =
-            \Modules\ForgeAuth\Services\EnumGeneratorService::PERMISSION_ENUM_PATH;
+            \Modules\ForgeAuth\Services\EnumGeneratorService::getPermissionEnumPath();
         if (!file_exists($permissionEnumPath)) {
             return [];
         }

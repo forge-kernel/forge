@@ -87,7 +87,7 @@ final class ErrorPageRenderer
         try {
             $paths = $this->structureResolver->getModulePaths('ForgeRouter', 'error_pages');
             foreach ($paths as $path) {
-                $fullPath = BASE_PATH . '/modules/ForgeRouter/' . $path;
+                $fullPath = BASE_PATH . '/' . $this->structureResolver->getModulesRoot() . '/ForgeRouter/' . $path;
                 if (is_dir($fullPath)) {
                     return $fullPath;
                 }

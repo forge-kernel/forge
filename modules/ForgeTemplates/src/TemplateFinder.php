@@ -71,18 +71,24 @@ final class TemplateFinder
 
     private function resolveModuleTemplatePath(string $module, string $relative): ?string
     {
-        $modulesRoot = BASE_PATH . '/' . StructureResolver::resolveModulesRoot();
-
-        try {
-            $moduleTemplatesPath = $this->structureResolver->getModulePath($module, "templates");
-            $modulePath = "{$modulesRoot}/{$module}/{$moduleTemplatesPath}/{$relative}.php";
-
-            if (is_file($modulePath)) {
-                return $modulePath;
+        foreach (StructureResolver::resolveModulesRoots() as $root) {
+            $modulesRoot = BASE_PATH . '/' . $root;
+            $moduleDir = "{$modulesRoot}/{$module}";
+            if (!is_dir($moduleDir)) {
+                continue;
             }
-        } catch (\InvalidArgumentException $e) {
-            if (function_exists('collect_exception')) {
-                collect_exception($e);
+
+            try {
+                $moduleTemplatesPath = $this->structureResolver->getModulePath($module, "templates");
+                $modulePath = "{$moduleDir}/{$moduleTemplatesPath}/{$relative}.php";
+
+                if (is_file($modulePath)) {
+                    return $modulePath;
+                }
+            } catch (\InvalidArgumentException $e) {
+                if (function_exists('collect_exception')) {
+                    collect_exception($e);
+                }
             }
         }
 

@@ -2,16 +2,17 @@
 
 declare(strict_types=1);
 
-namespace Modules\ForgeHtmx\Tests;
+namespace Capability\ForgeHtmx\Tests;
 
 use Modules\ForgeTesting\Attributes\Group;
 use Modules\ForgeTesting\Attributes\Test;
 use Modules\ForgeTesting\TestCase;
-use Modules\ForgeHtmx\Middlewares\ForgeHtmxMiddleware;
+use Capability\ForgeHtmx\Middlewares\ForgeHtmxMiddleware;
 use Modules\ForgeRouter\Http\Request;
 use Modules\ForgeRouter\Http\Response;
 
 #[Group('forge-htmx')]
+
 final class ForgeHtmxMiddlewareTest extends TestCase
 {
     private function makeRequest(array $server = [], string $method = 'GET'): Request

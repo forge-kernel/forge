@@ -7,13 +7,21 @@ namespace Modules\ForgeAuth\Services;
 use Modules\ForgeAuth\Repositories\RoleRepository;
 use Modules\ForgeAuth\Repositories\PermissionRepository;
 use Forge\Core\Services\TemplateGenerator;
+use Forge\Core\Structure\StructureResolver;
 
 final class EnumGeneratorService
 {
-    public const string ROLE_ENUM_PATH =
-        BASE_PATH . "/modules/ForgeAuth/src/Enums/Role.php";
-    public const string PERMISSION_ENUM_PATH =
-        BASE_PATH . "/modules/ForgeAuth/src/Enums/Permission.php";
+    public static function getRoleEnumPath(): string
+    {
+        $root = StructureResolver::findModuleRoot(BASE_PATH, 'ForgeAuth') ?? StructureResolver::resolveModulesRoot();
+        return BASE_PATH . '/' . $root . '/ForgeAuth/src/Enums/Role.php';
+    }
+
+    public static function getPermissionEnumPath(): string
+    {
+        $root = StructureResolver::findModuleRoot(BASE_PATH, 'ForgeAuth') ?? StructureResolver::resolveModulesRoot();
+        return BASE_PATH . '/' . $root . '/ForgeAuth/src/Enums/Permission.php';
+    }
 
     public function __construct(
         private readonly RoleRepository $roleRepository,

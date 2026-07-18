@@ -130,12 +130,12 @@ final class ModuleFileComparisonService
                     $hasModuleFile = true;
                 }
                 if ($item === 'forge.json') {
-                    $hasForgeJson = true;
+                    // Module-level forge.json is deprecated, ignore
                 }
             }
         }
 
-        if ($hasModuleFile || $hasForgeJson || $hasSrcDir) {
+        if ($hasModuleFile || $hasSrcDir) {
             return $tempDir;
         }
 
@@ -146,7 +146,7 @@ final class ModuleFileComparisonService
         if (count($directories) > 1) {
             foreach ($directories as $dir) {
                 $dirName = basename($dir);
-                if (file_exists($dir . '/forge.json') || $dirName === 'src' || !empty(glob($dir . '/*Module.php'))) {
+                if ($dirName === 'src' || !empty(glob($dir . '/*Module.php'))) {
                     return $dir;
                 }
             }

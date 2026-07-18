@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Modules\ForgeHub\Services;
 
 use Forge\Core\Helpers\FileExistenceCache;
+use Forge\Core\Structure\StructureResolver;
 use RecursiveDirectoryIterator;
 use RecursiveIteratorIterator;
 use Throwable;
@@ -164,8 +165,11 @@ final class CommandCacheService
         }
 
         // Module command directories
-        $modulesPath = BASE_PATH . '/modules';
-        if (is_dir($modulesPath)) {
+        foreach (StructureResolver::resolveModulesRoots() as $root) {
+            $modulesPath = BASE_PATH . '/' . $root;
+            if (!is_dir($modulesPath)) {
+                continue;
+            }
             $iterator = new RecursiveIteratorIterator(
                 new RecursiveDirectoryIterator($modulesPath)
             );

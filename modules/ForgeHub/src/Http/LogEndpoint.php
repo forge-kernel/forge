@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Modules\ForgeHub\Controllers;
+namespace Modules\ForgeHub\Http;
 
 use Modules\ForgeAuth\Enums\Role;
 use Modules\ForgeHub\Services\LogService;
@@ -20,7 +20,7 @@ use Modules\ForgeView\Traits\ViewHelper;
 #[UseMiddleware(['web', 'auth', 'role', 'hub-permissions'])]
 #[RequiresRole(Role::ADMIN->value)]
 
-final class LogController
+final class LogEndpoint
 {
     use ResponseHelper;
     use ViewHelper;
@@ -36,16 +36,32 @@ final class LogController
         $selectedFile = $request->query('file');
         $entries = [];
         $error = null;
+        $stats = null;
+        $modules = [];
+
+        $filters = [
+            'search' => $request->query('search'),
+            'date' => $request->query('date'),
+            'level' => $request->query('level'),
+            'module' => $request->query('module'),
+            'fingerprint' => $request->query('fingerprint'),
+        ];
 
         if ($selectedFile) {
             try {
                 foreach ($this->logService->getLogEntries(
                     $selectedFile,
-                    $request->query('search'),
-                    $request->query('date')
+                    $filters['search'],
+                    $filters['date'],
+                    $filters['level'],
+                    $filters['module'],
+                    $filters['fingerprint'],
                 ) as $entry) {
                     $entries[] = $entry;
                 }
+
+                $stats = $this->logService->getStats($selectedFile);
+                $modules = $this->logService->getModules($selectedFile);
             } catch (\Throwable $e) {
                 $error = $e->getMessage();
             }
@@ -56,8 +72,11 @@ final class LogController
             'entries' => $entries,
             'error' => $error,
             'selectedFile' => $selectedFile,
+            'stats' => $stats,
+            'modules' => $modules,
+            'filters' => $filters,
         ];
 
-        return $this->view(view: "logs", data: $data);
+        return $this->view(view: "logs/home", data: $data);
     }
 }

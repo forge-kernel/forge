@@ -145,7 +145,7 @@ final class RouterSetup
             if (is_dir($fullPath)) {
                 $dirs[] = [
                     'path' => $fullPath,
-                    'namespace' => $structureResolver->getAppNamespace('controllers'),
+                    'namespace' => $structureResolver->getAppNamespace('controllers', $path),
                 ];
             }
         }
@@ -155,13 +155,16 @@ final class RouterSetup
             if (is_dir($fullPath)) {
                 $dirs[] = [
                     'path' => $fullPath,
-                    'namespace' => $structureResolver->getAppNamespace('http'),
+                    'namespace' => $structureResolver->getAppNamespace('http', $path),
                 ];
             }
         }
 
-        $modulesRoot = BASE_PATH . '/' . $structureResolver->getModulesRoot();
-        if (is_dir($modulesRoot)) {
+        foreach ($structureResolver->getModulesRoots() as $modulesRoot) {
+            $modulesRoot = BASE_PATH . '/' . $modulesRoot;
+            if (!is_dir($modulesRoot)) {
+                continue;
+            }
             foreach (scandir($modulesRoot) as $moduleName) {
                 if ($moduleName === '.' || $moduleName === '..') {
                     continue;
@@ -247,7 +250,8 @@ final class RouterSetup
                 return true;
             }
 
-            $filesToCheck[$file] = $mtime;
+            $absoluteFile = self::toAbsolutePath($file);
+            $filesToCheck[$absoluteFile] = $mtime;
         }
 
         if (empty($filesToCheck)) {
@@ -283,8 +287,15 @@ final class RouterSetup
 
         $cachedRouteData[$host] = $routeData;
 
+        $relativeControllers = array_map(function (array $meta) {
+            if (isset($meta['file'])) {
+                $meta['file'] = self::toRelativePath($meta['file']);
+            }
+            return $meta;
+        }, $controllers);
+
         $export = var_export([
-            'controllers' => $controllers,
+            'controllers' => $relativeControllers,
             'routeData' => $cachedRouteData,
         ], true);
         $content = '<?php return ' . $export . ';';
@@ -298,5 +309,21 @@ final class RouterSetup
         file_put_contents($tmp, $content);
         @chmod($tmp, 0664);
         rename($tmp, $cacheFile);
+    }
+
+    private static function toRelativePath(string $path): string
+    {
+        if (str_starts_with($path, BASE_PATH . '/')) {
+            return substr($path, strlen(BASE_PATH) + 1);
+        }
+        return $path;
+    }
+
+    private static function toAbsolutePath(string $path): string
+    {
+        if (!str_starts_with($path, '/')) {
+            return BASE_PATH . '/' . $path;
+        }
+        return $path;
     }
 }

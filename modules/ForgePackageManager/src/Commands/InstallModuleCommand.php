@@ -15,6 +15,7 @@ use Forge\Core\Services\TemplateGenerator;
 use Forge\Core\Services\GitService;
 use Forge\Core\Services\InteractiveSelect;
 use Forge\Core\DI\Container;
+use Forge\Core\Structure\StructureResolver;
 use Throwable;
 
 #[CoreCommand]
@@ -97,6 +98,14 @@ final class InstallModuleCommand extends Command
   )]
   private ?string $configMode = null;
 
+  #[Arg(
+    name: 'category',
+    description: 'Module category: module (default) or capability',
+    validate: 'module|capability',
+    required: false
+  )]
+  private ?string $category = null;
+
   public function __construct(
     private readonly PackageManagerService $packageManagerService,
     private readonly TemplateGenerator $templateGenerator,
@@ -142,7 +151,7 @@ final class InstallModuleCommand extends Command
           $preservedPath = $this->preservedModulePath;
           $this->preservedModulePath = null;
         }
-        $this->packageManagerService->installModule($moduleName, $version, $force, $preservedPath, $autoTrust, $configMode);
+        $this->packageManagerService->installModule($moduleName, $version, $force, $preservedPath, $autoTrust, $configMode, false, $this->category ?? 'module');
         $this->comparisonService->cleanupExtractedPath();
         $successCount++;
       } catch (Throwable $e) {
@@ -611,9 +620,10 @@ final class InstallModuleCommand extends Command
     }
 
     $moduleInstallFolderName = $this->toPascalCase($moduleName);
-    $moduleInstallPath = BASE_PATH . '/modules/' . $moduleInstallFolderName;
+    $moduleRoot = StructureResolver::findModuleRoot(BASE_PATH, $moduleInstallFolderName);
+    $moduleInstallPath = $moduleRoot !== null ? BASE_PATH . '/' . $moduleRoot . '/' . $moduleInstallFolderName : null;
 
-    if (!is_dir($moduleInstallPath)) {
+    if ($moduleInstallPath === null || !is_dir($moduleInstallPath)) {
       return true;
     }
 

@@ -11,6 +11,7 @@ use Forge\CLI\Attributes\Cli;
 use Forge\CLI\Attributes\Arg;
 use Forge\CLI\Traits\OutputHelper;
 use Forge\CLI\Traits\Wizard;
+use Forge\Core\Structure\StructureResolver;
 use Forge\Traits\NamespaceHelper;
 
 #[CoreCommand]
@@ -123,20 +124,32 @@ final class TestCommand extends Command
 
         foreach ($modules as $moduleName) {
             $pascalCase = $this->kebabToPascal($moduleName);
+            $found = false;
 
-            if ($structureResolver) {
-                try {
-                    $moduleTestsPath = $structureResolver->getModulePath($pascalCase, 'tests');
-                    $path = BASE_PATH . "/modules/{$pascalCase}/{$moduleTestsPath}";
-                } catch (\InvalidArgumentException $e) {
-                    $path = BASE_PATH . "/modules/{$pascalCase}/src/tests/";
+            foreach (StructureResolver::resolveModulesRoots() as $root) {
+                $modulesPath = BASE_PATH . '/' . $root;
+
+                if ($structureResolver) {
+                    try {
+                        $moduleTestsPath = $structureResolver->getModulePath($pascalCase, 'tests');
+                        $path = "{$modulesPath}/{$pascalCase}/{$moduleTestsPath}";
+                    } catch (\InvalidArgumentException $e) {
+                        $path = "{$modulesPath}/{$pascalCase}/src/tests/";
+                    }
+                } else {
+                    $path = "{$modulesPath}/{$pascalCase}/src/tests/";
                 }
-            } else {
-                $path = BASE_PATH . "/modules/{$pascalCase}/src/tests/";
+
+                if (is_dir($path)) {
+                    $dirs[] = $path;
+                    $found = true;
+                    break;
+                }
             }
 
-            if (is_dir($path))
-                $dirs[] = $path;
+            if (!$found) {
+                $dirs[] = BASE_PATH . "/{$pascalCase}/src/tests/";
+            }
         }
 
         return $dirs;
@@ -250,9 +263,12 @@ final class TestCommand extends Command
     private function getAllModules(): array
     {
         $modules = [];
-        foreach (new \DirectoryIterator(BASE_PATH . '/modules/') as $fileInfo) {
-            if ($fileInfo->isDir() && !$fileInfo->isDot()) {
-                $modules[] = $this->pascalToKebab($fileInfo->getFilename());
+        foreach (StructureResolver::resolveModulesRoots() as $root) {
+            $modulesPath = BASE_PATH . '/' . $root . '/';
+            foreach (new \DirectoryIterator($modulesPath) as $fileInfo) {
+                if ($fileInfo->isDir() && !$fileInfo->isDot()) {
+                    $modules[] = $this->pascalToKebab($fileInfo->getFilename());
+                }
             }
         }
         return $modules;

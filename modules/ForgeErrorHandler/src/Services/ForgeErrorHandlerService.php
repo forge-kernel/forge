@@ -144,6 +144,7 @@ final class ForgeErrorHandlerService implements ErrorHandlerInterface
             'fingerprint' => $fingerprint,
             'request_id' => $reqId,
             'exception' => get_class($e),
+            'message' => $e->getMessage(),
             'code' => $e->getCode(),
             'file' => $e->getFile(),
             'line' => $e->getLine(),
@@ -178,15 +179,17 @@ final class ForgeErrorHandlerService implements ErrorHandlerInterface
     {
         $dir = dirname($this->logFile);
         is_dir($dir) || mkdir($dir, 0775, true);
+        $message = str_replace(["\n", "\r"], ' ', $context['message'] ?? '');
         $line = sprintf(
-            "[%s] %s [%s] %s – %s:%d | %s\n",
+            "[%s] %s [%s] %s – %s:%d | %s | %s\n",
             date('Y-m-d H:i:s'),
             $context['request_id'],
             $context['fingerprint'],
             $context['exception'],
             $context['file'],
             $context['line'],
-            str_replace(["\n", "\r"], ' ', $context['trace'])
+            str_replace(["\n", "\r"], ' ', $context['trace']),
+            $message
         );
         file_put_contents($this->logFile, $line, FILE_APPEND | LOCK_EX);
     }

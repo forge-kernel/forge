@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Modules\ForgeHtmx\Traits;
+namespace Capability\ForgeHtmx\Traits;
 
 use Forge\Core\DI\Container;
 use Modules\ForgeRouter\Http\Request;

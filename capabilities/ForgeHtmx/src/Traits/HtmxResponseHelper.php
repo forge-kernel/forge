@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Modules\ForgeHtmx\Traits;
+namespace Capability\ForgeHtmx\Traits;
 
 use Modules\ForgeRouter\Http\Response;
 

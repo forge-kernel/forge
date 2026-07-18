@@ -8,6 +8,7 @@ use Modules\ForgeRouter\Http\Response;
 use Modules\ForgeRouter\Routing\Router;
 use Forge\Core\Contracts\ViewInterface;
 use Forge\Core\DI\Container;
+use Forge\Core\Structure\StructureResolver;
 use ReflectionClass;
 
 trait ViewHelper
@@ -40,7 +41,18 @@ trait ViewHelper
             "\\",
             (new ReflectionClass($this))->getNamespaceName()
         );
-        return ($namespaceParts[0] ?? null) === "Modules"
+
+        $modulesNamespace = 'Modules';
+        try {
+            $container = Container::getInstance();
+            if ($container->has(StructureResolver::class)) {
+                $structureResolver = $container->get(StructureResolver::class);
+                $modulesNamespace = $structureResolver->getModulesNamespace();
+            }
+        } catch (\Throwable) {
+        }
+
+        return ($namespaceParts[0] ?? null) === $modulesNamespace
             ? $namespaceParts[1]
             : null;
     }

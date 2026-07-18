@@ -347,7 +347,7 @@
                 $group = 'BOOTSTRAP';
             } elseif (str_starts_with($file, 'kernel/')) {
                 $group = 'KERNEL';
-            } elseif (str_starts_with($file, 'modules/')) {
+            } elseif (in_array(true, array_map(fn($root) => str_starts_with($file, $root . '/'), \Forge\Core\Structure\StructureResolver::resolveModulesRoots()))) {
                 $group = 'MODULE';
             } else {
                 $group = null;

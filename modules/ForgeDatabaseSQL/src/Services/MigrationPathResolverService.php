@@ -14,11 +14,19 @@ final class MigrationPathResolverService
 {
     use StringHelper;
 
-    private const string MODULES_PATH = BASE_PATH . "/modules";
-
     public function __construct(
         private readonly ?StructureResolver $structureResolver = null
     ) {
+    }
+
+    private function getModulesRoot(): string
+    {
+        return $this->structureResolver?->getModulesRoot() ?? StructureResolver::resolveModulesRoot();
+    }
+
+    private function getModulesPath(): string
+    {
+        return BASE_PATH . '/' . $this->getModulesRoot();
     }
 
     /**
@@ -51,7 +59,7 @@ final class MigrationPathResolverService
      */
     public function getModulePaths(?string $module = null): array
     {
-        if (!is_dir(self::MODULES_PATH)) {
+        if (!is_dir($this->getModulesPath())) {
             return [];
         }
 
@@ -110,7 +118,7 @@ final class MigrationPathResolverService
     {
         $relativePath = str_replace(BASE_PATH . "/", "", $path);
 
-        if (str_starts_with($relativePath, "modules/")) {
+        if (str_starts_with($relativePath, $this->getModulesRoot() . "/")) {
             return "module";
         }
 
@@ -124,7 +132,7 @@ final class MigrationPathResolverService
     {
         $relativePath = str_replace(BASE_PATH . "/", "", $path);
 
-        if (preg_match("/^modules\/([^\/]+)\//", $relativePath, $matches)) {
+        if (preg_match("/^" . preg_quote($this->getModulesRoot(), '/') . "\/([^\/]+)\//", $relativePath, $matches)) {
             return $matches[1];
         }
 
@@ -151,8 +159,14 @@ final class MigrationPathResolverService
 
     private function getDefaultAppPath(): ?string
     {
-        $fullPath = BASE_PATH . "/app/Database/Migrations";
-        return is_dir($fullPath) ? $fullPath : null;
+        try {
+            $resolver = $this->structureResolver ?? new StructureResolver();
+            $migrationsPath = $resolver->getAppPath('migrations');
+            $fullPath = BASE_PATH . '/' . $migrationsPath;
+            return is_dir($fullPath) ? $fullPath : null;
+        } catch (\InvalidArgumentException $e) {
+            return null;
+        }
     }
 
     /**
@@ -160,8 +174,9 @@ final class MigrationPathResolverService
      */
     private function getAvailableModules(): array
     {
-        return array_filter(scandir(self::MODULES_PATH), function ($item) {
-            return is_dir(self::MODULES_PATH . "/" . $item) &&
+        $modulesPath = $this->getModulesPath();
+        return array_filter(scandir($modulesPath), function ($item) use ($modulesPath) {
+            return is_dir($modulesPath . "/" . $item) &&
                 !in_array($item, [".", ".."]);
         });
     }
@@ -190,7 +205,7 @@ final class MigrationPathResolverService
         $paths = [];
         $moduleMigrationsPath = $this->structureResolver->getModulePath($moduleName, "migrations");
 
-        $central = self::MODULES_PATH . "/" . $moduleName . "/" . $moduleMigrationsPath;
+        $central = $this->getModulesPath() . "/" . $moduleName . "/" . $moduleMigrationsPath;
         if (is_dir($central)) {
             $paths[] = $central;
         }
@@ -209,7 +224,13 @@ final class MigrationPathResolverService
     private function getDefaultModulePaths(string $moduleName): array
     {
         $paths = [];
-        $central = self::MODULES_PATH . "/" . $moduleName . "/src/Database/Migrations";
+        try {
+            $resolver = $this->structureResolver ?? new StructureResolver();
+            $moduleMigrationsPath = $resolver->getModulePath($moduleName, 'migrations');
+            $central = $this->getModulesPath() . '/' . $moduleName . '/' . $moduleMigrationsPath;
+        } catch (\InvalidArgumentException $e) {
+            return [];
+        }
 
         if (is_dir($central)) {
             $paths[] = $central;
@@ -228,16 +249,13 @@ final class MigrationPathResolverService
      */
     private function matchesAppPath(string $relativePath): bool
     {
-        if ($this->structureResolver) {
-            try {
-                $appMigrationsPath = $this->structureResolver->getAppPath("migrations");
-                return str_starts_with($relativePath, $appMigrationsPath);
-            } catch (\InvalidArgumentException $e) {
-                return str_starts_with($relativePath, "app/Database/Migrations");
-            }
+        try {
+            $resolver = $this->structureResolver ?? new StructureResolver();
+            $appMigrationsPath = $resolver->getAppPath('migrations');
+            return str_starts_with($relativePath, $appMigrationsPath);
+        } catch (\InvalidArgumentException $e) {
+            return false;
         }
-
-        return str_starts_with($relativePath, "app/Database/Migrations/");
     }
 
     /**
@@ -245,22 +263,19 @@ final class MigrationPathResolverService
      */
     private function matchesModulePath(string $relativePath, string $module): bool
     {
-        $modulePath = "modules/" . $this->toPascalCase($module) . "/";
+        $modulePath = $this->getModulesRoot() . "/" . $this->toPascalCase($module) . "/";
         if (!str_starts_with($relativePath, $modulePath)) {
             return false;
         }
 
-        if ($this->structureResolver) {
-            try {
-                $moduleMigrationsPath = $this->structureResolver->getModulePath($module, "migrations");
-                $expectedPath = "$modulePath$moduleMigrationsPath";
-                return str_starts_with($relativePath, $expectedPath);
-            } catch (\InvalidArgumentException $e) {
-                return str_starts_with($relativePath, "$modulePath" . "src/Database/Migrations");
-            }
+        try {
+            $resolver = $this->structureResolver ?? new StructureResolver();
+            $moduleMigrationsPath = $resolver->getModulePath($module, "migrations");
+            $expectedPath = "$modulePath$moduleMigrationsPath";
+            return str_starts_with($relativePath, $expectedPath);
+        } catch (\InvalidArgumentException $e) {
+            return false;
         }
-
-        return true;
     }
 
     /**

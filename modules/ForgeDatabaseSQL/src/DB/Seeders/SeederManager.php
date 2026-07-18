@@ -19,13 +19,17 @@ final class SeederManager
     use StringHelper;
 
     private const string SEEDERS_TABLE = 'forge_seeders';
-    private const string MODULES_PATH = BASE_PATH . '/modules';
 
     public function __construct(
         private DatabaseConnectionInterface $connection,
         private readonly ?StructureResolver $structureResolver = null,
     ) {
         $this->ensureSeedersTable();
+    }
+
+    private function getModulesPath(): string
+    {
+        return BASE_PATH . '/' . ($this->structureResolver?->getModulesRoot() ?? StructureResolver::resolveModulesRoot());
     }
 
     private function ensureSeedersTable(): void
@@ -125,18 +129,24 @@ final class SeederManager
 
     private function getDefaultAppSeedersPath(): ?string
     {
-        $fullPath = BASE_PATH . '/app/Database/Seeders';
-        return is_dir($fullPath) ? $fullPath : null;
+        try {
+            $resolver = $this->structureResolver ?? new StructureResolver();
+            $path = $resolver->getAppPath('seeders');
+            $fullPath = BASE_PATH . '/' . $path;
+            return is_dir($fullPath) ? $fullPath : null;
+        } catch (\InvalidArgumentException $e) {
+            return null;
+        }
     }
 
     private function getModuleSeeders(?string $target = null): array
     {
-        if (!is_dir(self::MODULES_PATH)) {
+        if (!is_dir($this->getModulesPath())) {
             return [];
         }
 
         $result = [];
-        foreach (scandir(self::MODULES_PATH) as $module) {
+        foreach (scandir($this->getModulesPath()) as $module) {
             if ($module === '.' || $module === '..') {
                 continue;
             }
@@ -163,7 +173,7 @@ final class SeederManager
         if ($this->structureResolver) {
             try {
                 $path = $this->structureResolver->getModulePath($moduleName, 'seeders');
-                $fullPath = self::MODULES_PATH . '/' . $moduleName . '/' . $path;
+                $fullPath = $this->getModulesPath() . '/' . $moduleName . '/' . $path;
                 return is_dir($fullPath) ? $fullPath : null;
             } catch (\InvalidArgumentException $e) {
                 return $this->getDefaultModuleSeedersPath($moduleName);
@@ -175,8 +185,14 @@ final class SeederManager
 
     private function getDefaultModuleSeedersPath(string $moduleName): ?string
     {
-        $fullPath = self::MODULES_PATH . '/' . $moduleName . '/src/Database/Seeders';
-        return is_dir($fullPath) ? $fullPath : null;
+        try {
+            $resolver = $this->structureResolver ?? new StructureResolver();
+            $path = $resolver->getModulePath($moduleName, 'seeders');
+            $fullPath = $this->getModulesPath() . '/' . $moduleName . '/' . $path;
+            return is_dir($fullPath) ? $fullPath : null;
+        } catch (\InvalidArgumentException $e) {
+            return null;
+        }
     }
 
     private function getAllAppSeederFiles(): array

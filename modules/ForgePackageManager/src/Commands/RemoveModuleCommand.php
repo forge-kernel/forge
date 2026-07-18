@@ -9,6 +9,7 @@ use Forge\CLI\Attributes\Arg;
 use Forge\CLI\Command;
 use Forge\CLI\Traits\Wizard;
 use Forge\Core\Services\TemplateGenerator;
+use Forge\Core\Structure\StructureResolver;
 use Forge\Traits\StringHelper;
 
 use Forge\CLI\Attributes\CoreCommand;
@@ -307,22 +308,7 @@ final class RemoveModuleCommand extends Command
 
     private function getModuleDescription(string $moduleName): ?string
     {
-        $moduleFolderName = self::toPascalCase($moduleName);
-        $moduleForgeJsonPath =
-            BASE_PATH . "/modules/{$moduleFolderName}/forge.json";
-
-        if (!file_exists($moduleForgeJsonPath)) {
-            return null;
-        }
-
-        $content = file_get_contents($moduleForgeJsonPath);
-        $moduleConfig = json_decode($content, true);
-
-        if (!is_array($moduleConfig) || !isset($moduleConfig["description"])) {
-            return null;
-        }
-
-        return $moduleConfig["description"];
+        return null;
     }
 
     private function confirmDestructiveActionForModule(string $moduleName): bool

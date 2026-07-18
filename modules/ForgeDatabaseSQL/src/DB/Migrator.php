@@ -217,9 +217,10 @@ final class Migrator
 
         $relativePath = str_replace(BASE_PATH . "/", "", $path);
 
-        if (str_starts_with($relativePath, "modules/")) {
+        $modulesRoot = $this->structureResolver?->getModulesRoot() ?? 'modules';
+        if (str_starts_with($relativePath, $modulesRoot . "/")) {
             $type = "module";
-            if (preg_match("/^modules\/([^\/]+)\//", $relativePath, $matches)) {
+            if (preg_match("/^" . preg_quote($modulesRoot, '/') . "\/([^\/]+)\//", $relativePath, $matches)) {
                 $module = $matches[1];
             }
         } else {

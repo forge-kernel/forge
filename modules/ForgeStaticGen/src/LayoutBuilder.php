@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Modules\ForgeStaticGen;
 
 use Forge\Core\Helpers\FileExistenceCache;
+use Forge\Core\Structure\StructureResolver;
 
 class LayoutBuilder
 {
@@ -23,7 +24,8 @@ class LayoutBuilder
 
     private function getLayoutPath(string $name): string
     {
-        return BASE_PATH . "/modules/ForgeStaticGen/src/templates/{$name}.layout.php";
+        $root = StructureResolver::findModuleRoot(BASE_PATH, 'ForgeStaticGen') ?? StructureResolver::resolveModulesRoot();
+        return BASE_PATH . '/' . $root . "/ForgeStaticGen/src/templates/{$name}.layout.php";
     }
 
     public function renderComponent(string $componentName, array $data = []): string
@@ -41,6 +43,7 @@ class LayoutBuilder
 
     private function getComponentPath(string $name): string
     {
-        return BASE_PATH . "/modules/ForgeStaticGen/src/templates/components/{$name}.component.php";
+        $root = StructureResolver::findModuleRoot(BASE_PATH, 'ForgeStaticGen') ?? StructureResolver::resolveModulesRoot();
+        return BASE_PATH . '/' . $root . "/ForgeStaticGen/src/templates/components/{$name}.component.php";
     }
 }

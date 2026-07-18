@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Modules\ForgeDatabaseSQL\Services;
 
 use Modules\ForgeDatabaseSQL\DB\Attributes\GroupMigration;
+use Forge\Core\Structure\StructureResolver;
 use Forge\Traits\StringHelper;
 use ReflectionClass;
 use ReflectionException;
@@ -13,10 +14,9 @@ final class MigrationDiscoveryService
 {
     use StringHelper;
 
-    private const string MODULES_PATH = BASE_PATH . "/modules";
-
     public function __construct(
         private readonly MigrationPathResolverService $pathResolver,
+        private readonly ?StructureResolver $structureResolver = null,
     ) {
     }
 
@@ -87,7 +87,8 @@ final class MigrationDiscoveryService
 
     private function matchesModuleFilter(string $relativePath, string $module): bool
     {
-        $modulePath = "modules/" . $this->toPascalCase($module) . "/";
+        $modulesRoot = $this->structureResolver?->getModulesRoot() ?? 'modules';
+        $modulePath = $modulesRoot . "/" . $this->toPascalCase($module) . "/";
         return str_starts_with($relativePath, $modulePath);
     }
 

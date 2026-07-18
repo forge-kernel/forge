@@ -2,19 +2,21 @@
 
 declare(strict_types=1);
 
-namespace Modules\ForgeHtmx\Tests;
+namespace Capability\ForgeHtmx\Tests;
 
 use Modules\ForgeTesting\Attributes\Group;
 use Modules\ForgeTesting\Attributes\Test;
 use Modules\ForgeTesting\TestCase;
-use Modules\ForgeHtmx\Traits\HtmxResponseHelper;
+use Capability\ForgeHtmx\Traits\HtmxResponseHelper;
 use Modules\ForgeRouter\Http\Response;
 
 #[Group('htmx')]
+
 final class HtmxResponseHelperTest extends TestCase
 {
     private function runner(): object
     {
+
         return new class {
             use HtmxResponseHelper;
 

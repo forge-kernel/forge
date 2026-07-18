@@ -2,18 +2,19 @@
 
 declare(strict_types=1);
 
-namespace Modules\ForgeHtmx\Tests;
+namespace Capability\ForgeHtmx\Tests;
 
 use Modules\ForgeTesting\Attributes\BeforeEach;
 use Modules\ForgeTesting\Attributes\Group;
 use Modules\ForgeTesting\Attributes\Test;
 use Modules\ForgeTesting\TestCase;
-use Modules\ForgeHtmx\Traits\HtmxViewHelper;
+use Capability\ForgeHtmx\Traits\HtmxViewHelper;
 use Modules\ForgeRouter\Http\Request;
 use Modules\ForgeRouter\Http\Response;
 use Forge\Core\DI\Container;
 
 #[Group('htmx')]
+
 final class HtmxViewHelperTest extends TestCase
 {
     private function makeRequest(bool $isHtmx = false): Request
@@ -29,6 +30,7 @@ final class HtmxViewHelperTest extends TestCase
 
     private function runner(): object
     {
+
         return new class {
             use HtmxViewHelper;
 

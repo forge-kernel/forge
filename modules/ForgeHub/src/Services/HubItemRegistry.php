@@ -7,12 +7,17 @@ namespace Modules\ForgeHub\Services;
 use Forge\Core\Helpers\FileExistenceCache;
 use Forge\Core\Module\Attributes\HubItem;
 use Forge\Core\Module\ModuleLoader\Loader;
+use Forge\Core\Structure\StructureResolver;
 use ReflectionClass;
 use ReflectionException;
 
 final class HubItemRegistry
 {
-    private const string CLASS_MAP_FILE = BASE_PATH . '/modules/ForgeHub/config/hub_items.php';
+    private static function getClassMapFile(): string
+    {
+        $root = StructureResolver::findModuleRoot(BASE_PATH, 'ForgeHub') ?? StructureResolver::resolveModulesRoot();
+        return BASE_PATH . '/' . $root . '/ForgeHub/config/hub_items.php';
+    }
 
     private static ?array $cachedClassMap = null;
     private static ?int $classMapMtime = null;
@@ -68,7 +73,7 @@ final class HubItemRegistry
             }
         }
 
-        if ($hasChanges || !FileExistenceCache::exists(self::CLASS_MAP_FILE)) {
+        if ($hasChanges || !FileExistenceCache::exists(self::getClassMapFile())) {
             $this->saveClassMap($newMap);
             $this->clearCache();
         }
@@ -76,17 +81,17 @@ final class HubItemRegistry
 
     private function loadClassMap(): array
     {
-        if (!FileExistenceCache::exists(self::CLASS_MAP_FILE)) {
+        if (!FileExistenceCache::exists(self::getClassMapFile())) {
             return [];
         }
 
-        $currentMtime = filemtime(self::CLASS_MAP_FILE);
+        $currentMtime = filemtime(self::getClassMapFile());
 
         if (self::$cachedClassMap !== null && self::$classMapMtime === $currentMtime) {
             return self::$cachedClassMap;
         }
 
-        $map = include self::CLASS_MAP_FILE;
+        $map = include self::getClassMapFile();
         $result = is_array($map) ? $map : [];
 
         self::$cachedClassMap = $result;
@@ -131,13 +136,13 @@ final class HubItemRegistry
 
     private function saveClassMap(array $map): void
     {
-        $dir = dirname(self::CLASS_MAP_FILE);
+        $dir = dirname(self::getClassMapFile());
         if (!is_dir($dir)) {
             mkdir($dir, 0755, true);
         }
 
         $content = "<?php\n\nreturn " . var_export($map, true) . ";\n";
-        file_put_contents(self::CLASS_MAP_FILE, $content, LOCK_EX);
+        file_put_contents(self::getClassMapFile(), $content, LOCK_EX);
     }
 
     public function clearCache(): void
@@ -150,7 +155,7 @@ final class HubItemRegistry
 
     public function getHubItems(): array
     {
-        $currentMtime = FileExistenceCache::exists(self::CLASS_MAP_FILE) ? filemtime(self::CLASS_MAP_FILE) : 0;
+        $currentMtime = FileExistenceCache::exists(self::getClassMapFile()) ? filemtime(self::getClassMapFile()) : 0;
 
         if (self::$cachedHubItems !== null && self::$hubItemsCacheMtime === $currentMtime) {
             return self::$cachedHubItems;

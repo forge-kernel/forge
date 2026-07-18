@@ -51,7 +51,7 @@ final class PackageManagerService implements PackageManagerInterface
         $this->cacheTtl = is_array($cacheTtlValue)
             ? 3600
             : (int) $cacheTtlValue;
-        $this->modulesPath = BASE_PATH . "/modules/";
+        $this->modulesPath = BASE_PATH . '/' . ($this->structureResolver?->getModulesRoot() ?? 'modules') . '/';
         $this->cachePath = BASE_PATH . "/storage/framework/cache/modules/";
         $this->trustedSourcesPath =
             BASE_PATH . "/storage/framework/trusted_sources.json";
@@ -70,8 +70,12 @@ final class PackageManagerService implements PackageManagerInterface
 
     private function ensureModulesDirectoryExists(): void
     {
-        if (!is_dir($this->modulesPath)) {
-            mkdir($this->modulesPath, 0755, true);
+        $roots = $this->structureResolver?->getModulesRoots() ?? ['modules'];
+        foreach ($roots as $root) {
+            $path = BASE_PATH . '/' . $root;
+            if (!is_dir($path)) {
+                mkdir($path, 0755, true);
+            }
         }
     }
 
@@ -276,6 +280,7 @@ final class PackageManagerService implements PackageManagerInterface
             $sourceType = $moduleLockInfo["source_type"] ?? "git";
             $sourceConfig = $moduleLockInfo["source_config"] ?? [];
             $modulePath = $moduleLockInfo["module_path"] ?? null;
+            $category = $moduleLockInfo["category"] ?? 'module';
 
             if (!$versionToInstall || !$expectedIntegrity || !$modulePath) {
                 $this->error(
@@ -292,7 +297,7 @@ final class PackageManagerService implements PackageManagerInterface
                 $moduleInstallFolderName . "-" . $versionToInstall . ".zip";
             $moduleCachePath = $this->getCachePath() . $moduleCacheFileName;
             $moduleInstallPath =
-                $this->getModulesPath() . $moduleInstallFolderName;
+                $this->getModulesPathForCategory($category) . $moduleInstallFolderName;
 
             $this->info(
                 "Installing module {$moduleName} version {$versionToInstall} from lock file...",
@@ -379,8 +384,9 @@ final class PackageManagerService implements PackageManagerInterface
 
             $moduleSrcPath = $moduleInstallPath . '/src';
             if (is_dir($moduleSrcPath)) {
+                $moduleNs = $this->getModulesNamespaceForCategory($category);
                 \Forge\Core\Autoloader::addPath(
-                    'Modules\\' . $moduleInstallFolderName . '\\',
+                    $moduleNs . '\\' . $moduleInstallFolderName . '\\',
                     $moduleSrcPath,
                 );
             }
@@ -537,6 +543,35 @@ final class PackageManagerService implements PackageManagerInterface
     private function getModulesPath(): string
     {
         return $this->modulesPath;
+    }
+
+    private function getModulesPathForCategory(string $category): string
+    {
+        $roots = $this->structureResolver?->getModulesRoots() ?? ['modules'];
+        $namespaces = $this->structureResolver?->getModulesNamespaces() ?? ['Modules'];
+
+        $categoryLower = strtolower($category);
+        foreach ($roots as $i => $root) {
+            if (strtolower($namespaces[$i] ?? '') === $categoryLower) {
+                return BASE_PATH . '/' . $root . '/';
+            }
+        }
+
+        return $this->modulesPath;
+    }
+
+    private function getModulesNamespaceForCategory(string $category): string
+    {
+        $namespaces = $this->structureResolver?->getModulesNamespaces() ?? ['Modules'];
+
+        $categoryLower = strtolower($category);
+        foreach ($namespaces as $ns) {
+            if (strtolower($ns) === $categoryLower) {
+                return $ns;
+            }
+        }
+
+        return $namespaces[0] ?? 'Modules';
     }
 
     private function getStagingPath(string $moduleFolderName): string
@@ -1199,6 +1234,7 @@ final class PackageManagerService implements PackageManagerInterface
         bool $autoTrustSource = false,
         ?string $configMode = null,
         bool $deferPostInstall = false,
+        string $category = 'module',
     ): array {
         $explicitLatest = $version === 'latest' || $version === '*';
         $resolveLatest = $version === null || $explicitLatest;
@@ -1264,7 +1300,7 @@ final class PackageManagerService implements PackageManagerInterface
         $moduleCacheFileName =
             $moduleInstallFolderName . "-" . $versionToInstall . ".zip";
         $moduleCachePath = $this->getCachePath() . $moduleCacheFileName;
-        $moduleInstallPath = $this->getModulesPath() . $moduleInstallFolderName;
+        $moduleInstallPath = $this->getModulesPathForCategory($category) . $moduleInstallFolderName;
 
         if ($forceCache === "force") {
             if (file_exists($moduleCachePath)) {
@@ -1340,7 +1376,7 @@ final class PackageManagerService implements PackageManagerInterface
         $registryName = $registryDetails["name"] ?? "unknown";
         $modulePascalName = $this->toPascalCase($moduleName);
 
-        $moduleNamespacePrefix = 'Modules\\' . $moduleInstallFolderName . '\\';
+        $moduleNamespacePrefix = $this->getModulesNamespaceForCategory($category) . '\\' . $moduleInstallFolderName . '\\';
         $stagingSrcPath = $stagingPath . '/src';
         if (is_dir($stagingSrcPath)) {
             \Forge\Core\Autoloader::addPath($moduleNamespacePrefix, $stagingSrcPath);
@@ -1398,6 +1434,7 @@ final class PackageManagerService implements PackageManagerInterface
             $moduleDownloadPathInRepo,
             $integrityHash,
             $sourceType,
+            $category,
         );
 
         $this->configGenerator->generateConfigFromModule(
@@ -1611,6 +1648,7 @@ final class PackageManagerService implements PackageManagerInterface
         string $modulePath,
         string $integrityHash,
         string $sourceType,
+        string $category = 'module',
     ): void {
         $forgeLockJsonPath = BASE_PATH . "/forge-lock.json";
         $lockData = $this->readForgeLockJson();
@@ -1627,6 +1665,7 @@ final class PackageManagerService implements PackageManagerInterface
             "integrity" => $integrityHash,
             "source_type" => $sourceType,
             "source_config" => $sanitizedConfig,
+            "category" => $category,
         ];
 
         $this->writeForgeLockJson($lockData);
@@ -1877,7 +1916,8 @@ final class PackageManagerService implements PackageManagerInterface
         if ($this->structureResolver) {
             try {
                 $relativePath = $this->structureResolver->getModulePath($moduleDir, $type);
-                $fullPath = BASE_PATH . "/modules/{$moduleDir}/{$relativePath}";
+                $modulesRoot = $this->structureResolver->getModulesRoot();
+                $fullPath = BASE_PATH . "/{$modulesRoot}/{$moduleDir}/{$relativePath}";
                 return is_dir($fullPath) ? $fullPath : null;
             } catch (\InvalidArgumentException $e) {
                 return $this->getDefaultModuleStructurePath($moduleDir, $type);
@@ -1889,9 +1929,10 @@ final class PackageManagerService implements PackageManagerInterface
 
     private function getDefaultModuleStructurePath(string $moduleDir, string $type): ?string
     {
+        $modulesRoot = $this->structureResolver?->getModulesRoot() ?? 'modules';
         $defaultPaths = [
-            'migrations' => "/modules/{$moduleDir}/src/Database/Migrations",
-            'seeders' => "/modules/{$moduleDir}/src/Database/Seeders",
+            'migrations' => "/{$modulesRoot}/{$moduleDir}/src/Database/Migrations",
+            'seeders' => "/{$modulesRoot}/{$moduleDir}/src/Database/Seeders",
         ];
 
         if (!isset($defaultPaths[$type])) {
@@ -1904,7 +1945,8 @@ final class PackageManagerService implements PackageManagerInterface
 
     public function moduleHasAssets(string $module): bool
     {
-        return is_dir(BASE_PATH . "/modules/{$module}/src/UI/assets") ||
+        $modulesRoot = $this->structureResolver?->getModulesRoot() ?? 'modules';
+        return is_dir(BASE_PATH . "/{$modulesRoot}/{$module}/src/UI/assets") ||
             is_dir(BASE_PATH . "/public/modules/{$module}");
     }
 
