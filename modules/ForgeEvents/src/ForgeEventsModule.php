@@ -24,7 +24,7 @@ use ReflectionMethod;
 
 #[Module(
     name: "ForgeEvents",
-    version: "1.4.14",
+    version: "1.4.15",
     description: "An Event Queue system by forge",
     order: 99,
     author: 'Forge Team',
@@ -72,9 +72,12 @@ final class ForgeEventsModule
             }
         }
 
-        $modulesRoot = $structureResolver->getModulesRoot();
-        $modulesPath = BASE_PATH . '/' . $modulesRoot;
-        if (is_dir($modulesPath)) {
+        $modulesRoots = $structureResolver->getModulesRoots();
+        foreach ($modulesRoots as $modulesRoot) {
+            $modulesPath = BASE_PATH . '/' . $modulesRoot;
+            if (!is_dir($modulesPath)) {
+                continue;
+            }
             foreach (scandir($modulesPath) as $moduleName) {
                 if ($moduleName === '.' || $moduleName === '..') {
                     continue;
