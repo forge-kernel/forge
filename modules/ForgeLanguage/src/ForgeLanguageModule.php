@@ -15,7 +15,7 @@ use Forge\Core\Module\Attributes\Module;
 use Forge\Core\Module\Attributes\Repository;
 use Forge\Core\Module\Traits\IncludesFiles;
 
-#[Module(name: 'ForgeLanguage', version: '0.2.8', description: 'Multi language support to extend Forge Kernel', order: 40, author: 'Your Name', license: 'MIT', tags: [])]
+#[Module(name: 'ForgeLanguage', version: '0.2.9', description: 'Multi language support to extend Forge Kernel', order: 40, author: 'Your Name', license: 'MIT', tags: [])]
 #[Compatibility(framework: '>=0.1.0', php: '>=8.3')]
 #[Requires(module: "forge-router")]
 #[Repository(type: 'git', url: 'https://github.com/forge-kernel/kernel-module-registry')]
