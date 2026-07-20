@@ -16,7 +16,7 @@ use Forge\Core\Module\Traits\RegistersCommands;
 
 #[Module(
     name: 'ForgePackageManager',
-    version: '3.3.31',
+    version: '3.3.32',
     description: 'A Package Manager By Forge',
     order: 1,
     isCli: true,
