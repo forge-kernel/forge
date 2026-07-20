@@ -7,6 +7,7 @@ use Modules\ForgeRouter\Contracts\ErrorHandlerInterface;
 use Forge\Core\Module\Attributes\Provides;
 use Modules\ForgeRouter\Http\{Request, Response};
 use Modules\ForgeRouter\Services\ErrorPageRenderer;
+use Forge\Core\Bootstrap\CliErrorHandler;
 use Forge\Core\Config\Environment;
 use Forge\Traits\PathHelper;
 use Throwable;
@@ -85,6 +86,11 @@ final class ForgeErrorHandlerService implements ErrorHandlerInterface
     {
         if (function_exists('collect_exception')) {
             collect_exception($e);
+        }
+
+        if (PHP_SAPI === 'cli') {
+            CliErrorHandler::handle($e, $this->debug);
+            exit(1);
         }
 
         try {
