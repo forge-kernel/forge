@@ -397,6 +397,7 @@ final class PackageManagerService implements PackageManagerInterface
                 $moduleInstallPath,
                 $moduleName,
                 true,
+                $category,
             );
             $allPostInstallCommands = array_merge($allPostInstallCommands, $depCommands);
 
@@ -1154,7 +1155,13 @@ final class PackageManagerService implements PackageManagerInterface
     private function isModuleInstalled(string $moduleName): bool
     {
         $moduleDirName = $this->generateModuleInstallFolderName($moduleName);
-        return is_dir($this->getModulesPath() . $moduleDirName);
+        $roots = $this->structureResolver?->getModulesRoots() ?? ['modules'];
+        foreach ($roots as $root) {
+            if (is_dir(BASE_PATH . '/' . $root . '/' . $moduleDirName)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     private function resolveVersionConstraint(array $moduleInfo, string $constraint): ?string
@@ -1170,7 +1177,7 @@ final class PackageManagerService implements PackageManagerInterface
         return $bestVersion;
     }
 
-    private function resolveModuleDependencies(string $stagingPath, string $moduleName, bool $deferPostInstall = false): array
+    private function resolveModuleDependencies(string $stagingPath, string $moduleName, bool $deferPostInstall = false, string $category = 'module'): array
     {
         $collectedCommands = [];
         $modulePascalName = $this->toPascalCase($moduleName);
@@ -1204,7 +1211,7 @@ final class PackageManagerService implements PackageManagerInterface
             $this->info("Module '{$moduleName}' requires '{$requiredModule}'. Installing dependency...");
 
             try {
-                $depCommands = $this->installModule($requiredModule, $instance->version, null, null, true, null, $deferPostInstall);
+                $depCommands = $this->installModule($requiredModule, $instance->version, null, null, true, null, $deferPostInstall, $category);
                 $collectedCommands = array_merge($collectedCommands, $depCommands);
             } catch (\Throwable $e) {
                 array_pop($this->resolvingDependencies);
@@ -1382,7 +1389,7 @@ final class PackageManagerService implements PackageManagerInterface
             \Forge\Core\Autoloader::addPath($moduleNamespacePrefix, $stagingSrcPath);
         }
 
-        $collectedCommands = $this->resolveModuleDependencies($stagingPath, $moduleName, $deferPostInstall);
+        $collectedCommands = $this->resolveModuleDependencies($stagingPath, $moduleName, $deferPostInstall, $category);
 
         $postInstallCommands = $this->detectPostInstallCommands(
             $stagingPath,
@@ -1914,13 +1921,17 @@ final class PackageManagerService implements PackageManagerInterface
         $moduleDir = $this->toPascalCase($module);
 
         if ($this->structureResolver) {
-            try {
-                $relativePath = $this->structureResolver->getModulePath($moduleDir, $type);
-                $modulesRoot = $this->structureResolver->getModulesRoot();
-                $fullPath = BASE_PATH . "/{$modulesRoot}/{$moduleDir}/{$relativePath}";
-                return is_dir($fullPath) ? $fullPath : null;
-            } catch (\InvalidArgumentException $e) {
-                return $this->getDefaultModuleStructurePath($moduleDir, $type);
+            $roots = $this->structureResolver->getModulesRoots();
+            foreach ($roots as $root) {
+                try {
+                    $relativePath = $this->structureResolver->getModulePath($moduleDir, $type);
+                    $fullPath = BASE_PATH . "/{$root}/{$moduleDir}/{$relativePath}";
+                    if (is_dir($fullPath)) {
+                        return $fullPath;
+                    }
+                } catch (\InvalidArgumentException $e) {
+                    // continue to next root
+                }
             }
         }
 
@@ -1929,25 +1940,35 @@ final class PackageManagerService implements PackageManagerInterface
 
     private function getDefaultModuleStructurePath(string $moduleDir, string $type): ?string
     {
-        $modulesRoot = $this->structureResolver?->getModulesRoot() ?? 'modules';
+        $roots = $this->structureResolver?->getModulesRoots() ?? ['modules'];
         $defaultPaths = [
-            'migrations' => "/{$modulesRoot}/{$moduleDir}/src/Database/Migrations",
-            'seeders' => "/{$modulesRoot}/{$moduleDir}/src/Database/Seeders",
+            'migrations' => 'src/Database/Migrations',
+            'seeders' => 'src/Database/Seeders',
         ];
 
         if (!isset($defaultPaths[$type])) {
             return null;
         }
 
-        $fullPath = BASE_PATH . $defaultPaths[$type];
-        return is_dir($fullPath) ? $fullPath : null;
+        foreach ($roots as $root) {
+            $fullPath = BASE_PATH . "/{$root}/{$moduleDir}/{$defaultPaths[$type]}";
+            if (is_dir($fullPath)) {
+                return $fullPath;
+            }
+        }
+
+        return null;
     }
 
     public function moduleHasAssets(string $module): bool
     {
-        $modulesRoot = $this->structureResolver?->getModulesRoot() ?? 'modules';
-        return is_dir(BASE_PATH . "/{$modulesRoot}/{$module}/src/UI/assets") ||
-            is_dir(BASE_PATH . "/public/modules/{$module}");
+        $roots = $this->structureResolver?->getModulesRoots() ?? ['modules'];
+        foreach ($roots as $root) {
+            if (is_dir(BASE_PATH . "/{$root}/{$module}/src/UI/assets")) {
+                return true;
+            }
+        }
+        return is_dir(BASE_PATH . "/public/modules/{$module}");
     }
 
     /**

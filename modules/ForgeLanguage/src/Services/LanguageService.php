@@ -240,12 +240,16 @@ final class LanguageService
             );
         }
 
+        $modulesRoot = $this->structureResolver->findModuleRoot($module);
+        if ($modulesRoot === null) {
+            $modulesRoot = $this->structureResolver->getModulesRoot();
+        }
+
         return Path::resolve(
             BASE_PATH,
-            $this->structureResolver->getModulesRoot(),
+            $modulesRoot,
             $module,
             $this->structureResolver->getModulePath($module, 'languages')
-
         );
     }
 

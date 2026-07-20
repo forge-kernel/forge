@@ -27,9 +27,22 @@ final class SeederManager
         $this->ensureSeedersTable();
     }
 
-    private function getModulesPath(): string
+    private function getModulesPaths(): array
     {
-        return BASE_PATH . '/' . ($this->structureResolver?->getModulesRoot() ?? StructureResolver::resolveModulesRoot());
+        return array_map(
+            fn(string $root): string => BASE_PATH . '/' . $root,
+            $this->structureResolver?->getModulesRoots() ?? StructureResolver::resolveModulesRoots()
+        );
+    }
+
+    private function findModuleRoot(string $moduleName): ?string
+    {
+        foreach ($this->getModulesPaths() as $modulesPath) {
+            if (is_dir($modulesPath . '/' . $moduleName)) {
+                return $modulesPath;
+            }
+        }
+        return null;
     }
 
     private function ensureSeedersTable(): void
@@ -141,27 +154,28 @@ final class SeederManager
 
     private function getModuleSeeders(?string $target = null): array
     {
-        if (!is_dir($this->getModulesPath())) {
-            return [];
-        }
-
         $result = [];
-        foreach (scandir($this->getModulesPath()) as $module) {
-            if ($module === '.' || $module === '..') {
+        foreach ($this->getModulesPaths() as $modulesPath) {
+            if (!is_dir($modulesPath)) {
                 continue;
             }
+            foreach (scandir($modulesPath) as $module) {
+                if ($module === '.' || $module === '..') {
+                    continue;
+                }
 
-            if ($target && $module !== $target) {
-                continue;
-            }
+                if ($target && $module !== $target) {
+                    continue;
+                }
 
-            if (ModuleHelper::isModuleDisabled($module)) {
-                continue;
-            }
+                if (ModuleHelper::isModuleDisabled($module)) {
+                    continue;
+                }
 
-            $path = $this->resolveModuleSeedersPath($module);
-            if ($path !== null && is_dir($path)) {
-                $result = array_merge($result, glob($path . '/*.php'));
+                $path = $this->resolveModuleSeedersPath($module);
+                if ($path !== null && is_dir($path)) {
+                    $result = array_merge($result, glob($path . '/*.php'));
+                }
             }
         }
 
@@ -170,25 +184,37 @@ final class SeederManager
 
     private function resolveModuleSeedersPath(string $moduleName): ?string
     {
+        $modulesRoot = $this->findModuleRoot($moduleName);
+        if ($modulesRoot === null) {
+            return null;
+        }
+
         if ($this->structureResolver) {
             try {
                 $path = $this->structureResolver->getModulePath($moduleName, 'seeders');
-                $fullPath = $this->getModulesPath() . '/' . $moduleName . '/' . $path;
+                $fullPath = $modulesRoot . '/' . $moduleName . '/' . $path;
                 return is_dir($fullPath) ? $fullPath : null;
             } catch (\InvalidArgumentException $e) {
-                return $this->getDefaultModuleSeedersPath($moduleName);
+                return $this->getDefaultModuleSeedersPath($moduleName, $modulesRoot);
             }
         }
 
-        return $this->getDefaultModuleSeedersPath($moduleName);
+        return $this->getDefaultModuleSeedersPath($moduleName, $modulesRoot);
     }
 
-    private function getDefaultModuleSeedersPath(string $moduleName): ?string
+    private function getDefaultModuleSeedersPath(string $moduleName, ?string $modulesRoot = null): ?string
     {
+        if ($modulesRoot === null) {
+            $modulesRoot = $this->findModuleRoot($moduleName);
+        }
+        if ($modulesRoot === null) {
+            return null;
+        }
+
         try {
             $resolver = $this->structureResolver ?? new StructureResolver();
             $path = $resolver->getModulePath($moduleName, 'seeders');
-            $fullPath = $this->getModulesPath() . '/' . $moduleName . '/' . $path;
+            $fullPath = $modulesRoot . '/' . $moduleName . '/' . $path;
             return is_dir($fullPath) ? $fullPath : null;
         } catch (\InvalidArgumentException $e) {
             return null;

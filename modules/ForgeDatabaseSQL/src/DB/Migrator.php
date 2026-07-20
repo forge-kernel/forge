@@ -217,14 +217,15 @@ final class Migrator
 
         $relativePath = str_replace(BASE_PATH . "/", "", $path);
 
-        $modulesRoot = $this->structureResolver?->getModulesRoot() ?? 'modules';
-        if (str_starts_with($relativePath, $modulesRoot . "/")) {
-            $type = "module";
-            if (preg_match("/^" . preg_quote($modulesRoot, '/') . "\/([^\/]+)\//", $relativePath, $matches)) {
-                $module = $matches[1];
+        $modulesRoots = $this->structureResolver?->getModulesRoots() ?? ['modules'];
+        foreach ($modulesRoots as $modulesRoot) {
+            if (str_starts_with($relativePath, $modulesRoot . "/")) {
+                $type = "module";
+                if (preg_match("/^" . preg_quote($modulesRoot, '/') . "\/([^\/]+)\//", $relativePath, $matches)) {
+                    $module = $matches[1];
+                }
+                break;
             }
-        } else {
-            $type = "app";
         }
 
         return [$className, $type, $module, $groups];

@@ -19,14 +19,28 @@ final class MigrationPathResolverService
     ) {
     }
 
-    private function getModulesRoot(): string
+    private function getModulesRoots(): array
     {
-        return $this->structureResolver?->getModulesRoot() ?? StructureResolver::resolveModulesRoot();
+        return $this->structureResolver?->getModulesRoots() ?? StructureResolver::resolveModulesRoots();
     }
 
-    private function getModulesPath(): string
+    private function getModulesPaths(): array
     {
-        return BASE_PATH . '/' . $this->getModulesRoot();
+        return array_map(
+            fn(string $root): string => BASE_PATH . '/' . $root,
+            $this->getModulesRoots()
+        );
+    }
+
+    private function findModuleRoot(string $moduleName): ?string
+    {
+        $pascalName = $this->toPascalCase($moduleName);
+        foreach ($this->getModulesPaths() as $modulesPath) {
+            if (is_dir($modulesPath . '/' . $pascalName)) {
+                return $modulesPath;
+            }
+        }
+        return null;
     }
 
     /**
@@ -59,10 +73,6 @@ final class MigrationPathResolverService
      */
     public function getModulePaths(?string $module = null): array
     {
-        if (!is_dir($this->getModulesPath())) {
-            return [];
-        }
-
         $modules = $module
             ? [$this->toPascalCase($module)]
             : $this->getAvailableModules();
@@ -118,8 +128,10 @@ final class MigrationPathResolverService
     {
         $relativePath = str_replace(BASE_PATH . "/", "", $path);
 
-        if (str_starts_with($relativePath, $this->getModulesRoot() . "/")) {
-            return "module";
+        foreach ($this->getModulesRoots() as $root) {
+            if (str_starts_with($relativePath, $root . "/")) {
+                return "module";
+            }
         }
 
         return "app";
@@ -132,8 +144,10 @@ final class MigrationPathResolverService
     {
         $relativePath = str_replace(BASE_PATH . "/", "", $path);
 
-        if (preg_match("/^" . preg_quote($this->getModulesRoot(), '/') . "\/([^\/]+)\//", $relativePath, $matches)) {
-            return $matches[1];
+        foreach ($this->getModulesRoots() as $root) {
+            if (preg_match("/^" . preg_quote($root, '/') . "\/([^\/]+)\//", $relativePath, $matches)) {
+                return $matches[1];
+            }
         }
 
         return null;
@@ -174,11 +188,18 @@ final class MigrationPathResolverService
      */
     private function getAvailableModules(): array
     {
-        $modulesPath = $this->getModulesPath();
-        return array_filter(scandir($modulesPath), function ($item) use ($modulesPath) {
-            return is_dir($modulesPath . "/" . $item) &&
-                !in_array($item, [".", ".."]);
-        });
+        $allModules = [];
+        foreach ($this->getModulesPaths() as $modulesPath) {
+            if (!is_dir($modulesPath)) {
+                continue;
+            }
+            foreach (scandir($modulesPath) as $item) {
+                if (is_dir($modulesPath . "/" . $item) && !in_array($item, [".", ".."])) {
+                    $allModules[$item] = $item;
+                }
+            }
+        }
+        return array_values($allModules);
     }
 
     /**
@@ -205,7 +226,12 @@ final class MigrationPathResolverService
         $paths = [];
         $moduleMigrationsPath = $this->structureResolver->getModulePath($moduleName, "migrations");
 
-        $central = $this->getModulesPath() . "/" . $moduleName . "/" . $moduleMigrationsPath;
+        $modulesRoot = $this->findModuleRoot($moduleName);
+        if ($modulesRoot === null) {
+            return [];
+        }
+
+        $central = $modulesRoot . "/" . $moduleName . "/" . $moduleMigrationsPath;
         if (is_dir($central)) {
             $paths[] = $central;
         }
@@ -227,10 +253,16 @@ final class MigrationPathResolverService
         try {
             $resolver = $this->structureResolver ?? new StructureResolver();
             $moduleMigrationsPath = $resolver->getModulePath($moduleName, 'migrations');
-            $central = $this->getModulesPath() . '/' . $moduleName . '/' . $moduleMigrationsPath;
         } catch (\InvalidArgumentException $e) {
             return [];
         }
+
+        $modulesRoot = $this->findModuleRoot($moduleName);
+        if ($modulesRoot === null) {
+            return [];
+        }
+
+        $central = $modulesRoot . '/' . $moduleName . '/' . $moduleMigrationsPath;
 
         if (is_dir($central)) {
             $paths[] = $central;
@@ -263,19 +295,25 @@ final class MigrationPathResolverService
      */
     private function matchesModulePath(string $relativePath, string $module): bool
     {
-        $modulePath = $this->getModulesRoot() . "/" . $this->toPascalCase($module) . "/";
-        if (!str_starts_with($relativePath, $modulePath)) {
-            return false;
+        $pascalModule = $this->toPascalCase($module);
+
+        foreach ($this->getModulesRoots() as $root) {
+            $modulePath = $root . "/" . $pascalModule . "/";
+            if (!str_starts_with($relativePath, $modulePath)) {
+                continue;
+            }
+
+            try {
+                $resolver = $this->structureResolver ?? new StructureResolver();
+                $moduleMigrationsPath = $resolver->getModulePath($module, "migrations");
+                $expectedPath = "$modulePath$moduleMigrationsPath";
+                return str_starts_with($relativePath, $expectedPath);
+            } catch (\InvalidArgumentException $e) {
+                return false;
+            }
         }
 
-        try {
-            $resolver = $this->structureResolver ?? new StructureResolver();
-            $moduleMigrationsPath = $resolver->getModulePath($module, "migrations");
-            $expectedPath = "$modulePath$moduleMigrationsPath";
-            return str_starts_with($relativePath, $expectedPath);
-        } catch (\InvalidArgumentException $e) {
-            return false;
-        }
+        return false;
     }
 
     /**

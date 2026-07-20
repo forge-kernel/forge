@@ -87,9 +87,14 @@ final class MigrationDiscoveryService
 
     private function matchesModuleFilter(string $relativePath, string $module): bool
     {
-        $modulesRoot = $this->structureResolver?->getModulesRoot() ?? 'modules';
-        $modulePath = $modulesRoot . "/" . $this->toPascalCase($module) . "/";
-        return str_starts_with($relativePath, $modulePath);
+        $modulesRoots = $this->structureResolver?->getModulesRoots() ?? ['modules'];
+        foreach ($modulesRoots as $modulesRoot) {
+            $modulePath = $modulesRoot . "/" . $this->toPascalCase($module) . "/";
+            if (str_starts_with($relativePath, $modulePath)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     private function extractGroupFromPath(string $path): ?string
