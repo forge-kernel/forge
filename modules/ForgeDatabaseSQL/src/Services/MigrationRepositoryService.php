@@ -151,7 +151,9 @@ final class MigrationRepositoryService
         $stmt = $this->connection->query(
             "SELECT MAX(batch) FROM " . self::MIGRATIONS_TABLE
         );
-        return (int) $stmt->fetchColumn();
+        $lastBatch = (int) $stmt->fetchColumn();
+        $stmt->closeCursor();
+        return $lastBatch;
     }
 
     /**
@@ -171,7 +173,9 @@ final class MigrationRepositoryService
             "SELECT COUNT(*) FROM " . self::MIGRATIONS_TABLE . " WHERE migration = ?"
         );
         $stmt->execute([$migrationName]);
-        return (int) $stmt->fetchColumn() > 0;
+        $exists = (int) $stmt->fetchColumn() > 0;
+        $stmt->closeCursor();
+        return $exists;
     }
 
     /**
@@ -183,7 +187,9 @@ final class MigrationRepositoryService
             "SELECT * FROM " . self::MIGRATIONS_TABLE . " WHERE migration = ?"
         );
         $stmt->execute([$migrationName]);
-        return $stmt->fetch(PDO::FETCH_ASSOC) ?: null;
+        $metadata = $stmt->fetch(PDO::FETCH_ASSOC);
+        $stmt->closeCursor();
+        return $metadata ?: null;
     }
 
     /**
@@ -224,7 +230,9 @@ final class MigrationRepositoryService
 
         $stmt = $this->connection->prepare($sql);
         $stmt->execute($params);
-        return (int) $stmt->fetchColumn();
+        $count = (int) $stmt->fetchColumn();
+        $stmt->closeCursor();
+        return $count;
     }
 
     /**

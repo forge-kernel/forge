@@ -50,6 +50,7 @@ final class MigrationTableManagerService
 
             $stmt = $this->connection->query($query);
             $result = $stmt->fetchColumn();
+            $stmt->closeCursor();
 
             return (bool) $result;
         } catch (Throwable $e) {

@@ -11,7 +11,7 @@ use Modules\ForgeEvents\Enums\QueuePriority;
 final class CacheRefreshEvent
 {
     public function __construct(
-        public readonly object  $instance,
+        public readonly string  $instanceClass,
         public readonly string  $method,
         public readonly array   $args,
         public readonly string  $key,

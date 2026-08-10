@@ -56,7 +56,7 @@ final class DatabaseSetup
             );
         });
 
-        $container->bind(DatabaseConnectionInterface::class, function () use ($container) {
+        $container->singleton(DatabaseConnectionInterface::class, function () use ($container) {
             $config = $container->get(DatabaseConfigInterface::class);
             return new Connection($config);
         });

@@ -291,6 +291,7 @@ final class Migrator
                 );
                 $stmt->execute($params);
                 $filteredLastBatch = (int) $stmt->fetchColumn();
+                $stmt->closeCursor();
             }
 
             $minBatch = max(1, $filteredLastBatch - $steps + 1);
@@ -313,7 +314,9 @@ final class Migrator
         $stmt = $this->connection->query(
             "SELECT MAX(batch) FROM " . self::MIGRATIONS_TABLE,
         );
-        return (int) $stmt->fetchColumn();
+        $lastBatch = (int) $stmt->fetchColumn();
+        $stmt->closeCursor();
+        return $lastBatch;
     }
 
     /**
@@ -396,6 +399,7 @@ final class Migrator
         );
         $stmt->execute([$migrationName]);
         $exists = (int) $stmt->fetchColumn() > 0;
+        $stmt->closeCursor();
 
         if ($exists) {
             return;

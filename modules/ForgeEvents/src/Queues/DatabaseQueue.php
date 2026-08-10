@@ -62,6 +62,7 @@ class DatabaseQueue implements QueueInterface
                                 SELECT id
                                   FROM queue_jobs
                                  WHERE queue       = :queue
+                                   AND failed_at   IS NULL
                                    AND (process_at IS NULL OR process_at <= :now)
                                    AND reserved_at IS NULL
                               ORDER BY priority ASC, created_at ASC
@@ -82,6 +83,7 @@ class DatabaseQueue implements QueueInterface
                 $id = $this->queryBuilder
                     ->setTable('queue_jobs')
                     ->where('queue', '=', $queue)
+                    ->whereNull('failed_at')
                     ->whereRaw('(process_at IS NULL OR process_at <= :now)', ['now' => $now])
                     ->whereNull('reserved_at')
                     ->orderBy('priority', 'ASC')

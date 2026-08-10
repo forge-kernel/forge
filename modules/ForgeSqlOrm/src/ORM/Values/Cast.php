@@ -6,6 +6,7 @@ namespace Modules\ForgeSqlOrm\ORM\Values;
 use BackedEnum;
 use DateMalformedStringException;
 use DateTimeImmutable;
+use DateTimeZone;
 use Modules\ForgeSqlOrm\Dto\BaseDto;
 use JsonException;
 use ReflectionException;
@@ -61,8 +62,8 @@ function cast(mixed $value, Cast $type, ?string $dtoClass = null): mixed
         Cast::ENUM => $dtoClass && is_subclass_of($dtoClass, BackedEnum::class)
         ? $dtoClass::from($value)
         : $value,
-        Cast::DATE => new DateTimeImmutable($value),
-        Cast::DATETIME => new DateTimeImmutable($value),
-        Cast::TIMESTAMP => new DateTimeImmutable($value),
+        Cast::DATE => new DateTimeImmutable($value, new DateTimeZone('UTC')),
+        Cast::DATETIME => new DateTimeImmutable($value, new DateTimeZone('UTC')),
+        Cast::TIMESTAMP => new DateTimeImmutable($value, new DateTimeZone('UTC')),
     };
 }

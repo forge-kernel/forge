@@ -189,6 +189,18 @@ final class ModelQuery
     return $this;
   }
 
+  public function latest(?string $column = 'created_at'): self
+  {
+    $this->builder = $this->builder->latest($column);
+    return $this;
+  }
+
+  public function oldest(?string $column = 'created_at'): self
+  {
+    $this->builder = $this->builder->oldest($column);
+    return $this;
+  }
+
   public function limit(int $limit): self
   {
     $this->builder = $this->builder->limit($limit);
@@ -204,6 +216,15 @@ final class ModelQuery
   public function whereNotNull(string $column): self
   {
     $this->builder = $this->builder->whereNotNull($column);
+    return $this;
+  }
+
+  /**
+   * Append a raw WHERE fragment (with bound params) to the query.
+   */
+  public function whereRaw(string $sql, array $params = []): self
+  {
+    $this->builder = $this->builder->whereRaw($sql, $params);
     return $this;
   }
 
@@ -236,8 +257,19 @@ final class ModelQuery
     $total = $this->getTotalCount();
 
     $sortColumn = $options['sort'] ?? $options['column'] ?? 'created_at';
-    $sortDirection = $options['direction'] ?? 'ASC';
-    $this->orderBy($sortColumn, $sortDirection);
+    $sortDirection = trim((string) ($options['direction'] ?? ''));
+
+    if (array_key_exists('sort', $options) || array_key_exists('column', $options)) {
+      // An explicit sort is authoritative: replace any prior order.
+      if ($sortDirection === '') {
+        $this->builder = $this->builder->resetOrder()->orderByRaw((string) $sortColumn);
+      } else {
+        $this->builder = $this->builder->resetOrder()->orderBy((string) $sortColumn, $sortDirection);
+      }
+    } elseif (!$this->builder->hasOrder()) {
+      // No explicit sort and no prior order: apply the default.
+      $this->builder = $this->builder->orderBy('created_at', 'ASC');
+    }
 
     $items = $this->builder
       ->limit($perPage)

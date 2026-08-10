@@ -67,6 +67,17 @@ trait ResponseHelper
             );
     }
 
+    /**
+     * Serve a string as a file download (e.g. a generated manifest or export).
+     */
+    protected function downloadResponse(string $content, string $filename, string $contentType = 'application/octet-stream'): Response
+    {
+        return (new Response($content))
+            ->setHeader('Content-Type', $contentType)
+            ->setHeader('Content-Disposition', 'attachment; filename="' . $filename . '"')
+            ->setHeader('Content-Length', (string) strlen($content));
+    }
+
     private function arrayToCsv(array $data): string
     {
         $output = fopen("php://temp", "r+");

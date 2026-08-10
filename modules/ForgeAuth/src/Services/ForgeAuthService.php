@@ -4,14 +4,14 @@ declare(strict_types=1);
 
 namespace Modules\ForgeAuth\Services;
 
-use Modules\ForgeAuth\Contracts\AuthUserInterface;
-use Modules\ForgeAuth\Contracts\ForgeAuthInterface;
-use Modules\ForgeAuth\Contracts\UserProviderInterface;
-use Modules\ForgeAuth\Exceptions\LoginException;
 use Forge\Core\Config\Config;
 use Forge\Core\Module\Attributes\Provides;
 use Forge\Core\Module\Attributes\Requires;
 use Forge\Core\Session\SessionInterface;
+use Modules\ForgeAuth\Contracts\AuthUserInterface;
+use Modules\ForgeAuth\Contracts\ForgeAuthInterface;
+use Modules\ForgeAuth\Contracts\UserProviderInterface;
+use Modules\ForgeAuth\Exceptions\LoginException;
 
 #[Provides(interface: ForgeAuthInterface::class, version: '0.1.7')]
 #[Requires(SessionInterface::class, version: '>=0.1.0')]
@@ -23,8 +23,7 @@ final class ForgeAuthService implements ForgeAuthInterface
         private readonly SessionInterface $session,
         private readonly UserProviderInterface $userProvider,
         private readonly ?PermissionService $permissionService = null,
-    ) {
-    }
+    ) {}
 
     public function register(array $credentials): bool
     {
@@ -34,18 +33,39 @@ final class ForgeAuthService implements ForgeAuthInterface
 
     public function login(array $credentials): AuthUserInterface
     {
-        $this->validateLoginAttempt();
-
-        $user = $this->userProvider->verifyCredentials(
-            $credentials['identifier'],
-            $credentials['password']
-        );
+        $user = $this->verifyCredentials($credentials);
 
         if (!$user) {
-            $this->handleFailedLogin();
             throw new LoginException();
         }
 
+        $this->establishSession($user);
+
+        return $user;
+    }
+
+    /**
+     * Validate the login lockout and verify credentials without establishing
+     * a session (used when a trusted-browser/matrix check happens first).
+     */
+    public function verifyCredentials(array $credentials): ?AuthUserInterface
+    {
+        $this->validateLoginAttempt();
+
+        $user = $this->userProvider->verifyCredentials($credentials['identifier'], $credentials['password']);
+
+        if (!$user) {
+            $this->handleFailedLogin();
+        }
+
+        return $user;
+    }
+
+    /**
+     * Mark a verified user as the logged-in session user.
+     */
+    public function establishSession(AuthUserInterface $user): void
+    {
         $this->session->regenerate();
         $this->session->set('user_id', $user->getId());
         $this->session->set('user_identifier', $user->getIdentifier());
@@ -56,8 +76,6 @@ final class ForgeAuthService implements ForgeAuthInterface
             $permissions = $this->permissionService->getUserPermissions($user);
             $this->session->set('user_permissions', $permissions);
         }
-
-        return $user;
     }
 
     public function logout(): void
@@ -77,7 +95,7 @@ final class ForgeAuthService implements ForgeAuthInterface
         $maxAttempts = (int) $this->config->get('forge_auth.password.max_login_attempts', 5);
         $lockoutTime = (int) $this->config->get('forge_auth.password.lockout_time', 300);
 
-        if ($attempts >= $maxAttempts && time() - $lastAttempt < $lockoutTime) {
+        if ($attempts >= $maxAttempts && (time() - $lastAttempt) < $lockoutTime) {
             throw new LoginException();
         }
     }

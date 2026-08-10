@@ -55,6 +55,7 @@ final class RadixTree
             $segmentKey = $segment === '' ? '' : $segment;
             $found = false;
             $atParam = false;
+            $paramChild = null;
 
             if (isset($node->children[$segmentKey])) {
                 $node = $node->children[$segmentKey];
@@ -89,6 +90,14 @@ final class RadixTree
                     $matchedParams = $longerMatch['params'];
                     $lastMatchIndex = $longerMatch['lastIndex'];
                     $paramValues = $longerMatch['params'];
+                } elseif ($paramChild !== null && $this->isGreedyConstraint($paramChild->paramConstraint)) {
+                    // A terminal greedy param ({path:.+}) swallows the remaining
+                    // segments joined with "/" — otherwise nested paths only
+                    // captured their first segment.
+                    $paramValues[$paramChild->paramName] = implode('/', array_slice($segments, $index));
+                    $lastMatchIndex = $segmentCount - 1;
+                    $matchedParams = $paramValues;
+                    break;
                 }
             }
         }
@@ -233,6 +242,15 @@ final class RadixTree
             return strpos($value, '/') === false;
         }
         return (bool) preg_match("/^{$constraint}$/", $value);
+    }
+
+    /**
+     * A constraint that may span multiple path segments (joined with "/").
+     * Only the terminal .+ param swallows the remaining segments.
+     */
+    private function isGreedyConstraint(?string $constraint): bool
+    {
+        return $constraint === '.+';
     }
 
     public function count(): int

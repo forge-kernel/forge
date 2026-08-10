@@ -6,7 +6,9 @@ namespace Modules\ForgeAuth\Contracts;
 
 interface AuthUserInterface
 {
-    public function getId(): int;
+    public function getId(): int|string;
+
     public function getIdentifier(): string;
+
     public function getEmail(): string;
 }

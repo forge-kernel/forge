@@ -7,6 +7,7 @@ use Modules\ForgeSqlOrm\ORM\Attributes\Hidden;
 use Modules\ForgeSqlOrm\ORM\Values\Cast;
 use BackedEnum;
 use DateTimeImmutable;
+use DateTimeZone;
 use Exception;
 use Forge\Core\Helpers\UUID;
 use JsonException;
@@ -113,6 +114,16 @@ abstract class Model implements JsonSerializable
         return static::query()->orderBy($column, $direction);
     }
 
+    final public static function latest(?string $column = 'created_at'): ModelQuery
+    {
+        return static::query()->latest($column);
+    }
+
+    final public static function oldest(?string $column = 'created_at'): ModelQuery
+    {
+        return static::query()->oldest($column);
+    }
+
     /**
      * Paginate model results with easy syntax
      *
@@ -155,6 +166,22 @@ abstract class Model implements JsonSerializable
         return $this->exists ? $this->update() : $this->insert();
     }
 
+    /**
+     * Format a DateTimeImmutable for persistence as a naive Y-m-d H:i:s
+     * string expressed in UTC, regardless of the process's date.timezone
+     * (which may legitimately be configured to the deployment's display
+     * timezone — see Bootstrap::initTimezone). This is the counterpart to
+     * the UTC-aware parse performed by {@see \Modules\ForgeSqlOrm\ORM\Values\cast()}
+     * for Cast::DATETIME/DATE/TIMESTAMP, so a value written by one worker
+     * always reads back identical in another.
+     */
+    private static function formatForDatabase(DateTimeImmutable $dt): string
+    {
+        $utc = new DateTimeZone('UTC');
+        return ($dt->getTimezone()?->getName() === 'UTC' ? $dt : $dt->setTimezone($utc))
+            ->format('Y-m-d H:i:s');
+    }
+
     private function update(): bool
     {
         $dirty = $this->dirty();
@@ -169,7 +196,7 @@ abstract class Model implements JsonSerializable
 
             $this->{$updatedAtColumn} = $currentTime;
 
-            $dirty[$updatedAtColumn] = $currentTime->format('Y-m-d H:i:s');
+            $dirty[$updatedAtColumn] = self::formatForDatabase($currentTime);
         }
 
         $pk = static::primaryProperty()->getName();
@@ -201,7 +228,13 @@ abstract class Model implements JsonSerializable
             if ($curr instanceof DateTimeImmutable) {
                 $prevDate = $prev instanceof DateTimeImmutable
                     ? $prev
-                    : (is_string($prev) ? DateTimeImmutable::createFromFormat('Y-m-d H:i:s', $prev) : null);
+                    : (is_string($prev)
+                        ? DateTimeImmutable::createFromFormat(
+                            'Y-m-d H:i:s',
+                            $prev,
+                            new DateTimeZone('UTC'),
+                        )
+                        : null);
                 if ($prevDate !== null && $curr == $prevDate) {
                     continue;
                 }
@@ -223,7 +256,7 @@ abstract class Model implements JsonSerializable
                     $value = json_encode($curr, JSON_THROW_ON_ERROR);
                 }
             } elseif ($curr instanceof DateTimeImmutable) {
-                $value = $curr->format('Y-m-d H:i:s');
+                $value = self::formatForDatabase($curr);
             } elseif ($col->cast === Cast::BOOL && is_bool($curr)) {
                 $value = (int) $curr;
             }
@@ -271,7 +304,7 @@ abstract class Model implements JsonSerializable
         if (property_exists($this, 'created_at')) {
             $currentTime = new \DateTimeImmutable();
             $this->created_at = $currentTime;
-            $data['created_at'] = $currentTime->format('Y-m-d H:i:s');
+            $data['created_at'] = self::formatForDatabase($currentTime);
         }
 
         $success = static::query()->insert($data);
@@ -391,7 +424,7 @@ abstract class Model implements JsonSerializable
             if ($value instanceof BaseDto) {
                 $out[$name] = $value->toArray();
             } elseif ($value instanceof DateTimeImmutable) {
-                $out[$name] = $value->format('Y-m-d H:i:s');
+                $out[$name] = self::formatForDatabase($value);
             } elseif (is_array($value)) {
                 $out[$name] = $this->arrayToArray($value);
             } else {
@@ -408,7 +441,7 @@ abstract class Model implements JsonSerializable
             if ($item instanceof BaseDto) {
                 $result[$key] = $item->toArray();
             } elseif ($item instanceof DateTimeImmutable) {
-                $result[$key] = $item->format('Y-m-d H:i:s');
+                $result[$key] = self::formatForDatabase($item);
             } elseif (is_array($item)) {
                 $result[$key] = $this->arrayToArray($item);
             } else {

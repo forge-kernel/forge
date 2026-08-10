@@ -284,7 +284,9 @@ final class SeederManager
     private function getNextBatchNumber(): int
     {
         $stmt = $this->connection->query("SELECT MAX(batch) FROM " . self::SEEDERS_TABLE);
-        return (int) $stmt->fetchColumn() + 1;
+        $nextBatch = (int) $stmt->fetchColumn() + 1;
+        $stmt->closeCursor();
+        return $nextBatch;
     }
 
     public function rollback(int $steps = 1): void
@@ -315,7 +317,9 @@ final class SeederManager
     private function getLastBatch(): int
     {
         $stmt = $this->connection->query("SELECT MAX(batch) FROM " . self::SEEDERS_TABLE);
-        return (int) $stmt->fetchColumn();
+        $lastBatch = (int) $stmt->fetchColumn();
+        $stmt->closeCursor();
+        return $lastBatch;
     }
 
     /**

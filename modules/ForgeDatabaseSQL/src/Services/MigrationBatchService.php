@@ -24,7 +24,9 @@ final class MigrationBatchService
         $stmt = $this->connection->query(
             "SELECT MAX(batch) FROM " . self::MIGRATIONS_TABLE
         );
-        return (int) $stmt->fetchColumn() + 1;
+        $nextBatch = (int) $stmt->fetchColumn() + 1;
+        $stmt->closeCursor();
+        return $nextBatch;
     }
 
     /**
@@ -35,7 +37,9 @@ final class MigrationBatchService
         $stmt = $this->connection->query(
             "SELECT MAX(batch) FROM " . self::MIGRATIONS_TABLE
         );
-        return (int) $stmt->fetchColumn();
+        $lastBatch = (int) $stmt->fetchColumn();
+        $stmt->closeCursor();
+        return $lastBatch;
     }
 
     /**
@@ -131,6 +135,7 @@ final class MigrationBatchService
                 $stmt = $this->connection->prepare($batchSql);
                 $stmt->execute($batchParams);
                 $lastBatch = (int) $stmt->fetchColumn();
+                $stmt->closeCursor();
             }
 
             $minBatch = max(1, $lastBatch - $steps + 1);
@@ -154,7 +159,9 @@ final class MigrationBatchService
             "SELECT COUNT(*) FROM " . self::MIGRATIONS_TABLE . " WHERE batch = ?"
         );
         $stmt->execute([$batch]);
-        return (int) $stmt->fetchColumn() > 0;
+        $exists = (int) $stmt->fetchColumn() > 0;
+        $stmt->closeCursor();
+        return $exists;
     }
 
     /**
@@ -166,7 +173,9 @@ final class MigrationBatchService
             "SELECT COUNT(*) FROM " . self::MIGRATIONS_TABLE . " WHERE batch = ?"
         );
         $stmt->execute([$batch]);
-        return (int) $stmt->fetchColumn();
+        $count = (int) $stmt->fetchColumn();
+        $stmt->closeCursor();
+        return $count;
     }
 
     /**
@@ -194,7 +203,9 @@ final class MigrationBatchService
         $stmt = $this->connection->query(
             "SELECT MIN(batch) FROM " . self::MIGRATIONS_TABLE
         );
-        return (int) $stmt->fetchColumn();
+        $firstBatch = (int) $stmt->fetchColumn();
+        $stmt->closeCursor();
+        return $firstBatch;
     }
 
     /**
@@ -205,7 +216,9 @@ final class MigrationBatchService
         $stmt = $this->connection->query(
             "SELECT COUNT(DISTINCT batch) FROM " . self::MIGRATIONS_TABLE
         );
-        return (int) $stmt->fetchColumn();
+        $totalBatches = (int) $stmt->fetchColumn();
+        $stmt->closeCursor();
+        return $totalBatches;
     }
 
     /**

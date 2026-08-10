@@ -260,6 +260,68 @@ final class ModelQueryTest extends TestCase
         $this->assertSame(1, SoftDeleteStub::query()->count());
         $this->assertSame(2, SoftDeleteStub::query()->withTrashed()->count());
     }
+
+    #[Test("paginate preserves a prior orderBy instead of overwriting it")]
+    public function paginate_preserves_prior_order(): void
+    {
+        $this->pdo->exec("INSERT INTO model_query_stubs (name, age) VALUES ('Alice', 2)");
+        $this->pdo->exec("INSERT INTO model_query_stubs (name, age) VALUES ('Bob', 1)");
+        $this->pdo->exec("INSERT INTO model_query_stubs (name, age) VALUES ('Charlie', 9)");
+
+        $paginator = ModelQueryStub::query()->orderBy('age', 'DESC')->paginate(10, 1);
+        $items = $paginator->items();
+
+        $this->assertSame('Charlie', $items[0]['name']);
+        $this->assertSame('Alice', $items[1]['name']);
+        $this->assertSame('Bob', $items[2]['name']);
+    }
+
+    #[Test("paginate explicit sort overrides a prior orderBy")]
+    public function paginate_explicit_sort_overrides_prior_order(): void
+    {
+        $this->pdo->exec("INSERT INTO model_query_stubs (name, age) VALUES ('Alice', 2)");
+        $this->pdo->exec("INSERT INTO model_query_stubs (name, age) VALUES ('Bob', 1)");
+        $this->pdo->exec("INSERT INTO model_query_stubs (name, age) VALUES ('Charlie', 9)");
+
+        $paginator = ModelQueryStub::query()
+            ->orderBy('age', 'DESC')
+            ->paginate(10, 1, ['sort' => 'age', 'direction' => 'ASC']);
+        $items = $paginator->items();
+
+        $this->assertSame('Bob', $items[0]['name']);
+        $this->assertSame('Alice', $items[1]['name']);
+        $this->assertSame('Charlie', $items[2]['name']);
+    }
+
+    #[Test("paginate defaults to created_at ASC when no order is set")]
+    public function paginate_default_asc(): void
+    {
+        $this->pdo->exec("INSERT INTO model_query_stubs (name, created_at) VALUES ('Alice', '2026-01-03 00:00:00')");
+        $this->pdo->exec("INSERT INTO model_query_stubs (name, created_at) VALUES ('Bob', '2026-01-01 00:00:00')");
+        $this->pdo->exec("INSERT INTO model_query_stubs (name, created_at) VALUES ('Charlie', '2026-01-02 00:00:00')");
+
+        $items = ModelQueryStub::query()->paginate(10, 1)->items();
+
+        $this->assertSame('Bob', $items[0]['name']);
+        $this->assertSame('Charlie', $items[1]['name']);
+        $this->assertSame('Alice', $items[2]['name']);
+    }
+
+    #[Test("latest and oldest sort newest/oldest first")]
+    public function latest_oldest(): void
+    {
+        $this->pdo->exec("INSERT INTO model_query_stubs (name, age) VALUES ('Alice', 2)");
+        $this->pdo->exec("INSERT INTO model_query_stubs (name, age) VALUES ('Bob', 1)");
+        $this->pdo->exec("INSERT INTO model_query_stubs (name, age) VALUES ('Charlie', 9)");
+
+        $latest = ModelQueryStub::latest('age')->get();
+        $this->assertSame('Charlie', $latest[0]->name);
+        $this->assertSame('Bob', $latest[2]->name);
+
+        $oldest = ModelQueryStub::oldest('age')->get();
+        $this->assertSame('Bob', $oldest[0]->name);
+        $this->assertSame('Charlie', $oldest[2]->name);
+    }
 }
 
 #[Table(name: 'model_query_stubs')]

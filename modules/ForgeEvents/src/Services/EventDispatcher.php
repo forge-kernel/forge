@@ -30,6 +30,7 @@ use Throwable;
 
 #[Injectable(singleton: true)]
 #[Provides(EventDispatcher::class, version: '0.2.1')]
+#[Provides(EventDispatcherInterface::class, version: '0.2.1')]
 #[NoCache(reason: 'Contains unserializable database connections')]
 final class EventDispatcher implements EventDispatcherInterface
 {
@@ -37,9 +38,11 @@ final class EventDispatcher implements EventDispatcherInterface
     use TimeTrait;
 
     private array $listeners = [];
+    private array $resolvedListeners = [];
     private Queueinterface $queue;
     private Container $container;
     private QueryBuilderInterface $queryBuilder;
+    private ?int $currentJobId = null;
 
     /**
      * @throws ReflectionException
@@ -66,7 +69,7 @@ final class EventDispatcher implements EventDispatcherInterface
         return $adapter;
     }
 
-    public function addListener(string $eventClass, callable $handler): void
+    public function addListener(string $eventClass, array|callable $handler): void
     {
         $this->listeners[$eventClass][] = $handler;
     }
@@ -77,6 +80,77 @@ final class EventDispatcher implements EventDispatcherInterface
     #[EventListener(Event::class)]
     public function dispatch(object $event): void
     {
+        $eventMetadata = $this->eventMetadata($event);
+        $delayMilliseconds = $this->toMilliseconds($eventMetadata->delay) ?? 0;
+
+        $this->pushEvent($event, $eventMetadata, $delayMilliseconds);
+    }
+
+    /**
+     * Dispatch an event with an explicit delay (in milliseconds) instead of the
+     * one declared on the #[Event] attribute. Used by self-rescheduling jobs
+     * (e.g. the maintenance/cron runner) to schedule the next run.
+     */
+    public function dispatchDelayed(object $event, int $delayMilliseconds): void
+    {
+        $eventMetadata = $this->eventMetadata($event);
+
+        $this->pushEvent($event, $eventMetadata, max(0, $delayMilliseconds));
+    }
+
+    /**
+     * The id of the queue job currently being handled, or null when not
+     * processing a job. Lets listeners persist diagnostics (e.g. maintenance
+     * errors) onto the live job row.
+     */
+    public function currentJobId(): ?int
+    {
+        return $this->currentJobId;
+    }
+
+    /**
+     * Merge metadata onto a queue job's row. The metadata column is JSON.
+     */
+    public function writeJobMetadata(int $jobId, array $metadata): void
+    {
+        $current = $this->queryBuilder
+            ->reset()
+            ->setTable('queue_jobs')
+            ->where('id', '=', $jobId)
+            ->first();
+
+        if ($current === null) {
+            return;
+        }
+
+        $existing = $current['metadata'] ?? null;
+        if (is_string($existing)) {
+            $existing = json_decode($existing, true);
+        }
+        if (!is_array($existing)) {
+            $existing = [];
+        }
+
+        $merged = array_replace_recursive($existing, $metadata);
+
+        $this->queryBuilder
+            ->reset()
+            ->setTable('queue_jobs')
+            ->where('id', '=', $jobId)
+            ->update(['metadata' => json_encode($merged, JSON_UNESCAPED_SLASHES)]);
+    }
+
+    /**
+     * Mark a job as failed while keeping its row (with any metadata written on
+     * it) as a diagnostic trail. Unlike the retry path, the row is not deleted.
+     */
+    public function failJob(int $jobId): void
+    {
+        $this->markJobAsFailed($jobId);
+    }
+
+    private function eventMetadata(object $event): object
+    {
         $eventReflection = new ReflectionClass($event);
         $eventAttribute = $eventReflection->getAttributes(Event::class)[0] ?? null;
 
@@ -84,9 +158,12 @@ final class EventDispatcher implements EventDispatcherInterface
             throw new EventException("Event missing #[Event] attribute");
         }
 
-        $eventMetadata = $eventAttribute->newInstance();
+        return $eventAttribute->newInstance();
+    }
 
-        $delayMilliseconds = $this->toMilliseconds($eventMetadata->delay) ?? 0;
+    private function pushEvent(object $event, object $eventMetadata, int $delayMilliseconds): void
+    {
+        $eventReflection = new ReflectionClass($event);
 
         $this->queue->push($this->serializeEvent($event, $eventReflection, $eventMetadata), $eventMetadata->priority->value, $delayMilliseconds, $eventMetadata->maxRetries, $eventMetadata->queue);
     }
@@ -227,31 +304,56 @@ final class EventDispatcher implements EventDispatcherInterface
         $now = date('Y-m-d H:i:s');
         $eventClass = $payload['class'];
         $payload['jobId'] = $jobId;
+        $this->currentJobId = $jobId;
         $this->comment("Handling event: {$eventClass}");
 
-        if (!isset($this->listeners[$eventClass])) {
-            $this->warning("No listeners for event: {$eventClass}");
-            if ($jobId !== null) {
-                $this->deleteJob($jobId);
-            }
-            return;
-        }
-
-        $this->info("Processing event: {$eventClass} at: {$now}");
-
-        // Reconstruct the event object
-        $event = $this->reconstructEvent($payload['event'], $eventClass);
-
-        foreach ($this->listeners[$eventClass] as $handler) {
-            try {
-                call_user_func($handler, $event);
+        try {
+            if (!isset($this->listeners[$eventClass])) {
+                $this->warning("No listeners for event: {$eventClass}");
                 if ($jobId !== null) {
                     $this->deleteJob($jobId);
                 }
-            } catch (Throwable $e) {
-                $this->handleFailure($payload, $e, $jobId);
+                return;
             }
+
+            $this->info("Processing event: {$eventClass} at: {$now}");
+
+            // Reconstruct the event object
+            $event = $this->reconstructEvent($payload['event'], $eventClass);
+
+            foreach ($this->listeners[$eventClass] as $handler) {
+                try {
+                    if (is_array($handler) && is_string($handler[0])) {
+                        $listener = $this->resolvedListeners[$handler[0]] ??= $this->container->make($handler[0]);
+                        call_user_func([$listener, $handler[1]], $event);
+                    } else {
+                        call_user_func($handler, $event);
+                    }
+                    if ($jobId !== null && !$this->isFailed($jobId)) {
+                        $this->deleteJob($jobId);
+                    }
+                } catch (Throwable $e) {
+                    $this->handleFailure($payload, $e, $jobId);
+                }
+            }
+        } finally {
+            $this->currentJobId = null;
         }
+    }
+
+    /**
+     * Whether the job row has been explicitly failed (failed_at set) by its
+     * handler — such rows are kept as a diagnostic trail, not deleted.
+     */
+    private function isFailed(int $jobId): bool
+    {
+        $row = $this->queryBuilder
+            ->reset()
+            ->setTable('queue_jobs')
+            ->where('id', '=', $jobId)
+            ->first();
+
+        return $row !== null && ($row['failed_at'] ?? null) !== null;
     }
 
     /**
@@ -320,6 +422,17 @@ final class EventDispatcher implements EventDispatcherInterface
 
         $this->error("Event {$payload['class']} failed. Attempt: " . ($attempts + 1));
 
+        if ($jobId !== null) {
+            $this->writeJobMetadata($jobId, [
+                'error' => sprintf(
+                    '[%s] %s: %s',
+                    date('Y-m-d H:i:s'),
+                    get_class($e),
+                    $e->getMessage(),
+                ),
+            ]);
+        }
+
         if ($attempts < $retries) {
             $this->retryEvent($payload, $attempts);
             if ($jobId !== null) {
@@ -327,8 +440,9 @@ final class EventDispatcher implements EventDispatcherInterface
             }
         } else {
             if ($jobId !== null) {
+                // Keep the failed job row (with its metadata.error) as a
+                // diagnostic trail instead of silently deleting it.
                 $this->markJobAsFailed($jobId);
-                $this->deleteJob($jobId);
             }
         }
     }

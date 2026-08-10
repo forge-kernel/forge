@@ -311,4 +311,77 @@ final class QueryBuilderTest extends TestCase
 
         restore_error_handler();
     }
+
+    #[Test("chained orderBy calls append instead of overwriting")]
+    public function chained_order_by_appends(): void
+    {
+        $this->pdo->exec("INSERT INTO test_table (name, age) VALUES ('Alice', 2)");
+        $this->pdo->exec("INSERT INTO test_table (name, age) VALUES ('Alice', 1)");
+        $this->pdo->exec("INSERT INTO test_table (name, age) VALUES ('Bob', 9)");
+
+        $rows = $this->builder->table('test_table')
+            ->orderBy('name', 'ASC')
+            ->orderBy('age', 'DESC')
+            ->get();
+
+        $this->assertSame('Alice', $rows[0]['name']);
+        $this->assertSame(2, (int) $rows[0]['age']);
+        $this->assertSame('Alice', $rows[1]['name']);
+        $this->assertSame(1, (int) $rows[1]['age']);
+        $this->assertSame('Bob', $rows[2]['name']);
+    }
+
+    #[Test("orderBy normalizes direction to ASC/DESC")]
+    public function order_by_direction_normalization(): void
+    {
+        $this->pdo->exec("INSERT INTO test_table (name) VALUES ('Alice')");
+        $this->pdo->exec("INSERT INTO test_table (name) VALUES ('Bob')");
+        $this->pdo->exec("INSERT INTO test_table (name) VALUES ('Charlie')");
+
+        $desc = $this->builder->table('test_table')->orderBy('name', 'desc')->get();
+        $this->assertSame('Charlie', $desc[0]['name']);
+
+        $empty = $this->builder->table('test_table')->orderBy('name', '')->get();
+        $this->assertSame('Alice', $empty[0]['name']);
+
+        $invalid = $this->builder->table('test_table')->orderBy('name', 'SIDEWAYS')->get();
+        $this->assertSame('Alice', $invalid[0]['name']);
+    }
+
+    #[Test("orderByRaw appends a raw ORDER BY expression")]
+    public function order_by_raw_multi_column(): void
+    {
+        $this->pdo->exec("INSERT INTO test_table (name, age) VALUES ('Alice', 2)");
+        $this->pdo->exec("INSERT INTO test_table (name, age) VALUES ('Bob', 2)");
+        $this->pdo->exec("INSERT INTO test_table (name, age) VALUES ('Charlie', 1)");
+
+        $rows = $this->builder->table('test_table')->orderByRaw('age DESC, name ASC')->get();
+
+        $this->assertSame('Alice', $rows[0]['name']);
+        $this->assertSame('Bob', $rows[1]['name']);
+        $this->assertSame('Charlie', $rows[2]['name']);
+    }
+
+    #[Test("latest and oldest order by created_at column")]
+    public function latest_oldest(): void
+    {
+        $this->pdo->exec("INSERT INTO test_table (name, age) VALUES ('Alice', 2)");
+        $this->pdo->exec("INSERT INTO test_table (name, age) VALUES ('Bob', 1)");
+        $this->pdo->exec("INSERT INTO test_table (name, age) VALUES ('Charlie', 9)");
+
+        $latest = $this->builder->table('test_table')->latest('age')->get();
+        $this->assertSame('Charlie', $latest[0]['name']);
+        $this->assertSame('Bob', $latest[2]['name']);
+
+        $oldest = $this->builder->table('test_table')->oldest('age')->get();
+        $this->assertSame('Bob', $oldest[0]['name']);
+        $this->assertSame('Charlie', $oldest[2]['name']);
+    }
+
+    #[Test("hasOrder reflects whether an ORDER BY is set")]
+    public function has_order(): void
+    {
+        $this->assertFalse($this->builder->table('test_table')->hasOrder());
+        $this->assertTrue($this->builder->table('test_table')->orderBy('name', 'ASC')->hasOrder());
+    }
 }

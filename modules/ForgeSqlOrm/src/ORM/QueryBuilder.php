@@ -20,7 +20,7 @@ final class QueryBuilder implements QueryBuilderInterface
     private array                       $select = [],
     private array                       $where = [],
     private array                       $params = [],
-    private ?string                     $order = null,
+    private array                       $order = [],
     private array                       $groupBy = [],
     private array                       $having = [],
     private ?int                        $limit = null,
@@ -190,18 +190,77 @@ final class QueryBuilder implements QueryBuilderInterface
 
   public function orderBy(string $column, string $direction = 'ASC'): self
   {
+    $dir = strtoupper(trim($direction));
+    if ($dir !== 'ASC' && $dir !== 'DESC') {
+      $dir = 'ASC';
+    }
+
     return new self(
       $this->conn,
       table: $this->table,
       select: $this->select,
       where: $this->where,
       params: $this->params,
-      order: "$column $direction",
+      order: [...$this->order, "$column $dir"],
       limit: $this->limit,
       offset: $this->offset,
       forUpdate: $this->forUpdate,
       joins: $this->joins
     );
+  }
+
+  /**
+   * Append a raw ORDER BY expression (e.g. "pinned DESC, created_at DESC").
+   */
+  public function orderByRaw(string $expression): self
+  {
+    return new self(
+      $this->conn,
+      table: $this->table,
+      select: $this->select,
+      where: $this->where,
+      params: $this->params,
+      order: [...$this->order, $expression],
+      limit: $this->limit,
+      offset: $this->offset,
+      forUpdate: $this->forUpdate,
+      joins: $this->joins
+    );
+  }
+
+  public function hasOrder(): bool
+  {
+    return $this->order !== [];
+  }
+
+  /**
+   * Drop any previously applied ORDER BY clauses while keeping the rest of
+   * the query state intact.
+   */
+  public function resetOrder(): self
+  {
+    return new self(
+      $this->conn,
+      table: $this->table,
+      select: $this->select,
+      where: $this->where,
+      params: $this->params,
+      order: [],
+      limit: $this->limit,
+      offset: $this->offset,
+      forUpdate: $this->forUpdate,
+      joins: $this->joins
+    );
+  }
+
+  public function latest(?string $column = 'created_at'): self
+  {
+    return $this->orderBy($column, 'DESC');
+  }
+
+  public function oldest(?string $column = 'created_at'): self
+  {
+    return $this->orderBy($column, 'ASC');
   }
 
   public function offset(int $count): self
@@ -292,8 +351,8 @@ final class QueryBuilder implements QueryBuilderInterface
     if ($this->having !== []) {
       $sql .= ' HAVING ' . implode(' AND ', $this->having);
     }
-    if ($this->order !== null) {
-      $sql .= " ORDER BY {$this->order}";
+    if ($this->order !== []) {
+      $sql .= ' ORDER BY ' . implode(', ', $this->order);
     }
 
     if ($this->offset !== null && $this->offset > 0) {
