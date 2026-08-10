@@ -24,7 +24,7 @@ use ReflectionMethod;
 
 #[Module(
     name: "ForgeEvents",
-    version: "1.4.15",
+    version: "1.4.16",
     description: "An Event Queue system by forge",
     order: 99,
     author: 'Forge Team',
@@ -52,6 +52,11 @@ final class ForgeEventsModule
             ? $container->get(EventDispatcher::class)
             : null;
 
+        if ($eventDispatcher) {
+            $container->setInstance(EventDispatcher::class, $eventDispatcher);
+            $container->setInstance(\Forge\Core\Contracts\EventDispatcherInterface::class, $eventDispatcher);
+        }
+
         if (!$eventDispatcher) {
             return;
         }
@@ -60,15 +65,17 @@ final class ForgeEventsModule
             ? $container->get(StructureResolver::class)
             : new StructureResolver();
 
-        foreach ($structureResolver->getAppPaths('events') as $path) {
-            $fullPath = BASE_PATH . '/' . $path;
-            if (is_dir($fullPath)) {
-                $this->scanDirectory(
-                    $fullPath,
-                    $structureResolver->getAppNamespace('events', $path),
-                    $eventDispatcher,
-                    $container
-                );
+        foreach (['events', 'listeners'] as $type) {
+            foreach ($structureResolver->getAppPaths($type) as $path) {
+                $fullPath = BASE_PATH . '/' . $path;
+                if (is_dir($fullPath)) {
+                    $this->scanDirectory(
+                        $fullPath,
+                        $structureResolver->getAppNamespace($type, $path),
+                        $eventDispatcher,
+                        $container
+                    );
+                }
             }
         }
 
@@ -87,15 +94,17 @@ final class ForgeEventsModule
                 }
 
                 try {
-                    foreach ($structureResolver->getModulePaths($moduleName, 'events') as $modulePath) {
-                        $fullPath = $modulesPath . '/' . $moduleName . '/' . $modulePath;
-                        if (is_dir($fullPath)) {
-                            $this->scanDirectory(
-                                $fullPath,
-                                $structureResolver->getModuleNamespace($moduleName, 'events'),
-                                $eventDispatcher,
-                                $container
-                            );
+                    foreach (['events', 'listeners'] as $type) {
+                        foreach ($structureResolver->getModulePaths($moduleName, $type) as $modulePath) {
+                            $fullPath = $modulesPath . '/' . $moduleName . '/' . $modulePath;
+                            if (is_dir($fullPath)) {
+                                $this->scanDirectory(
+                                    $fullPath,
+                                    $structureResolver->getModuleNamespace($moduleName, $type, $modulePath),
+                                    $eventDispatcher,
+                                    $container
+                                );
+                            }
                         }
                     }
                 } catch (\InvalidArgumentException) {
@@ -139,13 +148,11 @@ final class ForgeEventsModule
                 foreach ($reflection->getMethods(ReflectionMethod::IS_PUBLIC) as $method) {
                     foreach ($method->getAttributes(EventListener::class) as $attribute) {
                         $listener = $attribute->newInstance();
-                        $listenerInstance = $container->has($fqcn)
-                            ? $container->get($fqcn)
-                            : $reflection->newInstance();
-                        $eventDispatcher->addListener(
-                            $listener->eventClass,
-                            [$listenerInstance, $method->getName()]
-                        );
+                        if ($container->has($fqcn)) {
+                            $eventDispatcher->addListener($listener->eventClass, [$container->get($fqcn), $method->getName()]);
+                        } else {
+                            $eventDispatcher->addListener($listener->eventClass, [$fqcn, $method->getName()]);
+                        }
                     }
                 }
             } catch (ReflectionException) {
