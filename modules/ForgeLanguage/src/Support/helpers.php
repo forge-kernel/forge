@@ -3,14 +3,14 @@ use Modules\ForgeLanguage\Services\LanguageService;
 use Forge\Core\DI\Container;
 
 if (!function_exists('languageTerm')) {
-    function languageTerm(string $key, ?string $fallback = null, ?array $args = []): string|array
+    function languageTerm(string $key, ?string $fallback = null, ?array $args = [], ?string $language = null): string|array
     {
         /**
          * @var LanguageService $langService
          */
         $langService = Container::getInstance()->get(LanguageService::class);
 
-        return $langService->term($key, $fallback, $args);
+        return $langService->term($key, $fallback, $args, $language);
     }
 }
 

@@ -128,8 +128,8 @@ class DebugBar implements DebugBarInterface
 
   public function injectDebugBarIntoHtml(string $htmlContent, string $debugBarHtml, Container $container): string
   {
-    $cssLinkTag = sprintf('<link rel="stylesheet" href="/assets/modules/forge-debug-bar/css/debugbar.css">');
-    $jsScriptTag = sprintf('<script src="/assets/modules/forge-debug-bar/js/debugbar.js"></script>');
+    $cssLinkTag = sprintf('<link rel="stylesheet" href="/assets/modules/forge-debug-bar/css/debugbar.css?v=1">');
+    $jsScriptTag = sprintf('<script src="/assets/modules/forge-debug-bar/js/debugbar.js?v=1"></script>');
 
     if (!is_string($htmlContent)) {
       return $debugBarHtml;

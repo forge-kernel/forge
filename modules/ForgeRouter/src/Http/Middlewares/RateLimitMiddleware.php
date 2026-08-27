@@ -8,6 +8,7 @@ use Forge\CLI\Traits\OutputHelper;
 use Forge\Core\Config\Config;
 use Forge\Core\Config\Environment;
 use Forge\Core\Contracts\Database\QueryBuilderInterface;
+use Modules\ForgeRouter\Http\ApiResponse;
 use Modules\ForgeRouter\Http\Middleware as MiddlewareImpl;
 use Modules\ForgeRouter\Http\Request;
 use Modules\ForgeRouter\Http\Response;
@@ -74,7 +75,7 @@ class RateLimitMiddleware extends MiddlewareImpl
         $updated = $this->tryAtomicUpdate($queryBuilder, $table, $clientIp, $maxRequests, $timeWindow, $now, $nowFormatted, $clientIp);
 
         if ($updated === 'rate_limited') {
-            return $this->createErrorResponse($request);
+            return $this->rateLimitedResponse($request, $maxRequests, $timeWindow);
         }
 
         if ($updated === false) {
@@ -83,12 +84,28 @@ class RateLimitMiddleware extends MiddlewareImpl
             } catch (\Throwable $e) {
                 $updated = $this->tryAtomicUpdate($queryBuilder, $table, $clientIp, $maxRequests, $timeWindow, $now, $nowFormatted, $clientIp);
                 if ($updated === 'rate_limited') {
-                    return $this->createErrorResponse($request);
+                    return $this->rateLimitedResponse($request, $maxRequests, $timeWindow);
                 }
             }
         }
 
         return $next($request);
+    }
+
+    private function rateLimitedResponse(Request $request, int $maxRequests, int $timeWindow): Response
+    {
+        $headers = [
+            'Retry-After'           => (string) $timeWindow,
+            'X-RateLimit-Limit'     => (string) $maxRequests,
+            'X-RateLimit-Remaining' => '0',
+            'X-RateLimit-Reset'     => (string) (time() + $timeWindow),
+        ];
+
+        if ($request->getHeader('Accept') === 'application/json') {
+            return new ApiResponse(['error' => 'Too Many Requests'], 429, $headers);
+        }
+
+        return new Response('Too Many Requests', 429, $headers);
     }
 
     /**

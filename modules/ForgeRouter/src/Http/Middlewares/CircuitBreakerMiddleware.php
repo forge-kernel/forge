@@ -118,11 +118,13 @@ class CircuitBreakerMiddleware extends MiddlewareImpl
 
     private function incrementFailureCount(int $recordId, object|array $record, QueryBuilderInterface $queryBuilder): void
     {
+        // Keep the ORIGINAL first_failure timestamp so the breaker trips only
+        // after max_failures within reset_time (true sliding window) and
+        // recovers once reset_time passes from the first failure.
         $queryBuilder->reset()->setTable('circuit_breaker')
             ->where('id', '=', $recordId)
             ->update([
                 'fail_count' => $record['fail_count'] + 1,
-                'first_failure' => date('Y-m-d H:i:s'),
             ]);
     }
 

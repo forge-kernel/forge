@@ -85,13 +85,14 @@ final class LanguageService
     public function term(
         string $key,
         ?string $fallback = null,
-        array $args = []
+        array $args = [],
+        ?string $language = null
     ): string|array {
         $resource = ModuleResourceResolver::parse($key);
         $module = $resource->module;
         $termKey = $resource->name;
 
-        $language = $this->current();
+        $language = $language ?? $this->current();
 
         $filePath = '';
         $dotNotation = $termKey;
@@ -119,7 +120,7 @@ final class LanguageService
             return $fallback ?? $termKey;
         }
 
-        if (is_callable($value)) {
+        if (is_callable($value) && !is_string($value)) {
             return (string) $value(...$args);
         }
 

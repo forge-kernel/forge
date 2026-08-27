@@ -352,7 +352,7 @@
             } else {
                 $group = null;
             }
-            if ($currentGroup !== $group) {
+            if ($groups === [] || $currentGroup !== $group) {
                 $groups[] = ['header' => $group, 'frames' => []];
                 $currentGroup = $group;
             }

@@ -208,18 +208,24 @@ final class Request
      */
     public function getClientIp(): string
     {
-        $ip = $this->serverParams["REMOTE_ADDR"] ?? "0.0.0.0";
+        // Prefer REMOTE_ADDR: with nginx real_ip configured (Cloudflare/
+        // proxies), it already holds the real visitor IP. Only fall back to
+        // forwarded headers when REMOTE_ADDR is absent, so a spoofed
+        // X-Forwarded-For cannot bypass rate limiting.
+        $ip = $this->serverParams["REMOTE_ADDR"] ?? "";
 
-        if (isset($this->serverParams["HTTP_X_FORWARDED_FOR"])) {
-            $forwardedIps = explode(
-                ",",
-                $this->serverParams["HTTP_X_FORWARDED_FOR"],
-            );
-            $ip = trim(end($forwardedIps));
-        } elseif (isset($this->serverParams["HTTP_X_REAL_IP"])) {
-            $ip = $this->serverParams["HTTP_X_REAL_IP"];
-        } elseif (isset($this->serverParams["HTTP_CLIENT_IP"])) {
-            $ip = $this->serverParams["HTTP_CLIENT_IP"];
+        if (!$this->validateIp($ip)) {
+            if (isset($this->serverParams["HTTP_X_REAL_IP"])) {
+                $ip = $this->serverParams["HTTP_X_REAL_IP"];
+            } elseif (isset($this->serverParams["HTTP_X_FORWARDED_FOR"])) {
+                $forwardedIps = explode(
+                    ",",
+                    $this->serverParams["HTTP_X_FORWARDED_FOR"],
+                );
+                $ip = trim((string) ($forwardedIps[0] ?? ""));
+            } elseif (isset($this->serverParams["HTTP_CLIENT_IP"])) {
+                $ip = $this->serverParams["HTTP_CLIENT_IP"];
+            }
         }
 
         return $this->validateIp($ip) ? $ip : "0.0.0.0";
