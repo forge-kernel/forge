@@ -20,7 +20,7 @@ use Modules\ForgeRouter\ForgeRouterModule;
 
 #[Module(
     name: 'ForgeHtmx',
-    version: '1.0.3',
+    version: '1.0.4',
     description: 'HTMX integration for Forge router',
     order: 80,
     author: 'Forge Team',
@@ -53,7 +53,7 @@ final class ForgeHtmxModule
 
     private function registerHtmxAssets(): void
     {
-        $assetHtml = '<script src="/assets/modules/forge-htmx/js/htmx.min.js" defer></script>';
+        $assetHtml = '<script src="/assets/modules/forge-htmx/js/htmx.min.js?v=1" defer></script>';
         $this->registerAsset(assetHtml: $assetHtml, beforeTag: '</head>');
     }
 }
