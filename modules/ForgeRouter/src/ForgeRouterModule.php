@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Modules\ForgeRouter;
 
 use Modules\ForgeRouter\Bootstrap\RouterSetup;
-use Modules\ForgeRouter\Contracts\ErrorHandlerInterface;
+use Forge\Core\Contracts\ErrorHandlerInterface;
 use Modules\ForgeRouter\Events\RouterHookManager;
 use Modules\ForgeRouter\Events\RouterHookName;
 use Modules\ForgeRouter\Http\Kernel;
@@ -229,16 +229,20 @@ final class ForgeRouterModule
                 $errorHandler = $container->get(ErrorHandlerInterface::class);
                 if ($errorHandler instanceof ErrorHandlerInterface) {
                     $response = $errorHandler->handle($e, $request);
-                    $response->send();
-                    return;
+                    if (is_object($response) && method_exists($response, 'send')) {
+                        $response->send();
+                        return;
+                    }
                 }
             }
 
             $errorHandlers = $container->getAll(ErrorHandlerInterface::class);
             if (!empty($errorHandlers)) {
                 $response = $errorHandlers[0]->handle($e, $request);
-                $response->send();
-                return;
+                if (is_object($response) && method_exists($response, 'send')) {
+                    $response->send();
+                    return;
+                }
             }
         } catch (Throwable $fatal) {
             http_response_code(500);

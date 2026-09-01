@@ -6,7 +6,7 @@ return array (
     'hubItems' => 
     array (
     ),
-    'mtime' => 1786242226,
+    'mtime' => 1787841776,
     'modulePath' => '/Users/acidlake/Development/UPPER/Forge/repos/forge-v3/modules/ForgeDatabaseSQL',
   ),
   'Modules\\ForgeComponents\\ForgeComponentsModule' => 
@@ -30,7 +30,7 @@ return array (
     'hubItems' => 
     array (
     ),
-    'mtime' => 1786242226,
+    'mtime' => 1787841848,
     'modulePath' => '/Users/acidlake/Development/UPPER/Forge/repos/forge-v3/modules/ForgeSqlOrm',
   ),
   'Modules\\ForgeErrorHandler\\ForgeErrorHandlerModule' => 
@@ -38,7 +38,7 @@ return array (
     'hubItems' => 
     array (
     ),
-    'mtime' => 1784570288,
+    'mtime' => 1787947928,
     'modulePath' => '/Users/acidlake/Development/UPPER/Forge/repos/forge-v3/modules/ForgeErrorHandler',
   ),
   'Modules\\ForgeMultiTenant\\ForgeMultiTenantModule' => 
@@ -64,7 +64,7 @@ return array (
         ),
       ),
     ),
-    'mtime' => 1784384013,
+    'mtime' => 1787841783,
     'modulePath' => '/Users/acidlake/Development/UPPER/Forge/repos/forge-v3/modules/ForgeDebugBar',
   ),
   'Modules\\ForgeTemplates\\ForgeTemplatesModule' => 
@@ -88,7 +88,7 @@ return array (
     'hubItems' => 
     array (
     ),
-    'mtime' => 1784384092,
+    'mtime' => 1786242226,
     'modulePath' => '/Users/acidlake/Development/UPPER/Forge/repos/forge-v3/modules/ForgeView',
   ),
   'Modules\\ForgeBilling\\ForgeBillingModule' => 
@@ -212,7 +212,7 @@ return array (
     'hubItems' => 
     array (
     ),
-    'mtime' => 1784511590,
+    'mtime' => 1787841807,
     'modulePath' => '/Users/acidlake/Development/UPPER/Forge/repos/forge-v3/modules/ForgeLanguage',
   ),
   'Modules\\ForgeLanding\\ForgeLandingModule' => 
@@ -252,7 +252,7 @@ return array (
     'hubItems' => 
     array (
     ),
-    'mtime' => 1784253008,
+    'mtime' => 1787841856,
     'modulePath' => '/Users/acidlake/Development/UPPER/Forge/repos/forge-v3/capabilities/ForgeHtmx',
   ),
   'Modules\\ForgeLogger\\ForgeLoggerModule' => 
@@ -260,7 +260,7 @@ return array (
     'hubItems' => 
     array (
     ),
-    'mtime' => 1784223550,
+    'mtime' => 1786242226,
     'modulePath' => '/Users/acidlake/Development/UPPER/Forge/repos/forge-v3/modules/ForgeLogger',
   ),
   'Modules\\ForgeSprinkle\\ForgeSprinkleModule' => 
@@ -284,7 +284,7 @@ return array (
     'hubItems' => 
     array (
     ),
-    'mtime' => 1786242226,
+    'mtime' => 1787841768,
     'modulePath' => '/Users/acidlake/Development/UPPER/Forge/repos/forge-v3/modules/ForgeAuth',
   ),
   'Modules\\ForgeDeployment\\ForgeDeploymentModule' => 
@@ -294,14 +294,6 @@ return array (
     ),
     'mtime' => 1784223549,
     'modulePath' => '/Users/acidlake/Development/UPPER/Forge/repos/forge-v3/modules/ForgeDeployment',
-  ),
-  'Modules\\ForgeEvents\\ForgeEventsModule' => 
-  array (
-    'hubItems' => 
-    array (
-    ),
-    'mtime' => 1786242226,
-    'modulePath' => '/Users/acidlake/Development/UPPER/Forge/repos/forge-v3/modules/ForgeEvents',
   ),
   'Modules\\ForgeNotification\\ForgeNotificationModule' => 
   array (
@@ -343,6 +335,14 @@ return array (
     'mtime' => 1784384099,
     'modulePath' => '/Users/acidlake/Development/UPPER/Forge/repos/forge-v3/modules/ForgeWire',
   ),
+  'Capability\\ForgeEvents\\ForgeEventsModule' => 
+  array (
+    'hubItems' => 
+    array (
+    ),
+    'mtime' => 1788035717,
+    'modulePath' => '/Users/acidlake/Development/UPPER/Forge/repos/forge-v3/capabilities/ForgeEvents',
+  ),
   'Modules\\ForgeTesting\\ForgeTestingModule' => 
   array (
     'hubItems' => 
@@ -356,8 +356,16 @@ return array (
     'hubItems' => 
     array (
     ),
-    'mtime' => 1786242226,
+    'mtime' => 1787947915,
     'modulePath' => '/Users/acidlake/Development/UPPER/Forge/repos/forge-v3/modules/ForgeRouter',
+  ),
+  'Modules\\ForgeSockets\\ForgeSocketsModule' => 
+  array (
+    'hubItems' => 
+    array (
+    ),
+    'mtime' => 1787343973,
+    'modulePath' => '/Users/acidlake/Development/UPPER/Forge/repos/forge-v3/modules/ForgeSockets',
   ),
   'Modules\\ForgeStaticGen\\ForgeStaticGenModule' => 
   array (

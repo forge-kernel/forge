@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Modules\ForgeErrorHandler;
 
-use Modules\ForgeRouter\Contracts\ErrorHandlerInterface;
+use Forge\Core\Contracts\ErrorHandlerInterface;
 use Forge\Core\DI\Container;
 use Forge\Core\Module\Attributes\Compatibility;
 use Forge\Core\Module\Attributes\ConfigDefaults;

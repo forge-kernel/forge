@@ -3,7 +3,7 @@ declare(strict_types=1);
 
 namespace Modules\ForgeErrorHandler\Services;
 
-use Modules\ForgeRouter\Contracts\ErrorHandlerInterface;
+use Forge\Core\Contracts\ErrorHandlerInterface;
 use Forge\Core\Module\Attributes\Provides;
 use Modules\ForgeRouter\Http\{Request, Response};
 use Modules\ForgeRouter\Services\ErrorPageRenderer;
@@ -46,8 +46,12 @@ final class ForgeErrorHandlerService implements ErrorHandlerInterface
             : $path;
     }
 
-    public function handle(Throwable $e, Request $request): Response
+    public function handle(Throwable $e, ?object $request = null): mixed
     {
+        if (!$request instanceof Request) {
+            $request = Request::createFromGlobals();
+        }
+
         $this->logThrowable($e, $request);
 
         if ($this->isApiRequest($request)) {
